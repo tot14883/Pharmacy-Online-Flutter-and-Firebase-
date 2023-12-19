@@ -7,8 +7,10 @@ import 'package:pharmacy_online/base_widget/base_divider.dart';
 import 'package:pharmacy_online/base_widget/base_scaffold.dart';
 import 'package:pharmacy_online/core/app_style.dart';
 import 'package:pharmacy_online/core/widget/base_consumer_state.dart';
+import 'package:pharmacy_online/feature/authentication/controller/authentication_controller.dart';
+import 'package:pharmacy_online/feature/main/page/main_screen.dart';
+import 'package:pharmacy_online/feature/profile/controller/profile_controller.dart';
 import 'package:pharmacy_online/feature/profile/page/change_password_screen.dart';
-import 'package:pharmacy_online/feature/profile/page/edit_pharmacy_store_screen.dart';
 import 'package:pharmacy_online/feature/profile/page/edit_profile_screen.dart';
 import 'package:pharmacy_online/feature/profile/page/edit_qr_code_screen.dart';
 import 'package:pharmacy_online/feature/profile/widget/profile_image_widget.dart';
@@ -28,6 +30,15 @@ class ProfileScreen extends ConsumerStatefulWidget {
 class _ProfileScreenState extends BaseConsumerState<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
+    final userInfo =
+        ref.watch(profileControllerProvider.select((value) => value.userInfo));
+
+    final isPharmacy = ref
+        .watch(profileControllerProvider.select((value) => value.isPharmacy));
+
+    final profileImg = userInfo?.profileImg;
+    final fullName = userInfo?.fullName;
+
     return BaseScaffold(
       bodyBuilder: (context, constrianed) {
         return SingleChildScrollView(
@@ -44,10 +55,9 @@ class _ProfileScreenState extends BaseConsumerState<ProfileScreen> {
                 SizedBox(
                   height: 16.h,
                 ),
-                const ProfileImageWidget(
-                  imageUrl:
-                      'https://www.wilsoncenter.org/sites/default/files/media/images/person/james-person-1.jpg',
-                  label: 'Fatima Abdul',
+                ProfileImageWidget(
+                  imageUrl: '$profileImg',
+                  label: '$fullName',
                 ),
                 SizedBox(
                   height: 16.h,
@@ -60,27 +70,30 @@ class _ProfileScreenState extends BaseConsumerState<ProfileScreen> {
                   prefixIcon: Assets.icons.icPersion.svg(),
                   label: 'แก้ไขข้อมูลส่วนตัว',
                 ),
-                const BaseDivider(),
-                ProfileMenuWidget(
-                  onTap: () {
-                    Navigator.of(context)
-                        .pushNamed(StoreDetailScreen.routeName);
-                  },
-                  prefixIcon: Assets.imgs.imgStore.image(
-                    width: 42,
+                if (isPharmacy) ...[
+                  const BaseDivider(),
+                  ProfileMenuWidget(
+                    onTap: () {
+                      Navigator.of(context)
+                          .pushNamed(StoreDetailScreen.routeName);
+                    },
+                    prefixIcon: Assets.imgs.imgStore.image(
+                      width: 42,
+                    ),
+                    label: 'แก้ไขข้อมูลร้าน',
                   ),
-                  label: 'แก้ไขข้อมูลร้าน',
-                ),
-                const BaseDivider(),
-                ProfileMenuWidget(
-                  onTap: () {
-                    Navigator.of(context).pushNamed(EditQRCodeScreen.routeName);
-                  },
-                  prefixIcon: Assets.imgs.imgQrcode.image(
-                    width: 42,
+                  const BaseDivider(),
+                  ProfileMenuWidget(
+                    onTap: () {
+                      Navigator.of(context)
+                          .pushNamed(EditQRCodeScreen.routeName);
+                    },
+                    prefixIcon: Assets.imgs.imgQrcode.image(
+                      width: 42,
+                    ),
+                    label: 'แก้ไข QRcode',
                   ),
-                  label: 'แก้ไข QRcode',
-                ),
+                ],
                 const BaseDivider(),
                 ProfileMenuWidget(
                   onTap: () {
@@ -99,8 +112,17 @@ class _ProfileScreenState extends BaseConsumerState<ProfileScreen> {
                         return BaseDialog(
                           dialogLogo: Assets.icons.icLogout.svg(),
                           message: 'ต้องการออกจากระบบ',
-                          onClick: () {
-                            Navigator.of(context).pop();
+                          onClick: () async {
+                            final result = await ref
+                                .read(authenticationControllerProvider.notifier)
+                                .onLogout();
+                            if (result) {
+                              Navigator.of(context).pop();
+                              Navigator.of(context).pushNamedAndRemoveUntil(
+                                MainScreen.routeName,
+                                (route) => false,
+                              );
+                            }
                           },
                           hasCancel: true,
                         );

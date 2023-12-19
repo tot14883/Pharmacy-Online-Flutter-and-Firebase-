@@ -27,6 +27,7 @@ class ProfileImageWidget extends ConsumerWidget {
           url: imageUrl,
           width: 80.w,
           height: 124.h,
+          fit: BoxFit.cover,
         ),
         SizedBox(
           height: 16.h,

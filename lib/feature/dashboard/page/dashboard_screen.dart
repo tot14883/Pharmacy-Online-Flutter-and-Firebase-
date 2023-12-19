@@ -6,6 +6,7 @@ import 'package:pharmacy_online/core/widget/base_consumer_state.dart';
 import 'package:pharmacy_online/feature/chat/page/inbox_screen.dart';
 import 'package:pharmacy_online/feature/home/page/home_screen.dart';
 import 'package:pharmacy_online/feature/order/page/orders_screen.dart';
+import 'package:pharmacy_online/feature/profile/controller/profile_controller.dart';
 import 'package:pharmacy_online/feature/profile/page/profile_screen.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
@@ -22,7 +23,10 @@ class DashboardScreen extends ConsumerStatefulWidget {
 class _DashboardScreenState extends BaseConsumerState<DashboardScreen> {
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {});
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      await ref.read(profileControllerProvider.notifier).onGetUserInfo();
+      await ref.read(profileControllerProvider.notifier).onGetPharmacyStore();
+    });
     super.initState();
   }
 

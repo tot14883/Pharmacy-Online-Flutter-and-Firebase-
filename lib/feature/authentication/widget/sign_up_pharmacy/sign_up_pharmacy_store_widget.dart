@@ -1,20 +1,27 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:map_location_picker/map_location_picker.dart';
 import 'package:pharmacy_online/base_widget/base_button.dart';
+import 'package:pharmacy_online/base_widget/base_dialog.dart';
 import 'package:pharmacy_online/base_widget/base_text_field.dart';
 import 'package:pharmacy_online/base_widget/base_upload_image.dart';
 import 'package:pharmacy_online/base_widget/base_upload_image_button.dart';
+import 'package:pharmacy_online/core/app_style.dart';
 import 'package:pharmacy_online/feature/authentication/controller/authentication_controller.dart';
 import 'package:pharmacy_online/feature/authentication/enum/field_sign_up_enum.dart';
 import 'package:pharmacy_online/generated/assets.gen.dart';
+import 'package:pharmacy_online/utils/util/base_utils.dart';
 import 'package:pharmacy_online/utils/util/vaildators.dart';
 
 class SignUpPharmacyStoreWidget extends ConsumerStatefulWidget {
   static const routeName = 'SignUpPharmacyStoreWidget';
 
-  final VoidCallback onTap;
+  final Function(XFile? storeFile, XFile? licenseStoreFile, XFile? qrcodeFile)
+      onTap;
+
   final VoidCallback onBack;
 
   const SignUpPharmacyStoreWidget({
@@ -30,174 +37,265 @@ class SignUpPharmacyStoreWidget extends ConsumerStatefulWidget {
 
 class _SignUpPharmacyStoreWidgetState
     extends ConsumerState<SignUpPharmacyStoreWidget> {
-  XFile? licenseFile;
+  TextEditingController addressController = TextEditingController();
+  XFile? licenseStoreFile, qrcodeFile, storeFile;
+  bool isRequiredStore = false,
+      isRequiredLicenseStore = false,
+      isRequiredQrcode = false;
+
+  @override
+  void dispose() {
+    super.dispose();
+    addressController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer(
-      builder: (context, ref, child) {
-        final baseFormData = ref.watch(
-          authenticationControllerProvider.select(
-            (value) => value.baseFormData,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        BaseUploadImageButton(
+          imgPreview: Assets.icons.icAddImg.svg(),
+          onUpload: (val) {
+            setState(() {
+              storeFile = val;
+            });
+          },
+        ),
+        if (isRequiredStore) ...[
+          SizedBox(
+            height: 8.h,
           ),
-        );
-
-        // final role = baseFormData
-        //     ?.getValue<List<SwitchButtonItem>>(FieldSignUp.role)
-        //     ?.first
-        //     .value;
-
-        // final isPharmacy = role == AuthenticationType.pharmacy.name;
-
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
+          Text(
+            'กรุณาเลือกภาพ',
+            style: AppStyle.txtError,
+          ),
+        ],
+        SizedBox(
+          height: 16.h,
+        ),
+        BaseTextField(
+          fieldKey: FieldSignUp.nameStore,
+          placeholder: "ชื่อร้าน",
+          validator: Validators.combine(
+            [
+              Validators.withMessage(
+                "Required",
+                Validators.isEmpty,
+              ),
+            ],
+          ),
+        ),
+        SizedBox(
+          height: 16.h,
+        ),
+        BaseTextField(
+          fieldKey: FieldSignUp.addressStore,
+          controller: addressController,
+          placeholder: "ที่อยู่",
+          isReadOnly: true,
+          onTap: () async {
+            final result = await ref.read(baseUtilsProvider).getLocation();
+            result.when((success) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return MapLocationPicker(
+                      apiKey: "AIzaSyAqyETt9iu7l5QioWz5iwEbzrallQrpzLs",
+                      popOnNextButtonTaped: true,
+                      currentLatLng:
+                          LatLng(success.latitude, success.longitude),
+                      onNext: (GeocodingResult? result) {
+                        if (result != null) {
+                          Location location = result.geometry.location;
+                          addressController.text =
+                              result.formattedAddress.toString();
+                          ref
+                              .read(
+                                authenticationControllerProvider.notifier,
+                              )
+                              .setLatAndLongPharmacyStore(
+                                location.lat,
+                                location.lng,
+                              );
+                        }
+                      },
+                      onSuggestionSelected: (PlacesDetailsResponse? result) {
+                        if (result != null) {
+                          setState(() {
+                            result.result.formattedAddress ?? "";
+                          });
+                        }
+                      },
+                    );
+                  },
+                ),
+              );
+            }, (error) {
+              showDialog(
+                context: context,
+                builder: (_) {
+                  return BaseDialog(
+                    message: error.message,
+                  );
+                },
+              );
+            });
+          },
+          validator: Validators.combine(
+            [
+              Validators.withMessage(
+                "Required",
+                Validators.isEmpty,
+              ),
+            ],
+          ),
+        ),
+        SizedBox(
+          height: 16.h,
+        ),
+        BaseTextField(
+          fieldKey: FieldSignUp.phoneStore,
+          placeholder: "เบอร์โทรศัพท์",
+          validator: Validators.combine(
+            [
+              Validators.withMessage(
+                "Required",
+                Validators.isEmpty,
+              ),
+            ],
+          ),
+        ),
+        SizedBox(
+          height: 16.h,
+        ),
+        BaseTextField(
+          fieldKey: FieldSignUp.timeOpening,
+          placeholder: "เวลาเปิด",
+          textInputType: TextInputType.datetime,
+          validator: Validators.combine(
+            [
+              Validators.withMessage(
+                "Required",
+                Validators.isEmpty,
+              ),
+            ],
+          ),
+        ),
+        SizedBox(
+          height: 16.h,
+        ),
+        BaseTextField(
+          fieldKey: FieldSignUp.timeClosing,
+          placeholder: "เวลาปิด",
+          textInputType: TextInputType.datetime,
+          validator: Validators.combine(
+            [
+              Validators.withMessage(
+                "Required",
+                Validators.isEmpty,
+              ),
+            ],
+          ),
+        ),
+        SizedBox(
+          height: 16.h,
+        ),
+        BaseTextField(
+          fieldKey: FieldSignUp.licensePharmacyStore,
+          placeholder: "เลขที่ใบอนุญาตร้าน",
+          validator: Validators.combine(
+            [
+              Validators.withMessage(
+                "Required",
+                Validators.isEmpty,
+              ),
+            ],
+          ),
+        ),
+        SizedBox(
+          height: 16.h,
+        ),
+        BaseUploadImage(
+          label: 'รูปใบอนุญาต',
+          onUpload: (val) {
+            setState(() {
+              licenseStoreFile = val;
+            });
+          },
+        ),
+        if (isRequiredStore) ...[
+          SizedBox(
+            height: 8.h,
+          ),
+          Text(
+            'กรุณาเลือกภาพ',
+            style: AppStyle.txtError,
+          ),
+        ],
+        SizedBox(
+          height: 16.h,
+        ),
+        BaseUploadImage(
+          label: 'QRcode รับเงิน',
+          onUpload: (val) {
+            setState(() {
+              qrcodeFile = val;
+            });
+          },
+        ),
+        if (isRequiredQrcode) ...[
+          SizedBox(
+            height: 8.h,
+          ),
+          Text(
+            'กรุณาเลือกภาพ',
+            style: AppStyle.txtError,
+          ),
+        ],
+        SizedBox(
+          height: 16.h,
+        ),
+        Row(
           children: [
-            BaseUploadImageButton(
-              imgPreview: Assets.icons.icAddImg.svg(),
-              onUpload: (val) {},
-            ),
-            SizedBox(
-              height: 16.h,
-            ),
-            BaseTextField(
-              fieldKey: FieldSignUp.nameStore,
-              placeholder: "ชื่อร้าน",
-              validator: Validators.combine(
-                [
-                  Validators.withMessage(
-                    "Required",
-                    Validators.isEmpty,
-                  ),
-                ],
+            Expanded(
+              child: BaseButton(
+                buttonType: ButtonType.secondary,
+                onTap: () async {
+                  widget.onBack();
+                },
+                text: 'กลับ',
               ),
             ),
             SizedBox(
-              height: 16.h,
+              width: 8.w,
             ),
-            BaseTextField(
-              fieldKey: FieldSignUp.addressStore,
-              placeholder: "ที่อยู่",
-              validator: Validators.combine(
-                [
-                  Validators.withMessage(
-                    "Required",
-                    Validators.isEmpty,
-                  ),
-                ],
+            Expanded(
+              child: BaseButton(
+                onTap: () async {
+                  isRequiredStore = storeFile != null ? false : true;
+                  isRequiredLicenseStore =
+                      licenseStoreFile != null ? false : true;
+                  isRequiredQrcode = qrcodeFile != null ? false : true;
+                  setState(() {});
+
+                  if (storeFile != null &&
+                      licenseStoreFile != null &&
+                      qrcodeFile != null) {
+                    licenseStoreFile = widget.onTap(
+                      storeFile,
+                      licenseStoreFile,
+                      qrcodeFile,
+                    );
+                  }
+                },
+                text: 'ยืนยัน',
               ),
-            ),
-            SizedBox(
-              height: 16.h,
-            ),
-            BaseTextField(
-              fieldKey: FieldSignUp.phoneStore,
-              placeholder: "เบอร์โทรศัพท์",
-              validator: Validators.combine(
-                [
-                  Validators.withMessage(
-                    "Required",
-                    Validators.isEmpty,
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 16.h,
-            ),
-            BaseTextField(
-              fieldKey: FieldSignUp.timeOpening,
-              placeholder: "เวลาเปิด",
-              validator: Validators.combine(
-                [
-                  Validators.withMessage(
-                    "Required",
-                    Validators.isEmpty,
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 16.h,
-            ),
-            BaseTextField(
-              fieldKey: FieldSignUp.timeClosing,
-              placeholder: "เวลาปิด",
-              validator: Validators.combine(
-                [
-                  Validators.withMessage(
-                    "Required",
-                    Validators.isEmpty,
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 16.h,
-            ),
-            BaseTextField(
-              fieldKey: FieldSignUp.licensePharmacyStore,
-              placeholder: "เลขที่ใบอนุญาตร้าน",
-              validator: Validators.combine(
-                [
-                  Validators.withMessage(
-                    "Required",
-                    Validators.isEmpty,
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 16.h,
-            ),
-            BaseUploadImage(
-              label: 'รูปใบอนุญาต',
-              onUpload: (val) {
-                setState(() {
-                  licenseFile = val;
-                });
-              },
-            ),
-            SizedBox(
-              height: 16.h,
-            ),
-            BaseUploadImage(
-              label: 'QRcode รับเงิน',
-              onUpload: (val) {
-                setState(() {
-                  licenseFile = val;
-                });
-              },
-            ),
-            SizedBox(
-              height: 16.h,
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: BaseButton(
-                    buttonType: ButtonType.secondary,
-                    onTap: () async {
-                      widget.onBack();
-                    },
-                    text: 'กลับ',
-                  ),
-                ),
-                SizedBox(
-                  width: 8.w,
-                ),
-                Expanded(
-                  child: BaseButton(
-                    onTap: () async {
-                      widget.onTap();
-                    },
-                    text: 'ยืนยัน',
-                  ),
-                ),
-              ],
             ),
           ],
-        );
-      },
+        ),
+      ],
     );
   }
 }

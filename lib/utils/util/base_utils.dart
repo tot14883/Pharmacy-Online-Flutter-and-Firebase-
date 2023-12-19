@@ -1,9 +1,14 @@
+import 'dart:io';
 import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:map_location_picker/map_location_picker.dart';
+import 'package:multiple_result/multiple_result.dart';
 // import 'package:url_launcher/url_launcher.dart';
 import 'package:path/path.dart' as p;
 import 'package:http/http.dart' as http;
+import 'package:pharmacy_online/core/error/failure.dart';
 
 final baseUtilsProvider = Provider<BaseUtils>(
   (ref) => BaseUtils(),
@@ -59,5 +64,33 @@ class BaseUtils {
         'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
     return List.generate(len, (index) => _chars[r.nextInt(_chars.length)])
         .join();
+  }
+
+  Future<Result<Position, Failure>> getLocation() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      return Error(Failure(message: 'No Permission'));
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Error(Failure(message: 'No Permission'));
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      return Error(Failure(message: 'No Permission'));
+    }
+
+    return Success(await Geolocator.getCurrentPosition());
+  }
+
+  DateTime parseTime(dynamic date) {
+    return Platform.isIOS ? (date as Timestamp).toDate() : (date as DateTime);
   }
 }

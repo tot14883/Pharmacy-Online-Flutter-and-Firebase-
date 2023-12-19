@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:pharmacy_online/base_widget/base_app_bar.dart';
 import 'package:pharmacy_online/base_widget/base_form_field.dart';
 import 'package:pharmacy_online/base_widget/base_scaffold.dart';
@@ -26,6 +27,12 @@ class SignUpScreen extends ConsumerStatefulWidget {
 class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   final formKey = GlobalKey<BaseFormState>();
   int currentStep = 0;
+  XFile? _imgProfile,
+      _licensePharmacy,
+      _licensePharmacyStore,
+      _qrCodeImg,
+      _store;
+
   PageController pageController = PageController(
     initialPage: 0,
     viewportFraction: 1,
@@ -99,7 +106,12 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
             currentStep -= 1;
             onChangePage();
           },
-          onTap: () {
+          onTap: (imgProfile, licensePharmacy) async {
+            setState(() {
+              _imgProfile = imgProfile;
+              _licensePharmacy = licensePharmacy;
+            });
+
             final baseFormData = ref.watch(
               authenticationControllerProvider.select(
                 (value) => value.baseFormData,
@@ -119,12 +131,22 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
               return;
             }
 
-            Navigator.of(context).pushNamedAndRemoveUntil(
-              SignUpSuccessfulScreen.routeName,
-              (route) => false,
-            );
-            //   },
-            // );
+            final result = await ref
+                .read(authenticationControllerProvider.notifier)
+                .onSignUp(
+                  _imgProfile,
+                  _licensePharmacy,
+                  _licensePharmacyStore,
+                  _qrCodeImg,
+                  _store,
+                );
+
+            if (result) {
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                SignUpSuccessfulScreen.routeName,
+                (route) => false,
+              );
+            }
           },
         );
       case 2:
@@ -133,15 +155,27 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
             currentStep -= 1;
             onChangePage();
           },
-          onTap: () {
-            // formKey.currentState?.save(
-            //   onSave: (val) {
-            Navigator.of(context).pushNamedAndRemoveUntil(
-              SignUpSuccessfulScreen.routeName,
-              (route) => false,
+          onTap: (storeFile, licenseStoreFile, qrcodeFile) {
+            formKey.currentState?.save(
+              onSave: (val) async {
+                final result = await ref
+                    .read(authenticationControllerProvider.notifier)
+                    .onSignUp(
+                      _imgProfile,
+                      _licensePharmacy,
+                      licenseStoreFile,
+                      qrcodeFile,
+                      storeFile,
+                    );
+
+                if (result) {
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                    SignUpSuccessfulScreen.routeName,
+                    (route) => false,
+                  );
+                }
+              },
             );
-            //   },
-            // );
           },
         );
       default:

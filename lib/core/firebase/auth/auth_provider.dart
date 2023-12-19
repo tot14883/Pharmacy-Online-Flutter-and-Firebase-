@@ -39,4 +39,44 @@ class FirebaseAuthProvider {
 
     return credential;
   }
+
+  Future<bool> sendPasswordResetEmail(String email) async {
+    try {
+      await fireAuth.sendPasswordResetEmail(email: email);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> changePassword(
+    String currentPassword,
+    String newPassword,
+  ) async {
+    try {
+      final user = fireAuth.currentUser;
+
+      await user?.updatePassword(newPassword).then((_) {
+        print('this two');
+
+        return true;
+      }).catchError((error) {
+        return false;
+      });
+
+      print('this one');
+      return false;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> signOut() async {
+    try {
+      await fireAuth.signOut();
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
 }

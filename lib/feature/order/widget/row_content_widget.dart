@@ -33,6 +33,7 @@ class RowContentWidget extends StatelessWidget {
             style: AppStyle.txtBody2.copyWith(
               fontWeight: isBold ? FontWeight.bold : FontWeight.w400,
             ),
+            textAlign: TextAlign.end,
           ),
         ),
       ],

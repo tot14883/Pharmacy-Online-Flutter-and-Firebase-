@@ -6,7 +6,8 @@ import 'package:pharmacy_online/base_widget/base_button.dart';
 import 'package:pharmacy_online/base_widget/base_scaffold.dart';
 import 'package:pharmacy_online/core/app_color.dart';
 import 'package:pharmacy_online/core/app_style.dart';
-import 'package:pharmacy_online/feature/dashboard/page/dashboard_screen.dart';
+import 'package:pharmacy_online/feature/authentication/page/sign_in_screen.dart';
+import 'package:pharmacy_online/feature/main/page/main_screen.dart';
 import 'package:pharmacy_online/generated/assets.gen.dart';
 
 class SignUpSuccessfulScreen extends ConsumerWidget {
@@ -49,8 +50,8 @@ class SignUpSuccessfulScreen extends ConsumerWidget {
                 minWidth: 100.w,
                 onTap: () {
                   Navigator.of(context).pushNamedAndRemoveUntil(
-                    DashboardScreen.routeName,
-                    (route) => false,
+                    SignInScreen.routeName,
+                    (route) => route.settings.name == MainScreen.routeName,
                   );
                 },
                 text: 'ยืนยัน',

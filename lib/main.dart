@@ -19,6 +19,7 @@ import 'package:pharmacy_online/core/local/base_shared_preference.dart';
 import 'package:pharmacy_online/core/logging/logging.dart';
 import 'package:pharmacy_online/core/router/app_naviagor.dart';
 import 'package:pharmacy_online/core/router/app_router.dart';
+import 'package:pharmacy_online/feature/dashboard/page/dashboard_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> main() async {
@@ -100,13 +101,18 @@ class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final _appNavigator = ref.watch(appNavigatorProvider);
+    final hasUid = ref
+            .read(baseSharePreferenceProvider)
+            .getString(BaseSharePreferenceKey.userId) !=
+        null;
 
     return ScreenUtilInit(
       builder: (_, child) {
         return MaterialApp(
           navigatorKey: _appNavigator.navigatorKey,
           debugShowCheckedModeBanner: false,
-          initialRoute: AppRouter.initialRouterName,
+          initialRoute:
+              hasUid ? DashboardScreen.routeName : AppRouter.initialRouterName,
           onGenerateRoute: AppRouter.router,
           title: 'Pharmacy Online',
           builder: (context, child) {

@@ -14,6 +14,10 @@ import 'package:flutter/services.dart';
 class $AssetsIconsGen {
   const $AssetsIconsGen();
 
+  /// File path: assets/icons/ic_add_cart.svg
+  SvgGenImage get icAddCart =>
+      const SvgGenImage('assets/icons/ic_add_cart.svg');
+
   /// File path: assets/icons/ic_add_img.svg
   SvgGenImage get icAddImg => const SvgGenImage('assets/icons/ic_add_img.svg');
 
@@ -68,6 +72,9 @@ class $AssetsIconsGen {
   /// File path: assets/icons/ic_download.svg
   SvgGenImage get icDownload =>
       const SvgGenImage('assets/icons/ic_download.svg');
+
+  /// File path: assets/icons/ic_edit.svg
+  SvgGenImage get icEdit => const SvgGenImage('assets/icons/ic_edit.svg');
 
   /// File path: assets/icons/ic_email.svg
   SvgGenImage get icEmail => const SvgGenImage('assets/icons/ic_email.svg');
@@ -170,6 +177,7 @@ class $AssetsIconsGen {
 
   /// List of all assets
   List<SvgGenImage> get values => [
+        icAddCart,
         icAddImg,
         icAddShoppingCart,
         icAdministrator,
@@ -186,6 +194,7 @@ class $AssetsIconsGen {
         icDelete,
         icDocument,
         icDownload,
+        icEdit,
         icEmail,
         icEmailNotfication,
         icEye,

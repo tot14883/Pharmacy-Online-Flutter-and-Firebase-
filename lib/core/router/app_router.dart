@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:pharmacy_online/core/router/custom_page_route_builder.dart';
 import 'package:pharmacy_online/feature/authentication/page/cosent_screen.dart';
+import 'package:pharmacy_online/feature/authentication/page/forgot_password_screen.dart';
 import 'package:pharmacy_online/feature/authentication/page/sign_in_screen.dart';
 import 'package:pharmacy_online/feature/authentication/page/sign_in_successful_screen.dart';
 import 'package:pharmacy_online/feature/authentication/page/sign_up_screen.dart';
 import 'package:pharmacy_online/feature/authentication/page/sign_up_successful_screen.dart';
 import 'package:pharmacy_online/feature/authentication/page/term_and_condition_screen.dart';
+import 'package:pharmacy_online/feature/cart/page/address_delivery_screen.dart';
+import 'package:pharmacy_online/feature/cart/page/my_cart_screen.dart';
+import 'package:pharmacy_online/feature/cart/page/order_summary_screen.dart';
 import 'package:pharmacy_online/feature/chat/page/chat_screen.dart';
 import 'package:pharmacy_online/feature/chat/page/request_consult_screen.dart';
 import 'package:pharmacy_online/feature/dashboard/page/dashboard_screen.dart';
@@ -22,7 +26,12 @@ import 'package:pharmacy_online/feature/profile/page/change_password_screen.dart
 import 'package:pharmacy_online/feature/profile/page/edit_pharmacy_store_screen.dart';
 import 'package:pharmacy_online/feature/profile/page/edit_profile_screen.dart';
 import 'package:pharmacy_online/feature/profile/page/edit_qr_code_screen.dart';
+import 'package:pharmacy_online/feature/store/page/add_medicine_warehouse_screen.dart';
+import 'package:pharmacy_online/feature/store/page/central_medicine_warehouse_screen.dart';
 import 'package:pharmacy_online/feature/store/page/comment_screen.dart';
+import 'package:pharmacy_online/feature/store/page/drug_detail_screen.dart';
+import 'package:pharmacy_online/feature/store/page/edit_medicine_warehouse_screen.dart';
+import 'package:pharmacy_online/feature/store/page/my_medicine_warehouse_screen.dart';
 import 'package:pharmacy_online/feature/store/page/review_store_screen.dart';
 import 'package:pharmacy_online/feature/store/page/store_detail_screen.dart';
 
@@ -206,6 +215,75 @@ class AppRouter {
           transitionType: RouteTransition.fade,
         );
 
+      case MyMedicineWarehouseScreen.routeName:
+        return CustomPageRouteBuilder.route(
+          name: MyMedicineWarehouseScreen.routeName,
+          builder: (ctx) => const MyMedicineWarehouseScreen(),
+          transitionType: RouteTransition.fade,
+        );
+
+      case CentralMedicineWarehouseScreen.routeName:
+        return CustomPageRouteBuilder.route(
+          name: CentralMedicineWarehouseScreen.routeName,
+          builder: (ctx) => const CentralMedicineWarehouseScreen(),
+          transitionType: RouteTransition.fade,
+        );
+
+      case AddMedicineWarehouseScreen.routeName:
+        return CustomPageRouteBuilder.route(
+          name: AddMedicineWarehouseScreen.routeName,
+          builder: (ctx) => const AddMedicineWarehouseScreen(),
+          transitionType: RouteTransition.fade,
+        );
+
+      case EditMedicineWarehouseScreen.routeName:
+        return CustomPageRouteBuilder.route(
+          name: EditMedicineWarehouseScreen.routeName,
+          builder: (ctx) => const EditMedicineWarehouseScreen(),
+          transitionType: RouteTransition.fade,
+        );
+
+      case MyCartScreen.routeName:
+        assert(
+          settings.arguments is MyCartArgs || settings.arguments == null,
+          'arguments must be MyCartArgs or null',
+        );
+
+        final args = settings.arguments as MyCartArgs;
+
+        return CustomPageRouteBuilder.route(
+          name: MyCartScreen.routeName,
+          builder: (ctx) => MyCartScreen(args: args),
+          transitionType: RouteTransition.fade,
+        );
+
+      case DrugDetailScreen.routeName:
+        return CustomPageRouteBuilder.route(
+          name: DrugDetailScreen.routeName,
+          builder: (ctx) => const DrugDetailScreen(),
+          transitionType: RouteTransition.fade,
+        );
+
+      case OrderSummaryScreen.routeName:
+        return CustomPageRouteBuilder.route(
+          name: OrderSummaryScreen.routeName,
+          builder: (ctx) => const OrderSummaryScreen(),
+          transitionType: RouteTransition.fade,
+        );
+
+      case AddressDeliveryScreen.routeName:
+        return CustomPageRouteBuilder.route(
+          name: AddressDeliveryScreen.routeName,
+          builder: (ctx) => const AddressDeliveryScreen(),
+          transitionType: RouteTransition.fade,
+        );
+
+      case ForgotPasswordScreen.routeName:
+        return CustomPageRouteBuilder.route(
+          name: ForgotPasswordScreen.routeName,
+          builder: (ctx) => const ForgotPasswordScreen(),
+          transitionType: RouteTransition.fade,
+        );
       // case RoomAndRateScreen.routeName:
       //   assert(
       //     settings.arguments is RoomAndRateScreenArgs ||

@@ -5,6 +5,7 @@ import 'package:pharmacy_online/base_widget/base_image_view.dart';
 import 'package:pharmacy_online/core/app_color.dart';
 import 'package:pharmacy_online/core/app_style.dart';
 import 'package:pharmacy_online/feature/home/page/notification_screen.dart';
+import 'package:pharmacy_online/feature/profile/controller/profile_controller.dart';
 import 'package:pharmacy_online/generated/assets.gen.dart';
 
 class UserProfileHeaderWidget extends ConsumerWidget {
@@ -12,25 +13,32 @@ class UserProfileHeaderWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final userInfo = ref.watch(
+      profileControllerProvider.select((value) => value.userInfo),
+    );
+
+    final profileImg = userInfo?.profileImg;
+    final fullname = userInfo?.fullName;
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16).r,
       color: AppColor.themePrimaryColor,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const BaseImageView(
-            url:
-                'https://www.wilsoncenter.org/sites/default/files/media/images/person/james-person-1.jpg',
+          BaseImageView(
+            url: '$profileImg',
             width: 55,
             height: 55,
-            radius: BorderRadius.all(Radius.circular(150 / 2)),
+            fit: BoxFit.cover,
+            radius: const BorderRadius.all(Radius.circular(150 / 2)),
           ),
           SizedBox(
             width: 8.w,
           ),
           Expanded(
             child: Text(
-              'Hello, Fatima Abdulazeez',
+              'Hello, $fullname',
               style: AppStyle.txtBody2,
             ),
           ),

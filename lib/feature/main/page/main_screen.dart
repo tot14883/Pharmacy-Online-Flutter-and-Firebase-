@@ -4,18 +4,25 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pharmacy_online/base_widget/base_button.dart';
 import 'package:pharmacy_online/base_widget/base_scaffold.dart';
 import 'package:pharmacy_online/core/app_style.dart';
+import 'package:pharmacy_online/core/widget/base_consumer_state.dart';
+import 'package:pharmacy_online/feature/authentication/controller/authentication_controller.dart';
 import 'package:pharmacy_online/feature/authentication/page/sign_in_screen.dart';
-import 'package:pharmacy_online/feature/authentication/page/term_and_condition_screen.dart';
+import 'package:pharmacy_online/feature/authentication/page/sign_up_screen.dart';
 import 'package:pharmacy_online/feature/dashboard/page/dashboard_screen.dart';
 import 'package:pharmacy_online/generated/assets.gen.dart';
 
-class MainScreen extends ConsumerWidget {
+class MainScreen extends ConsumerStatefulWidget {
   static const routeName = "MainScreen";
 
   const MainScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  _MainScreenState createState() => _MainScreenState();
+}
+
+class _MainScreenState extends BaseConsumerState<MainScreen> {
+  @override
+  Widget build(BuildContext context) {
     return BaseScaffold(
       bodyBuilder: (context, constrained) {
         return Padding(
@@ -42,8 +49,11 @@ class MainScreen extends ConsumerWidget {
               ),
               BaseButton(
                 onTap: () {
+                  ref
+                      .read(authenticationControllerProvider.notifier)
+                      .clearForm();
                   Navigator.of(context).pushNamed(
-                    TermAndConditionScreen.routeName,
+                    SignUpScreen.routeName,
                   );
                 },
                 text: 'สมัครสมาชิก',

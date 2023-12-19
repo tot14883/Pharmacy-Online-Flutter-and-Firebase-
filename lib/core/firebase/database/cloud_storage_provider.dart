@@ -23,7 +23,7 @@ class FirebaseStorageProvider {
       final Completer<String> _completer = Completer<String>();
 
       final name = file.path.split('/').last;
-      final storageRef = storage.ref('table/$name');
+      final storageRef = storage.ref('$table/$name');
       final uploadTask = storageRef.putFile(File(file.path));
 
       uploadTask.snapshotEvents.listen((taskSnapshot) async {
