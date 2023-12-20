@@ -9,6 +9,9 @@ import 'package:pharmacy_online/base_widget/rating_start_widget.dart';
 import 'package:pharmacy_online/core/app_color.dart';
 import 'package:pharmacy_online/core/app_style.dart';
 import 'package:pharmacy_online/core/widget/base_consumer_state.dart';
+import 'package:pharmacy_online/feature/authentication/model/response/pharmacy_store_response.dart';
+import 'package:pharmacy_online/feature/authentication/model/response/user_info_response.dart';
+import 'package:pharmacy_online/feature/profile/controller/profile_controller.dart';
 import 'package:pharmacy_online/feature/profile/page/edit_pharmacy_store_screen.dart';
 import 'package:pharmacy_online/feature/store/page/review_store_screen.dart';
 
@@ -24,6 +27,15 @@ class StoreDetailScreen extends ConsumerStatefulWidget {
 class _StoreDetailScreenState extends BaseConsumerState<StoreDetailScreen> {
   @override
   Widget build(BuildContext context) {
+    final userInfo = ref.watch(
+      profileControllerProvider.select((value) => value.userInfo),
+    );
+    final pharmacyStoreInfo = ref.watch(
+      profileControllerProvider.select((value) => value.pharmacyStore),
+    );
+
+    final pharmacyStoreImg = pharmacyStoreInfo?.storeImg;
+
     return BaseScaffold(
       appBar: BaseAppBar(
         title: Text(
@@ -31,21 +43,6 @@ class _StoreDetailScreenState extends BaseConsumerState<StoreDetailScreen> {
           style: AppStyle.txtHeader3,
         ),
         bgColor: AppColor.themeWhiteColor,
-        actions: [
-          GestureDetector(
-            onTap: () {
-              Navigator.of(context)
-                  .pushNamed(EditPharmacyStoreScreen.routeName);
-            },
-            child: Padding(
-              padding: const EdgeInsets.all(16).r,
-              child: Text(
-                'แก้ไข',
-                style: AppStyle.txtBody2,
-              ),
-            ),
-          ),
-        ],
       ),
       bodyBuilder: (context, constrained) {
         return SingleChildScrollView(
@@ -54,14 +51,14 @@ class _StoreDetailScreenState extends BaseConsumerState<StoreDetailScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               BaseImageView(
-                url:
-                    'https://media.istockphoto.com/id/1135284188/photo/if-you-need-its-here.jpg?s=612x612&w=0&k=20&c=2yfZHUqTEGW4-5r4Sc4pzWKx0DtubpdbTkX3h_w1AJg=',
+                url: pharmacyStoreImg,
                 width: MediaQuery.of(context).size.width,
                 height: 333.h,
                 fit: BoxFit.cover,
               ),
               StoreDetailContent(
-                onTap: () {},
+                pharmacyStoreInfo: pharmacyStoreInfo,
+                userInfo: userInfo,
               ),
             ],
           ),
@@ -72,15 +69,24 @@ class _StoreDetailScreenState extends BaseConsumerState<StoreDetailScreen> {
 }
 
 class StoreDetailContent extends StatelessWidget {
-  final VoidCallback onTap;
+  final PharmacyStoreResponse? pharmacyStoreInfo;
+  final UserInfoResponse? userInfo;
 
   const StoreDetailContent({
     super.key,
-    required this.onTap,
+    this.pharmacyStoreInfo,
+    this.userInfo,
   });
 
   @override
   Widget build(BuildContext context) {
+    final nameStore = pharmacyStoreInfo?.nameStore;
+    final addressStore = pharmacyStoreInfo?.address;
+    final timeOpening = pharmacyStoreInfo?.timeOpening;
+    final timeClosing = pharmacyStoreInfo?.timeClosing;
+    final fullname = userInfo?.fullName;
+    final licensePharmacy = pharmacyStoreInfo?.licensePharmacy;
+
     return Padding(
       padding: const EdgeInsets.all(16).r,
       child: Column(
@@ -91,7 +97,7 @@ class StoreDetailContent extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  'ร้าน เพื่อนเภสัช',
+                  'ร้าน $nameStore',
                   style: AppStyle.txtBody,
                 ),
               ),
@@ -113,7 +119,7 @@ class StoreDetailContent extends StatelessWidget {
           SizedBox(
             width: MediaQuery.of(context).size.width * 0.4,
             child: Text(
-              "616 ถนน ประชารัษฎร์ ตำบล สวนใหญ่ อำเภอ เมืองนนทบุรี 11000",
+              '$addressStore',
               style: AppStyle.txtBody,
             ),
           ),
@@ -121,26 +127,29 @@ class StoreDetailContent extends StatelessWidget {
             height: 16.h,
           ),
           Text(
-            "เปิด วันจันทร์ - วันเสาร์ เวลา 08.00 - 20.00 น.",
+            "เปิด เวลา $timeOpening - ปิด เวลา $timeClosing น.",
             style: AppStyle.txtBody,
           ),
-          Text(
-            "ปิด  ทุกวันอาทิตย์",
-            style: AppStyle.txtBody,
-          ),
+          // Text(
+          //   "ปิด  ทุกวันอาทิตย์",
+          //   style: AppStyle.txtBody,
+          // ),
           SizedBox(
             height: 16.h,
           ),
           Text(
-            "ภก. ธีรวัฒน์ คุณวันดี เลขที่ใบอนุญาต 27819",
+            "$fullname เลขที่ใบอนุญาต $licensePharmacy",
             style: AppStyle.txtBody,
           ),
           SizedBox(
             height: 48.h,
           ),
           BaseButton(
-            onTap: onTap,
-            text: 'ส่งคำขอสนทนา',
+            onTap: () {
+              Navigator.of(context)
+                  .pushNamed(EditPharmacyStoreScreen.routeName);
+            },
+            text: 'แก้ไขข้อมูลร้าน',
           ),
         ],
       ),

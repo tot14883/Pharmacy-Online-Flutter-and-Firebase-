@@ -40,9 +40,7 @@ class UpdatePharmacyStoreUsecase extends UseCase<UserInfoRequest, bool> {
     try {
       final address = request.address;
       final licensePharmacy = request.licensePharmacy ?? '';
-      final licensePharmacyImg = request.licensePharmacyImg;
       final nameStore = request.nameStore ?? '';
-      final currentLicensePharmacyImg = request.currentLicensePharmacyImg;
       final currentStoreImg = request.currentStoreImg ?? '';
       final phoneStore = request.phoneStore ?? '';
       final latitude = request.latitude ?? 0.0;
@@ -53,39 +51,24 @@ class UpdatePharmacyStoreUsecase extends UseCase<UserInfoRequest, bool> {
       final licenseStoreImg = request.licenseStoreImg;
       final currentLicenseStoreImg = request.currentLicenseStoreImg;
       final storeImg = request.storeImg;
-      final qrCodeImg = request.qrCodeImg;
-      final currentQrCodeImg = request.currentQrCodeImg;
 
       final uid = baseSharedPreference.getString(BaseSharePreferenceKey.userId);
 
       if (uid != null) {
-        String urlLicensePharmacyImg = '';
         String urlLicenseStoreImg = '';
-        String urlQrCodeImg = '';
         String urlStoreImg = '';
 
-        if (licensePharmacyImg != null) {
-          urlLicensePharmacyImg = await firebaseCloudStorage.uploadStorage(
-            licensePharmacyImg,
-            'pharmacy/$uid',
-          );
-        }
-
-        if (licenseStoreImg != null && storeImg != null) {
+        if (storeImg != null) {
           urlStoreImg = await firebaseCloudStorage.uploadStorage(
             storeImg,
             'pharmacyStore/$uid',
           );
+        }
+
+        if (licenseStoreImg != null) {
           urlLicenseStoreImg = await firebaseCloudStorage.uploadStorage(
             licenseStoreImg,
             'pharmacyStore/$uid',
-          );
-        }
-
-        if (qrCodeImg != null) {
-          urlQrCodeImg = await firebaseCloudStorage.uploadStorage(
-            qrCodeImg,
-            'qrCode/$uid',
           );
         }
 
@@ -96,9 +79,6 @@ class UpdatePharmacyStoreUsecase extends UseCase<UserInfoRequest, bool> {
           "nameStore": nameStore,
           "address": address,
           "licensePharmacy": licensePharmacy,
-          "licensePharmacyImg": licensePharmacyImg != null
-              ? urlLicensePharmacyImg
-              : currentLicensePharmacyImg,
           "phoneStore": phoneStore,
           "latitude": latitude,
           "longtitude": longtitude,
@@ -109,7 +89,6 @@ class UpdatePharmacyStoreUsecase extends UseCase<UserInfoRequest, bool> {
           "licenseStoreImg": licenseStoreImg != null
               ? urlLicenseStoreImg
               : currentLicenseStoreImg,
-          "qrCodeImg": qrCodeImg != null ? urlQrCodeImg : currentQrCodeImg,
           "storeImg": storeImg != null ? urlStoreImg : currentStoreImg,
           "update_at": DateTime.now(),
         };

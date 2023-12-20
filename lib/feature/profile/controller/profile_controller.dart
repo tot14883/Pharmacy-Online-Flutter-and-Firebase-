@@ -10,6 +10,7 @@ import 'package:pharmacy_online/feature/authentication/usecase/update_pharmacy_s
 import 'package:pharmacy_online/feature/authentication/usecase/update_user_info_usecase.dart';
 import 'package:pharmacy_online/feature/profile/controller/state/profile_state.dart';
 import 'package:pharmacy_online/feature/profile/enum/field_user_info_enum.dart';
+import 'package:pharmacy_online/feature/profile/usecase/change_qr_code_usecase.dart';
 import 'package:pharmacy_online/feature/profile/usecase/get_pharmacy_store_usecase.dart';
 import 'package:pharmacy_online/feature/profile/usecase/get_user_info_usecase.dart';
 
@@ -26,6 +27,7 @@ final profileControllerProvider =
     final updateUserInfoUsecase = ref.watch(updateUserInfoUsecaseProvider);
     final updatePharmacyStoreUsecase =
         ref.watch(updatePharmacyStoreUsecaseProvider);
+    final changeQRCodeUsecase = ref.watch(changeQRCodeUsecaseProvider);
 
     return ProfileController(
       ref,
@@ -37,6 +39,7 @@ final profileControllerProvider =
       getPharmacyUsecase,
       updateUserInfoUsecase,
       updatePharmacyStoreUsecase,
+      changeQRCodeUsecase,
     );
   },
 );
@@ -51,6 +54,7 @@ class ProfileController extends StateNotifier<ProfileState> {
   final GetPharmacyUseCase _getPharmacyUsecase;
   final UpdateUserInfoUsecase _updateUserInfoUsecase;
   final UpdatePharmacyStoreUsecase _updatePharmacyStoreUsecase;
+  final ChangeQRCodeUsecase _changeQRCodeUsecase;
 
   ProfileController(
     this._ref,
@@ -62,12 +66,23 @@ class ProfileController extends StateNotifier<ProfileState> {
     this._getPharmacyUsecase,
     this._updateUserInfoUsecase,
     this._updatePharmacyStoreUsecase,
+    this._changeQRCodeUsecase,
   )   : _loader = _ref.read(loaderControllerProvider.notifier),
         super(state);
 
   void onChanged(BaseFormData baseFormData) {
     final newData = _baseFormData.copyAndMerge(baseFormData);
     state = state.copyWith(baseFormData: newData);
+  }
+
+  void clearForm() {
+    state = state.copyWith(
+      baseFormData: null,
+      latitudeStore: null,
+      latitudeUser: null,
+      longtitudeStore: null,
+      longtitudeUser: null,
+    );
   }
 
   void setLatAndLongUser(double latitude, double longtitude) {
@@ -117,43 +132,47 @@ class ProfileController extends StateNotifier<ProfileState> {
     );
   }
 
-  void onUpdateUserInfo(
-    XFile? imgProfile,
-  ) async {
+  Future<bool> onUpdateUserInfo(
+      XFile? imgProfile, XFile? imgLicensePharmacy) async {
     _loader.onLoad();
 
+    bool isSuccess = false;
+
     final baseFormData = state.baseFormData;
-    final email = baseFormData?.getValue<String>(FieldUserInfo.email) ?? '';
-    final password =
-        baseFormData?.getValue<String>(FieldUserInfo.password) ?? '';
     final fullName = baseFormData?.getValue<String>(FieldUserInfo.name) ?? '';
     final phone = baseFormData?.getValue<String>(FieldUserInfo.phone) ?? '';
     final address = baseFormData?.getValue<String>(FieldUserInfo.address);
+    final licensePharmacy =
+        baseFormData?.getValue<String>(FieldUserInfo.licensePharmacy) ?? '';
 
-    await _updateUserInfoUsecase.execute(
+    final result = await _updateUserInfoUsecase.execute(
       UserInfoRequest(
-        email: email,
-        password: password,
         fullName: fullName,
         phone: phone,
         address: address,
+        role: state.userInfo?.role ?? 'user',
         latitude: state.latitudeStore ?? state.latitudeUser,
         longtitude: state.longtitudeStore ?? state.longtitudeUser,
+        licensePharmacy: licensePharmacy,
         profileImg: imgProfile,
         currentProfileImg: state.userInfo?.profileImg ?? '',
+        licensePharmacyImg: imgLicensePharmacy,
+        currentLicensePharmacyImg: state.userInfo?.licensePharmacyImg ?? '',
       ),
     );
 
-    await onGetUserInfo();
+    result.when((success) => isSuccess = success, (error) => null);
+
+    return isSuccess;
   }
 
-  void onUpdatePharmacyStore(
-    XFile? licensePharmacyImg,
+  Future<bool> onUpdatePharmacyStore(
     XFile? licensePharmacyStoreImg,
-    XFile? qrCodeImg,
     XFile? store,
   ) async {
     _loader.onLoad();
+
+    bool isSuccess = false;
 
     final baseFormData = state.baseFormData;
 
@@ -174,7 +193,7 @@ class ProfileController extends StateNotifier<ProfileState> {
         baseFormData?.getValue<String>(FieldUserInfo.licensePharmacyStore) ??
             '';
 
-    await _updatePharmacyStoreUsecase.execute(
+    final result = await _updatePharmacyStoreUsecase.execute(
       UserInfoRequest(
         address: addressStore,
         latitude: state.latitudeStore ?? state.latitudeUser,
@@ -185,10 +204,8 @@ class ProfileController extends StateNotifier<ProfileState> {
         timeClosing: timeClosing,
         licensePharmacy: licensePharmacy,
         licenseStore: licensePharmacyStore,
-        licensePharmacyImg: licensePharmacyImg,
         storeImg: store,
         licenseStoreImg: licensePharmacyStoreImg,
-        qrCodeImg: qrCodeImg,
         currentLicensePharmacyImg:
             state.pharmacyStore?.licensePharmacyImg ?? '',
         currentLicenseStoreImg: state.pharmacyStore?.licenseStoreImg ?? '',
@@ -197,6 +214,30 @@ class ProfileController extends StateNotifier<ProfileState> {
       ),
     );
 
-    await onGetPharmacyStore();
+    result.when((success) => isSuccess = success, (error) => null);
+
+    return isSuccess;
+  }
+
+  Future<bool> onChangeQRCode(XFile? qrcodeImg) async {
+    _loader.onLoad();
+    bool isSuccess = false;
+
+    if (qrcodeImg == null) {
+      _loader.onDismissLoad();
+      return isSuccess;
+    }
+
+    final result = await _changeQRCodeUsecase.execute(qrcodeImg);
+
+    result.when(
+      (success) {
+        isSuccess = success;
+        _loader.onDismissLoad();
+      },
+      (error) => _loader.onDismissLoad(),
+    );
+
+    return isSuccess;
   }
 }

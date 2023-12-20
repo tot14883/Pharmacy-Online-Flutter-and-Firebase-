@@ -64,6 +64,7 @@ class _ProfileScreenState extends BaseConsumerState<ProfileScreen> {
                 ),
                 ProfileMenuWidget(
                   onTap: () {
+                    ref.read(profileControllerProvider.notifier).clearForm();
                     Navigator.of(context)
                         .pushNamed(EditProfileScreen.routeName);
                   },
@@ -74,6 +75,7 @@ class _ProfileScreenState extends BaseConsumerState<ProfileScreen> {
                   const BaseDivider(),
                   ProfileMenuWidget(
                     onTap: () {
+                      ref.read(profileControllerProvider.notifier).clearForm();
                       Navigator.of(context)
                           .pushNamed(StoreDetailScreen.routeName);
                     },

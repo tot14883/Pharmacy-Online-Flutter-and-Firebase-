@@ -1,4 +1,6 @@
 // Import the firebase_core and cloud_firestore plugin
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -54,18 +56,28 @@ class FirebaseAuthProvider {
     String newPassword,
   ) async {
     try {
+      final Completer<bool> completer = Completer<bool>();
       final user = fireAuth.currentUser;
+      final cred = EmailAuthProvider.credential(
+        email: user!.email!,
+        password: currentPassword,
+      );
 
-      await user?.updatePassword(newPassword).then((_) {
-        print('this two');
+      print(newPassword);
 
-        return true;
-      }).catchError((error) {
-        return false;
+      await user.reauthenticateWithCredential(cred).then((_) async {
+        await user.updatePassword(newPassword).then((_) {
+          print('yooo');
+
+          completer.complete(true);
+        }).catchError((error) {
+          completer.complete(false);
+        });
+      }).catchError((err) {
+        completer.complete(false);
       });
 
-      print('this one');
-      return false;
+      return completer.future;
     } catch (e) {
       return false;
     }

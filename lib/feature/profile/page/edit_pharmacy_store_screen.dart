@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,14 +10,15 @@ import 'package:pharmacy_online/base_widget/base_app_bar.dart';
 import 'package:pharmacy_online/base_widget/base_button.dart';
 import 'package:pharmacy_online/base_widget/base_dialog.dart';
 import 'package:pharmacy_online/base_widget/base_form_field.dart';
+import 'package:pharmacy_online/base_widget/base_image_view.dart';
 import 'package:pharmacy_online/base_widget/base_scaffold.dart';
 import 'package:pharmacy_online/base_widget/base_text_field.dart';
 import 'package:pharmacy_online/base_widget/base_upload_image.dart';
 import 'package:pharmacy_online/base_widget/base_upload_image_button.dart';
 import 'package:pharmacy_online/core/app_color.dart';
 import 'package:pharmacy_online/core/app_style.dart';
-import 'package:pharmacy_online/feature/authentication/enum/field_sign_up_enum.dart';
-import 'package:pharmacy_online/generated/assets.gen.dart';
+import 'package:pharmacy_online/feature/profile/controller/profile_controller.dart';
+import 'package:pharmacy_online/feature/profile/enum/field_user_info_enum.dart';
 import 'package:pharmacy_online/utils/util/base_utils.dart';
 import 'package:pharmacy_online/utils/util/vaildators.dart';
 
@@ -34,6 +37,29 @@ class EditPharmacyStoreScreen extends ConsumerStatefulWidget {
 class _EditPharmacyStoreScreenState
     extends ConsumerState<EditPharmacyStoreScreen> {
   final formKey = GlobalKey<BaseFormState>();
+  XFile? storeFile, licenseFile;
+  TextEditingController addressController = TextEditingController();
+  bool isRequiredStore = false, isRequiredLicenseStore = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      final pharmacyStoreInfo = ref.watch(
+        profileControllerProvider.select((value) => value.pharmacyStore),
+      );
+
+      addressController.text = '${pharmacyStoreInfo?.address}';
+      ref
+          .read(
+            profileControllerProvider.notifier,
+          )
+          .setLatAndLongPharmacyStore(
+            pharmacyStoreInfo?.latitude ?? 0.0,
+            pharmacyStoreInfo?.longtitude ?? 0.0,
+          );
+    });
+  }
 
   @override
   void dispose() {
@@ -41,10 +67,20 @@ class _EditPharmacyStoreScreenState
     super.dispose();
   }
 
-  XFile? licenseFile;
-
   @override
   Widget build(BuildContext context) {
+    final pharmacyStoreInfo = ref.watch(
+      profileControllerProvider.select((value) => value.pharmacyStore),
+    );
+
+    final pharmacyStoreImg = pharmacyStoreInfo?.storeImg;
+    final licensePharmacyStore = pharmacyStoreInfo?.licenseStoreImg;
+    final nameStore = pharmacyStoreInfo?.nameStore;
+    final phoneStore = pharmacyStoreInfo?.phoneStore;
+    final timeClosing = pharmacyStoreInfo?.timeClosing;
+    final timeOpening = pharmacyStoreInfo?.timeOpening;
+    final licenseStore = pharmacyStoreInfo?.licenseStore;
+
     return BaseScaffold(
       appBar: BaseAppBar(
         bgColor: AppColor.themeWhiteColor,
@@ -58,20 +94,41 @@ class _EditPharmacyStoreScreenState
         return SingleChildScrollView(
           child: BaseForm(
             key: formKey,
+            onChanged: ref.read(profileControllerProvider.notifier).onChanged,
             child: Padding(
               padding: const EdgeInsets.all(16).r,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   BaseUploadImageButton(
-                    imgPreview: Assets.icons.icAddImg.svg(),
-                    onUpload: (val) {},
+                    imgPreview: BaseImageView(
+                      url: storeFile != null ? null : pharmacyStoreImg,
+                      file: storeFile != null ? File(storeFile!.path) : null,
+                      width: 350.w,
+                      height: 350.h,
+                      fit: BoxFit.cover,
+                    ),
+                    onUpload: (val) {
+                      setState(() {
+                        storeFile = val;
+                      });
+                    },
                   ),
+                  if (isRequiredStore) ...[
+                    SizedBox(
+                      height: 8.h,
+                    ),
+                    Text(
+                      'กรุณาเลือกภาพ',
+                      style: AppStyle.txtError,
+                    ),
+                  ],
                   SizedBox(
                     height: 16.h,
                   ),
                   BaseTextField(
-                    fieldKey: FieldSignUp.nameStore,
+                    fieldKey: FieldUserInfo.nameStore,
+                    initialValue: nameStore,
                     placeholder: "ชื่อร้าน",
                     validator: Validators.combine(
                       [
@@ -86,8 +143,9 @@ class _EditPharmacyStoreScreenState
                     height: 16.h,
                   ),
                   BaseTextField(
-                    fieldKey: FieldSignUp.addressStore,
+                    fieldKey: FieldUserInfo.addressStore,
                     placeholder: "ที่อยู่",
+                    controller: addressController,
                     isReadOnly: true,
                     onTap: () async {
                       final result =
@@ -104,25 +162,25 @@ class _EditPharmacyStoreScreenState
                                 currentLatLng:
                                     LatLng(success.latitude, success.longitude),
                                 onNext: (GeocodingResult? result) {
-                                  // if (result != null) {
-                                  //   Location latlong = result.geometry.location;
-                                  //   setState(() {
-                                  //     print(
-                                  //         "1=============> ${result.formattedAddress}");
-                                  //     Shopaddress.text =
-                                  //         result.formattedAddress.toString();
-                                  //     print("=============> ${latlong.lat}");
-                                  //     print("=============> ${latlong.lng}");
-                                  //     lat = latlong.lat;
-                                  //     long = latlong.lng;
-                                  //   });
-                                  // }
+                                  if (result != null) {
+                                    Location location =
+                                        result.geometry.location;
+                                    addressController.text =
+                                        result.formattedAddress.toString();
+                                    ref
+                                        .read(
+                                          profileControllerProvider.notifier,
+                                        )
+                                        .setLatAndLongPharmacyStore(
+                                          location.lat,
+                                          location.lng,
+                                        );
+                                  }
                                 },
                                 onSuggestionSelected:
                                     (PlacesDetailsResponse? result) {
                                   if (result != null) {
                                     setState(() {
-                                      print(result.result.geometry!.location);
                                       result.result.formattedAddress ?? "";
                                     });
                                   }
@@ -155,7 +213,8 @@ class _EditPharmacyStoreScreenState
                     height: 16.h,
                   ),
                   BaseTextField(
-                    fieldKey: FieldSignUp.phoneStore,
+                    fieldKey: FieldUserInfo.phoneStore,
+                    initialValue: phoneStore,
                     placeholder: "เบอร์โทรศัพท์",
                     validator: Validators.combine(
                       [
@@ -170,8 +229,10 @@ class _EditPharmacyStoreScreenState
                     height: 16.h,
                   ),
                   BaseTextField(
-                    fieldKey: FieldSignUp.timeOpening,
+                    fieldKey: FieldUserInfo.timeOpening,
                     placeholder: "เวลาเปิด",
+                    initialValue: timeOpening,
+                    textInputType: TextInputType.datetime,
                     validator: Validators.combine(
                       [
                         Validators.withMessage(
@@ -185,8 +246,10 @@ class _EditPharmacyStoreScreenState
                     height: 16.h,
                   ),
                   BaseTextField(
-                    fieldKey: FieldSignUp.timeClosing,
+                    fieldKey: FieldUserInfo.timeClosing,
                     placeholder: "เวลาปิด",
+                    initialValue: timeClosing,
+                    textInputType: TextInputType.datetime,
                     validator: Validators.combine(
                       [
                         Validators.withMessage(
@@ -200,8 +263,9 @@ class _EditPharmacyStoreScreenState
                     height: 16.h,
                   ),
                   BaseTextField(
-                    fieldKey: FieldSignUp.licensePharmacyStore,
+                    fieldKey: FieldUserInfo.licensePharmacyStore,
                     placeholder: "เลขที่ใบอนุญาตร้าน",
+                    initialValue: licenseStore,
                     validator: Validators.combine(
                       [
                         Validators.withMessage(
@@ -225,20 +289,56 @@ class _EditPharmacyStoreScreenState
                   SizedBox(
                     height: 16.h,
                   ),
-                  BaseUploadImage(
-                    label: 'QRcode รับเงิน',
-                    onUpload: (val) {
-                      setState(() {
-                        licenseFile = val;
-                      });
-                    },
+                  BaseImageView(
+                    url: licenseFile != null ? null : licensePharmacyStore,
+                    file: licenseFile != null ? File(licenseFile!.path) : null,
+                    width: 250.w,
+                    height: 250.h,
+                    fit: BoxFit.cover,
                   ),
+                  if (isRequiredStore) ...[
+                    SizedBox(
+                      height: 8.h,
+                    ),
+                    Text(
+                      'กรุณาเลือกภาพ',
+                      style: AppStyle.txtError,
+                    ),
+                  ],
                   SizedBox(
                     height: 16.h,
                   ),
                   BaseButton(
-                    onTap: () async {},
-                    text: 'ยืนยัน',
+                    onTap: () async {
+                      final result = await ref
+                          .read(profileControllerProvider.notifier)
+                          .onUpdatePharmacyStore(licenseFile, storeFile);
+
+                      if (result) {
+                        await ref
+                            .read(profileControllerProvider.notifier)
+                            .onGetPharmacyStore();
+
+                        showDialog(
+                          context: context,
+                          builder: (_) {
+                            return BaseDialog(
+                              message: 'แก้ไขสำเร็จ',
+                            );
+                          },
+                        );
+                      } else {
+                        showDialog(
+                          context: context,
+                          builder: (_) {
+                            return BaseDialog(
+                              message: 'แก้ไขไม่สำเร็จ',
+                            );
+                          },
+                        );
+                      }
+                    },
+                    text: 'ยืนยันแก้ไข',
                   ),
                 ],
               ),

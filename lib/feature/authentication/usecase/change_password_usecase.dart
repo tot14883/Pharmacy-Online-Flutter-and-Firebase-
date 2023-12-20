@@ -39,7 +39,7 @@ class ChangePasswordUsecase extends UseCase<ChangePasswordRequest, bool> {
     try {
       final result = await firebaseAuth.changePassword(
         request.currentPassword,
-        request.currentPassword,
+        request.newPassword,
       );
 
       if (result) {

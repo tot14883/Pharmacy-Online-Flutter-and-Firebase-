@@ -3,6 +3,7 @@ import 'package:pharmacy_online/core/application/usecase.dart';
 import 'package:pharmacy_online/core/firebase/database/cloud_storage_provider.dart';
 import 'package:pharmacy_online/core/firebase/database/cloud_store_provider.dart';
 import 'package:pharmacy_online/core/local/base_shared_preference.dart';
+import 'package:pharmacy_online/feature/authentication/enum/authentication_type_enum.dart';
 import 'package:pharmacy_online/feature/authentication/model/request/user_info_request.dart';
 
 final updateUserInfoUsecaseProvider = Provider<UpdateUserInfoUsecase>((ref) {
@@ -36,8 +37,7 @@ class UpdateUserInfoUsecase extends UseCase<UserInfoRequest, bool> {
     UserInfoRequest request,
   ) async {
     try {
-      final email = request.email ?? '';
-      final password = request.password ?? '';
+      final role = request.role ?? '';
       final profileImg = request.profileImg;
       final currentProfileImg = request.currentProfileImg;
       final fullName = request.fullName ?? '';
@@ -45,11 +45,15 @@ class UpdateUserInfoUsecase extends UseCase<UserInfoRequest, bool> {
       final phone = request.phone ?? '';
       final latitude = request.latitude ?? 0.0;
       final longtitude = request.longtitude ?? 0.0;
+      final licensePharmacyImg = request.licensePharmacyImg;
+      final currentLicensePharmacyImg = request.currentLicensePharmacyImg;
+      final licensePharmacy = request.licensePharmacy ?? '';
 
       final uid = baseSharedPreference.getString(BaseSharePreferenceKey.userId);
 
       if (uid != null) {
         String urlProfileImage = '';
+        String urlLicensePharmacyImg = '';
 
         if (profileImg != null) {
           urlProfileImage = await firebaseCloudStorage.uploadStorage(
@@ -58,27 +62,44 @@ class UpdateUserInfoUsecase extends UseCase<UserInfoRequest, bool> {
           );
         }
 
+        if (licensePharmacyImg != null) {
+          urlLicensePharmacyImg = await firebaseCloudStorage.uploadStorage(
+            licensePharmacyImg,
+            'pharmacy/$uid',
+          );
+        }
+
         final collectUser = fireCloudStore.collection('user');
 
         final Map<String, dynamic> myData = {
           "profileImg":
               profileImg != null ? urlProfileImage : currentProfileImg,
-          "email": email,
-          "password": password,
           "fullName": fullName,
           "address": address,
           "phone": phone,
           "latitude": latitude,
           "longtitude": longtitude,
-          "uid": uid,
-          "status": "waiting",
-          "isOnline": false,
           "update_at": DateTime.now(),
         };
 
-        await collectUser.doc(uid).set(
+        await collectUser.doc(uid).update(
               myData,
             );
+
+        if (role == AuthenticationType.pharmacy.name) {
+          final collectPharmacyStore =
+              fireCloudStore.collection('pharmacyStore');
+
+          final Map<String, dynamic> myDataPharmacy = {
+            "licensePharmacyImg": licensePharmacyImg != null
+                ? urlLicensePharmacyImg
+                : currentLicensePharmacyImg,
+            "licensePharmacy": licensePharmacy,
+            "update_at": DateTime.now(),
+          };
+
+          await collectPharmacyStore.doc(uid).update(myDataPharmacy);
+        }
 
         return true;
       }

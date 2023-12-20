@@ -14,6 +14,7 @@ import 'package:pharmacy_online/core/widget/base_consumer_state.dart';
 import 'package:pharmacy_online/feature/authentication/controller/authentication_controller.dart';
 import 'package:pharmacy_online/feature/authentication/enum/field_change_password_enum.dart';
 import 'package:pharmacy_online/feature/main/page/main_screen.dart';
+import 'package:pharmacy_online/feature/profile/controller/profile_controller.dart';
 import 'package:pharmacy_online/generated/assets.gen.dart';
 import 'package:pharmacy_online/utils/util/vaildators.dart';
 
@@ -28,6 +29,7 @@ class ChangePasswordScreen extends ConsumerStatefulWidget {
 
 class _ChangePasswordScreenState
     extends BaseConsumerState<ChangePasswordScreen> {
+  TextEditingController currentPassword = TextEditingController();
   TextEditingController newPassword = TextEditingController();
   TextEditingController confirmPassword = TextEditingController();
   final formKey = GlobalKey<BaseFormState>();
@@ -43,6 +45,10 @@ class _ChangePasswordScreenState
 
   @override
   Widget build(BuildContext context) {
+    final userInfo = ref.watch(
+      profileControllerProvider.select((value) => value.userInfo),
+    );
+
     return BaseScaffold(
       appBar: BaseAppBar(
         bgColor: AppColor.themeWhiteColor,
@@ -64,6 +70,7 @@ class _ChangePasswordScreenState
                 BaseTextField(
                   fieldKey: FieldChangePassword.currentPassword,
                   label: 'Password ปัจจุบัน',
+                  controller: currentPassword,
                   isShowLabelField: true,
                   prefixIcon: Assets.icons.icLock.svg(),
                   suffixIcon: GestureDetector(
@@ -150,6 +157,18 @@ class _ChangePasswordScreenState
                   onTap: () {
                     formKey.currentState?.save(
                       onSave: (val) async {
+                        if (currentPassword.text != userInfo?.password) {
+                          showDialog(
+                            context: context,
+                            builder: (_) {
+                              return BaseDialog(
+                                message: 'รหัสผ่านไม่ตรงกันอันเก่า',
+                              );
+                            },
+                          );
+                          return;
+                        }
+
                         if (newPassword.text != confirmPassword.text) {
                           showDialog(
                             context: context,
@@ -159,6 +178,7 @@ class _ChangePasswordScreenState
                               );
                             },
                           );
+                          return;
                         }
 
                         final result = await ref

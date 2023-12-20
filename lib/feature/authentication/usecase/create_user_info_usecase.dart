@@ -146,7 +146,7 @@ class CreateUserInfoUsecase extends UseCase<UserInfoRequest, bool> {
             "update_at": DateTime.now(),
           };
 
-          await collectPharmacyStore.doc('$uid').set(myData);
+          await collectPharmacyStore.doc(uid).set(myData);
         }
 
         return true;
