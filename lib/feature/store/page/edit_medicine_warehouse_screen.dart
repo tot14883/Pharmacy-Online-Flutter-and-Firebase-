@@ -157,6 +157,9 @@ class _EditMedicineWarehouseScreenState
                           await ref
                               .read(storeControllerProvider.notifier)
                               .onGetCentralMedicineWarehouse();
+                          await ref
+                              .read(storeControllerProvider.notifier)
+                              .onGetMedicineWarehouse();
 
                           showDialog(
                             context: context,

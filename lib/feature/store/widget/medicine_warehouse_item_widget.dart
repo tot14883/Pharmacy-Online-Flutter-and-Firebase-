@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pharmacy_online/base_widget/base_button.dart';
 import 'package:pharmacy_online/base_widget/base_dialog.dart';
 import 'package:pharmacy_online/base_widget/base_image_view.dart';
@@ -38,8 +39,8 @@ class MedicineWarehouseItemWidget extends ConsumerWidget {
           },
           child: BaseImageView(
             url: '${medicineItem.medicineImg}',
-            width: 80.w,
-            height: 80.h,
+            width: 90.w,
+            height: 90.h,
           ),
         ),
         SizedBox(
@@ -69,7 +70,23 @@ class MedicineWarehouseItemWidget extends ConsumerWidget {
                   if (isCentral && uid != _uid) ...[
                     BaseButton(
                       width: 50.w,
-                      onTap: () {},
+                      onTap: () async {
+                        final result = await ref
+                            .read(storeControllerProvider.notifier)
+                            .onAddCentralMedicineToMyWarehouse(medicineItem);
+
+                        if (result) {
+                          Fluttertoast.showToast(
+                            msg: "เพิ่มสำเร็จ",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.BOTTOM,
+                          );
+
+                          ref
+                              .read(storeControllerProvider.notifier)
+                              .onGetMedicineWarehouse();
+                        }
+                      },
                       iconWidget: Padding(
                         padding: const EdgeInsets.only(top: 4).h,
                         child: Assets.icons.icPlus.svg(),
@@ -118,6 +135,9 @@ class MedicineWarehouseItemWidget extends ConsumerWidget {
                             await ref
                                 .read(storeControllerProvider.notifier)
                                 .onGetCentralMedicineWarehouse();
+                            await ref
+                                .read(storeControllerProvider.notifier)
+                                .onGetMedicineWarehouse();
                           }
                         }
                       },
@@ -129,7 +149,7 @@ class MedicineWarehouseItemWidget extends ConsumerWidget {
               ),
               if (!isCentral) ...[
                 SizedBox(
-                  height: 16.h,
+                  height: 8.h,
                 ),
                 GestureDetector(
                   onTap: () {

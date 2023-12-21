@@ -7,6 +7,7 @@ import 'package:pharmacy_online/feature/chat/page/request_consult_screen.dart';
 import 'package:pharmacy_online/feature/home/widget/menu_buttton_widget.dart';
 import 'package:pharmacy_online/feature/home/widget/user_profile_header_widget.dart';
 import 'package:pharmacy_online/feature/profile/controller/profile_controller.dart';
+import 'package:pharmacy_online/feature/store/controller/store_controller.dart';
 import 'package:pharmacy_online/feature/store/page/my_medicine_warehouse_screen.dart';
 import 'package:pharmacy_online/generated/assets.gen.dart';
 
@@ -80,6 +81,13 @@ class _HomeScreenState extends BaseConsumerState<HomeScreen> {
                     ),
                     MenuButtonWidget(
                       onTap: () {
+                        ref
+                            .read(storeControllerProvider.notifier)
+                            .onGetCentralMedicineWarehouse();
+                        ref
+                            .read(storeControllerProvider.notifier)
+                            .onGetMedicineWarehouse();
+
                         Navigator.of(context)
                             .pushNamed(MyMedicineWarehouseScreen.routeName);
                       },

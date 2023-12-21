@@ -6,6 +6,8 @@ import 'package:pharmacy_online/core/router/app_naviagor.dart';
 import 'package:pharmacy_online/feature/store/controller/state/store_state.dart';
 import 'package:pharmacy_online/feature/store/enum/field_medicine_enum.dart';
 import 'package:pharmacy_online/feature/store/model/request/medicine_request.dart';
+import 'package:pharmacy_online/feature/store/model/response/medicine_response.dart';
+import 'package:pharmacy_online/feature/store/usecase/add_central_medicine_to_my_warehouse_usecase.dart';
 import 'package:pharmacy_online/feature/store/usecase/add_medicine_warehouse_usecase.dart';
 import 'package:pharmacy_online/feature/store/usecase/delete_medicine_warehouse_usecase.dart';
 import 'package:pharmacy_online/feature/store/usecase/edit_medicine_warehouse_usecase.dart';
@@ -29,6 +31,8 @@ final storeControllerProvider =
         ref.watch(getCentralMedicineWarehouseUsecaseProvider);
     final getMedicineWarehouseUsecase =
         ref.watch(getMedicineWarehouseUsecaseProvider);
+    final addCentralMedicineToMyWarehouseUsecase =
+        ref.watch(addCentralMedicineToMyWarehouseUsecaseProvider);
 
     return StoreController(
       ref,
@@ -41,6 +45,7 @@ final storeControllerProvider =
       editMedicineWarehouseUsecase,
       getCentralMedicineWarehouseUsecase,
       getMedicineWarehouseUsecase,
+      addCentralMedicineToMyWarehouseUsecase,
     );
   },
 );
@@ -56,7 +61,8 @@ class StoreController extends StateNotifier<StoreState> {
   final EditMedicineWarehouseUsecase _editMedicineWarehouseUsecase;
   final GetCentralMedicineWarehouseUsecase _getCentralMedicineWarehouseUsecase;
   final GetMedicineWarehouseUsecase _getMedicineWarehouseUsecase;
-
+  final AddCentralMedicineToMyWarehouseUsecase
+      _addCentralMedicineToMyWarehouseUsecase;
   StoreController(
     this._ref,
     StoreState state,
@@ -68,6 +74,7 @@ class StoreController extends StateNotifier<StoreState> {
     this._editMedicineWarehouseUsecase,
     this._getCentralMedicineWarehouseUsecase,
     this._getMedicineWarehouseUsecase,
+    this._addCentralMedicineToMyWarehouseUsecase,
   )   : _loader = _ref.read(loaderControllerProvider.notifier),
         super(state);
 
@@ -184,5 +191,30 @@ class StoreController extends StateNotifier<StoreState> {
         medicineList: const AsyncValue.data([]),
       ),
     );
+  }
+
+  Future<bool> onAddCentralMedicineToMyWarehouse(
+      MedicineResponse medicineItem) async {
+    _loader.onLoad();
+    bool isSuccess = false;
+
+    final result = await _addCentralMedicineToMyWarehouseUsecase.execute(
+      MedicineRequest(
+        id: medicineItem.id,
+        name: medicineItem.name,
+        price: medicineItem.price,
+        currentMedicineImg: medicineItem.medicineImg,
+      ),
+    );
+
+    result.when(
+      (success) {
+        isSuccess = success;
+        _loader.onDismissLoad();
+      },
+      (error) => _loader.onDismissLoad(),
+    );
+
+    return isSuccess;
   }
 }

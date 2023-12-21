@@ -72,7 +72,7 @@ class GetPharmacyDetailUsecase
           PharmacyInfoResponse(
             uid: _data['uid'],
             email: _data['uid'],
-            profileImg: _data['profile'],
+            profileImg: _data['profileImg'],
             fullName: _data['fullName'],
             address: _data['address'],
             licensePharmacy: _pharmacy['licensePharmacy'],

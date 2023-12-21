@@ -8,6 +8,7 @@ import 'package:pharmacy_online/core/app_color.dart';
 import 'package:pharmacy_online/core/app_style.dart';
 import 'package:pharmacy_online/feature/admin/controller/admin_controller.dart';
 import 'package:pharmacy_online/feature/admin/model/response/pharmacy_info_response.dart';
+import 'package:pharmacy_online/feature/admin/page/pharmacy_store_detail_screen.dart';
 
 class PharmacyItemWidget extends ConsumerWidget {
   final PharmacyInfoResponse pharmacyItem;
@@ -24,40 +25,50 @@ class PharmacyItemWidget extends ConsumerWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Expanded(
-          child: Row(
-            children: [
-              BaseImageView(
-                url: '${pharmacyItem.storeImg}',
-                width: 60.w,
-                height: 70.h,
-                fit: BoxFit.cover,
-                radius: const BorderRadius.all(
-                  Radius.circular(150 / 2),
+          child: GestureDetector(
+            onTap: () {
+              Navigator.of(context).pushNamed(
+                PharmacyStoreDetaillScreen.routeName,
+                arguments: PharmacyArgs(
+                  pharmacyItem: pharmacyItem,
                 ),
-              ),
-              SizedBox(
-                width: 8.w,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Text(
-                    '${pharmacyItem.nameStore}',
-                    style: AppStyle.txtBody2,
+              );
+            },
+            child: Row(
+              children: [
+                BaseImageView(
+                  url: '${pharmacyItem.storeImg}',
+                  width: 60.w,
+                  height: 70.h,
+                  fit: BoxFit.cover,
+                  radius: const BorderRadius.all(
+                    Radius.circular(150 / 2),
                   ),
-                  SizedBox(
-                    height: 8.h,
-                  ),
-                  Text(
-                    statusText('${pharmacyItem.status}'),
-                    style: AppStyle.txtBody2.copyWith(
-                      color: statusTextColor('${pharmacyItem.status}'),
+                ),
+                SizedBox(
+                  width: 8.w,
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      '${pharmacyItem.nameStore}',
+                      style: AppStyle.txtBody2,
                     ),
-                  ),
-                ],
-              ),
-            ],
+                    SizedBox(
+                      height: 8.h,
+                    ),
+                    Text(
+                      statusText('${pharmacyItem.status}'),
+                      style: AppStyle.txtBody2.copyWith(
+                        color: statusTextColor('${pharmacyItem.status}'),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
         Column(

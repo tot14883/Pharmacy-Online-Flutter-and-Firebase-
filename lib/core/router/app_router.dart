@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pharmacy_online/core/router/custom_page_route_builder.dart';
 import 'package:pharmacy_online/feature/admin/page/admin_dashboard_screen.dart';
+import 'package:pharmacy_online/feature/admin/page/pharmacy_store_detail_screen.dart';
+import 'package:pharmacy_online/feature/admin/page/user_detail_screen.dart';
 import 'package:pharmacy_online/feature/authentication/page/banned_screen.dart';
 import 'package:pharmacy_online/feature/authentication/page/cosent_screen.dart';
 import 'package:pharmacy_online/feature/authentication/page/forgot_password_screen.dart';
@@ -34,6 +36,7 @@ import 'package:pharmacy_online/feature/store/page/comment_screen.dart';
 import 'package:pharmacy_online/feature/store/page/drug_detail_screen.dart';
 import 'package:pharmacy_online/feature/store/page/edit_medicine_warehouse_screen.dart';
 import 'package:pharmacy_online/feature/store/page/my_medicine_warehouse_screen.dart';
+import 'package:pharmacy_online/feature/store/page/near_pharmacy_store_screen.dart';
 import 'package:pharmacy_online/feature/store/page/review_store_screen.dart';
 import 'package:pharmacy_online/feature/store/page/store_detail_screen.dart';
 
@@ -302,11 +305,50 @@ class AppRouter {
           transitionType: RouteTransition.fade,
         );
 
+      case NearPharmacyStoreScreen.routeName:
+        return CustomPageRouteBuilder.route(
+          name: NearPharmacyStoreScreen.routeName,
+          builder: (ctx) => const NearPharmacyStoreScreen(),
+          transitionType: RouteTransition.fade,
+        );
+
       // Admin
       case AdminDashboardScreen.routeName:
         return CustomPageRouteBuilder.route(
           name: AdminDashboardScreen.routeName,
           builder: (ctx) => const AdminDashboardScreen(),
+          transitionType: RouteTransition.fade,
+        );
+
+      case PharmacyStoreDetaillScreen.routeName:
+        assert(
+          settings.arguments is PharmacyArgs || settings.arguments == null,
+          'arguments must be PharmacyArgs or null',
+        );
+
+        final args = settings.arguments as PharmacyArgs;
+
+        return CustomPageRouteBuilder.route(
+          name: PharmacyStoreDetaillScreen.routeName,
+          builder: (ctx) => PharmacyStoreDetaillScreen(
+            args: args,
+          ),
+          transitionType: RouteTransition.fade,
+        );
+
+      case UserDetailScreen.routeName:
+        assert(
+          settings.arguments is PharmacyArgs || settings.arguments == null,
+          'arguments must be PharmacyArgs or null',
+        );
+
+        final args = settings.arguments as PharmacyArgs;
+
+        return CustomPageRouteBuilder.route(
+          name: UserDetailScreen.routeName,
+          builder: (ctx) => UserDetailScreen(
+            args: args,
+          ),
           transitionType: RouteTransition.fade,
         );
 
