@@ -1,35 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pharmacy_online/base_widget/base_bottom_navigation_widget.dart';
 import 'package:pharmacy_online/base_widget/base_scaffold.dart';
 import 'package:pharmacy_online/core/widget/base_consumer_state.dart';
-import 'package:pharmacy_online/feature/chat/page/inbox_screen.dart';
-import 'package:pharmacy_online/feature/home/page/home_screen.dart';
-import 'package:pharmacy_online/feature/order/page/orders_screen.dart';
+import 'package:pharmacy_online/feature/admin/page/approve_pharmacy_screen.dart';
+import 'package:pharmacy_online/feature/admin/widget/admin_bottom_navigation_widget.dart';
 import 'package:pharmacy_online/feature/profile/controller/profile_controller.dart';
 import 'package:pharmacy_online/feature/profile/page/profile_screen.dart';
-import 'package:pharmacy_online/feature/store/controller/store_controller.dart';
+import 'package:pharmacy_online/feature/store/page/central_medicine_warehouse_screen.dart';
 
-class DashboardScreen extends ConsumerStatefulWidget {
-  static const routeName = 'DashboardScreen';
+class AdminDashboardScreen extends ConsumerStatefulWidget {
+  static const routeName = 'AdminDashboardScreen';
 
-  const DashboardScreen({
+  const AdminDashboardScreen({
     Key? key,
   }) : super(key: key);
 
   @override
-  _DashboardScreenState createState() => _DashboardScreenState();
+  _AdminDashboardScreenState createState() => _AdminDashboardScreenState();
 }
 
-class _DashboardScreenState extends BaseConsumerState<DashboardScreen> {
+class _AdminDashboardScreenState
+    extends BaseConsumerState<AdminDashboardScreen> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       await ref.read(profileControllerProvider.notifier).onGetUserInfo();
       await ref.read(profileControllerProvider.notifier).onGetPharmacyStore();
-      await ref
-          .read(storeControllerProvider.notifier)
-          .onGetCentralMedicineWarehouse();
     });
     super.initState();
   }
@@ -37,17 +33,15 @@ class _DashboardScreenState extends BaseConsumerState<DashboardScreen> {
   int _currentPage = 0;
 
   final List<Widget> pages = const [
-    HomeScreen(),
-    OrdersScreen(),
-    InboxScreen(),
+    ApprovePharmacyScreen(),
+    CentralMedicineWarehouseScreen(),
     ProfileScreen(),
   ];
 
   final List<String> pagesTitle = const [
-    "Home",
-    "Order",
-    "Chat",
-    "Profile",
+    "หน้าหลัก",
+    "คลังยา",
+    "บัญชี",
   ];
 
   @override
@@ -56,7 +50,7 @@ class _DashboardScreenState extends BaseConsumerState<DashboardScreen> {
       bodyBuilder: (context, constraints) {
         return pages[_currentPage];
       },
-      bottomNavigationBar: BottomNavigationWidget(
+      bottomNavigationBar: AdminBottomNavigationWidget(
         onChange: (value) {
           setState(() {
             _currentPage = value;

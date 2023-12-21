@@ -5,16 +5,34 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pharmacy_online/base_widget/base_button.dart';
 import 'package:pharmacy_online/base_widget/base_scaffold.dart';
 import 'package:pharmacy_online/core/app_style.dart';
+import 'package:pharmacy_online/feature/admin/page/admin_dashboard_screen.dart';
+import 'package:pharmacy_online/feature/authentication/enum/authentication_type_enum.dart';
+import 'package:pharmacy_online/feature/authentication/page/banned_screen.dart';
 import 'package:pharmacy_online/feature/dashboard/page/dashboard_screen.dart';
+import 'package:pharmacy_online/feature/profile/controller/profile_controller.dart';
 import 'package:pharmacy_online/generated/assets.gen.dart';
 
-class SignInSuccessfulScreen extends ConsumerWidget {
+class SignInSuccessfulScreen extends ConsumerStatefulWidget {
   static const routeName = 'SignInSuccessfulScreen';
 
   const SignInSuccessfulScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  _SignInSuccessfulScreenState createState() => _SignInSuccessfulScreenState();
+}
+
+class _SignInSuccessfulScreenState
+    extends ConsumerState<SignInSuccessfulScreen> {
+  @override
+  Widget build(BuildContext context) {
+    final userInfo = ref.watch(
+      profileControllerProvider.select(
+        (value) => value.userInfo,
+      ),
+    );
+
+    final isAdmin = userInfo?.role == AuthenticationType.admin.name;
+
     return BaseScaffold(
       bodyBuilder: (context, constrined) {
         return Container(
@@ -38,6 +56,22 @@ class SignInSuccessfulScreen extends ConsumerWidget {
               BaseButton(
                 width: 100.w,
                 onTap: () {
+                  if (userInfo?.status == 'cancel') {
+                    Navigator.of(context).pushNamedAndRemoveUntil(
+                      BannedScreen.routeName,
+                      (route) => false,
+                    );
+                    return;
+                  }
+
+                  if (isAdmin) {
+                    Navigator.of(context).pushNamedAndRemoveUntil(
+                      AdminDashboardScreen.routeName,
+                      (route) => false,
+                    );
+                    return;
+                  }
+
                   Navigator.of(context).pushNamedAndRemoveUntil(
                     DashboardScreen.routeName,
                     (route) => false,

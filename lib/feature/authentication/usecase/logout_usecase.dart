@@ -53,6 +53,9 @@ class LogoutUsecase extends UseCase<void, bool> {
         await baseSharedPreference.remove(
           BaseSharePreferenceKey.userId,
         );
+        await baseSharedPreference.remove(
+          BaseSharePreferenceKey.role,
+        );
       }
 
       return true;

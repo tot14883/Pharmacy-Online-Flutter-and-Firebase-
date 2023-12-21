@@ -106,6 +106,10 @@ class $AssetsIconsGen {
   /// File path: assets/icons/ic_logout.svg
   SvgGenImage get icLogout => const SvgGenImage('assets/icons/ic_logout.svg');
 
+  /// File path: assets/icons/ic_medicine.svg
+  SvgGenImage get icMedicine =>
+      const SvgGenImage('assets/icons/ic_medicine.svg');
+
   /// File path: assets/icons/ic_minus.svg
   SvgGenImage get icMinus => const SvgGenImage('assets/icons/ic_minus.svg');
 
@@ -204,6 +208,7 @@ class $AssetsIconsGen {
         icLocationPin,
         icLock,
         icLogout,
+        icMedicine,
         icMinus,
         icNotification,
         icNotificationMenu,

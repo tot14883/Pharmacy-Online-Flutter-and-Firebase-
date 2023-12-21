@@ -16,6 +16,7 @@ import 'package:pharmacy_online/feature/authentication/page/sign_in_successful_s
 import 'package:pharmacy_online/feature/authentication/page/sign_up_screen.dart';
 import 'package:pharmacy_online/feature/authentication/widget/row_text_clickable_widget.dart';
 import 'package:pharmacy_online/feature/main/page/main_screen.dart';
+import 'package:pharmacy_online/feature/profile/controller/profile_controller.dart';
 import 'package:pharmacy_online/generated/assets.gen.dart';
 import 'package:pharmacy_online/utils/util/vaildators.dart';
 
@@ -31,10 +32,12 @@ class SignInScreen extends ConsumerStatefulWidget {
 class _SignInScreenState extends ConsumerState<SignInScreen> {
   final formKey = GlobalKey<BaseFormState>();
   bool isHidePassword = false;
+  TextEditingController passwordController = TextEditingController();
 
   @override
   void dispose() {
     formKey.currentState?.dispose();
+    passwordController.dispose();
     super.dispose();
   }
 
@@ -84,6 +87,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                   BaseTextField(
                     fieldKey: FieldSignIn.password,
                     label: 'Password',
+                    controller: passwordController,
                     isShowLabelField: true,
                     prefixIcon: Assets.icons.icLock.svg(),
                     suffixIcon: GestureDetector(
@@ -129,11 +133,28 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                   ),
                   BaseButton(
                     onTap: () async {
+                      if (passwordController.text.length < 6) {
+                        showDialog(
+                          context: context,
+                          builder: (_) {
+                            return BaseDialog(
+                              message:
+                                  'รหัสผ่านต้องมากกว่าหรือเท่ากับ 6 ตัวอักษร',
+                            );
+                          },
+                        );
+                        return;
+                      }
+
                       final result = await ref
                           .read(authenticationControllerProvider.notifier)
                           .onSignIn();
 
                       if (result) {
+                        await ref
+                            .read(profileControllerProvider.notifier)
+                            .onGetUserInfo();
+
                         Navigator.pushNamedAndRemoveUntil(
                           context,
                           SignInSuccessfulScreen.routeName,

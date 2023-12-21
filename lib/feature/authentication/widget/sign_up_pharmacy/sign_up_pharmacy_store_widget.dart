@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -6,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:map_location_picker/map_location_picker.dart';
 import 'package:pharmacy_online/base_widget/base_button.dart';
 import 'package:pharmacy_online/base_widget/base_dialog.dart';
+import 'package:pharmacy_online/base_widget/base_image_view.dart';
 import 'package:pharmacy_online/base_widget/base_text_field.dart';
 import 'package:pharmacy_online/base_widget/base_upload_image.dart';
 import 'package:pharmacy_online/base_widget/base_upload_image_button.dart';
@@ -225,6 +228,17 @@ class _SignUpPharmacyStoreWidgetState
             });
           },
         ),
+        if (licenseStoreFile != null) ...[
+          SizedBox(
+            height: 8.h,
+          ),
+          BaseImageView(
+            file: File(licenseStoreFile!.path),
+            width: 250.w,
+            height: 250.h,
+            fit: BoxFit.cover,
+          ),
+        ],
         if (isRequiredStore) ...[
           SizedBox(
             height: 8.h,
@@ -245,6 +259,17 @@ class _SignUpPharmacyStoreWidgetState
             });
           },
         ),
+        if (qrcodeFile != null) ...[
+          SizedBox(
+            height: 8.h,
+          ),
+          BaseImageView(
+            file: File(qrcodeFile!.path),
+            width: 250.w,
+            height: 250.h,
+            fit: BoxFit.cover,
+          ),
+        ],
         if (isRequiredQrcode) ...[
           SizedBox(
             height: 8.h,

@@ -6,8 +6,10 @@ import 'package:pharmacy_online/base_widget/base_dialog.dart';
 import 'package:pharmacy_online/base_widget/base_divider.dart';
 import 'package:pharmacy_online/base_widget/base_scaffold.dart';
 import 'package:pharmacy_online/core/app_style.dart';
+import 'package:pharmacy_online/core/local/base_shared_preference.dart';
 import 'package:pharmacy_online/core/widget/base_consumer_state.dart';
 import 'package:pharmacy_online/feature/authentication/controller/authentication_controller.dart';
+import 'package:pharmacy_online/feature/authentication/enum/authentication_type_enum.dart';
 import 'package:pharmacy_online/feature/main/page/main_screen.dart';
 import 'package:pharmacy_online/feature/profile/controller/profile_controller.dart';
 import 'package:pharmacy_online/feature/profile/page/change_password_screen.dart';
@@ -39,6 +41,11 @@ class _ProfileScreenState extends BaseConsumerState<ProfileScreen> {
     final profileImg = userInfo?.profileImg;
     final fullName = userInfo?.fullName;
 
+    final isAdmin = ref
+            .read(baseSharePreferenceProvider)
+            .getString(BaseSharePreferenceKey.role) ==
+        AuthenticationType.admin.name;
+
     return BaseScaffold(
       bodyBuilder: (context, constrianed) {
         return SingleChildScrollView(
@@ -48,64 +55,82 @@ class _ProfileScreenState extends BaseConsumerState<ProfileScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  'My Profile',
-                  style: AppStyle.txtHeader3,
-                ),
-                SizedBox(
-                  height: 16.h,
-                ),
-                ProfileImageWidget(
-                  imageUrl: '$profileImg',
-                  label: '$fullName',
-                ),
-                SizedBox(
-                  height: 16.h,
-                ),
-                ProfileMenuWidget(
-                  onTap: () {
-                    ref.read(profileControllerProvider.notifier).clearForm();
-                    Navigator.of(context)
-                        .pushNamed(EditProfileScreen.routeName);
-                  },
-                  prefixIcon: Assets.icons.icPersion.svg(),
-                  label: 'แก้ไขข้อมูลส่วนตัว',
-                ),
-                if (isPharmacy) ...[
-                  const BaseDivider(),
+                if (!isAdmin) ...[
+                  Text(
+                    'My Profile',
+                    style: AppStyle.txtHeader3,
+                  ),
+                  SizedBox(
+                    height: 16.h,
+                  ),
+                  ProfileImageWidget(
+                    imageUrl: '$profileImg',
+                    label: '$fullName',
+                  ),
+                  SizedBox(
+                    height: 16.h,
+                  ),
                   ProfileMenuWidget(
                     onTap: () {
                       ref.read(profileControllerProvider.notifier).clearForm();
                       Navigator.of(context)
-                          .pushNamed(StoreDetailScreen.routeName);
+                          .pushNamed(EditProfileScreen.routeName);
                     },
-                    prefixIcon: Assets.imgs.imgStore.image(
-                      width: 42,
-                    ),
-                    label: 'แก้ไขข้อมูลร้าน',
+                    prefixIcon: Assets.icons.icPersion.svg(),
+                    label: 'แก้ไขข้อมูลส่วนตัว',
                   ),
+                  if (isPharmacy) ...[
+                    const BaseDivider(),
+                    ProfileMenuWidget(
+                      onTap: () {
+                        ref
+                            .read(profileControllerProvider.notifier)
+                            .clearForm();
+                        Navigator.of(context)
+                            .pushNamed(StoreDetailScreen.routeName);
+                      },
+                      prefixIcon: Assets.imgs.imgStore.image(
+                        width: 42,
+                      ),
+                      label: 'แก้ไขข้อมูลร้าน',
+                    ),
+                    const BaseDivider(),
+                    ProfileMenuWidget(
+                      onTap: () {
+                        Navigator.of(context)
+                            .pushNamed(EditQRCodeScreen.routeName);
+                      },
+                      prefixIcon: Assets.imgs.imgQrcode.image(
+                        width: 42,
+                      ),
+                      label: 'แก้ไข QRcode',
+                    ),
+                  ],
                   const BaseDivider(),
                   ProfileMenuWidget(
                     onTap: () {
                       Navigator.of(context)
-                          .pushNamed(EditQRCodeScreen.routeName);
+                          .pushNamed(ChangePasswordScreen.routeName);
                     },
-                    prefixIcon: Assets.imgs.imgQrcode.image(
-                      width: 42,
-                    ),
-                    label: 'แก้ไข QRcode',
+                    prefixIcon: Assets.icons.icSettings.svg(),
+                    label: 'เปลี่ยนรหัสผ่าน',
                   ),
+                  const BaseDivider(),
                 ],
-                const BaseDivider(),
-                ProfileMenuWidget(
-                  onTap: () {
-                    Navigator.of(context)
-                        .pushNamed(ChangePasswordScreen.routeName);
-                  },
-                  prefixIcon: Assets.icons.icSettings.svg(),
-                  label: 'เปลี่ยนรหัสผ่าน',
-                ),
-                const BaseDivider(),
+                if (isAdmin) ...[
+                  Assets.icons.icAdministrator.svg(),
+                  SizedBox(
+                    height: 16.h,
+                  ),
+                  Text(
+                    'Admin',
+                    style: AppStyle.txtHeader3,
+                  ),
+                  SizedBox(
+                    height: 16.h,
+                  ),
+                  const BaseDivider(),
+                ],
                 ProfileMenuWidget(
                   onTap: () {
                     showBaseDialog(

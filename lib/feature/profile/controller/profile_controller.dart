@@ -133,7 +133,9 @@ class ProfileController extends StateNotifier<ProfileState> {
   }
 
   Future<bool> onUpdateUserInfo(
-      XFile? imgProfile, XFile? imgLicensePharmacy) async {
+    XFile? imgProfile,
+    XFile? imgLicensePharmacy,
+  ) async {
     _loader.onLoad();
 
     bool isSuccess = false;

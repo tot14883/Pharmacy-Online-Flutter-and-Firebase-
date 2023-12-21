@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -6,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:map_location_picker/map_location_picker.dart';
 import 'package:pharmacy_online/base_widget/base_button.dart';
 import 'package:pharmacy_online/base_widget/base_dialog.dart';
+import 'package:pharmacy_online/base_widget/base_image_view.dart';
 import 'package:pharmacy_online/base_widget/base_switch_button.dart';
 import 'package:pharmacy_online/base_widget/base_text_field.dart';
 import 'package:pharmacy_online/base_widget/base_upload_image.dart';
@@ -214,6 +217,17 @@ class _SignUpStep2WidgetState extends ConsumerState<SignUpStep2Widget> {
                   });
                 },
               ),
+              SizedBox(
+                height: 8.h,
+              ),
+              if (licenseFile != null) ...[
+                BaseImageView(
+                  file: File(licenseFile!.path),
+                  width: 250.w,
+                  height: 250.h,
+                  fit: BoxFit.cover,
+                ),
+              ],
               if (isRequiredLicensePharmacy) ...[
                 SizedBox(
                   height: 8.h,

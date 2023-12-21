@@ -81,7 +81,7 @@ class BaseDialog extends StatelessWidget {
                           final navigator =
                               Navigator.of(context, rootNavigator: true);
                           if (navigator.canPop()) {
-                            navigator.pop();
+                            navigator.pop(true);
                           }
                         },
                     width: 80.w,
@@ -97,7 +97,7 @@ class BaseDialog extends StatelessWidget {
                         final navigator =
                             Navigator.of(context, rootNavigator: true);
                         if (navigator.canPop()) {
-                          navigator.pop();
+                          navigator.pop(false);
                         }
                       },
                       width: 80.w,

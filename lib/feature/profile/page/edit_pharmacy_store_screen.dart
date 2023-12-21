@@ -317,6 +317,9 @@ class _EditPharmacyStoreScreenState
                       if (result) {
                         await ref
                             .read(profileControllerProvider.notifier)
+                            .onGetUserInfo();
+                        await ref
+                            .read(profileControllerProvider.notifier)
                             .onGetPharmacyStore();
 
                         showDialog(

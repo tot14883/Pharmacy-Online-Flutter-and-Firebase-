@@ -51,7 +51,12 @@ class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
       titleSpacing: titleSpacing?.w ?? 0,
       leading: hideBackButton ? Container() : leading ?? _leading,
       leadingWidth: hideBackButton ? 0 : leadingWidth?.w,
-      title: title,
+      title: Padding(
+        padding: EdgeInsets.only(
+          left: hideBackButton ? 16.w : 0,
+        ),
+        child: title,
+      ),
       centerTitle: isCenterTitle ?? false,
       backgroundColor: bgColor,
       iconTheme: iconThemeData,

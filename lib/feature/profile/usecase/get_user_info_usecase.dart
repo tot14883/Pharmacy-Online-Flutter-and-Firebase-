@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pharmacy_online/core/application/usecase.dart';
 import 'package:pharmacy_online/core/firebase/database/cloud_store_provider.dart';
 import 'package:pharmacy_online/core/local/base_shared_preference.dart';
+import 'package:pharmacy_online/feature/authentication/enum/authentication_type_enum.dart';
 import 'package:pharmacy_online/feature/authentication/model/response/user_info_response.dart';
 import 'package:pharmacy_online/utils/util/base_utils.dart';
 
@@ -41,6 +42,7 @@ class GetUserInfoUseCase extends UseCase<void, UserInfoResponse> {
   ) async {
     try {
       final uid = baseSharedPreference.getString(BaseSharePreferenceKey.userId);
+      print(uid);
 
       if (uid != null) {
         final collect = fireCloudStore.collection('user');
@@ -57,6 +59,18 @@ class GetUserInfoUseCase extends UseCase<void, UserInfoResponse> {
             "isOnline": true,
           },
         );
+
+        await baseSharedPreference.setString(
+          BaseSharePreferenceKey.role,
+          data['role'],
+        );
+
+        if (data['role'] == AuthenticationType.admin.name) {
+          return UserInfoResponse(
+            uid: data['uid'],
+            role: data['role'],
+          );
+        }
 
         return UserInfoResponse(
           uid: data['uid'],
@@ -76,7 +90,6 @@ class GetUserInfoUseCase extends UseCase<void, UserInfoResponse> {
 
       return const UserInfoResponse();
     } catch (e) {
-      print(e);
       return const UserInfoResponse();
     }
   }

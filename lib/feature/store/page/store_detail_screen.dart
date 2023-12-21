@@ -86,6 +86,7 @@ class StoreDetailContent extends StatelessWidget {
     final timeClosing = pharmacyStoreInfo?.timeClosing;
     final fullname = userInfo?.fullName;
     final licensePharmacy = pharmacyStoreInfo?.licensePharmacy;
+    final licensePharmacyImg = pharmacyStoreInfo?.licensePharmacyImg;
 
     return Padding(
       padding: const EdgeInsets.all(16).r,
@@ -127,19 +128,28 @@ class StoreDetailContent extends StatelessWidget {
             height: 16.h,
           ),
           Text(
-            "เปิด เวลา $timeOpening - ปิด เวลา $timeClosing น.",
-            style: AppStyle.txtBody,
+            "เปิด วันจันทร์ - วันเสาร์ เวลา $timeOpening - ปิด เวลา $timeClosing น. ",
+            style: AppStyle.txtBody.copyWith(color: AppColor.errorColor),
           ),
-          // Text(
-          //   "ปิด  ทุกวันอาทิตย์",
-          //   style: AppStyle.txtBody,
-          // ),
+          Text(
+            "ปิด  ทุกวันอาทิตย์",
+            style: AppStyle.txtBody.copyWith(color: AppColor.errorColor),
+          ),
           SizedBox(
             height: 16.h,
           ),
           Text(
             "$fullname เลขที่ใบอนุญาต $licensePharmacy",
             style: AppStyle.txtBody,
+          ),
+          SizedBox(
+            height: 16.h,
+          ),
+          BaseImageView(
+            url: licensePharmacyImg,
+            width: 250.w,
+            height: 250.h,
+            fit: BoxFit.cover,
           ),
           SizedBox(
             height: 48.h,

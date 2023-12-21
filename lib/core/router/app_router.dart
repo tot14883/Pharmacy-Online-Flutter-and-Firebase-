@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pharmacy_online/core/router/custom_page_route_builder.dart';
+import 'package:pharmacy_online/feature/admin/page/admin_dashboard_screen.dart';
+import 'package:pharmacy_online/feature/authentication/page/banned_screen.dart';
 import 'package:pharmacy_online/feature/authentication/page/cosent_screen.dart';
 import 'package:pharmacy_online/feature/authentication/page/forgot_password_screen.dart';
 import 'package:pharmacy_online/feature/authentication/page/sign_in_screen.dart';
@@ -237,9 +239,17 @@ class AppRouter {
         );
 
       case EditMedicineWarehouseScreen.routeName:
+        assert(
+          settings.arguments is MedicineWarehouseArgs ||
+              settings.arguments == null,
+          'arguments must be MedicineWarehouseArgs or null',
+        );
+
+        final args = settings.arguments as MedicineWarehouseArgs;
+
         return CustomPageRouteBuilder.route(
           name: EditMedicineWarehouseScreen.routeName,
-          builder: (ctx) => const EditMedicineWarehouseScreen(),
+          builder: (ctx) => EditMedicineWarehouseScreen(args: args),
           transitionType: RouteTransition.fade,
         );
 
@@ -284,6 +294,22 @@ class AppRouter {
           builder: (ctx) => const ForgotPasswordScreen(),
           transitionType: RouteTransition.fade,
         );
+
+      case BannedScreen.routeName:
+        return CustomPageRouteBuilder.route(
+          name: BannedScreen.routeName,
+          builder: (ctx) => const BannedScreen(),
+          transitionType: RouteTransition.fade,
+        );
+
+      // Admin
+      case AdminDashboardScreen.routeName:
+        return CustomPageRouteBuilder.route(
+          name: AdminDashboardScreen.routeName,
+          builder: (ctx) => const AdminDashboardScreen(),
+          transitionType: RouteTransition.fade,
+        );
+
       // case RoomAndRateScreen.routeName:
       //   assert(
       //     settings.arguments is RoomAndRateScreenArgs ||
