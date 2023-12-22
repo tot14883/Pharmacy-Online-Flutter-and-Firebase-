@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -6,13 +8,73 @@ import 'package:pharmacy_online/base_widget/base_button.dart';
 import 'package:pharmacy_online/base_widget/base_image_view.dart';
 import 'package:pharmacy_online/core/app_color.dart';
 import 'package:pharmacy_online/core/app_style.dart';
+import 'package:pharmacy_online/core/widget/base_consumer_state.dart';
 import 'package:pharmacy_online/feature/chat/page/chat_screen.dart';
+import 'package:pharmacy_online/feature/home/controller/home_controller.dart';
+import 'package:pharmacy_online/feature/profile/controller/profile_controller.dart';
+import 'package:pharmacy_online/feature/store/controller/store_controller.dart';
+import 'package:pharmacy_online/feature/store/model/response/chat_with_pharmacy_response.dart';
 
-class RequestConsultItemWidget extends ConsumerWidget {
-  const RequestConsultItemWidget({super.key});
+class RequestConsultItemWidget extends ConsumerStatefulWidget {
+  final ChatWithPharmacyResponse chatWithPharmacyItem;
+
+  const RequestConsultItemWidget({
+    super.key,
+    required this.chatWithPharmacyItem,
+  });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  _RequestConsultItemWidgetState createState() =>
+      _RequestConsultItemWidgetState();
+}
+
+class _RequestConsultItemWidgetState
+    extends BaseConsumerState<RequestConsultItemWidget> {
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _timer = Timer.periodic(const Duration(milliseconds: 500), (timer) async {
+      final itemTime = widget.chatWithPharmacyItem.createAt;
+      final currentTime = DateTime.now();
+      final isMoreThan5Mins = currentTime.difference(itemTime!).inMinutes >= 5;
+
+      if (isMoreThan5Mins) {
+        final result = await ref
+            .read(storeControllerProvider.notifier)
+            .onApproveChatWithPharmacy(
+              false,
+              '${widget.chatWithPharmacyItem.id}',
+            );
+
+        if (result) {
+          await ref.read(homeControllerProvider.notifier).onPostNotification(
+                'คำร้องขอถูกยกเลิก เนื่องจากเกินระยะเวลาที่กำหนด',
+                'cancelChat',
+                '${widget.chatWithPharmacyItem.uid}',
+              );
+          await ref
+              .read(storeControllerProvider.notifier)
+              .onGetGetRequestChatWithPharmacy();
+        }
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final userInfo = ref.watch(
+      profileControllerProvider.select((value) => value.userInfo),
+    );
+
     return Container(
       padding: const EdgeInsets.all(16).r,
       decoration: BoxDecoration(
@@ -26,8 +88,7 @@ class RequestConsultItemWidget extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           BaseImageView(
-            url:
-                'https://media.istockphoto.com/id/1344027438/video/rows-with-medicines-and-care-products-in-the-pharmacy.jpg?s=640x640&k=20&c=H2CoMq0cWci4Zf6zgsqbIu77-h-hBCQWJVkyo7olBQM=',
+            url: '${widget.chatWithPharmacyItem.profileImg}',
             width: 80.w,
             height: 80.h,
             fit: BoxFit.cover,
@@ -42,7 +103,7 @@ class RequestConsultItemWidget extends ConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Text(
-                  'Delight Pharmacy',
+                  '${widget.chatWithPharmacyItem.fullName}',
                   style: AppStyle.txtHeader3,
                 ),
                 SizedBox(
@@ -52,8 +113,30 @@ class RequestConsultItemWidget extends ConsumerWidget {
                   children: [
                     Expanded(
                       child: BaseButton(
-                        onTap: () {
-                          Navigator.of(context).pushNamed(ChatScreen.routeName);
+                        onTap: () async {
+                          final result = await ref
+                              .read(storeControllerProvider.notifier)
+                              .onApproveChatWithPharmacy(
+                                true,
+                                '${widget.chatWithPharmacyItem.id}',
+                              );
+
+                          if (result) {
+                            await ref
+                                .read(homeControllerProvider.notifier)
+                                .onPostNotification(
+                                  '${userInfo?.fullName} ยืนยันคำร้องขอของคุณ',
+                                  'approveChat',
+                                  '${widget.chatWithPharmacyItem.uid}',
+                                );
+
+                            await ref
+                                .read(storeControllerProvider.notifier)
+                                .onGetGetRequestChatWithPharmacy();
+
+                            Navigator.of(context)
+                                .pushNamed(ChatScreen.routeName);
+                          }
                         },
                         text: 'ตอบรับ',
                       ),
@@ -63,7 +146,28 @@ class RequestConsultItemWidget extends ConsumerWidget {
                     ),
                     Expanded(
                       child: BaseButton(
-                        onTap: () {},
+                        onTap: () async {
+                          final result = await ref
+                              .read(storeControllerProvider.notifier)
+                              .onApproveChatWithPharmacy(
+                                false,
+                                '${widget.chatWithPharmacyItem.id}',
+                              );
+
+                          if (result) {
+                            await ref
+                                .read(homeControllerProvider.notifier)
+                                .onPostNotification(
+                                  '${userInfo?.fullName} ยกเลิกคำร้องขอของคุณ',
+                                  'cancelChat',
+                                  '${widget.chatWithPharmacyItem.uid}',
+                                );
+
+                            await ref
+                                .read(storeControllerProvider.notifier)
+                                .onGetGetRequestChatWithPharmacy();
+                          }
+                        },
                         buttonType: ButtonType.danger,
                         text: 'ปฎิเสธ',
                       ),

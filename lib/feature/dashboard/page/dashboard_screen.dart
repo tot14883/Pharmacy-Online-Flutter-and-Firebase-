@@ -31,6 +31,7 @@ class _DashboardScreenState extends BaseConsumerState<DashboardScreen> {
           .read(storeControllerProvider.notifier)
           .onGetCentralMedicineWarehouse();
       await ref.read(storeControllerProvider.notifier).onGetMedicineWarehouse();
+      await ref.read(storeControllerProvider.notifier).getPharmacyInfo();
     });
     super.initState();
   }

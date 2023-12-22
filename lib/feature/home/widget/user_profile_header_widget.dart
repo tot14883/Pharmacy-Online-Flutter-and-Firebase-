@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pharmacy_online/base_widget/base_image_view.dart';
 import 'package:pharmacy_online/core/app_color.dart';
 import 'package:pharmacy_online/core/app_style.dart';
+import 'package:pharmacy_online/feature/home/controller/home_controller.dart';
 import 'package:pharmacy_online/feature/home/page/notification_screen.dart';
 import 'package:pharmacy_online/feature/profile/controller/profile_controller.dart';
 import 'package:pharmacy_online/generated/assets.gen.dart';
@@ -16,6 +17,9 @@ class UserProfileHeaderWidget extends ConsumerWidget {
     final userInfo = ref.watch(
       profileControllerProvider.select((value) => value.userInfo),
     );
+
+    final isPharmacy = ref
+        .watch(profileControllerProvider.select((value) => value.isPharmacy));
 
     final profileImg = userInfo?.profileImg;
     final fullname = userInfo?.fullName;
@@ -42,47 +46,50 @@ class UserProfileHeaderWidget extends ConsumerWidget {
               style: AppStyle.txtBody2,
             ),
           ),
-          GestureDetector(
-            onTap: () {
-              Navigator.of(context).pushNamed(NotificationScreen.routeName);
-            },
-            child: Stack(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(16).r,
-                  decoration: const BoxDecoration(
-                    color: AppColor.themeWhiteColor,
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(150 / 2),
-                    ),
-                  ),
-                  child: Assets.icons.icNotification.svg(
-                    width: 24.w,
-                    height: 24.h,
-                  ),
-                ),
-                Positioned(
-                  top: 12,
-                  right: 12,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 4).w,
+          if (!isPharmacy) ...[
+            GestureDetector(
+              onTap: () {
+                ref.read(homeControllerProvider.notifier).onGetNotification();
+                Navigator.of(context).pushNamed(NotificationScreen.routeName);
+              },
+              child: Stack(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(16).r,
                     decoration: const BoxDecoration(
-                      color: AppColor.errorColor,
+                      color: AppColor.themeWhiteColor,
                       borderRadius: BorderRadius.all(
                         Radius.circular(150 / 2),
                       ),
                     ),
-                    child: Text(
-                      '3',
-                      style: AppStyle.txtError.copyWith(
-                        color: AppColor.themeWhiteColor,
+                    child: Assets.icons.icNotification.svg(
+                      width: 24.w,
+                      height: 24.h,
+                    ),
+                  ),
+                  Positioned(
+                    top: 12,
+                    right: 12,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 4).w,
+                      decoration: const BoxDecoration(
+                        color: AppColor.errorColor,
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(150 / 2),
+                        ),
+                      ),
+                      child: Text(
+                        '3',
+                        style: AppStyle.txtError.copyWith(
+                          color: AppColor.themeWhiteColor,
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
+          ],
         ],
       ),
     );

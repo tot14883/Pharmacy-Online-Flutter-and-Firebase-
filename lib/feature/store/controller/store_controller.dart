@@ -5,14 +5,19 @@ import 'package:pharmacy_online/core/loader/loader_controller.dart';
 import 'package:pharmacy_online/core/router/app_naviagor.dart';
 import 'package:pharmacy_online/feature/store/controller/state/store_state.dart';
 import 'package:pharmacy_online/feature/store/enum/field_medicine_enum.dart';
+import 'package:pharmacy_online/feature/store/model/request/chat_with_pharmacy_request.dart';
 import 'package:pharmacy_online/feature/store/model/request/medicine_request.dart';
 import 'package:pharmacy_online/feature/store/model/response/medicine_response.dart';
 import 'package:pharmacy_online/feature/store/usecase/add_central_medicine_to_my_warehouse_usecase.dart';
 import 'package:pharmacy_online/feature/store/usecase/add_medicine_warehouse_usecase.dart';
+import 'package:pharmacy_online/feature/store/usecase/approve_chat_with_pharmacy_usecase.dart';
 import 'package:pharmacy_online/feature/store/usecase/delete_medicine_warehouse_usecase.dart';
 import 'package:pharmacy_online/feature/store/usecase/edit_medicine_warehouse_usecase.dart';
 import 'package:pharmacy_online/feature/store/usecase/get_central_medicine_warehouse_usecase.dart';
 import 'package:pharmacy_online/feature/store/usecase/get_medicine_warehouse_usecase.dart';
+import 'package:pharmacy_online/feature/store/usecase/get_pharmacy_info_usecase.dart';
+import 'package:pharmacy_online/feature/store/usecase/get_request_chat_with_pharmacy_usecase.dart';
+import 'package:pharmacy_online/feature/store/usecase/request_chat_with_pharmacy_usecase.dart';
 import 'package:pharmacy_online/utils/util/base_utils.dart';
 
 final storeControllerProvider =
@@ -33,7 +38,13 @@ final storeControllerProvider =
         ref.watch(getMedicineWarehouseUsecaseProvider);
     final addCentralMedicineToMyWarehouseUsecase =
         ref.watch(addCentralMedicineToMyWarehouseUsecaseProvider);
-
+    final getPharmacyInfoUsecase = ref.watch(getPharmacyInfoUsecaseProvider);
+    final requestChatWithPharmacyUsecase =
+        ref.watch(requestChatWithPharmacyUsecaseProvider);
+    final getGetRequestChatWithPharmacyUsecase =
+        ref.watch(getGetRequestChatWithPharmacyUsecaseProvider);
+    final approveChatWithPharmacyUsecase =
+        ref.watch(approveChatWithPharmacyUsecaseProvider);
     return StoreController(
       ref,
       const StoreState(),
@@ -46,6 +57,10 @@ final storeControllerProvider =
       getCentralMedicineWarehouseUsecase,
       getMedicineWarehouseUsecase,
       addCentralMedicineToMyWarehouseUsecase,
+      getPharmacyInfoUsecase,
+      requestChatWithPharmacyUsecase,
+      getGetRequestChatWithPharmacyUsecase,
+      approveChatWithPharmacyUsecase,
     );
   },
 );
@@ -63,6 +78,11 @@ class StoreController extends StateNotifier<StoreState> {
   final GetMedicineWarehouseUsecase _getMedicineWarehouseUsecase;
   final AddCentralMedicineToMyWarehouseUsecase
       _addCentralMedicineToMyWarehouseUsecase;
+  final GetPharmacyInfoUsecase _getPharmacyInfoUsecase;
+  final RequestChatWithPharmacyUsecase _requestChatWithPharmacyUsecase;
+  final GetRequestChatWithPharmacyUsecase _getGetRequestChatWithPharmacyUsecase;
+  final ApproveChatWithPharmacyUsecase _approveChatWithPharmacyUsecase;
+
   StoreController(
     this._ref,
     StoreState state,
@@ -75,6 +95,10 @@ class StoreController extends StateNotifier<StoreState> {
     this._getCentralMedicineWarehouseUsecase,
     this._getMedicineWarehouseUsecase,
     this._addCentralMedicineToMyWarehouseUsecase,
+    this._getPharmacyInfoUsecase,
+    this._requestChatWithPharmacyUsecase,
+    this._getGetRequestChatWithPharmacyUsecase,
+    this._approveChatWithPharmacyUsecase,
   )   : _loader = _ref.read(loaderControllerProvider.notifier),
         super(state);
 
@@ -211,6 +235,89 @@ class StoreController extends StateNotifier<StoreState> {
       (success) {
         isSuccess = success;
         _loader.onDismissLoad();
+      },
+      (error) => _loader.onDismissLoad(),
+    );
+
+    return isSuccess;
+  }
+
+  Future<void> getPharmacyInfo() async {
+    final result = await _getPharmacyInfoUsecase.execute(null);
+
+    result.when(
+      (success) => state = state.copyWith(
+        pharmacyInfoList: AsyncValue.data(success),
+      ),
+      (error) => null,
+    );
+
+    final myLocation = await _ref.read(baseUtilsProvider).getLocation();
+    myLocation.when(
+      (success) {
+        state = state.copyWith(
+          myLatitude: success.latitude,
+          myLongtitude: success.longitude,
+        );
+      },
+      (error) => null,
+    );
+  }
+
+  Future<bool> onRequestChatWithPharmacy(String pharmacyId) async {
+    bool isSuccess = false;
+    _loader.onLoad();
+
+    final result = await _requestChatWithPharmacyUsecase.execute(
+      ChatWithPharmacyRequest(
+        pharmacyId: pharmacyId,
+      ),
+    );
+
+    result.when(
+      (success) {
+        isSuccess = success;
+        _loader.onDismissLoad();
+      },
+      (error) => _loader.onDismissLoad(),
+    );
+
+    return isSuccess;
+  }
+
+  Future<void> onGetGetRequestChatWithPharmacy() async {
+    final result = await _getGetRequestChatWithPharmacyUsecase.execute(null);
+
+    result.when(
+      (success) {
+        state = state.copyWith(
+          chatWithPharmacyList: AsyncValue.data(success),
+        );
+      },
+      (error) => state = state.copyWith(
+        chatWithPharmacyList: const AsyncValue.data([]),
+      ),
+    );
+  }
+
+  Future<bool> onApproveChatWithPharmacy(
+    bool isApprove,
+    String id,
+  ) async {
+    _loader.onLoad();
+    bool isSuccess = false;
+
+    final result = await _approveChatWithPharmacyUsecase.execute(
+      ChatWithPharmacyRequest(
+        isApprove: isApprove,
+        id: id,
+      ),
+    );
+
+    result.when(
+      (success) {
+        _loader.onDismissLoad();
+        isSuccess = success;
       },
       (error) => _loader.onDismissLoad(),
     );

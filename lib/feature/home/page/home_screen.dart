@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:map_location_picker/map_location_picker.dart';
 import 'package:pharmacy_online/base_widget/base_scaffold.dart';
 import 'package:pharmacy_online/core/widget/base_consumer_state.dart';
+import 'package:pharmacy_online/feature/admin/model/response/pharmacy_info_response.dart';
+import 'package:pharmacy_online/feature/chat/controller/chat_controller.dart';
+import 'package:pharmacy_online/feature/chat/page/inbox_screen.dart';
 import 'package:pharmacy_online/feature/chat/page/request_consult_screen.dart';
 import 'package:pharmacy_online/feature/home/widget/menu_buttton_widget.dart';
 import 'package:pharmacy_online/feature/home/widget/user_profile_header_widget.dart';
 import 'package:pharmacy_online/feature/profile/controller/profile_controller.dart';
 import 'package:pharmacy_online/feature/store/controller/store_controller.dart';
 import 'package:pharmacy_online/feature/store/page/my_medicine_warehouse_screen.dart';
+import 'package:pharmacy_online/feature/store/page/near_pharmacy_store_screen.dart';
+import 'package:pharmacy_online/feature/store/page/store_detail_screen.dart';
 import 'package:pharmacy_online/generated/assets.gen.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
@@ -23,10 +29,67 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends BaseConsumerState<HomeScreen> {
+  double? nearestDistance;
+  double myLatitude = 0.0;
+  double myLongtitude = 0.0;
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      final _myLatitude = ref.watch(
+        storeControllerProvider.select((value) => value.myLatitude),
+      );
+      final _myLongtitude = ref.watch(
+        storeControllerProvider.select((value) => value.myLongtitude),
+      );
+
+      myLatitude = _myLatitude ?? 0.0;
+      myLongtitude = _myLongtitude ?? 0.0;
+    });
+    super.initState();
+  }
+
+  // ฟังก์ชันสำหรับคำนวณ Marker ที่ใกล้ที่สุด
+  void findNearestMarker({
+    required List<PharmacyInfoResponse> pharmacyInfoList,
+  }) async {
+    double minDistance = double.infinity;
+    PharmacyInfoResponse? pharmacyNearest;
+
+    for (final pharmacyItem in pharmacyInfoList) {
+      double distance = Geolocator.distanceBetween(
+        myLatitude,
+        myLongtitude,
+        pharmacyItem.latitude ?? 0.0,
+        pharmacyItem.longtitude ?? 0.0,
+      );
+
+      if (distance < minDistance) {
+        minDistance = distance;
+        pharmacyNearest = pharmacyItem;
+      }
+    }
+
+    final nearPharmacyStore = pharmacyInfoList
+        .where((val) => val.uid == pharmacyNearest?.uid)
+        .toList();
+
+    if (nearPharmacyStore.isNotEmpty) {
+      Navigator.of(context).pushNamed(
+        StoreDetailScreen.routeName,
+        arguments:
+            StoreDetailArgs(pharmacyInfoResponse: nearPharmacyStore.first),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final isPharmacy = ref
         .watch(profileControllerProvider.select((value) => value.isPharmacy));
+    final pharmacyInfoList = ref.watch(
+      storeControllerProvider.select((value) => value.pharmacyInfoList),
+    );
 
     return BaseScaffold(
       bodyBuilder: (context, constraints) {
@@ -47,12 +110,23 @@ class _HomeScreenState extends BaseConsumerState<HomeScreen> {
                 children: [
                   if (!isPharmacy) ...[
                     MenuButtonWidget(
-                      onTap: () {},
+                      onTap: () {
+                        findNearestMarker(
+                          pharmacyInfoList: pharmacyInfoList.value ?? [],
+                        );
+                      },
                       imgWidget: Assets.icons.icRefresh.svg(),
                       label: 'ค้นหาอัตโนมัติ',
                     ),
                     MenuButtonWidget(
-                      onTap: () {},
+                      onTap: () async {
+                        await ref
+                            .read(storeControllerProvider.notifier)
+                            .getPharmacyInfo();
+
+                        Navigator.of(context)
+                            .pushNamed(NearPharmacyStoreScreen.routeName);
+                      },
                       isSecondBtn: true,
                       imgWidget: Assets.icons.icLocationPin.svg(),
                       label: 'ค้นหาร้านยา',
@@ -64,7 +138,13 @@ class _HomeScreenState extends BaseConsumerState<HomeScreen> {
                       label: 'คำสั่งซื้อ',
                     ),
                     MenuButtonWidget(
-                      onTap: () {},
+                      onTap: () async {
+                        await ref
+                            .read(chatControllerProvider.notifier)
+                            .onGetHistoryOfChatUser();
+
+                        Navigator.of(context).pushNamed(InboxScreen.routeName);
+                      },
                       isSecondBtn: true,
                       imgWidget: Assets.icons.icChatLeftText.svg(),
                       label: 'ประวัติการสนทนา',
@@ -72,7 +152,11 @@ class _HomeScreenState extends BaseConsumerState<HomeScreen> {
                   ],
                   if (isPharmacy) ...[
                     MenuButtonWidget(
-                      onTap: () {
+                      onTap: () async {
+                        await ref
+                            .read(storeControllerProvider.notifier)
+                            .onGetGetRequestChatWithPharmacy();
+
                         Navigator.of(context)
                             .pushNamed(RequestConsultScreen.routeName);
                       },
@@ -102,7 +186,13 @@ class _HomeScreenState extends BaseConsumerState<HomeScreen> {
                       label: 'คำสั่งซื้อ',
                     ),
                     MenuButtonWidget(
-                      onTap: () {},
+                      onTap: () async {
+                        await ref
+                            .read(chatControllerProvider.notifier)
+                            .onGetHistoryOfChatPharmacy();
+
+                        Navigator.of(context).pushNamed(InboxScreen.routeName);
+                      },
                       isSecondBtn: true,
                       imgWidget: Assets.icons.icChat.svg(),
                       label: 'ประวัติการสนทนา',

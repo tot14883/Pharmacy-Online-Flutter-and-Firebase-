@@ -2,10 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pharmacy_online/core/app_color.dart';
 import 'package:pharmacy_online/core/app_style.dart';
+import 'package:pharmacy_online/feature/home/model/response/notification_response.dart';
 import 'package:pharmacy_online/generated/assets.gen.dart';
 
 class NotificationItemWidget extends StatelessWidget {
-  const NotificationItemWidget({super.key});
+  final NotificationResponse notificationItem;
+
+  const NotificationItemWidget({
+    super.key,
+    required this.notificationItem,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +31,7 @@ class NotificationItemWidget extends StatelessWidget {
           ),
           Expanded(
             child: Text(
-              "Dr. John would like to reschedule your appointmen",
+              "${notificationItem.message}",
               style: AppStyle.txtBody2,
             ),
           ),

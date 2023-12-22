@@ -15,6 +15,7 @@ import 'package:pharmacy_online/feature/cart/page/address_delivery_screen.dart';
 import 'package:pharmacy_online/feature/cart/page/my_cart_screen.dart';
 import 'package:pharmacy_online/feature/cart/page/order_summary_screen.dart';
 import 'package:pharmacy_online/feature/chat/page/chat_screen.dart';
+import 'package:pharmacy_online/feature/chat/page/inbox_screen.dart';
 import 'package:pharmacy_online/feature/chat/page/request_consult_screen.dart';
 import 'package:pharmacy_online/feature/dashboard/page/dashboard_screen.dart';
 import 'package:pharmacy_online/feature/home/page/home_screen.dart';
@@ -115,10 +116,24 @@ class AppRouter {
           transitionType: RouteTransition.fade,
         );
 
+      case InboxScreen.routeName:
+        return CustomPageRouteBuilder.route(
+          name: InboxScreen.routeName,
+          builder: (ctx) => const InboxScreen(),
+          transitionType: RouteTransition.fade,
+        );
+
       case StoreDetailScreen.routeName:
+        assert(
+          settings.arguments is StoreDetailArgs || settings.arguments == null,
+          'arguments must be StoreDetailArgs or null',
+        );
+
+        final args = settings.arguments as StoreDetailArgs;
+
         return CustomPageRouteBuilder.route(
           name: StoreDetailScreen.routeName,
-          builder: (ctx) => const StoreDetailScreen(),
+          builder: (ctx) => StoreDetailScreen(args: args),
           transitionType: RouteTransition.fade,
         );
 

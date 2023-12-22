@@ -1,19 +1,29 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:pharmacy_online/feature/home/model/response/notification_response.dart';
 import 'package:pharmacy_online/feature/home/widget/notificaton_item_widget.dart';
 
 class NotificationistWidget extends ConsumerWidget {
-  const NotificationistWidget({super.key});
+  final List<NotificationResponse> notificationList;
+
+  const NotificationistWidget({
+    super.key,
+    required this.notificationList,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return ListView.separated(
       physics: const ClampingScrollPhysics(),
       shrinkWrap: true,
-      itemCount: 5,
+      itemCount: notificationList.length,
       itemBuilder: (context, index) {
-        return const NotificationItemWidget();
+        final notificationItem = notificationList[index];
+
+        return NotificationItemWidget(
+          notificationItem: notificationItem,
+        );
       },
       separatorBuilder: (_, __) => SizedBox(
         height: 16.h,

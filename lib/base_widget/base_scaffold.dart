@@ -18,6 +18,7 @@ class BaseScaffold extends ConsumerWidget {
   final bool hasAppBar;
   final bool isAppearBottomBarWhenKeyboardShowing;
   final bool isWillPop;
+  final Widget? floatingActionButton;
 
   const BaseScaffold({
     Key? key,
@@ -33,6 +34,7 @@ class BaseScaffold extends ConsumerWidget {
     this.hasAppBar = false,
     this.isAppearBottomBarWhenKeyboardShowing = false,
     this.isWillPop = true,
+    this.floatingActionButton,
   }) : super(key: key);
 
   @override
@@ -73,6 +75,7 @@ class BaseScaffold extends ConsumerWidget {
             extendBodyBehindAppBar: extendBodyBehindAppBar,
             resizeToAvoidBottomInset: resizeToAvoidBottomInset,
             bottomSheet: bottomSheet,
+            floatingActionButton: floatingActionButton,
           ),
         ),
         if (isLoading)

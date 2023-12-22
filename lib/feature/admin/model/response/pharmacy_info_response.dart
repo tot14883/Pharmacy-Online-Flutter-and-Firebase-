@@ -27,6 +27,8 @@ abstract class PharmacyInfoResponse with _$PharmacyInfoResponse {
     String? licenseStore,
     String? licenseStoreImg,
     String? status,
+    double? latitude,
+    double? longtitude,
   }) = _PharmacyInfoResponse;
 
   factory PharmacyInfoResponse.fromJson(Map<String, dynamic> json) =>

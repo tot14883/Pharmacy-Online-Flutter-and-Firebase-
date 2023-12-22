@@ -6,12 +6,22 @@ import 'package:pharmacy_online/base_widget/base_image_view.dart';
 import 'package:pharmacy_online/core/app_color.dart';
 import 'package:pharmacy_online/core/app_style.dart';
 import 'package:pharmacy_online/feature/chat/page/chat_screen.dart';
+import 'package:pharmacy_online/feature/store/model/response/chat_with_pharmacy_response.dart';
 
 class InboxItemWidget extends ConsumerWidget {
-  const InboxItemWidget({super.key});
+  final ChatWithPharmacyResponse chatWithPharmacyItem;
+
+  const InboxItemWidget({
+    super.key,
+    required this.chatWithPharmacyItem,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final itemDate = chatWithPharmacyItem.createAt;
+    final currentDate = DateTime.now();
+    final chatDate = currentDate.difference(itemDate!).inSeconds < 15;
+
     return GestureDetector(
       onTap: () {
         Navigator.of(context).pushNamed(ChatScreen.routeName);
@@ -29,29 +39,31 @@ class InboxItemWidget extends ConsumerWidget {
                 Padding(
                   padding: const EdgeInsets.all(4).r,
                   child: BaseImageView(
-                    url:
-                        'https://www.wilsoncenter.org/sites/default/files/media/images/person/james-person-1.jpg',
+                    url: '${chatWithPharmacyItem.profileImg}',
                     width: 60.w,
                     height: 60.h,
                     radius: BorderRadius.circular(8),
                     fit: BoxFit.cover,
                   ),
                 ),
-                Positioned(
-                  bottom: 0,
-                  right: 0,
-                  child: Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(150 / 2),
-                      border: Border.all(
-                        color: AppColor.themeWhiteColor,
-                        width: 4.0,
+                if (chatWithPharmacyItem.isOnline != null &&
+                    chatWithPharmacyItem.isOnline!) ...[
+                  Positioned(
+                    bottom: 0,
+                    right: 0,
+                    child: Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(150 / 2),
+                        border: Border.all(
+                          color: AppColor.themeWhiteColor,
+                          width: 4.0,
+                        ),
+                        color: AppColor.themeSuccess,
                       ),
-                      color: AppColor.themeSuccess,
                     ),
                   ),
-                ),
+                ],
               ],
             ),
             SizedBox(
@@ -66,7 +78,7 @@ class InboxItemWidget extends ConsumerWidget {
                     children: [
                       Expanded(
                         child: Text(
-                          'ร้าน เพื่อนเภสัช',
+                          '${chatWithPharmacyItem.fullName}',
                           style: AppStyle.txtBody2,
                         ),
                       ),
@@ -81,7 +93,7 @@ class InboxItemWidget extends ConsumerWidget {
                     height: 16.h,
                   ),
                   Text(
-                    'Please use the dorfix & vitanim',
+                    '${chatWithPharmacyItem.message}',
                     overflow: TextOverflow.ellipsis,
                     softWrap: false,
                     style: AppStyle.txtBody2

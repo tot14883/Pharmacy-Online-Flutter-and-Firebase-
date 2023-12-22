@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:pharmacy_online/base_widget/base_form_field.dart';
+import 'package:pharmacy_online/feature/admin/model/response/pharmacy_info_response.dart';
+import 'package:pharmacy_online/feature/store/model/response/chat_with_pharmacy_response.dart';
 import 'package:pharmacy_online/feature/store/model/response/medicine_response.dart';
 
 part 'store_state.freezed.dart';
@@ -14,5 +16,11 @@ class StoreState with _$StoreState {
     AsyncValue<List<MedicineResponse>?> centralMedicineList,
     @Default(AsyncValue.loading())
     AsyncValue<List<MedicineResponse>?> medicineList,
+    @Default(AsyncValue.loading())
+    AsyncValue<List<PharmacyInfoResponse>?> pharmacyInfoList,
+    double? myLongtitude,
+    double? myLatitude,
+    @Default(AsyncValue.loading())
+    AsyncValue<List<ChatWithPharmacyResponse>?> chatWithPharmacyList,
   }) = _StoreState;
 }
