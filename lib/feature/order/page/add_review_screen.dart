@@ -10,7 +10,10 @@ import 'package:pharmacy_online/base_widget/rating_start_widget.dart';
 import 'package:pharmacy_online/core/app_color.dart';
 import 'package:pharmacy_online/core/app_style.dart';
 import 'package:pharmacy_online/core/widget/base_consumer_state.dart';
+import 'package:pharmacy_online/feature/dashboard/page/dashboard_screen.dart';
+import 'package:pharmacy_online/feature/order/controller/order_controller.dart';
 import 'package:pharmacy_online/feature/order/widget/card_content_widget.dart';
+import 'package:pharmacy_online/feature/store/controller/store_controller.dart';
 
 class AddReviewScreen extends ConsumerStatefulWidget {
   static const routeName = 'AddReviewScreen';
@@ -22,8 +25,25 @@ class AddReviewScreen extends ConsumerStatefulWidget {
 }
 
 class _AddReviewScreenState extends BaseConsumerState<AddReviewScreen> {
+  double? rating = 0.0;
+  TextEditingController messageController = TextEditingController();
+
+  @override
+  void dispose() {
+    messageController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final orderDetail = ref
+        .watch(orderControllerProvider.select((value) => value.orderDetail))
+        .value;
+
+    final orderId = orderDetail?.id;
+    final pharmacyId = orderDetail?.pharmacyId;
+    final uid = orderDetail?.uid;
+
     return BaseScaffold(
       bgColor: AppColor.themePrimaryColor,
       appBar: const BaseAppBar(
@@ -42,7 +62,11 @@ class _AddReviewScreenState extends BaseConsumerState<AddReviewScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   RatingStartWidget(
-                    onRatingUpdate: (val) {},
+                    onRatingUpdate: (val) {
+                      setState(() {
+                        rating = val;
+                      });
+                    },
                   ),
                   SizedBox(
                     height: 16.h,
@@ -54,7 +78,8 @@ class _AddReviewScreenState extends BaseConsumerState<AddReviewScreen> {
                   SizedBox(
                     height: 16.h,
                   ),
-                  const BaseTextField(
+                  BaseTextField(
+                    controller: messageController,
                     placeholder: 'ระบุข้อความรีวิว',
                     maxLines: 5,
                   ),
@@ -62,7 +87,24 @@ class _AddReviewScreenState extends BaseConsumerState<AddReviewScreen> {
                     height: 16.h,
                   ),
                   BaseButton(
-                    onTap: () {},
+                    onTap: () async {
+                      final result = await ref
+                          .read(storeControllerProvider.notifier)
+                          .onAddReview(
+                            '$orderId',
+                            '$pharmacyId',
+                            '$uid',
+                            messageController.text,
+                            rating ?? 0.0,
+                          );
+
+                      if (result) {
+                        Navigator.of(context).pushNamedAndRemoveUntil(
+                          DashboardScreen.routeName,
+                          (route) => false,
+                        );
+                      }
+                    },
                     text: 'ยืนยัน',
                   ),
                 ],

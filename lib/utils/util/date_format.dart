@@ -59,7 +59,7 @@ class BaseDateFormatter {
 
   /// Format [String] to [DateTime]
   DateTime convertStringToDateTime(String date) {
-    return _convertToLocal(DateFormat('yyyy-MM-dd').parse(date));
+    return _convertToLocal(DateFormat('yyyy-MM-dd HH:mm').parse(date));
   }
 
   /// Format [DateTime] with timeZone to 'yyyy-MM-dd HH:mm:ss'
@@ -98,7 +98,7 @@ class BaseDateFormatter {
       return Jiffy.parse('$date').format(pattern: format);
     }
 
-    return DateFormat(format).format(date);
+    return DateFormat(format).format(_convertToLocal(date));
   }
 
   String formatDateWithSecond(DateTime date) {

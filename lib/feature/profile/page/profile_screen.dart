@@ -1,4 +1,3 @@
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -55,7 +54,7 @@ class _ProfileScreenState extends BaseConsumerState<ProfileScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                if (!isAdmin) ...[
+                if (!isAdmin && userInfo?.uid != null) ...[
                   Text(
                     'My Profile',
                     style: AppStyle.txtHeader3,
@@ -124,6 +123,26 @@ class _ProfileScreenState extends BaseConsumerState<ProfileScreen> {
                   ),
                   Text(
                     'Admin',
+                    style: AppStyle.txtHeader3,
+                  ),
+                  SizedBox(
+                    height: 16.h,
+                  ),
+                  const BaseDivider(),
+                ],
+                if (userInfo?.uid == null) ...[
+                  SizedBox(
+                    height: 36.h,
+                  ),
+                  Assets.icons.icPersion.svg(
+                    width: 108.w,
+                    height: 108.h,
+                  ),
+                  SizedBox(
+                    height: 16.h,
+                  ),
+                  Text(
+                    'GUEST',
                     style: AppStyle.txtHeader3,
                   ),
                   SizedBox(

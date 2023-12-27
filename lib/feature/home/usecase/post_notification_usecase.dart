@@ -32,7 +32,7 @@ class PostNotificationUsecase extends UseCase<NotificationRequest, bool> {
     NotificationRequest request,
   ) async {
     try {
-      final uid = baseSharePreference.getString(BaseSharePreferenceKey.userId);
+      final uid = request.uid;
       final message = request.message;
       final status = request.status;
 
@@ -44,6 +44,7 @@ class PostNotificationUsecase extends UseCase<NotificationRequest, bool> {
         "uid": uid,
         "message": message,
         "status": status,
+        "isRead": false,
         "create_at": DateTime.now(),
       };
 

@@ -63,12 +63,8 @@ class FirebaseAuthProvider {
         password: currentPassword,
       );
 
-      print(newPassword);
-
       await user.reauthenticateWithCredential(cred).then((_) async {
         await user.updatePassword(newPassword).then((_) {
-          print('yooo');
-
           completer.complete(true);
         }).catchError((error) {
           completer.complete(false);

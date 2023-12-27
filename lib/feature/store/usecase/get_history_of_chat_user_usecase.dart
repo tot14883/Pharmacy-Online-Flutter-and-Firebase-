@@ -43,6 +43,7 @@ class GetHistoryOfChatUserUsecase
             'uid',
             isEqualTo: uid,
           )
+          .orderBy('create_at')
           .get()
           .then((value) => value.docs);
 
@@ -60,15 +61,42 @@ class GetHistoryOfChatUserUsecase
             .get()
             .then((value) => value.docs);
 
+        final collectPharmacyStore = await fireCloudStore
+            .collection('pharmacyStore')
+            .doc(_data['pharmacyId'])
+            .get()
+            .then((value) => value);
+
+        final _pharmacyStore =
+            collectPharmacyStore.data() as Map<String, dynamic>;
+
         final _user = collectUser.first.data() as Map<String, dynamic>;
+
+        final collectMessage = await fireCloudStore
+            .collection('chat')
+            .doc(_data['id'])
+            .collection('chat_message')
+            .orderBy('create_at')
+            .get()
+            .then((value) => value.docs);
+
+        Map<String, dynamic>? _message;
+        if (collectMessage.isNotEmpty) {
+          _message = collectMessage.last.data();
+        }
 
         requestChatList.add(
           ChatWithPharmacyResponse(
             id: _data['id'],
             uid: _data['uid'],
+            pharmacyId: _data['pharmacyId'],
             profileImg: _user['profileImg'],
             fullName: _user['nameStore'],
-            message: _data['message'],
+            chatImg: "ไฟล์รูปภาพ",
+            nameStore: _pharmacyStore['nameStore'],
+            message: _message?['message'] ?? '',
+            isOnline: _user['isOnline'],
+            createAt: (_data['create_at'] as Timestamp).toDate(),
             updateAt: (_data['update_at'] as Timestamp).toDate(),
           ),
         );

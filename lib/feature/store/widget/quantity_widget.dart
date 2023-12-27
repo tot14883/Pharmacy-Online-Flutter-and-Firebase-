@@ -8,6 +8,7 @@ class QuantityWidget extends StatefulWidget {
   final Function(int quantity) onUpdate;
   final double? itemSized;
   final double? textSized;
+  final int? initial;
 
   const QuantityWidget({
     super.key,
@@ -15,6 +16,7 @@ class QuantityWidget extends StatefulWidget {
     this.itemSized,
     this.textSized,
     required this.onUpdate,
+    this.initial,
   });
 
   @override
@@ -22,7 +24,16 @@ class QuantityWidget extends StatefulWidget {
 }
 
 class _QuantityWidgetState extends State<QuantityWidget> {
-  int _quantity = 0;
+  int _quantity = 1;
+
+  @override
+  void initState() {
+    super.initState();
+    final initial = widget.initial;
+    if (initial != null) {
+      _quantity = initial;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +43,7 @@ class _QuantityWidgetState extends State<QuantityWidget> {
       children: [
         GestureDetector(
           onTap: () {
-            if (_quantity > 0) {
+            if (_quantity > 1) {
               setState(() {
                 _quantity -= 1;
               });

@@ -23,7 +23,10 @@ class _RequestConsultScreenState
   @override
   Widget build(BuildContext context) {
     final chatWithPharmacyList = ref.watch(
-        storeControllerProvider.select((value) => value.chatWithPharmacyList));
+      storeControllerProvider.select(
+        (value) => value.chatWithPharmacyList,
+      ),
+    );
     return AsyncValueWidget(
       value: chatWithPharmacyList,
       data: (_chatWithPharmacyList) {

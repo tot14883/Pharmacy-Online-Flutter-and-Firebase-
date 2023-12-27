@@ -15,6 +15,7 @@ abstract class ChatWithPharmacyResponse with _$ChatWithPharmacyResponse {
     String? status,
     String? message,
     String? fullName,
+    String? nameStore,
     String? profileImg,
     bool? isOnline,
     DateTime? updateAt,

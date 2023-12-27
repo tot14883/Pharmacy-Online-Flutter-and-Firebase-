@@ -3,20 +3,31 @@ import 'package:image_picker/image_picker.dart';
 import 'package:pharmacy_online/base_widget/base_form_field.dart';
 import 'package:pharmacy_online/core/loader/loader_controller.dart';
 import 'package:pharmacy_online/core/router/app_naviagor.dart';
+import 'package:pharmacy_online/feature/order/model/request/review_request.dart';
 import 'package:pharmacy_online/feature/store/controller/state/store_state.dart';
 import 'package:pharmacy_online/feature/store/enum/field_medicine_enum.dart';
 import 'package:pharmacy_online/feature/store/model/request/chat_with_pharmacy_request.dart';
+import 'package:pharmacy_online/feature/store/model/request/comment_request.dart';
 import 'package:pharmacy_online/feature/store/model/request/medicine_request.dart';
 import 'package:pharmacy_online/feature/store/model/response/medicine_response.dart';
 import 'package:pharmacy_online/feature/store/usecase/add_central_medicine_to_my_warehouse_usecase.dart';
+import 'package:pharmacy_online/feature/store/usecase/add_comment_store_usecase.dart';
 import 'package:pharmacy_online/feature/store/usecase/add_medicine_warehouse_usecase.dart';
+import 'package:pharmacy_online/feature/store/usecase/add_review_store_usecase.dart';
 import 'package:pharmacy_online/feature/store/usecase/approve_chat_with_pharmacy_usecase.dart';
+import 'package:pharmacy_online/feature/store/usecase/delete_comment_store_usecase.dart';
 import 'package:pharmacy_online/feature/store/usecase/delete_medicine_warehouse_usecase.dart';
+import 'package:pharmacy_online/feature/store/usecase/delete_review_store_usecase.dart';
+import 'package:pharmacy_online/feature/store/usecase/edit_comment_store_usecase.dart';
 import 'package:pharmacy_online/feature/store/usecase/edit_medicine_warehouse_usecase.dart';
+import 'package:pharmacy_online/feature/store/usecase/edit_review_store_usecase.dart';
 import 'package:pharmacy_online/feature/store/usecase/get_central_medicine_warehouse_usecase.dart';
+import 'package:pharmacy_online/feature/store/usecase/get_comment_store_usecase.dart';
 import 'package:pharmacy_online/feature/store/usecase/get_medicine_warehouse_usecase.dart';
+import 'package:pharmacy_online/feature/store/usecase/get_pharmacy_detail_usecase.dart';
 import 'package:pharmacy_online/feature/store/usecase/get_pharmacy_info_usecase.dart';
 import 'package:pharmacy_online/feature/store/usecase/get_request_chat_with_pharmacy_usecase.dart';
+import 'package:pharmacy_online/feature/store/usecase/get_review_store_usecase.dart';
 import 'package:pharmacy_online/feature/store/usecase/request_chat_with_pharmacy_usecase.dart';
 import 'package:pharmacy_online/utils/util/base_utils.dart';
 
@@ -45,6 +56,19 @@ final storeControllerProvider =
         ref.watch(getGetRequestChatWithPharmacyUsecaseProvider);
     final approveChatWithPharmacyUsecase =
         ref.watch(approveChatWithPharmacyUsecaseProvider);
+    final getPharmacyDetailUsecase =
+        ref.watch(getPharmacyDetailUsecaseProvider);
+    final getReviewStoreUsecase = ref.watch(getReviewStoreUsecaseProvider);
+    final getCommentStoreUsecase = ref.watch(getCommentStoreUsecaseProvider);
+    final addReviewStoreUsecase = ref.watch(addReviewStoreUsecaseProvider);
+    final addCommentStoreUsecase = ref.watch(addCommentStoreUsecaseProvider);
+    final editReviewStoreUsecase = ref.watch(editReviewStoreUsecaseProvider);
+    final editCommentStoreUsecase = ref.watch(editCommentStoreUsecaseProvider);
+    final deleteReviewStoreUsecase =
+        ref.watch(deleteReviewStoreUsecaseProvider);
+    final deleteCommentStoreUsecase =
+        ref.watch(deleteCommentStoreUsecaseProvider);
+
     return StoreController(
       ref,
       const StoreState(),
@@ -61,6 +85,15 @@ final storeControllerProvider =
       requestChatWithPharmacyUsecase,
       getGetRequestChatWithPharmacyUsecase,
       approveChatWithPharmacyUsecase,
+      getPharmacyDetailUsecase,
+      getReviewStoreUsecase,
+      getCommentStoreUsecase,
+      addReviewStoreUsecase,
+      addCommentStoreUsecase,
+      editReviewStoreUsecase,
+      editCommentStoreUsecase,
+      deleteReviewStoreUsecase,
+      deleteCommentStoreUsecase,
     );
   },
 );
@@ -82,6 +115,15 @@ class StoreController extends StateNotifier<StoreState> {
   final RequestChatWithPharmacyUsecase _requestChatWithPharmacyUsecase;
   final GetRequestChatWithPharmacyUsecase _getGetRequestChatWithPharmacyUsecase;
   final ApproveChatWithPharmacyUsecase _approveChatWithPharmacyUsecase;
+  final GetPharmacyDetailUsecase _getPharmacyDetailUsecase;
+  final GetReviewStoreUsecase _getReviewStoreUsecase;
+  final GetCommentStoreUsecase _getCommentStoreUsecase;
+  final AddReviewStoreUsecase _addReviewStoreUsecase;
+  final AddCommentStoreUsecase _addCommentStoreUsecase;
+  final EditReviewStoreUsecase _editReviewStoreUsecase;
+  final EditCommentStoreUsecase _editCommentStoreUsecase;
+  final DeleteReviewStoreUsecase _deleteReviewStoreUsecase;
+  final DeleteCommentStoreUsecase _deleteCommentStoreUsecase;
 
   StoreController(
     this._ref,
@@ -99,6 +141,15 @@ class StoreController extends StateNotifier<StoreState> {
     this._requestChatWithPharmacyUsecase,
     this._getGetRequestChatWithPharmacyUsecase,
     this._approveChatWithPharmacyUsecase,
+    this._getPharmacyDetailUsecase,
+    this._getReviewStoreUsecase,
+    this._getCommentStoreUsecase,
+    this._addReviewStoreUsecase,
+    this._addCommentStoreUsecase,
+    this._editReviewStoreUsecase,
+    this._editCommentStoreUsecase,
+    this._deleteReviewStoreUsecase,
+    this._deleteCommentStoreUsecase,
   )   : _loader = _ref.read(loaderControllerProvider.notifier),
         super(state);
 
@@ -318,6 +369,218 @@ class StoreController extends StateNotifier<StoreState> {
       (success) {
         _loader.onDismissLoad();
         isSuccess = success;
+      },
+      (error) => _loader.onDismissLoad(),
+    );
+
+    return isSuccess;
+  }
+
+  Future<void> onGetPharmacyDetail(String pharmacyId) async {
+    final result = await _getPharmacyDetailUsecase.execute(pharmacyId);
+
+    result.when(
+      (success) =>
+          state = state.copyWith(pharmacyDetail: AsyncValue.data(success)),
+      (error) => state = state.copyWith(
+        pharmacyDetail: const AsyncValue.data(null),
+      ),
+    );
+  }
+
+  Future<void> onGetReview(
+    String pharmacyId,
+  ) async {
+    final result = await _getReviewStoreUsecase.execute(
+      ReviewRequest(pharmacyId: pharmacyId),
+    );
+
+    result.when(
+      (success) {
+        state = state.copyWith(reviewList: AsyncValue.data(success));
+      },
+      (error) => state = state.copyWith(
+        reviewList: const AsyncValue.data(null),
+      ),
+    );
+  }
+
+  Future<void> onGetComment(
+    String reviewId,
+  ) async {
+    final result = await _getCommentStoreUsecase.execute(
+      CommentRequest(reviewId: reviewId),
+    );
+
+    result.when(
+      (success) {
+        state = state.copyWith(commentList: AsyncValue.data(success));
+      },
+      (error) => state = state.copyWith(
+        commentList: const AsyncValue.data(null),
+      ),
+    );
+  }
+
+  Future<bool> onAddReview(
+    String orderId,
+    String pharmacyId,
+    String uid,
+    String message,
+    double rating,
+  ) async {
+    _loader.onLoad();
+    bool isSuccess = false;
+
+    if (message.isEmpty) {
+      return true;
+    }
+
+    final result = await _addReviewStoreUsecase.execute(
+      ReviewRequest(
+        orderId: orderId,
+        pharmacyId: pharmacyId,
+        uid: uid,
+        message: message,
+        rating: rating,
+      ),
+    );
+
+    result.when(
+      (success) {
+        isSuccess = success;
+        _loader.onDismissLoad();
+      },
+      (error) => _loader.onDismissLoad(),
+    );
+
+    return isSuccess;
+  }
+
+  Future<bool> onAddComment(
+    String reviewId,
+    String pharmacyId,
+    String uid,
+    String message,
+  ) async {
+    _loader.onLoad();
+    bool isSuccess = false;
+
+    final result = await _addCommentStoreUsecase.execute(
+      CommentRequest(
+        reviewId: reviewId,
+        pharmacyId: pharmacyId,
+        uid: uid,
+        message: message,
+      ),
+    );
+
+    result.when(
+      (success) {
+        isSuccess = success;
+        _loader.onDismissLoad();
+      },
+      (error) => _loader.onDismissLoad(),
+    );
+
+    return isSuccess;
+  }
+
+  Future<bool> onEditReview(
+    String reviewId,
+    double rating,
+    String message,
+  ) async {
+    _loader.onLoad();
+    bool isSuccess = false;
+
+    final result = await _editReviewStoreUsecase.execute(
+      ReviewRequest(
+        reviewId: reviewId,
+        rating: rating,
+        message: message,
+      ),
+    );
+
+    result.when(
+      (success) {
+        isSuccess = success;
+        _loader.onDismissLoad();
+      },
+      (error) => _loader.onDismissLoad(),
+    );
+
+    return isSuccess;
+  }
+
+  Future<bool> onEditComment(
+    String reviewId,
+    String commentId,
+    String message,
+  ) async {
+    _loader.onLoad();
+    bool isSuccess = false;
+
+    final result = await _editCommentStoreUsecase.execute(
+      CommentRequest(
+        reviewId: reviewId,
+        commentId: commentId,
+        message: message,
+      ),
+    );
+
+    result.when(
+      (success) {
+        isSuccess = success;
+        _loader.onDismissLoad();
+      },
+      (error) => _loader.onDismissLoad(),
+    );
+
+    return isSuccess;
+  }
+
+  Future<bool> onDeleteReview(
+    String reviewId,
+  ) async {
+    _loader.onLoad();
+    bool isSuccess = false;
+
+    final result = await _deleteReviewStoreUsecase.execute(
+      CommentRequest(
+        reviewId: reviewId,
+      ),
+    );
+
+    result.when(
+      (success) {
+        isSuccess = success;
+        _loader.onDismissLoad();
+      },
+      (error) => _loader.onDismissLoad(),
+    );
+
+    return isSuccess;
+  }
+
+  Future<bool> onDeleteComment(
+    String reviewId,
+    String commentId,
+  ) async {
+    _loader.onLoad();
+    bool isSuccess = false;
+
+    final result = await _deleteCommentStoreUsecase.execute(
+      CommentRequest(
+        reviewId: reviewId,
+        commentId: commentId,
+      ),
+    );
+
+    result.when(
+      (success) {
+        isSuccess = success;
+        _loader.onDismissLoad();
       },
       (error) => _loader.onDismissLoad(),
     );

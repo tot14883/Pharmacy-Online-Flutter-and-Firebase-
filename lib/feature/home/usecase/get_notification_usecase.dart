@@ -47,10 +47,12 @@ class GetNotificationUsecase extends UseCase<void, List<NotificationResponse>> {
 
         notificationList.add(
           NotificationResponse(
+            id: _data['id'],
             uid: _data['uid'],
             message: _data['message'],
             status: _data['status'],
-            createAt: (_data['update_at'] as Timestamp).toDate(),
+            isRead: _data['isRead'],
+            createAt: (_data['create_at'] as Timestamp).toDate(),
           ),
         );
       }

@@ -43,12 +43,13 @@ class GetHistoryOfChatPharmacyUsecase
             'pharmacyId',
             isEqualTo: uid,
           )
+          .orderBy('create_at')
           .get()
           .then((value) => value.docs);
 
       List<ChatWithPharmacyResponse> requestChatList = [];
 
-      for (final item in collect) {
+      for (final item in collect.reversed) {
         final _data = item.data() as Map<String, dynamic>;
 
         final collectUser = await fireCloudStore
@@ -62,13 +63,30 @@ class GetHistoryOfChatPharmacyUsecase
 
         final _user = collectUser.first.data() as Map<String, dynamic>;
 
+        final collectMessage = await fireCloudStore
+            .collection('chat')
+            .doc(_data['id'])
+            .collection('chat_message')
+            .orderBy('create_at')
+            .get()
+            .then((value) => value.docs);
+
+        Map<String, dynamic>? _message;
+        if (collectMessage.isNotEmpty) {
+          _message = collectMessage.last.data();
+        }
+
         requestChatList.add(
           ChatWithPharmacyResponse(
             id: _data['id'],
             uid: _data['uid'],
+            pharmacyId: _data['pharmacyId'],
             profileImg: _user['profileImg'],
             fullName: _user['fullName'],
-            message: _data['message'],
+            chatImg: "ไฟล์รูปภาพ",
+            message: _message?['message'] ?? '',
+            isOnline: _user['isOnline'],
+            createAt: (_data['create_at'] as Timestamp).toDate(),
             updateAt: (_data['update_at'] as Timestamp).toDate(),
           ),
         );

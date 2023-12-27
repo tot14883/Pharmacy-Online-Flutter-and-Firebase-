@@ -6,6 +6,7 @@ import 'package:pharmacy_online/base_widget/base_image_view.dart';
 import 'package:pharmacy_online/base_widget/base_scaffold.dart';
 import 'package:pharmacy_online/core/app_color.dart';
 import 'package:pharmacy_online/core/app_style.dart';
+import 'package:pharmacy_online/feature/order/controller/order_controller.dart';
 
 class EvidenceBankTransferScreen extends ConsumerWidget {
   static const routeName = 'EvidenceBankTransferScreen';
@@ -14,6 +15,13 @@ class EvidenceBankTransferScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final orderDetail = ref
+        .watch(orderControllerProvider.select((value) => value.orderDetail))
+        .value;
+    final bankTransferSlip = orderDetail?.bankTransferSlip;
+    final bankTransferDate = orderDetail?.bankTransferDate;
+    final bankTotalPriceSlip = orderDetail?.bankTotalPriceSlip;
+
     return BaseScaffold(
       appBar: BaseAppBar(
         bgColor: AppColor.themeWhiteColor,
@@ -32,9 +40,8 @@ class EvidenceBankTransferScreen extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const BaseImageView(
-                  url:
-                      'https://cdn.printshoppy.com/image/cache/catalog/product-image/stationery/bill-book/bill-book-102-600x800.png',
+                BaseImageView(
+                  url: '$bankTransferSlip',
                   width: 300,
                   height: 300,
                   fit: BoxFit.cover,
@@ -45,6 +52,20 @@ class EvidenceBankTransferScreen extends ConsumerWidget {
                 Text(
                   'หลักฐานแจ้งโอนการชำระเงิน',
                   style: AppStyle.txtHeader3,
+                ),
+                SizedBox(
+                  height: 16.h,
+                ),
+                Text(
+                  'วันที่ชำระ $bankTransferDate',
+                  style: AppStyle.txtBody2,
+                ),
+                SizedBox(
+                  height: 16.h,
+                ),
+                Text(
+                  'ราคา $bankTotalPriceSlip บาท',
+                  style: AppStyle.txtBody2,
                 ),
               ],
             ),

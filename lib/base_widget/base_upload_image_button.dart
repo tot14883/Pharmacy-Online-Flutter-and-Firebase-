@@ -15,6 +15,8 @@ class BaseUploadImageButton extends ConsumerStatefulWidget {
   final ImageSource source;
   final Function(XFile? file) onUpload;
   final Widget imgPreview;
+  final double? width;
+  final double? height;
 
   const BaseUploadImageButton({
     super.key,
@@ -22,6 +24,8 @@ class BaseUploadImageButton extends ConsumerStatefulWidget {
     this.source = ImageSource.gallery,
     required this.onUpload,
     required this.imgPreview,
+    this.width,
+    this.height,
   });
 
   @override
@@ -73,8 +77,8 @@ class _BaseUploadImageButtonState extends ConsumerState<BaseUploadImageButton> {
       child: image != null
           ? BaseImageView(
               file: File(image!.path),
-              width: 150.w,
-              height: 150.h,
+              width: widget.width ?? 150.w,
+              height: widget.height ?? 150.h,
             )
           : widget.filePath != null
               ? BaseImageView(

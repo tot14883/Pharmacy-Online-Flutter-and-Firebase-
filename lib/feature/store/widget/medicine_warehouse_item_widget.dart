@@ -8,6 +8,7 @@ import 'package:pharmacy_online/base_widget/base_image_view.dart';
 import 'package:pharmacy_online/core/app_style.dart';
 import 'package:pharmacy_online/core/local/base_shared_preference.dart';
 import 'package:pharmacy_online/feature/store/controller/store_controller.dart';
+import 'package:pharmacy_online/feature/store/model/response/chat_with_pharmacy_response.dart';
 import 'package:pharmacy_online/feature/store/model/response/medicine_response.dart';
 import 'package:pharmacy_online/feature/store/page/drug_detail_screen.dart';
 import 'package:pharmacy_online/feature/store/page/edit_medicine_warehouse_screen.dart';
@@ -16,11 +17,15 @@ import 'package:pharmacy_online/generated/assets.gen.dart';
 class MedicineWarehouseItemWidget extends ConsumerWidget {
   final MedicineResponse medicineItem;
   final bool isCentral;
+  final bool isFromChat;
+  final ChatWithPharmacyResponse? chatWithPharmacyItem;
 
   const MedicineWarehouseItemWidget({
     super.key,
     required this.medicineItem,
     required this.isCentral,
+    required this.isFromChat,
+    this.chatWithPharmacyItem,
   });
 
   @override
@@ -35,7 +40,16 @@ class MedicineWarehouseItemWidget extends ConsumerWidget {
       children: [
         GestureDetector(
           onTap: () {
-            Navigator.of(context).pushNamed(DrugDetailScreen.routeName);
+            if (isFromChat) {
+              Navigator.of(context).pushNamed(
+                DrugDetailScreen.routeName,
+                arguments: DrugDetailArgs(
+                  medicineItem: medicineItem,
+                  chatWithPharmacyItem: chatWithPharmacyItem,
+                ),
+              );
+              return;
+            }
           },
           child: BaseImageView(
             url: '${medicineItem.medicineImg}',
@@ -58,8 +72,13 @@ class MedicineWarehouseItemWidget extends ConsumerWidget {
                   Expanded(
                     child: GestureDetector(
                       onTap: () {
-                        Navigator.of(context)
-                            .pushNamed(DrugDetailScreen.routeName);
+                        Navigator.of(context).pushNamed(
+                          DrugDetailScreen.routeName,
+                          arguments: DrugDetailArgs(
+                            medicineItem: medicineItem,
+                            chatWithPharmacyItem: chatWithPharmacyItem,
+                          ),
+                        );
                       },
                       child: Text(
                         '${medicineItem.name}',
@@ -93,7 +112,7 @@ class MedicineWarehouseItemWidget extends ConsumerWidget {
                       ),
                     ),
                   ],
-                  if (uid == _uid) ...[
+                  if (uid == _uid && !isFromChat) ...[
                     SizedBox(
                       width: 8.w,
                     ),
@@ -153,7 +172,13 @@ class MedicineWarehouseItemWidget extends ConsumerWidget {
                 ),
                 GestureDetector(
                   onTap: () {
-                    Navigator.of(context).pushNamed(DrugDetailScreen.routeName);
+                    Navigator.of(context).pushNamed(
+                      DrugDetailScreen.routeName,
+                      arguments: DrugDetailArgs(
+                        medicineItem: medicineItem,
+                        chatWithPharmacyItem: chatWithPharmacyItem,
+                      ),
+                    );
                   },
                   child: Text(
                     '${medicineItem.price} ราคา',

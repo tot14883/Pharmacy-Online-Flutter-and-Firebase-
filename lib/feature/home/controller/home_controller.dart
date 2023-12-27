@@ -5,6 +5,7 @@ import 'package:pharmacy_online/feature/home/model/request/notification_request.
 import 'package:pharmacy_online/feature/home/usecase/delete_notification_usecase.dart';
 import 'package:pharmacy_online/feature/home/usecase/get_notification_usecase.dart';
 import 'package:pharmacy_online/feature/home/usecase/post_notification_usecase.dart';
+import 'package:pharmacy_online/feature/home/usecase/update_notification_usecase.dart';
 
 final homeControllerProvider = StateNotifierProvider<HomeController, HomeState>(
   (ref) {
@@ -12,6 +13,8 @@ final homeControllerProvider = StateNotifierProvider<HomeController, HomeState>(
     final postNotificationUsecase = ref.watch(postNotificationUsecaseProvider);
     final deleteNotificationUsecase =
         ref.watch(deleteNotificationUsecaseProvider);
+    final updateNotificationUsecase =
+        ref.watch(updateNotificationUsecaseProvider);
 
     return HomeController(
       ref,
@@ -19,6 +22,7 @@ final homeControllerProvider = StateNotifierProvider<HomeController, HomeState>(
       getNotificationUsecase,
       postNotificationUsecase,
       deleteNotificationUsecase,
+      updateNotificationUsecase,
     );
   },
 );
@@ -29,6 +33,7 @@ class HomeController extends StateNotifier<HomeState> {
   final GetNotificationUsecase _getNotificationUsecase;
   final PostNotificationUsecase _postNotificationUsecase;
   final DeleteNotificationUsecase _deleteNotificationUsecase;
+  final UpdateNotificationUsecase _updateNotificationUsecase;
 
   HomeController(
     this._ref,
@@ -36,6 +41,7 @@ class HomeController extends StateNotifier<HomeState> {
     this._getNotificationUsecase,
     this._postNotificationUsecase,
     this._deleteNotificationUsecase,
+    this._updateNotificationUsecase,
   )   : _loader = _ref.read(loaderControllerProvider.notifier),
         super(state);
 
@@ -84,6 +90,26 @@ class HomeController extends StateNotifier<HomeState> {
     _loader.onLoad();
     final result = await _deleteNotificationUsecase.execute(
       NotificationRequest(id: id),
+    );
+
+    result.when(
+      (success) {
+        _loader.onDismissLoad();
+        isSuccess = success;
+      },
+      (error) => _loader.onDismissLoad(),
+    );
+
+    return isSuccess;
+  }
+
+  Future<bool> onUpdateNotificationUsecase(
+    String id,
+  ) async {
+    bool isSuccess = false;
+    _loader.onLoad();
+    final result = await _updateNotificationUsecase.execute(
+      id,
     );
 
     result.when(

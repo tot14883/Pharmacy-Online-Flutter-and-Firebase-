@@ -215,9 +215,17 @@ class AppRouter {
         );
 
       case CommentScreen.routeName:
+        assert(
+          settings.arguments is CommentArgs || settings.arguments == null,
+          'arguments must be CommentArgs or null',
+        );
+
+        final args = settings.arguments as CommentArgs;
         return CustomPageRouteBuilder.route(
           name: CommentScreen.routeName,
-          builder: (ctx) => const CommentScreen(),
+          builder: (ctx) => CommentScreen(
+            args: args,
+          ),
           transitionType: RouteTransition.fade,
         );
 
@@ -229,16 +237,33 @@ class AppRouter {
         );
 
       case ChatScreen.routeName:
+        assert(
+          settings.arguments is ChatArgs || settings.arguments == null,
+          'arguments must be ChatArgs or null',
+        );
+
+        final args = settings.arguments as ChatArgs;
+
         return CustomPageRouteBuilder.route(
           name: ChatScreen.routeName,
-          builder: (ctx) => const ChatScreen(),
+          builder: (ctx) => ChatScreen(
+            args: args,
+          ),
           transitionType: RouteTransition.fade,
         );
 
       case MyMedicineWarehouseScreen.routeName:
+        assert(
+          settings.arguments is MyMedicineWarehouseArgs ||
+              settings.arguments == null,
+          'arguments must be MyMedicineWarehouseArgs or null',
+        );
+
+        final args = settings.arguments as MyMedicineWarehouseArgs;
+
         return CustomPageRouteBuilder.route(
           name: MyMedicineWarehouseScreen.routeName,
-          builder: (ctx) => const MyMedicineWarehouseScreen(),
+          builder: (ctx) => MyMedicineWarehouseScreen(args: args),
           transitionType: RouteTransition.fade,
         );
 
@@ -286,9 +311,15 @@ class AppRouter {
         );
 
       case DrugDetailScreen.routeName:
+        assert(
+          settings.arguments is DrugDetailArgs || settings.arguments == null,
+          'arguments must be DrugDetailArgs or null',
+        );
+
+        final args = settings.arguments as DrugDetailArgs;
         return CustomPageRouteBuilder.route(
           name: DrugDetailScreen.routeName,
-          builder: (ctx) => const DrugDetailScreen(),
+          builder: (ctx) => DrugDetailScreen(args: args),
           transitionType: RouteTransition.fade,
         );
 

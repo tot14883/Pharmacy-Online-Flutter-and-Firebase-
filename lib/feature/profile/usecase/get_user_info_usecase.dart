@@ -42,7 +42,6 @@ class GetUserInfoUseCase extends UseCase<void, UserInfoResponse> {
   ) async {
     try {
       final uid = baseSharedPreference.getString(BaseSharePreferenceKey.userId);
-      print(uid);
 
       if (uid != null) {
         final collect = fireCloudStore.collection('user');

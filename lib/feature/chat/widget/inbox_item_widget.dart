@@ -6,7 +6,9 @@ import 'package:pharmacy_online/base_widget/base_image_view.dart';
 import 'package:pharmacy_online/core/app_color.dart';
 import 'package:pharmacy_online/core/app_style.dart';
 import 'package:pharmacy_online/feature/chat/page/chat_screen.dart';
+import 'package:pharmacy_online/feature/profile/controller/profile_controller.dart';
 import 'package:pharmacy_online/feature/store/model/response/chat_with_pharmacy_response.dart';
+import 'package:pharmacy_online/utils/util/date_format.dart';
 
 class InboxItemWidget extends ConsumerWidget {
   final ChatWithPharmacyResponse chatWithPharmacyItem;
@@ -18,16 +20,25 @@ class InboxItemWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final itemDate = chatWithPharmacyItem.createAt;
-    final currentDate = DateTime.now();
-    final chatDate = currentDate.difference(itemDate!).inSeconds < 15;
+    final itemDate = chatWithPharmacyItem.updateAt;
+    final isPharmacy = ref.watch(
+      profileControllerProvider.select(
+        (value) => value.isPharmacy,
+      ),
+    );
 
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).pushNamed(ChatScreen.routeName);
+        Navigator.of(context).pushNamed(
+          ChatScreen.routeName,
+          arguments: ChatArgs(
+            chatWithPharmacyItem: chatWithPharmacyItem,
+            isPharmacy: isPharmacy,
+          ),
+        );
       },
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
           color: AppColor.themeWhiteColor,
@@ -78,12 +89,12 @@ class InboxItemWidget extends ConsumerWidget {
                     children: [
                       Expanded(
                         child: Text(
-                          '${chatWithPharmacyItem.fullName}',
+                          '${chatWithPharmacyItem.nameStore}',
                           style: AppStyle.txtBody2,
                         ),
                       ),
                       Text(
-                        'Now',
+                        displayTime(itemDate, ref),
                         style: AppStyle.txtBody2
                             .copyWith(color: AppColor.themeGrayLight),
                       ),
@@ -92,13 +103,28 @@ class InboxItemWidget extends ConsumerWidget {
                   SizedBox(
                     height: 16.h,
                   ),
-                  Text(
-                    '${chatWithPharmacyItem.message}',
-                    overflow: TextOverflow.ellipsis,
-                    softWrap: false,
-                    style: AppStyle.txtBody2
-                        .copyWith(color: AppColor.themeGrayLight),
-                  ),
+                  if (chatWithPharmacyItem.message != null &&
+                      chatWithPharmacyItem.message!.isNotEmpty) ...[
+                    Text(
+                      '${chatWithPharmacyItem.message}',
+                      overflow: TextOverflow.ellipsis,
+                      softWrap: false,
+                      style: AppStyle.txtBody2
+                          .copyWith(color: AppColor.themeGrayLight),
+                    ),
+                  ],
+                  if (chatWithPharmacyItem.message == null &&
+                      chatWithPharmacyItem.message!.isEmpty &&
+                      chatWithPharmacyItem.chatImg != null &&
+                      chatWithPharmacyItem.chatImg!.isNotEmpty) ...[
+                    Text(
+                      '${chatWithPharmacyItem.chatImg}',
+                      overflow: TextOverflow.ellipsis,
+                      softWrap: false,
+                      style: AppStyle.txtBody2
+                          .copyWith(color: AppColor.themeGrayLight),
+                    ),
+                  ],
                 ],
               ),
             ),
@@ -106,5 +132,49 @@ class InboxItemWidget extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  String displayTime(
+    DateTime? itemDate,
+    WidgetRef ref,
+  ) {
+    final currentDate = DateTime.now();
+    final isMinute = currentDate.difference(itemDate!).inSeconds > 15;
+    final isHour = currentDate.difference(itemDate).inHours >= 1;
+    final isDay = currentDate.difference(itemDate).inDays == 1;
+    final isDate = currentDate.difference(itemDate).inDays >= 2;
+
+    if (isDate) {
+      return ref.read(baseDateFormatterProvider).formatDateWithFreeStyleFormat(
+            'DD',
+            itemDate,
+          );
+    }
+
+    if (isDay) {
+      return 'Yesterday';
+    }
+
+    if (isHour) {
+      return ref.read(baseDateFormatterProvider).formatDateWithFreeStyleFormat(
+            'hh:mm a',
+            itemDate,
+          );
+    }
+
+    if (isMinute) {
+      final result =
+          ref.read(baseDateFormatterProvider).formatDateWithFreeStyleFormat(
+                'mm',
+                itemDate,
+              );
+
+      final splitResult = result.split('');
+      final minute = splitResult[0] == '0' ? splitResult[1] : result;
+
+      return '$minute นาทีที่แล้ว';
+    }
+
+    return 'Now';
   }
 }

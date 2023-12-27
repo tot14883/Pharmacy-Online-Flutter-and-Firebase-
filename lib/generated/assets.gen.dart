@@ -103,6 +103,9 @@ class $AssetsIconsGen {
   /// File path: assets/icons/ic_lock.svg
   SvgGenImage get icLock => const SvgGenImage('assets/icons/ic_lock.svg');
 
+  /// File path: assets/icons/ic_locked.svg
+  SvgGenImage get icLocked => const SvgGenImage('assets/icons/ic_locked.svg');
+
   /// File path: assets/icons/ic_logout.svg
   SvgGenImage get icLogout => const SvgGenImage('assets/icons/ic_logout.svg');
 
@@ -207,6 +210,7 @@ class $AssetsIconsGen {
         icHome,
         icLocationPin,
         icLock,
+        icLocked,
         icLogout,
         icMedicine,
         icMinus,

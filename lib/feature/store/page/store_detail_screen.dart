@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pharmacy_online/base_widget/base_app_bar.dart';
 import 'package:pharmacy_online/base_widget/base_button.dart';
+import 'package:pharmacy_online/base_widget/base_dialog.dart';
 import 'package:pharmacy_online/base_widget/base_image_view.dart';
 import 'package:pharmacy_online/base_widget/base_scaffold.dart';
 import 'package:pharmacy_online/base_widget/rating_start_widget.dart';
@@ -13,6 +14,7 @@ import 'package:pharmacy_online/core/widget/base_consumer_state.dart';
 import 'package:pharmacy_online/feature/admin/model/response/pharmacy_info_response.dart';
 import 'package:pharmacy_online/feature/authentication/model/response/pharmacy_store_response.dart';
 import 'package:pharmacy_online/feature/authentication/model/response/user_info_response.dart';
+import 'package:pharmacy_online/feature/authentication/page/sign_in_screen.dart';
 import 'package:pharmacy_online/feature/profile/controller/profile_controller.dart';
 import 'package:pharmacy_online/feature/profile/page/edit_pharmacy_store_screen.dart';
 import 'package:pharmacy_online/feature/store/controller/store_controller.dart';
@@ -40,6 +42,17 @@ class StoreDetailScreen extends ConsumerStatefulWidget {
 }
 
 class _StoreDetailScreenState extends BaseConsumerState<StoreDetailScreen> {
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      final pharmacyStoreInfo = widget.args?.pharmacyInfoResponse;
+      await ref
+          .read(storeControllerProvider.notifier)
+          .onGetReview('${pharmacyStoreInfo?.uid}');
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final pharmacyInfoResponse = widget.args?.pharmacyInfoResponse;
@@ -100,6 +113,20 @@ class StoreDetailContent extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final hasUserInfo = ref
+            .watch(
+              profileControllerProvider.select((value) => value.userInfo),
+            )
+            ?.uid !=
+        null;
+    final reviewList = ref
+        .watch(storeControllerProvider.select((value) => value.reviewList))
+        .value;
+
+    final rating = reviewList?.fold(0.0,
+            (previousValue, val) => ((val.rating ?? 0.0) + previousValue)) ??
+        0.0;
+
     final nameStore =
         pharmacyInfoResponse?.nameStore ?? pharmacyStoreInfo?.nameStore;
     final addressStore =
@@ -134,6 +161,7 @@ class StoreDetailContent extends ConsumerWidget {
                 },
                 child: RatingStartWidget(
                   itemSize: 24,
+                  initialRating: rating,
                   onRatingUpdate: (val) {},
                   isReadable: true,
                 ),
@@ -183,21 +211,40 @@ class StoreDetailContent extends ConsumerWidget {
           if (pharmacyInfoResponse != null) ...[
             BaseButton(
               onTap: () async {
-                final result = await ref
-                    .read(storeControllerProvider.notifier)
-                    .onRequestChatWithPharmacy('${pharmacyInfoResponse?.uid}');
+                if (hasUserInfo) {
+                  final result = await ref
+                      .read(storeControllerProvider.notifier)
+                      .onRequestChatWithPharmacy(
+                          '${pharmacyInfoResponse?.uid}');
 
-                if (result) {
-                  Fluttertoast.showToast(
-                    msg: "ส่งคำขอสำเร็จ",
-                    toastLength: Toast.LENGTH_SHORT,
-                    gravity: ToastGravity.BOTTOM,
-                  );
+                  if (result) {
+                    Fluttertoast.showToast(
+                      msg: "ส่งคำขอสำเร็จ",
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.BOTTOM,
+                    );
+                  } else {
+                    Fluttertoast.showToast(
+                      msg: "ส่งคำขอไม่สำเร็จ",
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.BOTTOM,
+                    );
+                  }
                 } else {
-                  Fluttertoast.showToast(
-                    msg: "ส่งคำขอไม่สำเร็จ",
-                    toastLength: Toast.LENGTH_SHORT,
-                    gravity: ToastGravity.BOTTOM,
+                  showDialog(
+                    context: context,
+                    builder: (_) {
+                      return BaseDialog(
+                        message: 'กรุณาเข้าสู่ระบบก่อนการใช้งาน',
+                        hasCancel: true,
+                        onClick: () {
+                          Navigator.of(context).pushNamedAndRemoveUntil(
+                            SignInScreen.routeName,
+                            (route) => false,
+                          );
+                        },
+                      );
+                    },
                   );
                 }
               },

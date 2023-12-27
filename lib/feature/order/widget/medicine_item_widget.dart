@@ -30,6 +30,7 @@ class MedicineItemWidget extends StatelessWidget {
           url: imgUrl,
           width: 80.w,
           height: 80.h,
+          fit: BoxFit.cover,
         ),
         SizedBox(
           width: 16.w,

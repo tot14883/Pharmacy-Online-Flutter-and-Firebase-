@@ -12,6 +12,7 @@ abstract class NotificationResponse with _$NotificationResponse {
     String? message,
     String? uid,
     String? id,
+    bool? isRead,
     DateTime? createAt,
   }) = _NotificationResponse;
 

@@ -4,6 +4,7 @@ import 'package:pharmacy_online/base_widget/base_form_field.dart';
 import 'package:pharmacy_online/feature/admin/model/response/pharmacy_info_response.dart';
 import 'package:pharmacy_online/feature/store/model/response/chat_with_pharmacy_response.dart';
 import 'package:pharmacy_online/feature/store/model/response/medicine_response.dart';
+import 'package:pharmacy_online/feature/store/model/response/reviews_response.dart';
 
 part 'store_state.freezed.dart';
 
@@ -22,5 +23,11 @@ class StoreState with _$StoreState {
     double? myLatitude,
     @Default(AsyncValue.loading())
     AsyncValue<List<ChatWithPharmacyResponse>?> chatWithPharmacyList,
+    @Default(AsyncValue.loading())
+    AsyncValue<PharmacyInfoResponse?> pharmacyDetail,
+    @Default(AsyncValue.loading())
+    AsyncValue<List<ReviewsResponse>?> reviewList,
+    @Default(AsyncValue.loading())
+    AsyncValue<List<CommentResponse>?> commentList,
   }) = _StoreState;
 }

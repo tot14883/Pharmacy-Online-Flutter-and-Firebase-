@@ -12,5 +12,7 @@ class ChatState with _$ChatState {
     String? errMsg,
     @Default(AsyncValue.loading())
     AsyncValue<List<ChatWithPharmacyResponse>?> chatWithPharmacyList,
+    @Default(AsyncValue.loading())
+    AsyncValue<List<ChatWithPharmacyResponse>?> messageList,
   }) = _ChatState;
 }

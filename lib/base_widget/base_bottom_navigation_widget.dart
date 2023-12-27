@@ -1,25 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pharmacy_online/core/app_color.dart';
 import 'package:pharmacy_online/core/app_style.dart';
+import 'package:pharmacy_online/core/widget/base_consumer_state.dart';
+import 'package:pharmacy_online/feature/profile/controller/profile_controller.dart';
 import 'package:pharmacy_online/generated/assets.gen.dart';
 
-class BottomNavigationWidget extends StatefulWidget {
+class BottomNavigationWidget extends ConsumerStatefulWidget {
   final Function(int currentPage) onChange;
 
   const BottomNavigationWidget({Key? key, required this.onChange})
       : super(key: key);
 
   @override
-  State<BottomNavigationWidget> createState() => _BottomNavigationWidgetState();
+  _BottomNavigationWidgetState createState() => _BottomNavigationWidgetState();
 }
 
-class _BottomNavigationWidgetState extends State<BottomNavigationWidget> {
+class _BottomNavigationWidgetState
+    extends BaseConsumerState<BottomNavigationWidget> {
   // ignore: prefer_final_fields
   int _currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {
+    final hasUserInfo = ref
+            .watch(profileControllerProvider.select((value) => value.userInfo))
+            ?.uid !=
+        null;
+
     return BottomNavigationBar(
       currentIndex: _currentIndex,
       selectedItemColor: AppColor.themePrimaryColor,
@@ -79,9 +88,21 @@ class _BottomNavigationWidgetState extends State<BottomNavigationWidget> {
         ),
       ],
       onTap: (value) {
-        setState(() {
-          _currentIndex = value;
-        });
+        if (hasUserInfo) {
+          setState(() {
+            _currentIndex = value;
+          });
+        } else {
+          if (value == 1 || value == 2) {
+            setState(() {
+              _currentIndex = 0;
+            });
+          } else {
+            setState(() {
+              _currentIndex = value;
+            });
+          }
+        }
         widget.onChange(value);
       },
     );
