@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pharmacy_online/base_widget/base_button.dart';
 import 'package:pharmacy_online/base_widget/base_scaffold.dart';
-import 'package:pharmacy_online/core/app_color.dart';
 import 'package:pharmacy_online/core/app_style.dart';
 import 'package:pharmacy_online/feature/authentication/page/sign_in_screen.dart';
 import 'package:pharmacy_online/feature/main/page/main_screen.dart';
@@ -32,19 +31,10 @@ class SignUpSuccessfulScreen extends ConsumerWidget {
               ),
               Text(
                 'ทำการเข้าสู่ระบบเรียบร้อย',
-                style: AppStyle.txtBody2,
+                style: AppStyle.txtHeader3,
               ),
               SizedBox(
                 height: 8.h,
-              ),
-              Text(
-                'รอแอดมินอนุมัติเพื่อดำเนินการต่อ',
-                style: AppStyle.txtCaption.copyWith(
-                  color: AppColor.themeGrayLight,
-                ),
-              ),
-              SizedBox(
-                height: 16.h,
               ),
               BaseButton(
                 minWidth: 100.w,

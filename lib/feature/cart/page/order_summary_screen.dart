@@ -144,7 +144,8 @@ class _OrderSummaryScreenState extends BaseConsumerState<OrderSummaryScreen> {
             final orderNumber = _orderDetail?.orderNumber;
             final convertCreateAt = ref
                 .read(baseDateFormatterProvider)
-                .convertStringToDateTime('${_orderDetail?.createAt}');
+                .convertStringToDateTime(
+                    '${_orderDetail?.createAt ?? _myCart?.createAt}');
             final createAt = ref
                 .read(baseDateFormatterProvider)
                 .formatDateWithFreeStyleFormat('dd/MM/yyyy', convertCreateAt);

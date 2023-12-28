@@ -63,6 +63,8 @@ class GetHistoryOfChatPharmacyUsecase
 
         final _user = collectUser.first.data() as Map<String, dynamic>;
 
+        print(_user);
+
         final collectMessage = await fireCloudStore
             .collection('chat')
             .doc(_data['id'])

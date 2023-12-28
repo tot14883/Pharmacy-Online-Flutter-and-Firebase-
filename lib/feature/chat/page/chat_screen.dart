@@ -18,6 +18,7 @@ import 'package:pharmacy_online/feature/cart/page/my_cart_screen.dart';
 import 'package:pharmacy_online/feature/chat/controller/chat_controller.dart';
 import 'package:pharmacy_online/feature/chat/widget/chat_list_widget.dart';
 import 'package:pharmacy_online/feature/order/enum/order_status_enum.dart';
+import 'package:pharmacy_online/feature/profile/controller/profile_controller.dart';
 import 'package:pharmacy_online/feature/store/model/response/chat_with_pharmacy_response.dart';
 import 'package:pharmacy_online/feature/store/page/my_medicine_warehouse_screen.dart';
 import 'package:pharmacy_online/generated/assets.gen.dart';
@@ -85,12 +86,17 @@ class _ChatScreenState extends BaseConsumerState<ChatScreen> {
   Widget build(BuildContext context) {
     final args = widget.args;
     final profileImg = args.chatWithPharmacyItem.profileImg;
+    final fullName = args.chatWithPharmacyItem.fullName;
+
     final nameStore = args.chatWithPharmacyItem.nameStore;
     final messageList = ref
         .watch(
           chatControllerProvider.select((value) => value.messageList),
         )
         .value;
+    final isPharmacy = ref.watch(
+      profileControllerProvider.select((value) => value.isPharmacy),
+    );
 
     final _messageList = messageList;
 
@@ -161,7 +167,7 @@ class _ChatScreenState extends BaseConsumerState<ChatScreen> {
                           width: 8.w,
                         ),
                         Text(
-                          '$nameStore',
+                          isPharmacy ? '$fullName' : '$nameStore',
                           style: AppStyle.txtCaption,
                         ),
                       ],
