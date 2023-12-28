@@ -27,9 +27,6 @@ class UserProfileHeaderWidget extends ConsumerWidget {
       profileControllerProvider.select((value) => value.userInfo),
     );
 
-    final isPharmacy = ref
-        .watch(profileControllerProvider.select((value) => value.isPharmacy));
-
     final profileImg = userInfo?.profileImg;
     final fullname = userInfo?.fullName;
 
@@ -57,56 +54,54 @@ class UserProfileHeaderWidget extends ConsumerWidget {
                     style: AppStyle.txtBody2,
                   ),
                 ),
-                if (!isPharmacy) ...[
-                  GestureDetector(
-                    onTap: () {
-                      ref
-                          .read(homeControllerProvider.notifier)
-                          .onGetNotification();
-                      Navigator.of(context)
-                          .pushNamed(NotificationScreen.routeName);
-                    },
-                    child: Stack(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(16).r,
-                          decoration: const BoxDecoration(
-                            color: AppColor.themeWhiteColor,
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(150 / 2),
-                            ),
-                          ),
-                          child: Assets.icons.icNotification.svg(
-                            width: 24.w,
-                            height: 24.h,
+                GestureDetector(
+                  onTap: () {
+                    ref
+                        .read(homeControllerProvider.notifier)
+                        .onGetNotification();
+                    Navigator.of(context)
+                        .pushNamed(NotificationScreen.routeName);
+                  },
+                  child: Stack(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(16).r,
+                        decoration: const BoxDecoration(
+                          color: AppColor.themeWhiteColor,
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(150 / 2),
                           ),
                         ),
-                        if (countNotification != 0) ...[
-                          Positioned(
-                            top: 12,
-                            right: 12,
-                            child: Container(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 4).w,
-                              decoration: const BoxDecoration(
-                                color: AppColor.errorColor,
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(150 / 2),
-                                ),
+                        child: Assets.icons.icNotification.svg(
+                          width: 24.w,
+                          height: 24.h,
+                        ),
+                      ),
+                      if (countNotification != 0) ...[
+                        Positioned(
+                          top: 12,
+                          right: 12,
+                          child: Container(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 4).w,
+                            decoration: const BoxDecoration(
+                              color: AppColor.errorColor,
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(150 / 2),
                               ),
-                              child: Text(
-                                '$countNotification',
-                                style: AppStyle.txtError.copyWith(
-                                  color: AppColor.themeWhiteColor,
-                                ),
+                            ),
+                            child: Text(
+                              '$countNotification',
+                              style: AppStyle.txtError.copyWith(
+                                color: AppColor.themeWhiteColor,
                               ),
                             ),
                           ),
-                        ],
+                        ),
                       ],
-                    ),
+                    ],
                   ),
-                ],
+                ),
               ],
             ),
     );

@@ -474,6 +474,14 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
                                     await ref
                                         .read(homeControllerProvider.notifier)
                                         .onPostNotification(
+                                          '$fullName ยืนยันการจัดส่งสำเร็จ',
+                                          OrderStatus.completed.name,
+                                          '$pharmacyId',
+                                        );
+
+                                    await ref
+                                        .read(homeControllerProvider.notifier)
+                                        .onPostNotification(
                                           'ยืนยันการจัดส่งสำเร็จ',
                                           OrderStatus.completed.name,
                                           '$uid',
