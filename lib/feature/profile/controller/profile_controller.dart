@@ -141,11 +141,16 @@ class ProfileController extends StateNotifier<ProfileState> {
     bool isSuccess = false;
 
     final baseFormData = state.baseFormData;
-    final fullName = baseFormData?.getValue<String>(FieldUserInfo.name) ?? '';
-    final phone = baseFormData?.getValue<String>(FieldUserInfo.phone) ?? '';
-    final address = baseFormData?.getValue<String>(FieldUserInfo.address);
+    final userInfo = state.userInfo;
+    final fullName = baseFormData?.getValue<String>(FieldUserInfo.name) ??
+        userInfo?.fullName;
+    final phone =
+        baseFormData?.getValue<String>(FieldUserInfo.phone) ?? userInfo?.phone;
+    final address = baseFormData?.getValue<String>(FieldUserInfo.address) ??
+        userInfo?.address;
     final licensePharmacy =
-        baseFormData?.getValue<String>(FieldUserInfo.licensePharmacy) ?? '';
+        baseFormData?.getValue<String>(FieldUserInfo.licensePharmacy) ??
+            userInfo?.licensePharmacy;
 
     final result = await _updateUserInfoUsecase.execute(
       UserInfoRequest(
@@ -159,7 +164,8 @@ class ProfileController extends StateNotifier<ProfileState> {
         profileImg: imgProfile,
         currentProfileImg: state.userInfo?.profileImg ?? '',
         licensePharmacyImg: imgLicensePharmacy,
-        currentLicensePharmacyImg: state.userInfo?.licensePharmacyImg ?? '',
+        currentLicensePharmacyImg:
+            state.pharmacyStore?.licensePharmacyImg ?? '',
       ),
     );
 
@@ -177,23 +183,29 @@ class ProfileController extends StateNotifier<ProfileState> {
     bool isSuccess = false;
 
     final baseFormData = state.baseFormData;
+    final pharmacyStore = state.pharmacyStore;
 
     // Pharmacy & Store
-    final nameStore =
-        baseFormData?.getValue<String>(FieldUserInfo.nameStore) ?? '';
+    final nameStore = baseFormData?.getValue<String>(FieldUserInfo.nameStore) ??
+        pharmacyStore?.nameStore;
     final addressStore =
-        baseFormData?.getValue<String>(FieldUserInfo.addressStore) ?? '';
+        baseFormData?.getValue<String>(FieldUserInfo.addressStore) ??
+            pharmacyStore?.address;
     final phoneStore =
-        baseFormData?.getValue<String>(FieldUserInfo.phoneStore) ?? '';
+        baseFormData?.getValue<String>(FieldUserInfo.phoneStore) ??
+            pharmacyStore?.phoneStore;
     final timeOpening =
-        baseFormData?.getValue<String>(FieldUserInfo.timeOpening) ?? '';
+        baseFormData?.getValue<String>(FieldUserInfo.timeOpening) ??
+            pharmacyStore?.timeOpening;
     final timeClosing =
-        baseFormData?.getValue<String>(FieldUserInfo.timeClosing) ?? '';
+        baseFormData?.getValue<String>(FieldUserInfo.timeClosing) ??
+            pharmacyStore?.timeClosing;
     final licensePharmacy =
-        baseFormData?.getValue<String>(FieldUserInfo.licensePharmacy) ?? '';
+        baseFormData?.getValue<String>(FieldUserInfo.licensePharmacy) ??
+            pharmacyStore?.licensePharmacy;
     final licensePharmacyStore =
         baseFormData?.getValue<String>(FieldUserInfo.licensePharmacyStore) ??
-            '';
+            pharmacyStore?.licenseStore;
 
     final result = await _updatePharmacyStoreUsecase.execute(
       UserInfoRequest(

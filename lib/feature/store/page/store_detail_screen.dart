@@ -21,7 +21,7 @@ import 'package:pharmacy_online/feature/store/controller/store_controller.dart';
 import 'package:pharmacy_online/feature/store/page/review_store_screen.dart';
 
 class StoreDetailArgs {
-  final PharmacyInfoResponse pharmacyInfoResponse;
+  final PharmacyInfoResponse? pharmacyInfoResponse;
 
   StoreDetailArgs({
     required this.pharmacyInfoResponse,
@@ -182,12 +182,12 @@ class StoreDetailContent extends ConsumerWidget {
             height: 16.h,
           ),
           Text(
-            "เปิด วันจันทร์ - วันเสาร์ เวลา $timeOpening - ปิด เวลา $timeClosing น. ",
-            style: AppStyle.txtBody.copyWith(color: AppColor.errorColor),
+            "เปิด วันจันทร์ - วันเสาร์ เวลา $timeOpening น. - $timeClosing น. ",
+            style: AppStyle.txtBody,
           ),
           Text(
             "ปิด  ทุกวันอาทิตย์",
-            style: AppStyle.txtBody.copyWith(color: AppColor.errorColor),
+            style: AppStyle.txtBody,
           ),
           SizedBox(
             height: 16.h,
@@ -215,7 +215,8 @@ class StoreDetailContent extends ConsumerWidget {
                   final result = await ref
                       .read(storeControllerProvider.notifier)
                       .onRequestChatWithPharmacy(
-                          '${pharmacyInfoResponse?.uid}');
+                        '${pharmacyInfoResponse?.uid}',
+                      );
 
                   if (result) {
                     Fluttertoast.showToast(
@@ -223,6 +224,7 @@ class StoreDetailContent extends ConsumerWidget {
                       toastLength: Toast.LENGTH_SHORT,
                       gravity: ToastGravity.BOTTOM,
                     );
+                    Navigator.of(context).pop();
                   } else {
                     Fluttertoast.showToast(
                       msg: "ส่งคำขอไม่สำเร็จ",
