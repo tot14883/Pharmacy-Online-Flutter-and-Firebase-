@@ -177,10 +177,12 @@ class _ChatScreenState extends BaseConsumerState<ChatScreen> {
                     SizedBox(
                       height: 16.h,
                     ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8.w),
-                      child: ChatListWidget(
-                        messageList: _messageList,
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(8, 0, 8, 72).r,
+                        child: ChatListWidget(
+                          messageList: _messageList,
+                        ),
                       ),
                     ),
                   ],
@@ -199,8 +201,11 @@ class _ChatScreenState extends BaseConsumerState<ChatScreen> {
                           final isGrant = await ref
                               .read(basePermissionHandlerProvider)
                               .requestStoragePermission();
+                          final isGrant31 = await ref
+                              .read(basePermissionHandlerProvider)
+                              .requestPhotosPermission();
 
-                          if (isGrant) {
+                          if (isGrant || isGrant31) {
                             final result = await ref
                                 .read(imagePickerUtilsProvider)
                                 .getImage(

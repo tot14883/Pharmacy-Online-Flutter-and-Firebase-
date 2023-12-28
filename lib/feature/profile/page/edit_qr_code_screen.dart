@@ -81,8 +81,10 @@ class _EditQRCodeScreenState extends BaseConsumerState<EditQRCodeScreen> {
                   final isGrant = await ref
                       .read(basePermissionHandlerProvider)
                       .requestStoragePermission();
-
-                  if (isGrant) {
+                  final isGrant31 = await ref
+                      .read(basePermissionHandlerProvider)
+                      .requestPhotosPermission();
+                  if (isGrant || isGrant31) {
                     final result =
                         await ref.read(imagePickerUtilsProvider).getImage(
                               const ImagePickerConfigRequest(

@@ -2,7 +2,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pharmacy_online/base_widget/base_form_field.dart';
 import 'package:pharmacy_online/core/loader/loader_controller.dart';
+import 'package:pharmacy_online/core/local/base_shared_preference.dart';
 import 'package:pharmacy_online/core/router/app_naviagor.dart';
+import 'package:pharmacy_online/feature/authentication/enum/authentication_type_enum.dart';
 import 'package:pharmacy_online/feature/order/model/request/review_request.dart';
 import 'package:pharmacy_online/feature/store/controller/state/store_state.dart';
 import 'package:pharmacy_online/feature/store/enum/field_medicine_enum.dart';
@@ -167,13 +169,20 @@ class StoreController extends StateNotifier<StoreState> {
     bool isSuccess = false;
 
     final baseFormData = state.baseFormData;
+
     final name = baseFormData?.getValue<String>(FieldMedicine.name);
+
     final price = baseFormData?.getValue<String>(FieldMedicine.price) ?? '0.0';
+
+    final isAdmin = _ref
+            .read(baseSharePreferenceProvider)
+            .getString(BaseSharePreferenceKey.role) ==
+        AuthenticationType.admin.name;
 
     final result = await _addMedicineWarehouseUsecase.execute(
       MedicineRequest(
         name: name,
-        price: double.parse(price),
+        price: double.parse(isAdmin ? '0.0' : price),
         medicineImg: medicineImg,
       ),
     );
