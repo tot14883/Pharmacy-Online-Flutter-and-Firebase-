@@ -179,8 +179,9 @@ class _ChatScreenState extends BaseConsumerState<ChatScreen> {
                     ),
                     Expanded(
                       child: Padding(
-                        padding: const EdgeInsets.fromLTRB(8, 0, 8, 72).r,
+                        padding: const EdgeInsets.fromLTRB(8, 0, 8, 76).r,
                         child: ChatListWidget(
+                          key: ValueKey(_messageList.length),
                           messageList: _messageList,
                         ),
                       ),

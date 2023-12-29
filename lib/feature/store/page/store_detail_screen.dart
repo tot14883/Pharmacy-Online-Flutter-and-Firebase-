@@ -15,6 +15,7 @@ import 'package:pharmacy_online/feature/admin/model/response/pharmacy_info_respo
 import 'package:pharmacy_online/feature/authentication/model/response/pharmacy_store_response.dart';
 import 'package:pharmacy_online/feature/authentication/model/response/user_info_response.dart';
 import 'package:pharmacy_online/feature/authentication/page/sign_in_screen.dart';
+import 'package:pharmacy_online/feature/chat/page/chat_screen.dart';
 import 'package:pharmacy_online/feature/dashboard/page/dashboard_screen.dart';
 import 'package:pharmacy_online/feature/profile/controller/profile_controller.dart';
 import 'package:pharmacy_online/feature/profile/page/edit_pharmacy_store_screen.dart';
@@ -53,6 +54,10 @@ class _StoreDetailScreenState extends BaseConsumerState<StoreDetailScreen> {
       await ref
           .read(storeControllerProvider.notifier)
           .onGetReview('${pharmacyStoreInfo?.uid ?? userInfo?.uid}');
+
+      await ref.read(storeControllerProvider.notifier).onCeckRequestChatAlready(
+            '${pharmacyStoreInfo?.uid ?? userInfo?.uid}',
+          );
     });
     super.initState();
   }
@@ -117,6 +122,10 @@ class StoreDetailContent extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final checkRequestChatAlready = ref.watch(
+      storeControllerProvider.select((value) => value.checkRequestChatAlready),
+    );
+
     final hasUserInfo = ref
             .watch(
               profileControllerProvider.select((value) => value.userInfo),
@@ -133,8 +142,10 @@ class StoreDetailContent extends ConsumerWidget {
 
     final nameStore =
         pharmacyInfoResponse?.nameStore ?? pharmacyStoreInfo?.nameStore;
+
     final addressStore =
-        pharmacyInfoResponse?.address ?? pharmacyStoreInfo?.address;
+        pharmacyStoreInfo?.address ?? pharmacyInfoResponse?.addressStore;
+
     final timeOpening =
         pharmacyInfoResponse?.timeOpening ?? pharmacyStoreInfo?.timeOpening;
     final timeClosing =
@@ -215,6 +226,10 @@ class StoreDetailContent extends ConsumerWidget {
           if (pharmacyInfoResponse != null) ...[
             BaseButton(
               onTap: () async {
+                if (checkRequestChatAlready) {
+                  Navigator.of(context).pushNamed(ChatScreen.routeName);
+                  return;
+                }
                 if (hasUserInfo) {
                   final result = await ref
                       .read(storeControllerProvider.notifier)
@@ -257,7 +272,7 @@ class StoreDetailContent extends ConsumerWidget {
                   );
                 }
               },
-              text: 'ส่งคำขอสนทนา',
+              text: checkRequestChatAlready ? 'สนทนา' : 'ส่งคำขอสนทนา',
             ),
           ] else ...[
             BaseButton(

@@ -62,6 +62,7 @@ class _InboxScreenState extends BaseConsumerState<InboxScreen> {
           'กล่องข้อความ',
           style: AppStyle.txtHeader3,
         ),
+        hideBackButton: true,
       ),
       bgColor: AppColor.themLineColor,
       bodyBuilder: (context, constrined) {

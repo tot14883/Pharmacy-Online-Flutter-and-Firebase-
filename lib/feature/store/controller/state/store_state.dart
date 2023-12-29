@@ -29,5 +29,6 @@ class StoreState with _$StoreState {
     AsyncValue<List<ReviewsResponse>?> reviewList,
     @Default(AsyncValue.loading())
     AsyncValue<List<CommentResponse>?> commentList,
+    @Default(false) bool checkRequestChatAlready,
   }) = _StoreState;
 }

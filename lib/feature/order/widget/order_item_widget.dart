@@ -89,7 +89,9 @@ class _OrderItemWidgetState extends BaseConsumerState<OrderItemWidget> {
 
     final billNumber = cartItem?.cartNumber ?? orderItem?.orderNumber;
     final billStatus = cartItem?.status ?? orderItem?.status;
-    final billName = cartItem?.nameStore ?? orderItem?.myCart?.nameStore;
+    final billName = isPharmacy
+        ? (cartItem?.fullName ?? orderItem?.myCart?.fullName)
+        : (cartItem?.nameStore ?? orderItem?.myCart?.nameStore);
 
     final uid = cartItem?.uid ?? orderItem?.uid;
     final pharmacyId = cartItem?.pharmacyId ?? orderItem?.pharmacyId;

@@ -90,6 +90,13 @@ class GetAllMyCartUsecase extends UseCase<CartRequest, List<CartResponse>> {
             );
           }
 
+          final collectUser = await fireCloudStore
+              .collection('user')
+              .doc(_data['uid'])
+              .get()
+              .then((value) => value);
+          final _user = collectUser.data() as Map<String, dynamic>;
+
           cartList.add(
             CartResponse(
               id: _data['id'],
@@ -97,6 +104,7 @@ class GetAllMyCartUsecase extends UseCase<CartRequest, List<CartResponse>> {
               nameStore: _data['nameStore'],
               cartNumber: _data['cartNumber'],
               pharmacyId: _data['pharmacyId'],
+              fullName: _user['fullName'],
               vatFee: _data['vatFee'],
               deliveryFee: _data['deliveryFee'],
               totalPrice: _data['totalPrice'],

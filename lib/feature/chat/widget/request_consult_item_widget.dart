@@ -134,8 +134,19 @@ class _RequestConsultItemWidgetState
                                 .read(storeControllerProvider.notifier)
                                 .onGetGetRequestChatWithPharmacy();
 
-                            Navigator.of(context)
-                                .pushNamed(ChatScreen.routeName);
+                            final isPharmacy = ref.watch(
+                              profileControllerProvider.select(
+                                (value) => value.isPharmacy,
+                              ),
+                            );
+
+                            Navigator.of(context).pushNamed(
+                              ChatScreen.routeName,
+                              arguments: ChatArgs(
+                                chatWithPharmacyItem: chatWithPharmacyItem,
+                                isPharmacy: isPharmacy,
+                              ),
+                            );
                           }
                         },
                         text: 'ตอบรับ',

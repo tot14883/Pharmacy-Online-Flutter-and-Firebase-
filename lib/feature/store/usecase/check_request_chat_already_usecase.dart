@@ -1,26 +1,27 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pharmacy_online/core/application/usecase.dart';
 import 'package:pharmacy_online/core/firebase/database/cloud_store_provider.dart';
 import 'package:pharmacy_online/core/local/base_shared_preference.dart';
 import 'package:pharmacy_online/feature/store/model/request/chat_with_pharmacy_request.dart';
 
-final requestChatWithPharmacyUsecaseProvider =
-    Provider<RequestChatWithPharmacyUsecase>((ref) {
+final checkRequestChatAlreadyUsecaseProvider =
+    Provider<CheckRequestChatAlreadyUsecase>((ref) {
   final fireCloudStore = ref.watch(firebaseCloudStoreProvider);
   final baseSharePreference = ref.watch(baseSharePreferenceProvider);
-  return RequestChatWithPharmacyUsecase(
+  return CheckRequestChatAlreadyUsecase(
     ref,
     fireCloudStore,
     baseSharePreference,
   );
 });
 
-class RequestChatWithPharmacyUsecase
+class CheckRequestChatAlreadyUsecase
     extends UseCase<ChatWithPharmacyRequest, bool> {
   final FirebaseCloudStore fireCloudStore;
   final BaseSharedPreference baseSharePreference;
 
-  RequestChatWithPharmacyUsecase(
+  CheckRequestChatAlreadyUsecase(
     Ref ref,
     this.fireCloudStore,
     this.baseSharePreference,
@@ -37,22 +38,26 @@ class RequestChatWithPharmacyUsecase
 
       final uid = baseSharePreference.getString(BaseSharePreferenceKey.userId);
 
-      final collect = fireCloudStore.collection('chat');
+      final hasRequest = await fireCloudStore
+          .collection('chat')
+          .where('uid', isEqualTo: uid)
+          .where('pharmacyId', isEqualTo: pharmacyId)
+          .where(
+            Filter.or(
+              Filter(
+                'status',
+                isEqualTo: "waiting",
+              ),
+              Filter(
+                'status',
+                isEqualTo: "approve",
+              ),
+            ),
+          )
+          .get()
+          .then((value) => value.docs);
 
-      final collectId = collect.doc().id;
-
-      final Map<String, dynamic> myData = {
-        "id": collectId,
-        "uid": uid,
-        "pharmacyId": pharmacyId,
-        "status": "waiting",
-        "create_at": DateTime.now(),
-        "update_at": DateTime.now(),
-      };
-
-      await collect.doc(collectId).set(myData);
-
-      return true;
+      return hasRequest.isNotEmpty;
     } catch (e) {
       return false;
     }

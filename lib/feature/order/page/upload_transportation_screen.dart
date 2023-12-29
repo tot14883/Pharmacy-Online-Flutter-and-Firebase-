@@ -90,7 +90,7 @@ class _UploadTransportationScreenState
                   onTap: () async {
                     if (evidenceFile == null) {
                       Fluttertoast.showToast(
-                        msg: "กรุณาเพิ่มสลิป",
+                        msg: "กรุณาเพิ่มรูป",
                         toastLength: Toast.LENGTH_SHORT,
                         gravity: ToastGravity.BOTTOM,
                       );
@@ -118,7 +118,7 @@ class _UploadTransportationScreenState
                           );
 
                       Fluttertoast.showToast(
-                        msg: "อัพโหลดสลิปสำเร็จ",
+                        msg: "อัพโหลดรูปสำเร็จ",
                         toastLength: Toast.LENGTH_SHORT,
                         gravity: ToastGravity.BOTTOM,
                       );
@@ -126,7 +126,7 @@ class _UploadTransportationScreenState
                       Navigator.of(context).pop();
                     } else {
                       Fluttertoast.showToast(
-                        msg: "ไม่สามารถอัพโหลดสลิปได้",
+                        msg: "ไม่สามารถอัพโหลดรูปได้",
                         toastLength: Toast.LENGTH_SHORT,
                         gravity: ToastGravity.BOTTOM,
                       );
