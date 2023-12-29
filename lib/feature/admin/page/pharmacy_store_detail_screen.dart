@@ -37,14 +37,14 @@ class _PharmacyStoreDetaillScreenState
   Widget build(BuildContext context) {
     final pharmacyStoreInfo = widget.args.pharmacyItem;
 
-    final pharmacyStoreImg = pharmacyStoreInfo?.storeImg;
-    final licensePharmacyStore = pharmacyStoreInfo?.licenseStoreImg;
-    final nameStore = pharmacyStoreInfo?.nameStore;
-    final phoneStore = pharmacyStoreInfo?.phoneStore;
-    final address = pharmacyStoreInfo?.address;
-    final timeClosing = pharmacyStoreInfo?.timeClosing;
-    final timeOpening = pharmacyStoreInfo?.timeOpening;
-    final licenseStore = pharmacyStoreInfo?.licenseStore;
+    final pharmacyStoreImg = pharmacyStoreInfo.storeImg;
+    final licensePharmacyStore = pharmacyStoreInfo.licenseStoreImg;
+    final nameStore = pharmacyStoreInfo.nameStore;
+    final phoneStore = pharmacyStoreInfo.phoneStore;
+    final address = pharmacyStoreInfo.addressStore;
+    final timeClosing = pharmacyStoreInfo.timeClosing;
+    final timeOpening = pharmacyStoreInfo.timeOpening;
+    final licenseStore = pharmacyStoreInfo.licenseStore;
 
     return BaseScaffold(
       appBar: BaseAppBar(

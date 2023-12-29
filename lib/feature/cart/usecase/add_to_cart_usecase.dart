@@ -59,6 +59,9 @@ class AddToCartUsecase extends UseCase<CartRequest, bool> {
       final cartId = collectCart.doc().id;
       Map<String, dynamic>? _dataGetCart;
 
+      final random = Random();
+      int randomNumber = random.nextInt(10000);
+
       if (getCart.isNotEmpty) {
         _dataGetCart = getCart.first.data() as Map<String, dynamic>;
 
@@ -73,6 +76,7 @@ class AddToCartUsecase extends UseCase<CartRequest, bool> {
           "storeId": storeId,
           "pharmacyId": pharmacyId,
           "uid": uid,
+          "cartNumber": "C$randomNumber",
           "nameStore": nameStore,
           "status": OrderStatus.waitingConfirmOrder.name,
           "create_at": DateTime.now(),
@@ -107,13 +111,10 @@ class AddToCartUsecase extends UseCase<CartRequest, bool> {
         };
         await collectCartMedicine.doc(_data['id']).update(myMedicine);
       } else {
-        final random = Random();
-        int randomNumber = random.nextInt(10000);
-
         final Map<String, dynamic> myMedicine = {
           "id": cartMedicineId,
-          "cartNumber": "C$randomNumber",
           "quantity": quantity,
+          "cartNumber": "C$randomNumber",
           "medicineImg": medicineImg,
           "medicineName": medicineName,
           "medicinePrice": medicinePrice,

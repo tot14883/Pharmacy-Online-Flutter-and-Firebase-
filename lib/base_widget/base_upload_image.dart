@@ -114,7 +114,11 @@ class ChooseFileWidget extends ConsumerWidget {
             .read(basePermissionHandlerProvider)
             .requestStoragePermission();
 
-        if (isGrant) {
+        final isGrant31 = await ref
+            .read(basePermissionHandlerProvider)
+            .requestPhotosPermission();
+
+        if (isGrant || isGrant31) {
           final result = await ref.read(imagePickerUtilsProvider).getImage(
                 ImagePickerConfigRequest(
                   source: source,

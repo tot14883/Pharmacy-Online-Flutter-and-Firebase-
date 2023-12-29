@@ -33,6 +33,8 @@ class _ProfileScreenState extends BaseConsumerState<ProfileScreen> {
   Widget build(BuildContext context) {
     final userInfo =
         ref.watch(profileControllerProvider.select((value) => value.userInfo));
+    final pharmacyStore = ref.watch(
+        profileControllerProvider.select((value) => value.pharmacyStore));
 
     final isPharmacy = ref
         .watch(profileControllerProvider.select((value) => value.isPharmacy));
@@ -72,8 +74,9 @@ class _ProfileScreenState extends BaseConsumerState<ProfileScreen> {
                   ProfileMenuWidget(
                     onTap: () {
                       ref.read(profileControllerProvider.notifier).clearForm();
-                      Navigator.of(context)
-                          .pushNamed(EditProfileScreen.routeName);
+                      Navigator.of(context).pushNamed(
+                        EditProfileScreen.routeName,
+                      );
                     },
                     prefixIcon: Assets.icons.icPersion.svg(),
                     label: 'แก้ไขข้อมูลส่วนตัว',
@@ -85,8 +88,13 @@ class _ProfileScreenState extends BaseConsumerState<ProfileScreen> {
                         ref
                             .read(profileControllerProvider.notifier)
                             .clearForm();
-                        Navigator.of(context)
-                            .pushNamed(StoreDetailScreen.routeName);
+
+                        Navigator.of(context).pushNamed(
+                          StoreDetailScreen.routeName,
+                          arguments: StoreDetailArgs(
+                            pharmacyInfoResponse: null,
+                          ),
+                        );
                       },
                       prefixIcon: Assets.imgs.imgStore.image(
                         width: 42,

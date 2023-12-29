@@ -115,7 +115,7 @@ class PharmacyItemWidget extends ConsumerWidget {
     if (status == 'waiting') {
       return 'รออนุมัติ';
     } else {
-      return 'ร้านได้รับการอนุญาติแล้ว';
+      return 'ร้านได้รับการอนุมัติแล้ว';
     }
   }
 

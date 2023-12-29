@@ -89,7 +89,9 @@ class InboxItemWidget extends ConsumerWidget {
                     children: [
                       Expanded(
                         child: Text(
-                          '${chatWithPharmacyItem.nameStore}',
+                          isPharmacy
+                              ? '${chatWithPharmacyItem.fullName}'
+                              : '${chatWithPharmacyItem.nameStore}',
                           style: AppStyle.txtBody2,
                         ),
                       ),

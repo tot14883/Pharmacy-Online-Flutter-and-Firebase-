@@ -16,7 +16,6 @@ class PharmacyListWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return ListView.separated(
-      physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
       itemCount: pharmacyList.length,
       itemBuilder: (context, index) {

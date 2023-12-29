@@ -66,6 +66,7 @@ class _UploadBankTransferScreenState
     final summaryPrice = orderDetail.value?.myCart?.sumamryPrice;
     final cartId = orderDetail.value?.cartId;
     final id = orderDetail.value?.id;
+    final fullName = orderDetail.value?.myCart?.fullName;
 
     return AsyncValueWidget(
       value: pharmacyDetail,
@@ -290,6 +291,14 @@ class _UploadBankTransferScreenState
                                   );
 
                               if (result) {
+                                await ref
+                                    .read(homeControllerProvider.notifier)
+                                    .onPostNotification(
+                                      '$fullName ทำการชำระเงินแล้ว',
+                                      OrderStatus.waitingDelivery.name,
+                                      '$pharmacyId',
+                                    );
+
                                 await ref
                                     .read(homeControllerProvider.notifier)
                                     .onPostNotification(

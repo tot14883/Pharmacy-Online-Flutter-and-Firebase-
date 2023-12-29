@@ -181,7 +181,7 @@ class MedicineWarehouseItemWidget extends ConsumerWidget {
                     );
                   },
                   child: Text(
-                    '${medicineItem.price} ราคา',
+                    'ราคา ${medicineItem.price}',
                     style: AppStyle.txtBody,
                     textAlign: TextAlign.end,
                   ),

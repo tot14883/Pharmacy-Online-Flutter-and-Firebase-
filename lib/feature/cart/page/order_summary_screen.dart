@@ -144,7 +144,8 @@ class _OrderSummaryScreenState extends BaseConsumerState<OrderSummaryScreen> {
             final orderNumber = _orderDetail?.orderNumber;
             final convertCreateAt = ref
                 .read(baseDateFormatterProvider)
-                .convertStringToDateTime('${_orderDetail?.createAt}');
+                .convertStringToDateTime(
+                    '${_orderDetail?.createAt ?? _myCart?.createAt}');
             final createAt = ref
                 .read(baseDateFormatterProvider)
                 .formatDateWithFreeStyleFormat('dd/MM/yyyy', convertCreateAt);
@@ -408,6 +409,14 @@ class _OrderSummaryScreenState extends BaseConsumerState<OrderSummaryScreen> {
                                 );
 
                             if (result) {
+                              await ref
+                                  .read(homeControllerProvider.notifier)
+                                  .onPostNotification(
+                                    '${'${_myCart?.fullName}'} ยืนยันออเดอร์แล้ว',
+                                    OrderStatus.confirmOrder.name,
+                                    '${_myCart?.pharmacyId}',
+                                  );
+
                               await ref
                                   .read(orderControllerProvider.notifier)
                                   .onGetOrder(

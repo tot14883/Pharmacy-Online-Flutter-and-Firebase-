@@ -201,6 +201,8 @@ class _SignUpStep1WidgetState extends ConsumerState<SignUpStep1Widget> {
                       );
                     },
                   );
+
+                  return;
                 }
 
                 if (confirmPasswordController.text != passwordController.text) {

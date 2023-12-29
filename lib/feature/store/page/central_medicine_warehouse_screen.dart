@@ -55,7 +55,7 @@ class _CentralMedicineWarehouseScreenState
                         );
                       },
                       child: Padding(
-                        padding: const EdgeInsets.all(16).r,
+                        padding: const EdgeInsets.all(8).r,
                         child: Text(
                           'เพิ่มยา',
                           style: AppStyle.txtBody,

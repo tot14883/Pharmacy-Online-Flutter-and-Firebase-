@@ -11,6 +11,7 @@ import 'package:pharmacy_online/core/app_color.dart';
 import 'package:pharmacy_online/core/app_style.dart';
 import 'package:pharmacy_online/core/widget/base_consumer_state.dart';
 import 'package:pharmacy_online/feature/dashboard/page/dashboard_screen.dart';
+import 'package:pharmacy_online/feature/home/controller/home_controller.dart';
 import 'package:pharmacy_online/feature/order/controller/order_controller.dart';
 import 'package:pharmacy_online/feature/order/widget/card_content_widget.dart';
 import 'package:pharmacy_online/feature/store/controller/store_controller.dart';
@@ -43,6 +44,7 @@ class _AddReviewScreenState extends BaseConsumerState<AddReviewScreen> {
     final orderId = orderDetail?.id;
     final pharmacyId = orderDetail?.pharmacyId;
     final uid = orderDetail?.uid;
+    final fullname = orderDetail?.myCart?.fullName;
 
     return BaseScaffold(
       bgColor: AppColor.themePrimaryColor,
@@ -99,6 +101,14 @@ class _AddReviewScreenState extends BaseConsumerState<AddReviewScreen> {
                           );
 
                       if (result) {
+                        await ref
+                            .read(homeControllerProvider.notifier)
+                            .onPostNotification(
+                              '$fullname เพิ่มรีวิวให้กับร้านคุณ',
+                              'approve',
+                              '$pharmacyId',
+                            );
+
                         Navigator.of(context).pushNamedAndRemoveUntil(
                           DashboardScreen.routeName,
                           (route) => false,

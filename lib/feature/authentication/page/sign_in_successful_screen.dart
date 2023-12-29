@@ -48,7 +48,7 @@ class _SignInSuccessfulScreenState
               ),
               Text(
                 'ทำการเข้าสู่ระบบเรียบร้อย',
-                style: AppStyle.txtBody2,
+                style: AppStyle.txtHeader3,
               ),
               SizedBox(
                 height: 16.h,
