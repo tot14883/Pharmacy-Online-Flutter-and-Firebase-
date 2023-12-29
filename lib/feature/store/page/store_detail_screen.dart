@@ -15,6 +15,7 @@ import 'package:pharmacy_online/feature/admin/model/response/pharmacy_info_respo
 import 'package:pharmacy_online/feature/authentication/model/response/pharmacy_store_response.dart';
 import 'package:pharmacy_online/feature/authentication/model/response/user_info_response.dart';
 import 'package:pharmacy_online/feature/authentication/page/sign_in_screen.dart';
+import 'package:pharmacy_online/feature/dashboard/page/dashboard_screen.dart';
 import 'package:pharmacy_online/feature/profile/controller/profile_controller.dart';
 import 'package:pharmacy_online/feature/profile/page/edit_pharmacy_store_screen.dart';
 import 'package:pharmacy_online/feature/store/controller/store_controller.dart';
@@ -46,9 +47,12 @@ class _StoreDetailScreenState extends BaseConsumerState<StoreDetailScreen> {
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       final pharmacyStoreInfo = widget.args?.pharmacyInfoResponse;
+      final userInfo = ref.watch(
+        profileControllerProvider.select((value) => value.userInfo),
+      );
       await ref
           .read(storeControllerProvider.notifier)
-          .onGetReview('${pharmacyStoreInfo?.uid}');
+          .onGetReview('${pharmacyStoreInfo?.uid ?? userInfo?.uid}');
     });
     super.initState();
   }
@@ -224,7 +228,10 @@ class StoreDetailContent extends ConsumerWidget {
                       toastLength: Toast.LENGTH_SHORT,
                       gravity: ToastGravity.BOTTOM,
                     );
-                    Navigator.of(context).pop();
+                    Navigator.of(context).pushNamedAndRemoveUntil(
+                      DashboardScreen.routeName,
+                      (route) => false,
+                    );
                   } else {
                     Fluttertoast.showToast(
                       msg: "ส่งคำขอไม่สำเร็จ",

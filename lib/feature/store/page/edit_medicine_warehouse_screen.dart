@@ -14,7 +14,9 @@ import 'package:pharmacy_online/base_widget/base_text_field.dart';
 import 'package:pharmacy_online/base_widget/base_upload_image_button.dart';
 import 'package:pharmacy_online/core/app_color.dart';
 import 'package:pharmacy_online/core/app_style.dart';
+import 'package:pharmacy_online/core/local/base_shared_preference.dart';
 import 'package:pharmacy_online/core/widget/base_consumer_state.dart';
+import 'package:pharmacy_online/feature/authentication/enum/authentication_type_enum.dart';
 import 'package:pharmacy_online/feature/store/controller/store_controller.dart';
 import 'package:pharmacy_online/feature/store/enum/field_medicine_enum.dart';
 import 'package:pharmacy_online/feature/store/model/response/medicine_response.dart';
@@ -58,6 +60,10 @@ class _EditMedicineWarehouseScreenState
   @override
   Widget build(BuildContext context) {
     final medicineItem = widget.args.medicineItem;
+    final isAdmin = ref
+            .read(baseSharePreferenceProvider)
+            .getString(BaseSharePreferenceKey.role) ==
+        AuthenticationType.admin.name;
 
     return BaseScaffold(
       appBar: BaseAppBar(
@@ -127,20 +133,22 @@ class _EditMedicineWarehouseScreenState
                 // SizedBox(
                 //   height: 16.h,
                 // ),
-                BaseTextField(
-                  fieldKey: FieldMedicine.price,
-                  initialValue: '${medicineItem.price}',
-                  placeholder: "ราคา",
-                  textInputType: TextInputType.number,
-                  validator: Validators.combine(
-                    [
-                      Validators.withMessage(
-                        "Required",
-                        Validators.isEmpty,
-                      ),
-                    ],
+                if (!isAdmin) ...[
+                  BaseTextField(
+                    fieldKey: FieldMedicine.price,
+                    initialValue: '${medicineItem.price}',
+                    placeholder: "ราคา",
+                    textInputType: TextInputType.number,
+                    validator: Validators.combine(
+                      [
+                        Validators.withMessage(
+                          "Required",
+                          Validators.isEmpty,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
+                ],
                 SizedBox(
                   height: 16.h,
                 ),
