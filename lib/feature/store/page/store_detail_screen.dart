@@ -10,11 +10,13 @@ import 'package:pharmacy_online/base_widget/base_scaffold.dart';
 import 'package:pharmacy_online/base_widget/rating_start_widget.dart';
 import 'package:pharmacy_online/core/app_color.dart';
 import 'package:pharmacy_online/core/app_style.dart';
+import 'package:pharmacy_online/core/local/base_shared_preference.dart';
 import 'package:pharmacy_online/core/widget/base_consumer_state.dart';
 import 'package:pharmacy_online/feature/admin/model/response/pharmacy_info_response.dart';
 import 'package:pharmacy_online/feature/authentication/model/response/pharmacy_store_response.dart';
 import 'package:pharmacy_online/feature/authentication/model/response/user_info_response.dart';
 import 'package:pharmacy_online/feature/authentication/page/sign_in_screen.dart';
+import 'package:pharmacy_online/feature/chat/controller/chat_controller.dart';
 import 'package:pharmacy_online/feature/chat/page/chat_screen.dart';
 import 'package:pharmacy_online/feature/dashboard/page/dashboard_screen.dart';
 import 'package:pharmacy_online/feature/profile/controller/profile_controller.dart';
@@ -55,7 +57,14 @@ class _StoreDetailScreenState extends BaseConsumerState<StoreDetailScreen> {
           .read(storeControllerProvider.notifier)
           .onGetReview('${pharmacyStoreInfo?.uid ?? userInfo?.uid}');
 
-      await ref.read(storeControllerProvider.notifier).onCeckRequestChatAlready(
+      await ref
+          .read(storeControllerProvider.notifier)
+          .onCheckRequestChatAlready(
+            '${pharmacyStoreInfo?.uid ?? userInfo?.uid}',
+          );
+      await ref
+          .read(storeControllerProvider.notifier)
+          .onCheckRequestChatWaiting(
             '${pharmacyStoreInfo?.uid ?? userInfo?.uid}',
           );
     });
@@ -125,7 +134,9 @@ class StoreDetailContent extends ConsumerWidget {
     final checkRequestChatAlready = ref.watch(
       storeControllerProvider.select((value) => value.checkRequestChatAlready),
     );
-
+    final checkRequestChatWaiting = ref.watch(
+      storeControllerProvider.select((value) => value.checkRequestChatWaiting),
+    );
     final hasUserInfo = ref
             .watch(
               profileControllerProvider.select((value) => value.userInfo),
@@ -139,6 +150,12 @@ class StoreDetailContent extends ConsumerWidget {
     final rating = reviewList?.fold(0.0,
             (previousValue, val) => ((val.rating ?? 0.0) + previousValue)) ??
         0.0;
+
+    final pharmacyId = pharmacyInfoResponse?.uid ?? pharmacyStoreInfo?.uid;
+
+    final uid = ref
+        .read(baseSharePreferenceProvider)
+        .getString(BaseSharePreferenceKey.userId);
 
     final nameStore =
         pharmacyInfoResponse?.nameStore ?? pharmacyStoreInfo?.nameStore;
@@ -172,7 +189,12 @@ class StoreDetailContent extends ConsumerWidget {
               ),
               GestureDetector(
                 onTap: () {
-                  Navigator.of(context).pushNamed(ReviewStoreScreen.routeName);
+                  Navigator.of(context).pushNamed(
+                    ReviewStoreScreen.routeName,
+                    arguments: StoreDetailArgs(
+                      pharmacyInfoResponse: pharmacyInfoResponse,
+                    ),
+                  );
                 },
                 child: RatingStartWidget(
                   itemSize: 24,
@@ -226,8 +248,21 @@ class StoreDetailContent extends ConsumerWidget {
           if (pharmacyInfoResponse != null) ...[
             BaseButton(
               onTap: () async {
+                if (checkRequestChatWaiting) {
+                  return;
+                }
+
                 if (checkRequestChatAlready) {
-                  Navigator.of(context).pushNamed(ChatScreen.routeName);
+                  final result = await ref
+                      .read(chatControllerProvider.notifier)
+                      .onGetChatDetail('$pharmacyId', '$uid');
+                  final id = result.id;
+                  if (id != null && id.isNotEmpty) {
+                    Navigator.of(context).pushNamed(
+                      ChatScreen.routeName,
+                      arguments: ChatArgs(chatWithPharmacyItem: result),
+                    );
+                  }
                   return;
                 }
                 if (hasUserInfo) {
@@ -272,7 +307,9 @@ class StoreDetailContent extends ConsumerWidget {
                   );
                 }
               },
-              text: checkRequestChatAlready ? 'สนทนา' : 'ส่งคำขอสนทนา',
+              text: checkRequestChatWaiting
+                  ? 'ท่านได้ส่งคำขอไปแล้วกรุณารออนุมัติ'
+                  : (checkRequestChatAlready ? 'สนทนา' : 'ส่งคำขอสนทนา'),
             ),
           ] else ...[
             BaseButton(

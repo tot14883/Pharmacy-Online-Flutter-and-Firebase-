@@ -18,6 +18,7 @@ import 'package:pharmacy_online/feature/store/usecase/add_medicine_warehouse_use
 import 'package:pharmacy_online/feature/store/usecase/add_review_store_usecase.dart';
 import 'package:pharmacy_online/feature/store/usecase/approve_chat_with_pharmacy_usecase.dart';
 import 'package:pharmacy_online/feature/store/usecase/check_request_chat_already_usecase.dart';
+import 'package:pharmacy_online/feature/store/usecase/check_request_chat_waiting_usecase.dart';
 import 'package:pharmacy_online/feature/store/usecase/delete_comment_store_usecase.dart';
 import 'package:pharmacy_online/feature/store/usecase/delete_medicine_warehouse_usecase.dart';
 import 'package:pharmacy_online/feature/store/usecase/delete_review_store_usecase.dart';
@@ -73,7 +74,8 @@ final storeControllerProvider =
         ref.watch(deleteCommentStoreUsecaseProvider);
     final checkRequestChatAlreadyUsecase =
         ref.watch(checkRequestChatAlreadyUsecaseProvider);
-
+    final checkRequestChatWaitingUsecase =
+        ref.watch(checkRequestChatWaitingUsecaseProvider);
     return StoreController(
       ref,
       const StoreState(),
@@ -100,6 +102,7 @@ final storeControllerProvider =
       deleteReviewStoreUsecase,
       deleteCommentStoreUsecase,
       checkRequestChatAlreadyUsecase,
+      checkRequestChatWaitingUsecase,
     );
   },
 );
@@ -131,6 +134,7 @@ class StoreController extends StateNotifier<StoreState> {
   final DeleteReviewStoreUsecase _deleteReviewStoreUsecase;
   final DeleteCommentStoreUsecase _deleteCommentStoreUsecase;
   final CheckRequestChatAlreadyUsecase _checkRequestChatAlreadyUsecase;
+  final CheckRequestChatWaitingUsecase _checkRequestChatWaitingUsecase;
 
   StoreController(
     this._ref,
@@ -158,6 +162,7 @@ class StoreController extends StateNotifier<StoreState> {
     this._deleteReviewStoreUsecase,
     this._deleteCommentStoreUsecase,
     this._checkRequestChatAlreadyUsecase,
+    this._checkRequestChatWaitingUsecase,
   )   : _loader = _ref.read(loaderControllerProvider.notifier),
         super(state);
 
@@ -603,7 +608,7 @@ class StoreController extends StateNotifier<StoreState> {
     return isSuccess;
   }
 
-  Future<void> onCeckRequestChatAlready(String pharmacyId) async {
+  Future<void> onCheckRequestChatAlready(String pharmacyId) async {
     final result = await _checkRequestChatAlreadyUsecase.execute(
       ChatWithPharmacyRequest(
         pharmacyId: pharmacyId,
@@ -613,6 +618,21 @@ class StoreController extends StateNotifier<StoreState> {
     result.when(
       (success) => state = state.copyWith(
         checkRequestChatAlready: success,
+      ),
+      (error) => null,
+    );
+  }
+
+  Future<void> onCheckRequestChatWaiting(String pharmacyId) async {
+    final result = await _checkRequestChatWaitingUsecase.execute(
+      ChatWithPharmacyRequest(
+        pharmacyId: pharmacyId,
+      ),
+    );
+
+    result.when(
+      (success) => state = state.copyWith(
+        checkRequestChatWaiting: success,
       ),
       (error) => null,
     );

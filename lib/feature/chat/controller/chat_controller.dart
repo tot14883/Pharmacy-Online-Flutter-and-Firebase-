@@ -7,6 +7,8 @@ import 'package:pharmacy_online/feature/chat/controller/state/chat_state.dart';
 import 'package:pharmacy_online/feature/chat/usecase/get_message_chat_usecase.dart';
 import 'package:pharmacy_online/feature/chat/usecase/push_message_chat_usecase.dart';
 import 'package:pharmacy_online/feature/store/model/request/chat_with_pharmacy_request.dart';
+import 'package:pharmacy_online/feature/store/model/response/chat_with_pharmacy_response.dart';
+import 'package:pharmacy_online/feature/store/usecase/get_chat_detail_usecase.dart';
 import 'package:pharmacy_online/feature/store/usecase/get_history_of_chat_pharmacy_usecase.dart';
 import 'package:pharmacy_online/feature/store/usecase/get_history_of_chat_user_usecase.dart';
 import 'package:pharmacy_online/utils/util/base_utils.dart';
@@ -22,6 +24,7 @@ final chatControllerProvider = StateNotifierProvider<ChatController, ChatState>(
         ref.watch(getHistoryOfChatPharmacyUsecaseProvider);
     final pushMessageChatUsecase = ref.watch(pushMessageChatUsecaseProvider);
     final getMessageChatUsecase = ref.watch(getMessageChatUsecaseProvider);
+    final getChatDetailUsecase = ref.watch(getChatDetailUsecaseProvider);
 
     return ChatController(
       ref,
@@ -33,6 +36,7 @@ final chatControllerProvider = StateNotifierProvider<ChatController, ChatState>(
       getHistoryOfChatPharmacyUsecase,
       pushMessageChatUsecase,
       getMessageChatUsecase,
+      getChatDetailUsecase,
     );
   },
 );
@@ -47,6 +51,8 @@ class ChatController extends StateNotifier<ChatState> {
   final GetHistoryOfChatPharmacyUsecase _getHistoryOfChatPharmacyUsecase;
   final PushMessageChatUsecase _pushMessageChatUsecase;
   final GetMessageChatUsecase _getMessageChatUsecase;
+  final GetChatDetailUsecase _getChatDetailUsecase;
+
   ChatController(
     this._ref,
     ChatState state,
@@ -57,6 +63,7 @@ class ChatController extends StateNotifier<ChatState> {
     this._getHistoryOfChatPharmacyUsecase,
     this._pushMessageChatUsecase,
     this._getMessageChatUsecase,
+    this._getChatDetailUsecase,
   )   : _loader = _ref.read(loaderControllerProvider.notifier),
         super(state);
 
@@ -158,5 +165,21 @@ class ChatController extends StateNotifier<ChatState> {
       },
       (error) {},
     );
+  }
+
+  Future<ChatWithPharmacyResponse> onGetChatDetail(
+      String pharmacyId, String uid) async {
+    ChatWithPharmacyResponse response = const ChatWithPharmacyResponse();
+
+    final result = await _getChatDetailUsecase.execute(
+      ChatWithPharmacyRequest(
+        pharmacyId: pharmacyId,
+        uid: uid,
+      ),
+    );
+
+    result.when((success) => response = success, (error) => null);
+
+    return response;
   }
 }

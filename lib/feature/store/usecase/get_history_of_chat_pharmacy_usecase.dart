@@ -43,7 +43,7 @@ class GetHistoryOfChatPharmacyUsecase
             'pharmacyId',
             isEqualTo: uid,
           )
-          .orderBy('create_at')
+          .orderBy('update_at')
           .get()
           .then((value) => value.docs);
 
@@ -63,13 +63,11 @@ class GetHistoryOfChatPharmacyUsecase
 
         final _user = collectUser.first.data() as Map<String, dynamic>;
 
-        print(_user);
-
         final collectMessage = await fireCloudStore
             .collection('chat')
             .doc(_data['id'])
             .collection('chat_message')
-            .orderBy('create_at')
+            .orderBy('update_at')
             .get()
             .then((value) => value.docs);
 

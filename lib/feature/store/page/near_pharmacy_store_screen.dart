@@ -176,6 +176,7 @@ class _NearPharmacyStoreScreenState
       },
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           FloatingActionButton.extended(
             onPressed: () {

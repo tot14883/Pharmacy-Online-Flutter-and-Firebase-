@@ -7,6 +7,7 @@ import 'package:pharmacy_online/base_widget/base_scaffold.dart';
 import 'package:pharmacy_online/core/app_color.dart';
 import 'package:pharmacy_online/core/app_style.dart';
 import 'package:pharmacy_online/core/widget/base_consumer_state.dart';
+import 'package:pharmacy_online/feature/chat/page/chat_screen.dart';
 import 'package:pharmacy_online/feature/chat/widget/request_consult_list_widget.dart';
 import 'package:pharmacy_online/feature/store/controller/store_controller.dart';
 
@@ -48,6 +49,12 @@ class _RequestConsultScreenState
             return Padding(
               padding: const EdgeInsets.all(16).r,
               child: RequestConsiltListWidget(
+                onTap: (chatResponse) {
+                  Navigator.of(context).pushNamed(
+                    ChatScreen.routeName,
+                    arguments: ChatArgs(chatWithPharmacyItem: chatResponse),
+                  );
+                },
                 chatWithPharmacyList: _chatWithPharmacyList,
               ),
             );

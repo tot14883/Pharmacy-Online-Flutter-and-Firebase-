@@ -37,12 +37,13 @@ class GetNotificationUsecase extends UseCase<void, List<NotificationResponse>> {
       final collect = await fireCloudStore
           .collection('notification')
           .where('uid', isEqualTo: uid)
+          .orderBy('create_at')
           .get()
           .then((value) => value.docs);
 
       List<NotificationResponse> notificationList = [];
 
-      for (final item in collect) {
+      for (final item in collect.reversed) {
         final _data = item.data() as Map<String, dynamic>;
 
         notificationList.add(

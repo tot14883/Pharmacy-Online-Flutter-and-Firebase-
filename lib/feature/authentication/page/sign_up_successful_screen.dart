@@ -30,7 +30,7 @@ class SignUpSuccessfulScreen extends ConsumerWidget {
                 height: 32.h,
               ),
               Text(
-                'ทำการเข้าสู่ระบบเรียบร้อย',
+                'ทำการสมัครเรียบร้อย!!!',
                 style: AppStyle.txtHeader3,
               ),
               SizedBox(

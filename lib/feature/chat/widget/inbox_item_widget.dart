@@ -141,7 +141,8 @@ class InboxItemWidget extends ConsumerWidget {
     WidgetRef ref,
   ) {
     final currentDate = DateTime.now();
-    final isMinute = currentDate.difference(itemDate!).inSeconds > 15;
+    final isSecond = currentDate.difference(itemDate!).inSeconds >= 15;
+    final isMinute = currentDate.difference(itemDate).inMinutes >= 1;
     final isHour = currentDate.difference(itemDate).inHours >= 1;
     final isDay = currentDate.difference(itemDate).inDays == 1;
     final isDate = currentDate.difference(itemDate).inDays >= 2;
@@ -165,16 +166,15 @@ class InboxItemWidget extends ConsumerWidget {
     }
 
     if (isMinute) {
-      final result =
-          ref.read(baseDateFormatterProvider).formatDateWithFreeStyleFormat(
-                'mm',
-                itemDate,
-              );
+      final result = currentDate.difference(itemDate).inMinutes;
 
-      final splitResult = result.split('');
-      final minute = splitResult[0] == '0' ? splitResult[1] : result;
+      return '$result นาทีที่แล้ว';
+    }
 
-      return '$minute นาทีที่แล้ว';
+    if (isSecond) {
+      final result = currentDate.difference(itemDate).inSeconds;
+
+      return '$result วินาทีที่แล้ว';
     }
 
     return 'Now';

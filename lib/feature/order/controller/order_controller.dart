@@ -191,6 +191,7 @@ class OrderController extends StateNotifier<OrderState> {
 
     bool isSuccess = false;
     final baseFormData = state.baseFormData;
+
     final diagnose = baseFormData?.getValue<String>(FieldOrderSummary.diagnose);
     final moreDetail =
         baseFormData?.getValue<String>(FieldOrderSummary.moreDetail);

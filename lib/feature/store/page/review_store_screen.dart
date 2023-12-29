@@ -8,13 +8,19 @@ import 'package:pharmacy_online/base_widget/rating_start_widget.dart';
 import 'package:pharmacy_online/core/app_color.dart';
 import 'package:pharmacy_online/core/app_style.dart';
 import 'package:pharmacy_online/core/widget/base_consumer_state.dart';
+import 'package:pharmacy_online/feature/profile/controller/profile_controller.dart';
 import 'package:pharmacy_online/feature/store/controller/store_controller.dart';
+import 'package:pharmacy_online/feature/store/page/store_detail_screen.dart';
 import 'package:pharmacy_online/feature/store/widget/review_list_widget.dart';
 
 class ReviewStoreScreen extends ConsumerStatefulWidget {
   static const routeName = 'ReviewStoreScreen';
+  final StoreDetailArgs? args;
 
-  const ReviewStoreScreen({super.key});
+  const ReviewStoreScreen({
+    super.key,
+    this.args,
+  });
 
   @override
   _ReviewStoreScreenState createState() => _ReviewStoreScreenState();
@@ -30,11 +36,18 @@ class _ReviewStoreScreenState extends BaseConsumerState<ReviewStoreScreen> {
             (previousValue, val) => ((val.rating ?? 0.0) + previousValue)) ??
         0.0;
     final countReview = reviewList?.length;
+    final pharmacyInfoResponse = widget.args?.pharmacyInfoResponse;
 
+    final pharmacyStoreInfo = ref.watch(
+      profileControllerProvider.select((value) => value.pharmacyStore),
+    );
+
+    final nameStore =
+        pharmacyInfoResponse?.nameStore ?? pharmacyStoreInfo?.nameStore;
     return BaseScaffold(
       appBar: BaseAppBar(
         title: Text(
-          'ร้าน เพื่อนเภสัช',
+          'ร้าน $nameStore',
           style: AppStyle.txtHeader3,
         ),
         bgColor: AppColor.themeWhiteColor,

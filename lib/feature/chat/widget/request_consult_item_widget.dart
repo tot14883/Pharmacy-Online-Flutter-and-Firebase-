@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -8,8 +7,9 @@ import 'package:pharmacy_online/base_widget/base_button.dart';
 import 'package:pharmacy_online/base_widget/base_image_view.dart';
 import 'package:pharmacy_online/core/app_color.dart';
 import 'package:pharmacy_online/core/app_style.dart';
+import 'package:pharmacy_online/core/local/base_shared_preference.dart';
 import 'package:pharmacy_online/core/widget/base_consumer_state.dart';
-import 'package:pharmacy_online/feature/chat/page/chat_screen.dart';
+import 'package:pharmacy_online/feature/chat/controller/chat_controller.dart';
 import 'package:pharmacy_online/feature/home/controller/home_controller.dart';
 import 'package:pharmacy_online/feature/profile/controller/profile_controller.dart';
 import 'package:pharmacy_online/feature/store/controller/store_controller.dart';
@@ -17,10 +17,12 @@ import 'package:pharmacy_online/feature/store/model/response/chat_with_pharmacy_
 
 class RequestConsultItemWidget extends ConsumerStatefulWidget {
   final ChatWithPharmacyResponse chatWithPharmacyItem;
+  final Function(ChatWithPharmacyResponse chatResponse) onTap;
 
   const RequestConsultItemWidget({
     super.key,
     required this.chatWithPharmacyItem,
+    required this.onTap,
   });
 
   @override
@@ -134,19 +136,20 @@ class _RequestConsultItemWidgetState
                                 .read(storeControllerProvider.notifier)
                                 .onGetGetRequestChatWithPharmacy();
 
-                            final isPharmacy = ref.watch(
-                              profileControllerProvider.select(
-                                (value) => value.isPharmacy,
-                              ),
-                            );
+                            final pharmacyId = ref
+                                .read(baseSharePreferenceProvider)
+                                .getString(BaseSharePreferenceKey.userId);
 
-                            Navigator.of(context).pushNamed(
-                              ChatScreen.routeName,
-                              arguments: ChatArgs(
-                                chatWithPharmacyItem: chatWithPharmacyItem,
-                                isPharmacy: isPharmacy,
-                              ),
-                            );
+                            final result = await ref
+                                .read(chatControllerProvider.notifier)
+                                .onGetChatDetail('$pharmacyId',
+                                    '${widget.chatWithPharmacyItem.uid}');
+                            final id = result.id;
+                            if (id != null && id.isNotEmpty) {
+                              widget.onTap(result);
+
+                              return;
+                            }
                           }
                         },
                         text: 'ตอบรับ',

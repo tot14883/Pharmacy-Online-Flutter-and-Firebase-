@@ -30,5 +30,6 @@ class StoreState with _$StoreState {
     @Default(AsyncValue.loading())
     AsyncValue<List<CommentResponse>?> commentList,
     @Default(false) bool checkRequestChatAlready,
+    @Default(false) bool checkRequestChatWaiting,
   }) = _StoreState;
 }

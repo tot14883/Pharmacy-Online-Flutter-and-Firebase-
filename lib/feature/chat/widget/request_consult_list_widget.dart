@@ -6,10 +6,11 @@ import 'package:pharmacy_online/feature/store/model/response/chat_with_pharmacy_
 
 class RequestConsiltListWidget extends ConsumerWidget {
   final List<ChatWithPharmacyResponse> chatWithPharmacyList;
-
+  final Function(ChatWithPharmacyResponse chatResponse) onTap;
   const RequestConsiltListWidget({
     super.key,
     required this.chatWithPharmacyList,
+    required this.onTap,
   });
 
   @override
@@ -22,6 +23,7 @@ class RequestConsiltListWidget extends ConsumerWidget {
         final chatWithPharmacyItem = chatWithPharmacyList[index];
 
         return RequestConsultItemWidget(
+          onTap: onTap,
           chatWithPharmacyItem: chatWithPharmacyItem,
         );
       },

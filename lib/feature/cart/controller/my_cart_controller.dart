@@ -13,6 +13,7 @@ import 'package:pharmacy_online/feature/cart/usecase/get_all_my_cart_usecase.dar
 import 'package:pharmacy_online/feature/cart/usecase/get_cart_usecase.dart';
 import 'package:pharmacy_online/feature/cart/usecase/update_to_cart_usecase.dart';
 import 'package:pharmacy_online/feature/order/enum/order_status_enum.dart';
+import 'package:pharmacy_online/feature/profile/controller/profile_controller.dart';
 import 'package:pharmacy_online/utils/util/base_utils.dart';
 
 final myCartControllerProvider =
@@ -219,9 +220,17 @@ class MyCartController extends StateNotifier<MyCartState> {
   ) async {
     bool isSuccess = false;
     final baseFormData = state.baseFormData;
-    final fullName = baseFormData?.getValue(FieldAddressDelivery.fullName);
-    final phone = baseFormData?.getValue(FieldAddressDelivery.phone);
-    final address = baseFormData?.getValue(FieldAddressDelivery.address);
+    final userInfo =
+        _ref.watch(profileControllerProvider.select((value) => value.userInfo));
+    final _fullName = userInfo?.fullName;
+    final _phone = userInfo?.phone;
+    final _address = userInfo?.address;
+
+    final fullName =
+        baseFormData?.getValue(FieldAddressDelivery.fullName) ?? _fullName;
+    final phone = baseFormData?.getValue(FieldAddressDelivery.phone) ?? _phone;
+    final address =
+        baseFormData?.getValue(FieldAddressDelivery.address) ?? _address;
     final district = baseFormData?.getValue(FieldAddressDelivery.district);
     final subDistrict =
         baseFormData?.getValue(FieldAddressDelivery.subDistrict);

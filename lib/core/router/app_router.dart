@@ -208,9 +208,16 @@ class AppRouter {
         );
 
       case ReviewStoreScreen.routeName:
+        assert(
+          settings.arguments is StoreDetailArgs || settings.arguments == null,
+          'arguments must be StoreDetailArgs or null',
+        );
+
+        final args = settings.arguments as StoreDetailArgs;
+
         return CustomPageRouteBuilder.route(
           name: ReviewStoreScreen.routeName,
-          builder: (ctx) => const ReviewStoreScreen(),
+          builder: (ctx) => ReviewStoreScreen(args: args),
           transitionType: RouteTransition.fade,
         );
 

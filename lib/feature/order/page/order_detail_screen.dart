@@ -10,6 +10,7 @@ import 'package:pharmacy_online/base_widget/base_scaffold.dart';
 import 'package:pharmacy_online/core/app_color.dart';
 import 'package:pharmacy_online/core/app_style.dart';
 import 'package:pharmacy_online/core/widget/base_consumer_state.dart';
+import 'package:pharmacy_online/feature/cart/controller/my_cart_controller.dart';
 import 'package:pharmacy_online/feature/home/controller/home_controller.dart';
 import 'package:pharmacy_online/feature/order/controller/order_controller.dart';
 import 'package:pharmacy_online/feature/order/enum/order_status_enum.dart';
@@ -60,12 +61,18 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
 
     final orderDetail =
         ref.watch(orderControllerProvider.select((value) => value.orderDetail));
+    final myCart =
+        ref.watch(myCartControllerProvider.select((value) => value.myCart));
 
     final isAlreadyReview = ref.watch(
-        orderControllerProvider.select((value) => value.isAlreadyReview));
+      orderControllerProvider.select(
+        (value) => value.isAlreadyReview,
+      ),
+    );
 
     final isCompletedStatus =
         orderDetail.value?.status == OrderStatus.completed;
+
     return BaseScaffold(
       bgColor: AppColor.themLineColor,
       appBar: BaseAppBar(
@@ -121,32 +128,37 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
         return AsyncValueWidget(
           value: orderDetail,
           data: (_orderDetail) {
+            final _myCart = myCart.value;
             final id = _orderDetail?.id;
             final cartId = _orderDetail?.cartId;
             final uid = _orderDetail?.uid;
             final pharmacyId = _orderDetail?.pharmacyId;
-            final orderNumber = _orderDetail?.orderNumber;
-            final convertCreateAt = ref
-                .read(baseDateFormatterProvider)
-                .convertStringToDateTime('${_orderDetail?.createAt}');
+            final orderNumber = _orderDetail?.orderNumber ?? 'ไม่ระบุ';
+
+            final cartCreatedAt = _myCart?.createAt;
+            final convertCreateAt =
+                ref.read(baseDateFormatterProvider).convertStringToDateTime(
+                      '${_orderDetail?.createAt ?? cartCreatedAt}',
+                    );
             final createAt = ref
                 .read(baseDateFormatterProvider)
                 .formatDateWithFreeStyleFormat('dd/MM/yyyy', convertCreateAt);
             final createAtTime = ref
                 .read(baseDateFormatterProvider)
                 .formatDateWithFreeStyleFormat('HH:mm', convertCreateAt);
-            final diagnose = _orderDetail?.diagnose;
+            final diagnose = _orderDetail?.diagnose ?? 'ไม่ระบุ';
             final moreDetail = _orderDetail?.moreDetail ?? 'ไม่ระบุ';
             final cartDetail = _orderDetail?.myCart;
             final fullName = cartDetail?.fullName;
             final phone = cartDetail?.phone;
-            final nameStore = cartDetail?.nameStore;
+            final nameStore = cartDetail?.nameStore ?? _myCart?.nameStore;
             final address = cartDetail?.address;
             final district = cartDetail?.district;
             final subDistrict = cartDetail?.subDistrict;
             final province = cartDetail?.province;
             final postNumber = cartDetail?.postNumber;
-            final summaryPrice = cartDetail?.sumamryPrice;
+            final summaryPrice =
+                cartDetail?.sumamryPrice ?? _myCart?.sumamryPrice;
             final medicineList = cartDetail?.medicineList;
             final deliverySlip = _orderDetail?.deliverySlip;
             final deliveryTextBtn = deliverySlip != null
@@ -167,14 +179,14 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
                         children: [
                           RowContentWidget(
                             header: 'ร้าน:',
-                            content: '${cartDetail?.nameStore}',
+                            content: '$nameStore',
                           ),
                           SizedBox(
                             height: 4.h,
                           ),
                           RowContentWidget(
                             header: 'เลขที่บิล:',
-                            content: '$orderNumber',
+                            content: orderNumber,
                           ),
                           SizedBox(
                             height: 4.h,
@@ -295,7 +307,7 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
                               RowContentWidget(
                                 isBold: true,
                                 header: '${medicineItem.name}',
-                                content: '${medicineItem.howToUse}',
+                                content: medicineItem.howToUse ?? 'ไม่ระบุ',
                               ),
                             ],
                           ],
@@ -329,7 +341,7 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
                       },
                       number: '1',
                       title: 'การชำระเงิน',
-                      content: _orderDetail?.status !=
+                      content: _orderDetail?.status ==
                                   OrderStatus.waitingPayment &&
                               _orderDetail?.status != OrderStatus.completed
                           ? (isPharmacy ? 'รอลูกค้าชำระเงิน' : 'กรุณาชำระเงิน')
@@ -425,9 +437,9 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
                       number: '3',
                       title: 'กำลังจัดส่งสินค้า',
                       contentHeight:
-                          _orderDetail?.status == OrderStatus.delivering
-                              ? null
-                              : 50.h,
+                          _orderDetail?.status == OrderStatus.completed
+                              ? 50.h
+                              : null,
                       content: _orderDetail?.status == OrderStatus.delivering
                           ? 'เภสัชกำลังเตรียมจัดส่งสินค้า'
                           : null,

@@ -13,6 +13,7 @@ import 'package:pharmacy_online/core/widget/base_consumer_state.dart';
 import 'package:pharmacy_online/feature/cart/controller/my_cart_controller.dart';
 import 'package:pharmacy_online/feature/cart/enum/field_address_delivery_enum.dart';
 import 'package:pharmacy_online/feature/cart/page/order_summary_screen.dart';
+import 'package:pharmacy_online/feature/profile/controller/profile_controller.dart';
 import 'package:pharmacy_online/utils/util/vaildators.dart';
 
 class AddressDeliveryScreen extends ConsumerStatefulWidget {
@@ -37,6 +38,12 @@ class _AddressDeliveryScreenState
   @override
   Widget build(BuildContext context) {
     _onListening();
+    final userInfo = ref.watch(
+      profileControllerProvider.select((value) => value.userInfo),
+    );
+    final fullName = userInfo?.fullName;
+    final phone = userInfo?.phone;
+    final address = userInfo?.address;
 
     return BaseScaffold(
       appBar: BaseAppBar(
@@ -61,6 +68,7 @@ class _AddressDeliveryScreenState
                 children: [
                   BaseTextField(
                     fieldKey: FieldAddressDelivery.fullName,
+                    initialValue: fullName,
                     label: 'ชื่อ-นามสกุลผู้รับ',
                     isShowLabelField: true,
                     placeholder: 'ชื่อ-นามสกุลผู้รับ',
@@ -78,6 +86,7 @@ class _AddressDeliveryScreenState
                   ),
                   BaseTextField(
                     fieldKey: FieldAddressDelivery.phone,
+                    initialValue: phone,
                     label: 'เบอร์โทรศัพท์ผู้รับ',
                     isShowLabelField: true,
                     placeholder: 'เบอร์โทรศัพท์ผู้รับ',
@@ -95,6 +104,7 @@ class _AddressDeliveryScreenState
                   ),
                   BaseTextField(
                     fieldKey: FieldAddressDelivery.address,
+                    initialValue: address,
                     label: 'บ้านเลขที่/หมู่บ้าน/อาคาร/ซอย/ถนน ผู้รับ',
                     isShowLabelField: true,
                     placeholder: 'ที่อยู่',

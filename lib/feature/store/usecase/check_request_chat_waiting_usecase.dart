@@ -4,23 +4,23 @@ import 'package:pharmacy_online/core/firebase/database/cloud_store_provider.dart
 import 'package:pharmacy_online/core/local/base_shared_preference.dart';
 import 'package:pharmacy_online/feature/store/model/request/chat_with_pharmacy_request.dart';
 
-final checkRequestChatAlreadyUsecaseProvider =
-    Provider<CheckRequestChatAlreadyUsecase>((ref) {
+final checkRequestChatWaitingUsecaseProvider =
+    Provider<CheckRequestChatWaitingUsecase>((ref) {
   final fireCloudStore = ref.watch(firebaseCloudStoreProvider);
   final baseSharePreference = ref.watch(baseSharePreferenceProvider);
-  return CheckRequestChatAlreadyUsecase(
+  return CheckRequestChatWaitingUsecase(
     ref,
     fireCloudStore,
     baseSharePreference,
   );
 });
 
-class CheckRequestChatAlreadyUsecase
+class CheckRequestChatWaitingUsecase
     extends UseCase<ChatWithPharmacyRequest, bool> {
   final FirebaseCloudStore fireCloudStore;
   final BaseSharedPreference baseSharePreference;
 
-  CheckRequestChatAlreadyUsecase(
+  CheckRequestChatWaitingUsecase(
     Ref ref,
     this.fireCloudStore,
     this.baseSharePreference,
@@ -43,7 +43,7 @@ class CheckRequestChatAlreadyUsecase
           .where('pharmacyId', isEqualTo: pharmacyId)
           .where(
             'status',
-            isEqualTo: "approve",
+            isEqualTo: "waiting",
           )
           .get()
           .then((value) => value.docs);

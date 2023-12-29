@@ -53,7 +53,7 @@ class AddOrderUsecase extends UseCase<OrderRequest, bool> {
         "pharmacyId": pharmacyId,
         "uid": uid,
         "cartId": cartId,
-        "status": OrderStatus.waitingPayment.name,
+        "status": OrderStatus.confirmOrder.name,
         "create_at": DateTime.now(),
         "update_at": DateTime.now(),
       };

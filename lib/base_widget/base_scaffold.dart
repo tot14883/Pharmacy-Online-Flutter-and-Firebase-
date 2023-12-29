@@ -76,6 +76,8 @@ class BaseScaffold extends ConsumerWidget {
             resizeToAvoidBottomInset: resizeToAvoidBottomInset,
             bottomSheet: bottomSheet,
             floatingActionButton: floatingActionButton,
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.startDocked,
           ),
         ),
         if (isLoading)
