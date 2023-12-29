@@ -49,12 +49,12 @@ class LocalNotification {
         ?.createNotificationChannel(highImportanceChannel());
 
     // Initialize local notification
-    await _localNotificationPlugin.initialize(
-      initializationSettings,
-      onDidReceiveNotificationResponse: (details) {
-        _handleMessage(details.payload);
-      },
-    );
+    // await _localNotificationPlugin.initialize(
+    //   initializationSettings,
+    //   onDidReceiveNotificationResponse: (details) {
+    //     _handleMessage(details.payload);
+    //   },
+    // );
   }
 
   ///On Android, notification messages are sent to Notification
