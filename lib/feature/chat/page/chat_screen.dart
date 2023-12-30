@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
@@ -17,6 +16,7 @@ import 'package:pharmacy_online/feature/cart/controller/my_cart_controller.dart'
 import 'package:pharmacy_online/feature/cart/page/my_cart_screen.dart';
 import 'package:pharmacy_online/feature/chat/controller/chat_controller.dart';
 import 'package:pharmacy_online/feature/chat/widget/chat_list_widget.dart';
+import 'package:pharmacy_online/feature/home/controller/home_controller.dart';
 import 'package:pharmacy_online/feature/order/enum/order_status_enum.dart';
 import 'package:pharmacy_online/feature/profile/controller/profile_controller.dart';
 import 'package:pharmacy_online/feature/store/model/response/chat_with_pharmacy_response.dart';
@@ -29,10 +29,12 @@ import 'package:pharmacy_online/utils/util/base_permission_handler.dart';
 class ChatArgs {
   final ChatWithPharmacyResponse chatWithPharmacyItem;
   final bool isPharmacy;
+  final bool isNotification;
 
   ChatArgs({
     required this.chatWithPharmacyItem,
     this.isPharmacy = false,
+    this.isNotification = false,
   });
 }
 
@@ -54,6 +56,7 @@ class _ChatScreenState extends BaseConsumerState<ChatScreen> {
   TextEditingController chatController = TextEditingController();
   XFile? chatImgfile;
   Timer? timer;
+  bool isNotification = false;
 
   @override
   void initState() {
@@ -73,6 +76,8 @@ class _ChatScreenState extends BaseConsumerState<ChatScreen> {
           .read(chatControllerProvider.notifier)
           .onGetRealTimeMessageChatUsecase('$id');
     });
+
+    isNotification = widget.args.isNotification;
   }
 
   @override
@@ -87,6 +92,7 @@ class _ChatScreenState extends BaseConsumerState<ChatScreen> {
     final args = widget.args;
     final profileImg = args.chatWithPharmacyItem.profileImg;
     final fullName = args.chatWithPharmacyItem.fullName;
+    final pharmacyId = args.chatWithPharmacyItem.pharmacyId;
 
     final nameStore = args.chatWithPharmacyItem.nameStore;
     final messageList = ref
@@ -99,6 +105,9 @@ class _ChatScreenState extends BaseConsumerState<ChatScreen> {
     );
 
     final _messageList = messageList;
+
+    final userInfo =
+        ref.watch(profileControllerProvider.select((value) => value.userInfo));
 
     return BaseScaffold(
       appBar: BaseAppBar(
@@ -262,7 +271,7 @@ class _ChatScreenState extends BaseConsumerState<ChatScreen> {
                         width: 8.w,
                       ),
                       GestureDetector(
-                        onTap: () {
+                        onTap: () async {
                           final id = widget.args.chatWithPharmacyItem.id;
                           ref
                               .read(chatControllerProvider.notifier)
@@ -272,6 +281,19 @@ class _ChatScreenState extends BaseConsumerState<ChatScreen> {
                                 chatImgfile,
                               );
 
+                          if (isNotification) {
+                            await ref
+                                .read(homeControllerProvider.notifier)
+                                .onPostNotification(
+                                  '${userInfo?.fullName} ได้ส่งข้อความหาคุณ',
+                                  'approveChat',
+                                  '$pharmacyId',
+                                );
+
+                            setState(() {
+                              isNotification = false;
+                            });
+                          }
                           chatController.clear();
                         },
                         child: Assets.icons.icSend.svg(),

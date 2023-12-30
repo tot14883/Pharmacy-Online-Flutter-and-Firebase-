@@ -70,22 +70,24 @@ class ChatItemWidget extends ConsumerWidget {
                       width: 8.w,
                     ),
                   ],
-                  Container(
-                    padding: const EdgeInsets.all(16).r,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.only(
-                        topLeft: const Radius.circular(12),
-                        topRight: const Radius.circular(12),
-                        bottomLeft: Radius.circular(isMe ? 12 : 0),
-                        bottomRight: Radius.circular(isMe ? 0 : 12),
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.all(16).r,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                          topLeft: const Radius.circular(12),
+                          topRight: const Radius.circular(12),
+                          bottomLeft: Radius.circular(isMe ? 12 : 0),
+                          bottomRight: Radius.circular(isMe ? 0 : 12),
+                        ),
+                        color: isMe
+                            ? AppColor.themePrimaryColor
+                            : AppColor.themeWhiteColor,
                       ),
-                      color: isMe
-                          ? AppColor.themePrimaryColor
-                          : AppColor.themeWhiteColor,
-                    ),
-                    child: Text(
-                      '${messageItem.message}',
-                      style: AppStyle.txtCaption,
+                      child: Text(
+                        '${messageItem.message}',
+                        style: AppStyle.txtCaption,
+                      ),
                     ),
                   ),
                   if (!isMe) ...[

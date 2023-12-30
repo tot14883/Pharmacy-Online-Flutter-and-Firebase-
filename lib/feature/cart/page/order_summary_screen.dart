@@ -128,6 +128,8 @@ class _OrderSummaryScreenState extends BaseConsumerState<OrderSummaryScreen> {
           value: myCart,
           data: (_myCart) {
             final medicineList = _myCart?.medicineList;
+            final userInfo = ref.watch(
+                profileControllerProvider.select((value) => value.userInfo));
 
             final price = medicineList?.fold(0.0, (previous, val) {
                   final totalPrice =
@@ -412,7 +414,7 @@ class _OrderSummaryScreenState extends BaseConsumerState<OrderSummaryScreen> {
                               await ref
                                   .read(homeControllerProvider.notifier)
                                   .onPostNotification(
-                                    '${'${_myCart?.fullName}'} ยืนยันออเดอร์แล้ว',
+                                    '${'${userInfo?.fullName}'} ยืนยันออเดอร์แล้ว',
                                     OrderStatus.confirmOrder.name,
                                     '${_myCart?.pharmacyId}',
                                   );

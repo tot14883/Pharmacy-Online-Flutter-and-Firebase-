@@ -260,7 +260,10 @@ class StoreDetailContent extends ConsumerWidget {
                   if (id != null && id.isNotEmpty) {
                     Navigator.of(context).pushNamed(
                       ChatScreen.routeName,
-                      arguments: ChatArgs(chatWithPharmacyItem: result),
+                      arguments: ChatArgs(
+                        chatWithPharmacyItem: result,
+                        isNotification: true,
+                      ),
                     );
                   }
                   return;

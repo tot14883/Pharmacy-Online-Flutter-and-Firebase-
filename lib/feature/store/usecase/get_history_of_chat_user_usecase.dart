@@ -49,7 +49,7 @@ class GetHistoryOfChatUserUsecase
 
       List<ChatWithPharmacyResponse> requestChatList = [];
 
-      for (final item in collect) {
+      for (final item in collect.reversed) {
         final _data = item.data() as Map<String, dynamic>;
 
         final collectUser = await fireCloudStore
