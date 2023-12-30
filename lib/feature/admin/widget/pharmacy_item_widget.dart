@@ -9,6 +9,8 @@ import 'package:pharmacy_online/core/app_style.dart';
 import 'package:pharmacy_online/feature/admin/controller/admin_controller.dart';
 import 'package:pharmacy_online/feature/admin/model/response/pharmacy_info_response.dart';
 import 'package:pharmacy_online/feature/admin/page/pharmacy_store_detail_screen.dart';
+import 'package:pharmacy_online/feature/home/controller/home_controller.dart';
+import 'package:pharmacy_online/feature/order/enum/order_status_enum.dart';
 
 class PharmacyItemWidget extends ConsumerWidget {
   final PharmacyInfoResponse pharmacyItem;
@@ -85,6 +87,14 @@ class PharmacyItemWidget extends ConsumerWidget {
                 await ref
                     .read(adminControllerProvider.notifier)
                     .getPharmacyDetail();
+
+                await ref
+                    .read(homeControllerProvider.notifier)
+                    .onPostNotification(
+                      'แอดมินอนุมัติเรียบร้อย',
+                      OrderStatus.completed.name,
+                      '${pharmacyItem.uid}',
+                    );
               },
               text: 'อนุมัติ',
             ),
@@ -102,6 +112,14 @@ class PharmacyItemWidget extends ConsumerWidget {
                 await ref
                     .read(adminControllerProvider.notifier)
                     .getPharmacyDetail();
+
+                await ref
+                    .read(homeControllerProvider.notifier)
+                    .onPostNotification(
+                      'แอดมินไม่อนุมัติร้านของคุณ',
+                      'cancelChat',
+                      '${pharmacyItem.uid}',
+                    );
               },
               text: 'แบน',
             ),

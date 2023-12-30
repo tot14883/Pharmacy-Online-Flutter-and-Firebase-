@@ -47,6 +47,8 @@ class _OrderItemWidgetState extends BaseConsumerState<OrderItemWidget> {
       final billStatus = orderItem?.status ?? cartItem?.status;
 
       final uid = cartItem?.uid ?? orderItem?.uid;
+      final pharmacyId = cartItem?.pharmacyId ?? orderItem?.pharmacyId;
+      final fullName = cartItem?.fullName ?? orderItem?.myCart?.fullName;
 
       final id = orderItem?.id ?? cartItem?.id;
       final cartId = orderItem?.cartId ?? cartItem?.id;
@@ -55,6 +57,8 @@ class _OrderItemWidgetState extends BaseConsumerState<OrderItemWidget> {
 
       final currentTime = DateTime.now();
       final isMoreThan4Hours = currentTime.difference(itemTime!).inHours > 4;
+      final isPharmacy = ref
+          .watch(profileControllerProvider.select((value) => value.isPharmacy));
 
       if (isMoreThan4Hours && isPayment) {
         final result = await ref
@@ -67,8 +71,42 @@ class _OrderItemWidgetState extends BaseConsumerState<OrderItemWidget> {
                 'cancelChat',
                 '$uid',
               );
+        }
+      }
 
-          Navigator.of(context).pop();
+      if (billStatus == OrderStatus.delivering) {
+        final updateAt = orderItem?.updateAt ?? cartItem?.updateAt;
+        final isMoreThan4Hours = currentTime.difference(updateAt!).inHours > 4;
+        if (isMoreThan4Hours) {
+          final result =
+              await ref.read(orderControllerProvider.notifier).onUpdateOrder(
+                    '$id',
+                    '$cartId',
+                    status: OrderStatus.completed,
+                  );
+          if (result) {
+            await ref.read(orderControllerProvider.notifier).onGetAllOrder(
+                  isPharmacy,
+                );
+
+            await ref.read(orderControllerProvider.notifier).onGetOrder(
+                  '$uid',
+                  '$pharmacyId',
+                  OrderStatus.completed,
+                );
+
+            await ref.read(homeControllerProvider.notifier).onPostNotification(
+                  '$fullName ยืนยันการจัดส่งสำเร็จ',
+                  OrderStatus.completed.name,
+                  '$pharmacyId',
+                );
+
+            await ref.read(homeControllerProvider.notifier).onPostNotification(
+                  'ยืนยันการจัดส่งสำเร็จ',
+                  OrderStatus.completed.name,
+                  '$uid',
+                );
+          }
         }
       }
     });

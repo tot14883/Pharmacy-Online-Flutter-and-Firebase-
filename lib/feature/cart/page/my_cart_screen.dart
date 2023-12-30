@@ -46,7 +46,6 @@ class _MyCartScreenState extends BaseConsumerState<MyCartScreen> {
 
     final myCart =
         ref.watch(myCartControllerProvider.select((value) => value.myCart));
-
     return BaseScaffold(
       appBar: BaseAppBar(
         elevation: 0,

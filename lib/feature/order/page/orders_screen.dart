@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -20,6 +22,27 @@ class OrdersScreen extends ConsumerStatefulWidget {
 }
 
 class _OrdersScreenState extends BaseConsumerState<OrdersScreen> {
+  Timer? timer;
+
+  @override
+  void initState() {
+    super.initState();
+    timer = timer =
+        Timer.periodic(const Duration(milliseconds: 200), (timer) async {
+      final isPharmacy = ref
+          .read(profileControllerProvider.select((value) => value.isPharmacy));
+      await ref
+          .read(orderControllerProvider.notifier)
+          .onGetAllOrder(isPharmacy);
+    });
+  }
+
+  @override
+  void dispose() {
+    timer?.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final isPharmacy = ref

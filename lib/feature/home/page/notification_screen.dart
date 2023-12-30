@@ -17,7 +17,8 @@ class NotificationScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final notificationList = ref.watch(
-        homeControllerProvider.select((value) => value.notificationList));
+      homeControllerProvider.select((value) => value.notificationList),
+    );
 
     return BaseScaffold(
       appBar: BaseAppBar(

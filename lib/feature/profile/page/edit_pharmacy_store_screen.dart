@@ -17,6 +17,9 @@ import 'package:pharmacy_online/base_widget/base_upload_image.dart';
 import 'package:pharmacy_online/base_widget/base_upload_image_button.dart';
 import 'package:pharmacy_online/core/app_color.dart';
 import 'package:pharmacy_online/core/app_style.dart';
+import 'package:pharmacy_online/core/local/base_shared_preference.dart';
+import 'package:pharmacy_online/feature/home/controller/home_controller.dart';
+import 'package:pharmacy_online/feature/order/enum/order_status_enum.dart';
 import 'package:pharmacy_online/feature/profile/controller/profile_controller.dart';
 import 'package:pharmacy_online/feature/profile/enum/field_user_info_enum.dart';
 import 'package:pharmacy_online/utils/util/base_utils.dart';
@@ -72,6 +75,10 @@ class _EditPharmacyStoreScreenState
     final pharmacyStoreInfo = ref.watch(
       profileControllerProvider.select((value) => value.pharmacyStore),
     );
+
+    final uid = ref
+        .read(baseSharePreferenceProvider)
+        .getString(BaseSharePreferenceKey.userId);
 
     final pharmacyStoreImg = pharmacyStoreInfo?.storeImg;
     final licensePharmacyStore = pharmacyStoreInfo?.licenseStoreImg;
@@ -321,6 +328,14 @@ class _EditPharmacyStoreScreenState
                         await ref
                             .read(profileControllerProvider.notifier)
                             .onGetPharmacyStore();
+
+                        await ref
+                            .read(homeControllerProvider.notifier)
+                            .onPostNotification(
+                              'เนื่องจากคุณแก้ไขข้อมูลร้านต้องรอแอดมินอนุมัติใหม่อีกครั้ง',
+                              OrderStatus.completed.name,
+                              '$uid',
+                            );
 
                         showDialog(
                           context: context,

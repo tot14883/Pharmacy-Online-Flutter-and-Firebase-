@@ -138,9 +138,12 @@ class OrderController extends StateNotifier<OrderState> {
   Future<void> onGetOrder(
     String uid,
     String pharmacyId,
-    OrderStatus status,
-  ) async {
-    _loader.onLoad();
+    OrderStatus status, {
+    bool isLoading = true,
+  }) async {
+    if (isLoading) {
+      _loader.onLoad();
+    }
 
     final result = await _getOrderUsecase.execute(
       OrderRequest(

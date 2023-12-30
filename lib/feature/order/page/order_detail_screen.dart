@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -37,6 +39,8 @@ class OrderDetailScreen extends ConsumerStatefulWidget {
 }
 
 class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
+  Timer? timer;
+
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
@@ -51,7 +55,101 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
           .read(orderControllerProvider.notifier)
           .onCheckReviewAlready('${orderDetail.value?.id}');
     });
+
+    timer = Timer.periodic(const Duration(milliseconds: 200), (timer) async {
+      final orderDetail = ref
+          .watch(orderControllerProvider.select((value) => value.orderDetail))
+          .value;
+
+      final billStatus = orderDetail?.status;
+      final uid = orderDetail?.uid;
+      final pharmacyId = orderDetail?.pharmacyId;
+
+      await ref.read(myCartControllerProvider.notifier).onGetCart(
+            '$uid',
+            '$pharmacyId',
+            billStatus!,
+            isLoading: false,
+          );
+
+      await ref.read(orderControllerProvider.notifier).onGetOrder(
+            '$uid',
+            '$pharmacyId',
+            billStatus,
+            isLoading: false,
+          );
+
+      final orderItem = orderDetail;
+
+      final itemTime = orderItem?.createAt;
+
+      final fullName = orderItem?.myCart?.fullName;
+      final id = orderItem?.id;
+      final cartId = orderItem?.cartId;
+      final isPayment = billStatus == OrderStatus.waitingPayment;
+
+      final currentTime = DateTime.now();
+      final isMoreThan4Hours = currentTime.difference(itemTime!).inHours > 4;
+      final isPharmacy = ref
+          .watch(profileControllerProvider.select((value) => value.isPharmacy));
+
+      if (isMoreThan4Hours && isPayment) {
+        final result = await ref
+            .read(orderControllerProvider.notifier)
+            .onDeleteOrder('$id', '$cartId');
+
+        if (result) {
+          await ref.read(homeControllerProvider.notifier).onPostNotification(
+                'คำสั่งซื้อถูกยกเลิก เนื่องจากเกินระยะเวลาที่กำหนด',
+                'cancelChat',
+                '$uid',
+              );
+        }
+      }
+
+      if (billStatus == OrderStatus.delivering) {
+        final updateAt = orderItem?.updateAt;
+        final isMoreThan4Hours = currentTime.difference(updateAt!).inHours > 4;
+        if (isMoreThan4Hours) {
+          final result =
+              await ref.read(orderControllerProvider.notifier).onUpdateOrder(
+                    '$id',
+                    '$cartId',
+                    status: OrderStatus.completed,
+                  );
+          if (result) {
+            await ref.read(orderControllerProvider.notifier).onGetAllOrder(
+                  isPharmacy,
+                );
+
+            await ref.read(orderControllerProvider.notifier).onGetOrder(
+                  '$uid',
+                  '$pharmacyId',
+                  OrderStatus.completed,
+                );
+
+            await ref.read(homeControllerProvider.notifier).onPostNotification(
+                  '$fullName ยืนยันการจัดส่งสำเร็จ',
+                  OrderStatus.completed.name,
+                  '$pharmacyId',
+                );
+
+            await ref.read(homeControllerProvider.notifier).onPostNotification(
+                  'ยืนยันการจัดส่งสำเร็จ',
+                  OrderStatus.completed.name,
+                  '$uid',
+                );
+          }
+        }
+      }
+    });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    timer?.cancel();
+    super.dispose();
   }
 
   @override
