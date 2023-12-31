@@ -146,7 +146,6 @@ class GetAllOrderUsecase extends UseCase<OrderRequest, List<OrderResponse>> {
 
       return orderList;
     } catch (e) {
-      print(e);
       return [];
     }
   }

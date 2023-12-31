@@ -35,7 +35,6 @@ class DeleteItemInCartUsecase extends UseCase<CartRequest, bool> {
     try {
       final cartId = request.id;
       final cartMedicineId = request.cartMedicineId;
-
       final collectCartMedicine =
           fireCloudStore.collection('cart').doc(cartId).collection("medicine");
 

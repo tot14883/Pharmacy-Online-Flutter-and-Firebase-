@@ -34,6 +34,10 @@ class _OrdersScreenState extends BaseConsumerState<OrdersScreen> {
       await ref
           .read(orderControllerProvider.notifier)
           .onGetAllOrder(isPharmacy);
+      await ref.read(myCartControllerProvider.notifier).onGetAllMyCart(
+            OrderStatus.waitingConfirmOrder,
+            isPhamarcy: isPharmacy,
+          );
     });
   }
 

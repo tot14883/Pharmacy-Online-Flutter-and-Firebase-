@@ -108,11 +108,15 @@ class MyCartController extends StateNotifier<MyCartState> {
     String nameStore,
   ) async {
     bool isSuccess = false;
+    final myCart = state.myCart.value;
+    final _uid = myCart?.uid;
+    final _storeId = myCart?.pharmacyId;
 
     final result = await _addToCartUsecase.execute(
       CartRequest(
-        storeId: storeId,
-        uid: uid,
+        id: myCart?.id,
+        storeId: _storeId ?? storeId,
+        uid: _uid ?? uid,
         medicineId: medicineId,
         quantity: quantity,
         medicineImg: medicineImg,

@@ -73,7 +73,6 @@ class GetReviewStoreUsecase
 
       return reviewList;
     } catch (e) {
-      print(e);
       return [];
     }
   }

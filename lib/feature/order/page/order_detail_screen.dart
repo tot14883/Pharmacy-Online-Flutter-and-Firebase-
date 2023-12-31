@@ -443,7 +443,9 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
                                   OrderStatus.waitingPayment &&
                               _orderDetail?.status != OrderStatus.completed
                           ? (isPharmacy ? 'รอลูกค้าชำระเงิน' : 'กรุณาชำระเงิน')
-                          : null,
+                          : (_orderDetail?.status != OrderStatus.confirmOrder
+                              ? 'รอเภสัชระบุรายละเอียด'
+                              : null),
                       btnTxt: 'สแกน QR Code',
                     ),
                     TrackingContentWidget(

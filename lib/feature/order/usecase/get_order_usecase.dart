@@ -126,7 +126,6 @@ class GetOrderUsecase extends UseCase<OrderRequest, OrderResponse> {
         updateAt: (orderDetail['update_at'] as Timestamp).toDate(),
       );
     } catch (e) {
-      print(e);
       return const OrderResponse();
     }
   }

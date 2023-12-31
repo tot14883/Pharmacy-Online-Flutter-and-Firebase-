@@ -23,11 +23,13 @@ class MyMedicineWarehouseArgs {
   final bool isFromChat;
   final ChatWithPharmacyResponse? chatWithPharmacyItem;
   final CartResponse? cartResponse;
+  final bool isFromOrder;
 
   MyMedicineWarehouseArgs({
     this.isFromChat = false,
     this.chatWithPharmacyItem,
     this.cartResponse,
+    this.isFromOrder = false,
   });
 }
 
@@ -58,6 +60,7 @@ class _MyMedicineWarehouseScreenState
     final uid = cartResponse?.uid ?? chatWithPharmacyItem?.uid;
     final pharmacyId =
         cartResponse?.pharmacyId ?? chatWithPharmacyItem?.pharmacyId;
+    final isFromOrder = widget.args?.isFromOrder;
 
     return BaseScaffold(
       appBar: BaseAppBar(
@@ -65,6 +68,18 @@ class _MyMedicineWarehouseScreenState
         title: Text(
           'คลังยาร้าน',
           style: AppStyle.txtHeader3,
+        ),
+        leading: IconButton(
+          onPressed: () {
+            Navigator.of(context).pop(isFromOrder);
+          },
+          icon: const Icon(
+            Icons.arrow_back_ios,
+            color: Colors.black,
+            size: 16.0,
+          ),
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
         ),
         bgColor: AppColor.themeWhiteColor,
         actions: [
@@ -167,19 +182,24 @@ class _MyMedicineWarehouseScreenState
   void _onListen() {
     ref.listen(myCartControllerProvider, (previous, next) {
       final cartResponse = widget.args?.cartResponse;
+      final isFromOrder = widget.args?.isFromOrder;
 
       if (next.myCart.value?.id != null) {
         if (cartResponse != null) {
-          Navigator.of(context).pushNamedAndRemoveUntil(
-            MyCartScreen.routeName,
-            arguments: MyCartArgs(isPharmacy: true),
-            (route) => route.settings.name == MyCartScreen.routeName,
-          );
+          if (!isFromOrder!) {
+            Navigator.of(context).pushNamedAndRemoveUntil(
+              MyCartScreen.routeName,
+              arguments: MyCartArgs(isPharmacy: true),
+              (route) => route.settings.name == MyCartScreen.routeName,
+            );
+          }
         } else {
-          Navigator.of(context).pushNamed(
-            MyCartScreen.routeName,
-            arguments: MyCartArgs(isPharmacy: true),
-          );
+          if (!isFromOrder!) {
+            Navigator.of(context).pushNamed(
+              MyCartScreen.routeName,
+              arguments: MyCartArgs(isPharmacy: true),
+            );
+          }
         }
       } else {
         Fluttertoast.showToast(

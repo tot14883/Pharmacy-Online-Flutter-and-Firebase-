@@ -148,8 +148,10 @@ class StoreDetailContent extends ConsumerWidget {
         .watch(storeControllerProvider.select((value) => value.reviewList))
         .value;
 
-    final rating = reviewList?.fold(0.0,
-            (previousValue, val) => ((val.rating ?? 0.0) + previousValue)) ??
+    final rating = reviewList?.fold(
+            0.0,
+            (previousValue, val) =>
+                (((val.rating ?? 0.0) + previousValue) / reviewList.length)) ??
         0.0;
 
     final pharmacyId = pharmacyInfoResponse?.uid ?? pharmacyStoreInfo?.uid;

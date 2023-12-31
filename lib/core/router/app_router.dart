@@ -268,7 +268,7 @@ class AppRouter {
 
         final args = settings.arguments as MyMedicineWarehouseArgs;
 
-        return CustomPageRouteBuilder.route(
+        return CustomPageRouteBuilder.route<bool>(
           name: MyMedicineWarehouseScreen.routeName,
           builder: (ctx) => MyMedicineWarehouseScreen(args: args),
           transitionType: RouteTransition.fade,

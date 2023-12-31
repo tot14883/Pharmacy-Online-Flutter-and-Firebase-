@@ -36,6 +36,7 @@ class AddToCartUsecase extends UseCase<CartRequest, bool> {
   ) async {
     try {
       final storeId = request.storeId;
+      final _cartId = request.id;
       final uid = request.uid;
       final medicineId = request.medicineId;
       final medicineImg = request.medicineImg;
@@ -56,7 +57,7 @@ class AddToCartUsecase extends UseCase<CartRequest, bool> {
           .then((value) => value.docs);
 
       final collectCart = fireCloudStore.collection('cart');
-      final cartId = collectCart.doc().id;
+      final cartId = _cartId ?? collectCart.doc().id;
       Map<String, dynamic>? _dataGetCart;
 
       final random = Random();
@@ -88,16 +89,14 @@ class AddToCartUsecase extends UseCase<CartRequest, bool> {
 
       final getMedicine = (await fireCloudStore
           .collection('cart')
-          .doc(_dataGetCart?['id'] ?? cartId)
+          .doc(cartId)
           .collection("medicine")
           .where('medicineId', isEqualTo: medicineId)
           .get()
           .then((value) => value.docs));
 
-      final collectCartMedicine = fireCloudStore
-          .collection('cart')
-          .doc(_dataGetCart?['id'] ?? cartId)
-          .collection("medicine");
+      final collectCartMedicine =
+          fireCloudStore.collection('cart').doc(cartId).collection("medicine");
       final cartMedicineId = collectCartMedicine.doc().id;
 
       if (getMedicine.isNotEmpty) {

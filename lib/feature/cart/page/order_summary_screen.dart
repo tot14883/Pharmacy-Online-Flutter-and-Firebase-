@@ -428,10 +428,8 @@ class _OrderSummaryScreenState extends BaseConsumerState<OrderSummaryScreen> {
                                   );
 
                               Navigator.of(context).pushNamedAndRemoveUntil(
-                                OrderDetailScreen.routeName,
-                                (route) =>
-                                    route.settings.name ==
-                                    DashboardScreen.routeName,
+                                DashboardScreen.routeName,
+                                (route) => false,
                               );
                             } else {
                               Fluttertoast.showToast(

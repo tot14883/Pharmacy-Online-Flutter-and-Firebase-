@@ -12,6 +12,7 @@ import 'package:pharmacy_online/core/widget/base_consumer_state.dart';
 import 'package:pharmacy_online/feature/cart/controller/my_cart_controller.dart';
 import 'package:pharmacy_online/feature/cart/page/address_delivery_screen.dart';
 import 'package:pharmacy_online/feature/cart/widget/cart_list_widget.dart';
+import 'package:pharmacy_online/feature/order/enum/order_status_enum.dart';
 import 'package:pharmacy_online/feature/order/widget/row_content_widget.dart';
 import 'package:pharmacy_online/feature/profile/controller/profile_controller.dart';
 import 'package:pharmacy_online/feature/store/page/my_medicine_warehouse_screen.dart';
@@ -19,9 +20,11 @@ import 'package:pharmacy_online/generated/assets.gen.dart';
 
 class MyCartArgs {
   final bool isPharmacy;
+  final bool isFromOrder;
 
   MyCartArgs({
     this.isPharmacy = false,
+    this.isFromOrder = false,
   });
 }
 
@@ -56,15 +59,27 @@ class _MyCartScreenState extends BaseConsumerState<MyCartScreen> {
         actions: [
           if (widget.args.isPharmacy) ...[
             GestureDetector(
-              onTap: () {
-                Navigator.of(context).pushNamedAndRemoveUntil(
+              onTap: () async {
+                var result =
+                    await Navigator.of(context).pushNamedAndRemoveUntil<bool>(
                   MyMedicineWarehouseScreen.routeName,
                   arguments: MyMedicineWarehouseArgs(
                     isFromChat: true,
                     cartResponse: myCart.value,
+                    isFromOrder: widget.args.isFromOrder,
                   ),
                   (route) => route.settings.name == MyCartScreen.routeName,
                 );
+
+                if (result!) {
+                  await ref.read(myCartControllerProvider.notifier).onGetCart(
+                        '${myCart.value?.uid}',
+                        '${myCart.value?.pharmacyId}',
+                        OrderStatus.waitingConfirmOrder,
+                      );
+
+                  setState(() {});
+                }
               },
               child: Padding(
                 padding: const EdgeInsets.all(8).r,
@@ -101,6 +116,7 @@ class _MyCartScreenState extends BaseConsumerState<MyCartScreen> {
                   children: [
                     if (medicineList != null && _myCart != null) ...[
                       CartListWidget(
+                        key: UniqueKey(),
                         isPharmacy: isPharmacy,
                         myCart: _myCart,
                         medicineList: medicineList,

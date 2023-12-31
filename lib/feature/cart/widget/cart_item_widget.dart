@@ -115,10 +115,6 @@ class CartItemWidget extends ConsumerWidget {
                         maximum: 100,
                         itemSized: 24,
                         onUpdate: (val) async {
-                          ref
-                              .read(myCartControllerProvider.notifier)
-                              .setQuantity('${medicineItem.id}', val);
-
                           await ref
                               .read(myCartControllerProvider.notifier)
                               .onAddToCart(
@@ -131,6 +127,10 @@ class CartItemWidget extends ConsumerWidget {
                                 val,
                                 '${pharmacyStoreInfo?.nameStore}',
                               );
+
+                          ref
+                              .read(myCartControllerProvider.notifier)
+                              .setQuantity('${medicineItem.id}', val);
 
                           ref.read(myCartControllerProvider.notifier).onGetCart(
                                 '${myCart.uid}',

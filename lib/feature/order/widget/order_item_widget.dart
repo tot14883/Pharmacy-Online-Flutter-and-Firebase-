@@ -157,6 +157,7 @@ class _OrderItemWidgetState extends BaseConsumerState<OrderItemWidget> {
             MyCartScreen.routeName,
             arguments: MyCartArgs(
               isPharmacy: isPharmacy,
+              isFromOrder: true,
             ),
           );
 
