@@ -516,13 +516,13 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
                               '$uid',
                             );
                       },
-                      hasSecondBtn:
+                      hasSecondBtn: bankTransferSlip != null &&
                           _orderDetail?.status == OrderStatus.waitingPayment &&
-                              isPharmacy,
-                      btnTxtSecond:
-                          _orderDetail?.status == OrderStatus.waitingPayment
-                              ? 'ยืนยันรายการ'
-                              : '',
+                          isPharmacy,
+                      btnTxtSecond: bankTransferSlip != null &&
+                              _orderDetail?.status == OrderStatus.waitingPayment
+                          ? 'ยืนยันรายการ'
+                          : '',
                     ),
                     TrackingContentWidget(
                       isSuccess:

@@ -43,6 +43,8 @@ class MedicineWarehouseItemWidget extends ConsumerWidget {
         GestureDetector(
           onTap: () async {
             if (isFromChat) {
+              onTap(false);
+
               final result = await Navigator.of(context).pushNamed<bool>(
                 DrugDetailScreen.routeName,
                 arguments: DrugDetailArgs(
@@ -75,6 +77,8 @@ class MedicineWarehouseItemWidget extends ConsumerWidget {
                   Expanded(
                     child: GestureDetector(
                       onTap: () async {
+                        onTap(false);
+
                         final result =
                             await Navigator.of(context).pushNamed<bool>(
                           DrugDetailScreen.routeName,
@@ -178,6 +182,8 @@ class MedicineWarehouseItemWidget extends ConsumerWidget {
                 ),
                 GestureDetector(
                   onTap: () async {
+                    onTap(false);
+
                     final result = await Navigator.of(context).pushNamed<bool>(
                       DrugDetailScreen.routeName,
                       arguments: DrugDetailArgs(
