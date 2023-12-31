@@ -53,11 +53,10 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBrQgBSHfn2QNTEeiWdMr04nYJeHJArrzI',
-    appId: '1:393149076304:android:e24863dbf72724da88d255',
-    messagingSenderId: '393149076304',
-    projectId: 'project-online-medicine',
-    databaseURL: 'https://project-online-medicine-default-rtdb.asia-southeast1.firebasedatabase.app',
-    storageBucket: 'project-online-medicine.appspot.com',
+    apiKey: 'AIzaSyBjwq-pCuDioUxi8j0c0PBkY-BZBBxdvYQ',
+    appId: '1:536735679782:android:95fb6fe5ef784f2d052de7',
+    messagingSenderId: '536735679782',
+    projectId: 'pharmacy-online-e2155',
+    storageBucket: 'pharmacy-online-e2155.appspot.com',
   );
 }

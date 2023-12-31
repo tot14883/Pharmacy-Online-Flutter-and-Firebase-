@@ -60,6 +60,7 @@ class ChatItemWidget extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 mainAxisAlignment:
                     isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   if (isMe) ...[
                     Text(
@@ -87,6 +88,7 @@ class ChatItemWidget extends ConsumerWidget {
                       child: Text(
                         '${messageItem.message}',
                         style: AppStyle.txtCaption,
+                        textAlign: isMe ? TextAlign.end : TextAlign.start,
                       ),
                     ),
                   ),

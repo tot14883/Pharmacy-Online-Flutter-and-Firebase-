@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -17,6 +19,23 @@ class ApprovePharmacyScreen extends ConsumerStatefulWidget {
 }
 
 class _ApprovePharmacyScreenState extends ConsumerState<ApprovePharmacyScreen> {
+  Timer? timer;
+
+  @override
+  void initState() {
+    super.initState();
+
+    timer = Timer.periodic(const Duration(milliseconds: 200), (timer) async {
+      await ref.read(adminControllerProvider.notifier).getPharmacyDetail();
+    });
+  }
+
+  @override
+  void dispose() {
+    timer?.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return BaseScaffold(

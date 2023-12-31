@@ -136,7 +136,7 @@ class CartItemWidget extends ConsumerWidget {
                                 '${myCart.uid}',
                                 '${myCart.pharmacyId}',
                                 OrderStatus.waitingConfirmOrder,
-                                isLoading: false,
+                                isLoading: true,
                               );
                         },
                       ),

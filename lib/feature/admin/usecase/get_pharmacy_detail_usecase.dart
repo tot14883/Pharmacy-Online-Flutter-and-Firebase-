@@ -48,12 +48,13 @@ class GetPharmacyDetailUsecase
             'role',
             isEqualTo: "pharmacy",
           )
+          .orderBy('update_at')
           .get()
           .then((value) => value.docs);
 
       List<PharmacyInfoResponse> userInfoList = [];
 
-      for (final item in collectUser) {
+      for (final item in collectUser.reversed) {
         final _data = item.data() as Map<String, dynamic>;
 
         final collectPharmacyStore = await fireCloudStore

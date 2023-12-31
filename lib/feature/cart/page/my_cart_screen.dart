@@ -145,11 +145,6 @@ class _MyCartScreenState extends BaseConsumerState<MyCartScreen> {
                       ),
                       BaseButton(
                         onTap: () {
-                          // if (isPharmacy) {
-                          //   Navigator.of(context)
-                          //       .pushNamed(OrderSummaryScreen.routeName);
-                          //   return;
-                          // }
                           Navigator.of(context)
                               .pushNamed(AddressDeliveryScreen.routeName);
                         },
