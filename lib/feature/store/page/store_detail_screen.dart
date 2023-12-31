@@ -19,6 +19,7 @@ import 'package:pharmacy_online/feature/authentication/page/sign_in_screen.dart'
 import 'package:pharmacy_online/feature/chat/controller/chat_controller.dart';
 import 'package:pharmacy_online/feature/chat/page/chat_screen.dart';
 import 'package:pharmacy_online/feature/dashboard/page/dashboard_screen.dart';
+import 'package:pharmacy_online/feature/home/controller/home_controller.dart';
 import 'package:pharmacy_online/feature/profile/controller/profile_controller.dart';
 import 'package:pharmacy_online/feature/profile/page/edit_pharmacy_store_screen.dart';
 import 'package:pharmacy_online/feature/store/controller/store_controller.dart';
@@ -268,6 +269,7 @@ class StoreDetailContent extends ConsumerWidget {
                   }
                   return;
                 }
+
                 if (hasUserInfo) {
                   final result = await ref
                       .read(storeControllerProvider.notifier)
@@ -276,6 +278,14 @@ class StoreDetailContent extends ConsumerWidget {
                       );
 
                   if (result) {
+                    await ref
+                        .read(homeControllerProvider.notifier)
+                        .onPostNotification(
+                          '${userInfo?.fullName} ได้ส่งคำขอปรึกษากับคุณ',
+                          'approveChat',
+                          '$pharmacyId',
+                        );
+
                     Fluttertoast.showToast(
                       msg: "ส่งคำขอสำเร็จ",
                       toastLength: Toast.LENGTH_SHORT,

@@ -106,7 +106,7 @@ class _MyMedicineWarehouseScreenState
                       16,
                       16,
                       16,
-                      MediaQuery.of(context).padding.bottom,
+                      MediaQuery.of(context).padding.bottom + 72,
                     ).r,
                     child: MedicineWarehouseListWidget(
                       isFromChat: isFromChat,

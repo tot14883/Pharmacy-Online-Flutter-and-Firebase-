@@ -32,8 +32,10 @@ class _ReviewStoreScreenState extends BaseConsumerState<ReviewStoreScreen> {
     final reviewList = ref
         .watch(storeControllerProvider.select((value) => value.reviewList))
         .value;
-    final rating = reviewList?.fold(0.0,
-            (previousValue, val) => ((val.rating ?? 0.0) + previousValue)) ??
+    final rating = reviewList?.fold(
+            0.0,
+            (previousValue, val) =>
+                (((val.rating ?? 0.0) + previousValue) / reviewList.length)) ??
         0.0;
     final countReview = reviewList?.length;
     final pharmacyInfoResponse = widget.args?.pharmacyInfoResponse;
