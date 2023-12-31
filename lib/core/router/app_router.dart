@@ -311,7 +311,7 @@ class AppRouter {
 
         final args = settings.arguments as MyCartArgs;
 
-        return CustomPageRouteBuilder.route(
+        return CustomPageRouteBuilder.route<bool>(
           name: MyCartScreen.routeName,
           builder: (ctx) => MyCartScreen(args: args),
           transitionType: RouteTransition.fade,
@@ -324,7 +324,7 @@ class AppRouter {
         );
 
         final args = settings.arguments as DrugDetailArgs;
-        return CustomPageRouteBuilder.route(
+        return CustomPageRouteBuilder.route<bool>(
           name: DrugDetailScreen.routeName,
           builder: (ctx) => DrugDetailScreen(args: args),
           transitionType: RouteTransition.fade,

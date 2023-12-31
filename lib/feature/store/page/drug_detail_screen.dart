@@ -58,6 +58,18 @@ class _DrugDetailScreenState extends BaseConsumerState<DrugDetailScreen> {
           'Drug Detail',
           style: AppStyle.txtHeader3,
         ),
+        leading: IconButton(
+          onPressed: () {
+            Navigator.of(context).pop(true);
+          },
+          icon: const Icon(
+            Icons.arrow_back_ios,
+            color: Colors.black,
+            size: 16.0,
+          ),
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+        ),
         bgColor: AppColor.themeWhiteColor,
       ),
       bgColor: AppColor.themLineColor,
@@ -128,6 +140,10 @@ class _DrugDetailScreenState extends BaseConsumerState<DrugDetailScreen> {
                           quantity,
                           '${pharmacyInfo?.nameStore}',
                         );
+
+                    ref
+                        .read(myCartControllerProvider.notifier)
+                        .setQuantity('${args.medicineItem.id}', quantity);
 
                     if (result) {
                       Fluttertoast.showToast(

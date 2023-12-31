@@ -60,7 +60,7 @@ class UpdatBankTransferUsecase extends UseCase<OrderRequest, bool> {
         "bankTransferDate": bankTransferDate,
         "urlBankTransferSlip": urlBankTransferSlip,
         "bankTotalPriceSlip": bankTotalPriceSlip,
-        "status": OrderStatus.waitingDelivery.name,
+        "status": OrderStatus.waitingPayment.name,
         "update_at": DateTime.now(),
       };
 
@@ -69,7 +69,7 @@ class UpdatBankTransferUsecase extends UseCase<OrderRequest, bool> {
       if (cartId != null) {
         await fireCloudStore.collection('cart').doc(cartId).update(
           {
-            "status": OrderStatus.waitingDelivery.name,
+            "status": OrderStatus.waitingPayment.name,
             'update_at': DateTime.now(),
           },
         );

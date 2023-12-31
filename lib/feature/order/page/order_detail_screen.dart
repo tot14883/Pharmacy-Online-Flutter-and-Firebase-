@@ -259,8 +259,10 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
                 cartDetail?.sumamryPrice ?? _myCart?.sumamryPrice;
             final medicineList = cartDetail?.medicineList;
             final deliverySlip = _orderDetail?.deliverySlip;
+            final bankTransferSlip = _orderDetail?.bankTransferSlip;
             final deliveryTextBtn = deliverySlip != null
-                ? (_orderDetail?.status == OrderStatus.completed
+                ? (_orderDetail?.status == OrderStatus.delivering ||
+                        _orderDetail?.status == OrderStatus.completed
                     ? 'ดูรูปภาพ'
                     : 'แก้ไขรุปภาพ')
                 : 'เพิ่มรูปภาพ';
@@ -449,13 +451,14 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
                       btnTxt: 'สแกน QR Code',
                     ),
                     TrackingContentWidget(
-                      isSuccess:
-                          _orderDetail?.status == OrderStatus.delivering ||
-                              _orderDetail?.status == OrderStatus.completed,
-                      hasBtn:
-                          _orderDetail?.status == OrderStatus.waitingDelivery ||
-                              _orderDetail?.status == OrderStatus.delivering ||
-                              _orderDetail?.status == OrderStatus.completed,
+                      isSuccess: _orderDetail?.status !=
+                              OrderStatus.waitingConfirmOrder &&
+                          _orderDetail?.status != OrderStatus.confirmOrder &&
+                          _orderDetail?.status != OrderStatus.waitingPayment,
+                      hasBtn: _orderDetail?.status !=
+                              OrderStatus.waitingConfirmOrder &&
+                          _orderDetail?.status != OrderStatus.confirmOrder &&
+                          bankTransferSlip != null,
                       onTap: () {
                         Navigator.of(context).pushNamed(
                           EvidenceBankTransferScreen.routeName,
@@ -464,19 +467,24 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
                       number: '2',
                       title: 'รอดำเนินการ',
                       content:
-                          _orderDetail?.status == OrderStatus.waitingDelivery
+                          _orderDetail?.status == OrderStatus.waitingPayment &&
+                                  bankTransferSlip != null
                               ? (isPharmacy
                                   ? 'กรุณาตรวจสอบการชำระเงิน'
                                   : 'เภสัชกำลังตรวจสอบการชำระเงิน')
                               : null,
-                      contentHeight:
-                          _orderDetail?.status == OrderStatus.delivering
-                              ? 50.h
-                              : null,
-                      btnTxt: _orderDetail?.status ==
-                                  OrderStatus.waitingDelivery ||
-                              _orderDetail?.status == OrderStatus.delivering ||
-                              _orderDetail?.status == OrderStatus.completed
+                      contentHeight: _orderDetail?.status !=
+                                  OrderStatus.waitingConfirmOrder &&
+                              _orderDetail?.status !=
+                                  OrderStatus.confirmOrder &&
+                              _orderDetail?.status != OrderStatus.waitingPayment
+                          ? 50.h
+                          : null,
+                      btnTxt: _orderDetail?.status !=
+                                  OrderStatus.waitingConfirmOrder &&
+                              _orderDetail?.status !=
+                                  OrderStatus.confirmOrder &&
+                              bankTransferSlip != null
                           ? 'ดูรูปภาพ'
                           : '',
                       onTapSecond: () async {
@@ -485,7 +493,7 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
                             .onUpdateOrder(
                               '$id',
                               '$cartId',
-                              status: OrderStatus.delivering,
+                              status: OrderStatus.waitingDelivery,
                             );
                         await ref
                             .read(orderControllerProvider.notifier)
@@ -497,33 +505,39 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
                             .onGetOrder(
                               '$uid',
                               '$pharmacyId',
-                              OrderStatus.delivering,
+                              OrderStatus.waitingDelivery,
                             );
 
                         await ref
                             .read(homeControllerProvider.notifier)
                             .onPostNotification(
                               '$nameStore ยืนยันการชำระเงินแล้ว กำลังทำการจัดส่ง',
-                              OrderStatus.delivering.name,
+                              OrderStatus.waitingDelivery.name,
                               '$uid',
                             );
                       },
                       hasSecondBtn:
-                          _orderDetail?.status == OrderStatus.waitingDelivery &&
+                          _orderDetail?.status == OrderStatus.waitingPayment &&
                               isPharmacy,
                       btnTxtSecond:
-                          _orderDetail?.status == OrderStatus.waitingDelivery
+                          _orderDetail?.status == OrderStatus.waitingPayment
                               ? 'ยืนยันรายการ'
                               : '',
                     ),
                     TrackingContentWidget(
-                      isSuccess: _orderDetail?.status == OrderStatus.completed,
-                      hasBtn: _orderDetail?.status == OrderStatus.delivering ||
-                          _orderDetail?.status == OrderStatus.completed,
+                      isSuccess:
+                          _orderDetail?.status == OrderStatus.delivering ||
+                              _orderDetail?.status == OrderStatus.completed,
+                      hasBtn:
+                          _orderDetail?.status == OrderStatus.waitingDelivery ||
+                              _orderDetail?.status == OrderStatus.delivering ||
+                              _orderDetail?.status == OrderStatus.completed,
                       onTap: () {
-                        if (_orderDetail?.status == OrderStatus.completed) {
+                        if (_orderDetail?.status == OrderStatus.delivering ||
+                            _orderDetail?.status == OrderStatus.completed) {
                           Navigator.of(context).pushNamed(
-                              EvidenceTransportationScreen.routeName);
+                            EvidenceTransportationScreen.routeName,
+                          );
                           return;
                         }
                         if (isPharmacy) {
@@ -542,11 +556,52 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
                               : null,
                       content: _orderDetail?.status == OrderStatus.delivering
                           ? 'เภสัชกำลังเตรียมจัดส่งสินค้า'
-                          : null,
-                      btnTxt: _orderDetail?.status == OrderStatus.delivering ||
+                          : (_orderDetail?.status ==
+                                      OrderStatus.waitingDelivery &&
+                                  isPharmacy
+                              ? 'กรุณาเพิ่มรูปภาพการจัดส่งสินค้า'
+                              : null),
+                      btnTxt: _orderDetail?.status ==
+                                  OrderStatus.waitingDelivery ||
+                              _orderDetail?.status == OrderStatus.delivering ||
                               _orderDetail?.status == OrderStatus.completed
                           ? (isPharmacy ? deliveryTextBtn : 'ดูรูปภาพ')
                           : '',
+                      hasSecondBtn: deliverySlip != null &&
+                          _orderDetail?.status == OrderStatus.waitingDelivery,
+                      btnTxtSecond:
+                          _orderDetail?.status == OrderStatus.waitingDelivery
+                              ? 'ยืนยันรายการ'
+                              : '',
+                      onTapSecond: () async {
+                        await ref
+                            .read(orderControllerProvider.notifier)
+                            .onUpdateOrder(
+                              '$id',
+                              '$cartId',
+                              status: OrderStatus.delivering,
+                            );
+                        await ref
+                            .read(orderControllerProvider.notifier)
+                            .onGetAllOrder(
+                              isPharmacy,
+                            );
+                        await ref
+                            .read(orderControllerProvider.notifier)
+                            .onGetOrder(
+                              '$uid',
+                              '$pharmacyId',
+                              OrderStatus.waitingDelivery,
+                            );
+
+                        await ref
+                            .read(homeControllerProvider.notifier)
+                            .onPostNotification(
+                              '$nameStore ทำการจัดส่งเรียบร้อย',
+                              OrderStatus.delivering.name,
+                              '$uid',
+                            );
+                      },
                     ),
                     TrackingContentWidget(
                       isSuccess: _orderDetail?.status == OrderStatus.completed,

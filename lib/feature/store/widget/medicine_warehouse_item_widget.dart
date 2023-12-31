@@ -19,6 +19,7 @@ class MedicineWarehouseItemWidget extends ConsumerWidget {
   final bool isCentral;
   final bool isFromChat;
   final ChatWithPharmacyResponse? chatWithPharmacyItem;
+  final Function(bool result) onTap;
 
   const MedicineWarehouseItemWidget({
     super.key,
@@ -26,6 +27,7 @@ class MedicineWarehouseItemWidget extends ConsumerWidget {
     required this.isCentral,
     required this.isFromChat,
     this.chatWithPharmacyItem,
+    required this.onTap,
   });
 
   @override
@@ -39,15 +41,16 @@ class MedicineWarehouseItemWidget extends ConsumerWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         GestureDetector(
-          onTap: () {
+          onTap: () async {
             if (isFromChat) {
-              Navigator.of(context).pushNamed(
+              final result = await Navigator.of(context).pushNamed<bool>(
                 DrugDetailScreen.routeName,
                 arguments: DrugDetailArgs(
                   medicineItem: medicineItem,
                   chatWithPharmacyItem: chatWithPharmacyItem,
                 ),
               );
+              onTap(result!);
               return;
             }
           },
@@ -71,14 +74,17 @@ class MedicineWarehouseItemWidget extends ConsumerWidget {
                 children: [
                   Expanded(
                     child: GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).pushNamed(
+                      onTap: () async {
+                        final result =
+                            await Navigator.of(context).pushNamed<bool>(
                           DrugDetailScreen.routeName,
                           arguments: DrugDetailArgs(
                             medicineItem: medicineItem,
                             chatWithPharmacyItem: chatWithPharmacyItem,
                           ),
                         );
+
+                        onTap(result!);
                       },
                       child: Text(
                         '${medicineItem.name}',
@@ -171,14 +177,16 @@ class MedicineWarehouseItemWidget extends ConsumerWidget {
                   height: 8.h,
                 ),
                 GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).pushNamed(
+                  onTap: () async {
+                    final result = await Navigator.of(context).pushNamed<bool>(
                       DrugDetailScreen.routeName,
                       arguments: DrugDetailArgs(
                         medicineItem: medicineItem,
                         chatWithPharmacyItem: chatWithPharmacyItem,
                       ),
                     );
+
+                    onTap(result!);
                   },
                   child: Text(
                     'ราคา ${medicineItem.price}',

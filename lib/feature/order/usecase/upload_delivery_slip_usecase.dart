@@ -56,7 +56,7 @@ class UpdatDeliverySlipUsecase extends UseCase<OrderRequest, bool> {
 
       final Map<String, dynamic> myData = {
         "deliverySlip": urlDeliverySlip,
-        "status": OrderStatus.delivering.name,
+        "status": OrderStatus.waitingDelivery.name,
         "update_at": DateTime.now(),
       };
 
@@ -65,7 +65,7 @@ class UpdatDeliverySlipUsecase extends UseCase<OrderRequest, bool> {
       if (cartId != null) {
         await fireCloudStore.collection('cart').doc(cartId).update(
           {
-            "status": OrderStatus.delivering.name,
+            "status": OrderStatus.waitingDelivery.name,
             'update_at': DateTime.now(),
           },
         );

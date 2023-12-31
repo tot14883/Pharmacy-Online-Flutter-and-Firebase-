@@ -75,6 +75,7 @@ class _CentralMedicineWarehouseScreenState
             return Padding(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 72).r,
               child: MedicineWarehouseListWidget(
+                onTap: (val) {},
                 medicineList: _centralMedicineList,
                 isCentral: true,
               ),

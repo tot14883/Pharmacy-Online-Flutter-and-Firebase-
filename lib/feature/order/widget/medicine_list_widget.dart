@@ -33,7 +33,8 @@ class MedicineListWidget extends ConsumerWidget {
               imgUrl: '${medicineItem.medicineImg}',
               name: '${medicineItem.name}',
               quantity: 'จำนวน ${medicineItem.quantity}',
-              price: '${medicineItem.price} บาท',
+              price:
+                  '${(medicineItem.price ?? 0.0) * (medicineItem.quantity ?? 1)} บาท',
             ),
             if (hasTextForm) ...[
               SizedBox(

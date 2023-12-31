@@ -56,6 +56,18 @@ class _MyCartScreenState extends BaseConsumerState<MyCartScreen> {
           'My Cart',
           style: AppStyle.txtHeader3,
         ),
+        leading: IconButton(
+          onPressed: () {
+            Navigator.of(context).pop(true);
+          },
+          icon: const Icon(
+            Icons.arrow_back_ios,
+            color: Colors.black,
+            size: 16.0,
+          ),
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+        ),
         actions: [
           if (widget.args.isPharmacy) ...[
             GestureDetector(

@@ -11,7 +11,6 @@ import 'package:pharmacy_online/base_widget/base_upload_image_button.dart';
 import 'package:pharmacy_online/core/app_color.dart';
 import 'package:pharmacy_online/core/app_style.dart';
 import 'package:pharmacy_online/core/widget/base_consumer_state.dart';
-import 'package:pharmacy_online/feature/home/controller/home_controller.dart';
 import 'package:pharmacy_online/feature/order/controller/order_controller.dart';
 import 'package:pharmacy_online/feature/order/enum/order_status_enum.dart';
 import 'package:pharmacy_online/generated/assets.gen.dart';
@@ -102,19 +101,11 @@ class _UploadTransportationScreenState
 
                     if (result) {
                       await ref
-                          .read(homeControllerProvider.notifier)
-                          .onPostNotification(
-                            '$nameStore ทำการจัดส่งเรียบร้อย',
-                            OrderStatus.delivering.name,
-                            '$uid',
-                          );
-
-                      await ref
                           .read(orderControllerProvider.notifier)
                           .onGetOrder(
                             '$uid',
                             '$pharmacyId',
-                            OrderStatus.delivering,
+                            OrderStatus.waitingDelivery,
                           );
 
                       Fluttertoast.showToast(

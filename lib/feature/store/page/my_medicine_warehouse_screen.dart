@@ -50,6 +50,8 @@ class MyMedicineWarehouseScreen extends ConsumerStatefulWidget {
 
 class _MyMedicineWarehouseScreenState
     extends BaseConsumerState<MyMedicineWarehouseScreen> {
+  bool isStayThisPage = true;
+
   @override
   Widget build(BuildContext context) {
     _onListen();
@@ -60,7 +62,6 @@ class _MyMedicineWarehouseScreenState
     final uid = cartResponse?.uid ?? chatWithPharmacyItem?.uid;
     final pharmacyId =
         cartResponse?.pharmacyId ?? chatWithPharmacyItem?.pharmacyId;
-    final isFromOrder = widget.args?.isFromOrder;
 
     return BaseScaffold(
       appBar: BaseAppBar(
@@ -71,7 +72,10 @@ class _MyMedicineWarehouseScreenState
         ),
         leading: IconButton(
           onPressed: () {
-            Navigator.of(context).pop(isFromOrder);
+            Navigator.of(context).pop(true);
+            setState(() {
+              isStayThisPage = false;
+            });
           },
           icon: const Icon(
             Icons.arrow_back_ios,
@@ -124,6 +128,11 @@ class _MyMedicineWarehouseScreenState
                       MediaQuery.of(context).padding.bottom + 72,
                     ).r,
                     child: MedicineWarehouseListWidget(
+                      onTap: (val) {
+                        setState(() {
+                          isStayThisPage = val;
+                        });
+                      },
                       isFromChat: isFromChat,
                       medicineList: _medicineList,
                       chatWithPharmacyItem: widget.args?.chatWithPharmacyItem,
@@ -180,33 +189,55 @@ class _MyMedicineWarehouseScreenState
   }
 
   void _onListen() {
-    ref.listen(myCartControllerProvider, (previous, next) {
+    ref.listen(myCartControllerProvider, (previous, next) async {
       final cartResponse = widget.args?.cartResponse;
       final isFromOrder = widget.args?.isFromOrder;
+      if (isStayThisPage) {
+        if (next.myCart.value?.id != null) {
+          if (cartResponse != null) {
+            if (!isFromOrder!) {
+              setState(() {
+                isStayThisPage = false;
+              });
+              final result =
+                  await Navigator.of(context).pushNamedAndRemoveUntil<bool>(
+                MyCartScreen.routeName,
+                arguments: MyCartArgs(isPharmacy: true),
+                (route) => route.settings.name == MyCartScreen.routeName,
+              );
+              if (result!) {
+                setState(() {
+                  isStayThisPage = result;
+                });
+              }
+            }
+          } else {
+            if (!isFromOrder!) {
+              setState(() {
+                isStayThisPage = false;
+              });
+              final result = await Navigator.of(context).pushNamed<bool>(
+                MyCartScreen.routeName,
+                arguments: MyCartArgs(isPharmacy: true),
+              );
 
-      if (next.myCart.value?.id != null) {
-        if (cartResponse != null) {
-          if (!isFromOrder!) {
-            Navigator.of(context).pushNamedAndRemoveUntil(
-              MyCartScreen.routeName,
-              arguments: MyCartArgs(isPharmacy: true),
-              (route) => route.settings.name == MyCartScreen.routeName,
-            );
+              if (result!) {
+                setState(() {
+                  isStayThisPage = result;
+                });
+              }
+            }
           }
         } else {
-          if (!isFromOrder!) {
-            Navigator.of(context).pushNamed(
-              MyCartScreen.routeName,
-              arguments: MyCartArgs(isPharmacy: true),
-            );
-          }
+          setState(() {
+            isStayThisPage = false;
+          });
+          Fluttertoast.showToast(
+            msg: "ไม่มีของในตะกร้า",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+          );
         }
-      } else {
-        Fluttertoast.showToast(
-          msg: "ไม่มีของในตะกร้า",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-        );
       }
     });
   }

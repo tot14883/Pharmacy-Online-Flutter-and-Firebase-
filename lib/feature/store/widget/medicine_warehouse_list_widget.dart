@@ -10,6 +10,7 @@ class MedicineWarehouseListWidget extends ConsumerWidget {
   final List<MedicineResponse> medicineList;
   final bool isFromChat;
   final ChatWithPharmacyResponse? chatWithPharmacyItem;
+  final Function(bool result) onTap;
 
   const MedicineWarehouseListWidget({
     super.key,
@@ -17,6 +18,7 @@ class MedicineWarehouseListWidget extends ConsumerWidget {
     this.isFromChat = false,
     required this.medicineList,
     this.chatWithPharmacyItem,
+    required this.onTap,
   });
 
   @override
@@ -33,6 +35,7 @@ class MedicineWarehouseListWidget extends ConsumerWidget {
           medicineItem: medicineItem,
           isCentral: isCentral,
           chatWithPharmacyItem: chatWithPharmacyItem,
+          onTap: onTap,
         );
       },
       separatorBuilder: (_, __) => const BaseDivider(),

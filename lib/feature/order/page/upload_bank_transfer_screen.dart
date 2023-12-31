@@ -295,7 +295,7 @@ class _UploadBankTransferScreenState
                                     .read(homeControllerProvider.notifier)
                                     .onPostNotification(
                                       '$fullName ทำการชำระเงินแล้ว',
-                                      OrderStatus.waitingDelivery.name,
+                                      OrderStatus.waitingPayment.name,
                                       '$pharmacyId',
                                     );
 
@@ -303,7 +303,7 @@ class _UploadBankTransferScreenState
                                     .read(homeControllerProvider.notifier)
                                     .onPostNotification(
                                       'ทำการชำระเงินแล้ว รอเภสัชทำการจัดส่ง',
-                                      OrderStatus.waitingDelivery.name,
+                                      OrderStatus.waitingPayment.name,
                                       '$uid',
                                     );
 
@@ -312,7 +312,7 @@ class _UploadBankTransferScreenState
                                     .onGetOrder(
                                       '$uid',
                                       '$pharmacyId',
-                                      OrderStatus.waitingDelivery,
+                                      OrderStatus.waitingPayment,
                                     );
 
                                 Fluttertoast.showToast(
