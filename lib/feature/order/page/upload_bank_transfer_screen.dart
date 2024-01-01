@@ -313,6 +313,7 @@ class _UploadBankTransferScreenState
                                       '$uid',
                                       '$pharmacyId',
                                       OrderStatus.waitingPayment,
+                                      orderId: id,
                                     );
 
                                 Fluttertoast.showToast(

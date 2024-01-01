@@ -64,12 +64,15 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
       final billStatus = orderDetail?.status;
       final uid = orderDetail?.uid;
       final pharmacyId = orderDetail?.pharmacyId;
+      final orderId = orderDetail?.id;
+      final cartId = orderDetail?.cartId;
 
       await ref.read(myCartControllerProvider.notifier).onGetCart(
             '$uid',
             '$pharmacyId',
             billStatus!,
             isLoading: false,
+            cartId: cartId,
           );
 
       await ref.read(orderControllerProvider.notifier).onGetOrder(
@@ -77,6 +80,7 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
             '$pharmacyId',
             billStatus,
             isLoading: false,
+            orderId: orderId,
           );
 
       final orderItem = orderDetail;
@@ -85,7 +89,6 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
 
       final fullName = orderItem?.myCart?.fullName;
       final id = orderItem?.id;
-      final cartId = orderItem?.cartId;
       final isPayment = billStatus == OrderStatus.waitingPayment;
 
       final currentTime = DateTime.now();
@@ -126,6 +129,7 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
                   '$uid',
                   '$pharmacyId',
                   OrderStatus.completed,
+                  orderId: orderId,
                 );
 
             await ref.read(homeControllerProvider.notifier).onPostNotification(
@@ -506,6 +510,7 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
                               '$uid',
                               '$pharmacyId',
                               OrderStatus.waitingDelivery,
+                              orderId: id,
                             );
 
                         await ref
@@ -592,6 +597,7 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
                               '$uid',
                               '$pharmacyId',
                               OrderStatus.waitingDelivery,
+                              orderId: id,
                             );
 
                         await ref
@@ -636,6 +642,7 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
                                           '$uid',
                                           '$pharmacyId',
                                           OrderStatus.completed,
+                                          orderId: id,
                                         );
 
                                     await ref

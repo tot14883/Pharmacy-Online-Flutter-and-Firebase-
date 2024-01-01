@@ -188,6 +188,7 @@ class MyCartController extends StateNotifier<MyCartState> {
     String uid,
     String pharmacyId,
     OrderStatus orderStatus, {
+    String? cartId,
     bool isLoading = true,
   }) async {
     if (isLoading) {
@@ -198,6 +199,7 @@ class MyCartController extends StateNotifier<MyCartState> {
       CartRequest(
         pharmacyId: pharmacyId,
         uid: uid,
+        id: cartId,
         status: orderStatus,
       ),
     );

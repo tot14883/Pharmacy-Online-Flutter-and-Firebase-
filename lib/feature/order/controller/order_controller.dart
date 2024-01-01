@@ -139,6 +139,7 @@ class OrderController extends StateNotifier<OrderState> {
     String uid,
     String pharmacyId,
     OrderStatus status, {
+    String? orderId,
     bool isLoading = true,
   }) async {
     if (isLoading) {
@@ -147,6 +148,7 @@ class OrderController extends StateNotifier<OrderState> {
 
     final result = await _getOrderUsecase.execute(
       OrderRequest(
+        id: orderId,
         uid: uid,
         pharmacyId: pharmacyId,
         status: status,
@@ -293,5 +295,9 @@ class OrderController extends StateNotifier<OrderState> {
       (success) => state = state.copyWith(isAlreadyReview: success),
       (error) => null,
     );
+  }
+
+  void clearState() {
+    state = state.copyWith();
   }
 }

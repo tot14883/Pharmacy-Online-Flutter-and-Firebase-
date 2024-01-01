@@ -39,6 +39,7 @@ class GetCartUsecase extends UseCase<CartRequest, CartResponse> {
       final uid = request.uid;
       final pharmacyId = request.pharmacyId;
       final status = request.status;
+      final cartId = request.id;
 
       final collectCart = await fireCloudStore
           .collection('cart')
@@ -48,8 +49,18 @@ class GetCartUsecase extends UseCase<CartRequest, CartResponse> {
           .get()
           .then((value) => value.docs);
 
-      final _data = collectCart.first.data() as Map<String, dynamic>;
+      Map<String, dynamic>? _data;
 
+      if (cartId != null) {
+        final collectCartItem = await fireCloudStore
+            .collection('cart')
+            .doc(cartId)
+            .get()
+            .then((value) => value);
+        _data = collectCartItem.data() as Map<String, dynamic>;
+      } else {
+        _data = collectCart.first.data() as Map<String, dynamic>;
+      }
       final List<MedicineResponse> medicineList = [];
 
       final collectCartMedicine = await fireCloudStore

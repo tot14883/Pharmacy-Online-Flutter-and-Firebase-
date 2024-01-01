@@ -93,6 +93,7 @@ class _OrderItemWidgetState extends BaseConsumerState<OrderItemWidget> {
                   '$uid',
                   '$pharmacyId',
                   OrderStatus.completed,
+                  orderId: id,
                 );
 
             await ref.read(homeControllerProvider.notifier).onPostNotification(
@@ -126,6 +127,9 @@ class _OrderItemWidgetState extends BaseConsumerState<OrderItemWidget> {
     final orderItem = widget.orderItem;
 
     final billNumber = cartItem?.cartNumber ?? orderItem?.orderNumber;
+    final cartId = cartItem?.id ?? orderItem?.cartId;
+    final orderId = orderItem?.id;
+
     final billStatus = cartItem?.status ?? orderItem?.status;
     final billName = isPharmacy
         ? (cartItem?.fullName ?? orderItem?.myCart?.fullName)
@@ -151,6 +155,7 @@ class _OrderItemWidgetState extends BaseConsumerState<OrderItemWidget> {
                 '$uid',
                 '$pharmacyId',
                 OrderStatus.waitingConfirmOrder,
+                cartId: cartId,
               );
 
           Navigator.of(context).pushNamed(
@@ -169,12 +174,14 @@ class _OrderItemWidgetState extends BaseConsumerState<OrderItemWidget> {
                 '$uid',
                 '$pharmacyId',
                 OrderStatus.confirmOrder,
+                cartId: cartId,
               );
 
           await ref.read(orderControllerProvider.notifier).onGetOrder(
                 '$uid',
                 '$pharmacyId',
                 OrderStatus.confirmOrder,
+                orderId: orderId,
               );
 
           Navigator.of(context).pushNamed(
@@ -188,6 +195,7 @@ class _OrderItemWidgetState extends BaseConsumerState<OrderItemWidget> {
               '$uid',
               '$pharmacyId',
               billStatus!,
+              orderId: orderId,
             );
 
         Navigator.of(context).pushNamed(OrderDetailScreen.routeName);

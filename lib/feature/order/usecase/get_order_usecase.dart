@@ -40,6 +40,7 @@ class GetOrderUsecase extends UseCase<OrderRequest, OrderResponse> {
       final uid = request.uid;
       final pharmacyId = request.pharmacyId;
       final status = request.status;
+      final orderId = request.id;
 
       final getOrderDetail = await fireCloudStore
           .collection('order')
@@ -50,8 +51,19 @@ class GetOrderUsecase extends UseCase<OrderRequest, OrderResponse> {
           .get()
           .then((value) => value.docs);
 
-      final orderDetail = getOrderDetail.first.data() as Map<String, dynamic>;
+      Map<String, dynamic>? orderDetail;
 
+      if (orderId != null) {
+        final getOrderDetailItem = await fireCloudStore
+            .collection('order')
+            .doc(orderId)
+            .get()
+            .then((value) => value);
+
+        orderDetail = getOrderDetailItem.data() as Map<String, dynamic>;
+      } else {
+        orderDetail = getOrderDetail.first.data() as Map<String, dynamic>;
+      }
       final getCart = await fireCloudStore
           .collection('cart')
           .where('id', isEqualTo: orderDetail['cartId'])

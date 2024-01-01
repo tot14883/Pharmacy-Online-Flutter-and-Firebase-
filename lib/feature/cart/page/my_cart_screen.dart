@@ -72,6 +72,7 @@ class _MyCartScreenState extends BaseConsumerState<MyCartScreen> {
           if (widget.args.isPharmacy) ...[
             GestureDetector(
               onTap: () async {
+                final _myCart = myCart.value;
                 var result =
                     await Navigator.of(context).pushNamedAndRemoveUntil<bool>(
                   MyMedicineWarehouseScreen.routeName,
@@ -88,6 +89,7 @@ class _MyCartScreenState extends BaseConsumerState<MyCartScreen> {
                         '${myCart.value?.uid}',
                         '${myCart.value?.pharmacyId}',
                         OrderStatus.waitingConfirmOrder,
+                        cartId: _myCart?.id,
                       );
 
                   setState(() {});

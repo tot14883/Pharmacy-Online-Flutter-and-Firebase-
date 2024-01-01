@@ -106,6 +106,7 @@ class _UploadTransportationScreenState
                             '$uid',
                             '$pharmacyId',
                             OrderStatus.waitingDelivery,
+                            orderId: id,
                           );
 
                       Fluttertoast.showToast(

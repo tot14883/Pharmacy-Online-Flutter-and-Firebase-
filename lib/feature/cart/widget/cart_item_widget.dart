@@ -85,6 +85,7 @@ class CartItemWidget extends ConsumerWidget {
                                   '${myCart.uid}',
                                   '${myCart.pharmacyId}',
                                   OrderStatus.waitingConfirmOrder,
+                                  cartId: myCart.id,
                                 );
                           }
                         },
@@ -137,6 +138,7 @@ class CartItemWidget extends ConsumerWidget {
                                 '${myCart.pharmacyId}',
                                 OrderStatus.waitingConfirmOrder,
                                 isLoading: true,
+                                cartId: myCart.id,
                               );
                         },
                       ),

@@ -168,12 +168,15 @@ class _MyMedicineWarehouseScreenState
                     child: BaseButton(
                       width: 60.w,
                       onTap: () async {
+                        final cartResponse = widget.args?.cartResponse;
+
                         await ref
                             .read(myCartControllerProvider.notifier)
                             .onGetCart(
                               '$uid',
                               '$pharmacyId',
                               OrderStatus.waitingConfirmOrder,
+                              cartId: cartResponse?.id,
                             );
                       },
                       text: 'ไปที่หน้าตระกร้า',
