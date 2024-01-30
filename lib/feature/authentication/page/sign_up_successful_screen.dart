@@ -39,6 +39,7 @@ class SignUpSuccessfulScreen extends ConsumerWidget {
               BaseButton(
                 minWidth: 100.w,
                 onTap: () {
+                  // นำทางผู้ใช้ไปยังหน้าจอ MainScreen และลบทุกทางที่ถูกเรียกใช้
                   Navigator.of(context).pushNamedAndRemoveUntil(
                     SignInScreen.routeName,
                     (route) => route.settings.name == MainScreen.routeName,

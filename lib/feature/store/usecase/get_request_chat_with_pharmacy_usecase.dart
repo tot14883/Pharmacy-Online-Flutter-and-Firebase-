@@ -34,6 +34,8 @@ class GetRequestChatWithPharmacyUsecase
     void request,
   ) async {
     try {
+      //ในกระบวนการดึงข้อมูล, ใช้ `fireCloudStore.collection('chat')` 
+      //เพื่อดึงข้อมูลคำขอแชทที่มี `status` เป็น "waiting" และ `pharmacyId` เป็น uid ของผู้ใช้ปัจจุบัน
       final uid = baseSharePreference.getString(BaseSharePreferenceKey.userId);
 
       final collect = await fireCloudStore
@@ -48,10 +50,11 @@ class GetRequestChatWithPharmacyUsecase
           .then((value) => value.docs);
 
       List<ChatWithPharmacyResponse> requestChatList = [];
-
+      //วนลูปเพื่อดึงข้อมูลของแต่ละคำขอแชทที่ยังไม่ได้ตอบรับ
       for (final item in collect.reversed) {
         final _data = item.data() as Map<String, dynamic>;
 
+      //ในแต่ละคำขอแชท, ใช้ `fireCloudStore.collection('user')` เพื่อดึงข้อมูลผู้ใช้ที่เป็นผู้ส่งคำขอแชทนี้
         final collectUser = await fireCloudStore
             .collection('user')
             .where(
@@ -63,6 +66,7 @@ class GetRequestChatWithPharmacyUsecase
 
         final _user = collectUser.first.data() as Map<String, dynamic>;
 
+        //สร้าง `ChatWithPharmacyResponse` จากข้อมูลที่ได้
         requestChatList.add(
           ChatWithPharmacyResponse(
             id: _data['id'],

@@ -6,6 +6,7 @@ import 'package:pharmacy_online/feature/store/model/request/comment_request.dart
 
 final deleteReviewStoreUsecaseProvider =
     Provider<DeleteReviewStoreUsecase>((ref) {
+      //deleteReviewStoreUsecaseProvider คือ Provider ที่ให้บริการ `DeleteReviewStoreUsecase` ซึ่งเป็น `UseCase` ที่ทำหน้าที่ลบรีวิวและความคิดเห็นทั้งหมด
   final fireCloudStore = ref.watch(firebaseCloudStoreProvider);
   final baseSharedPreference = ref.watch(baseSharePreferenceProvider);
 
@@ -33,16 +34,20 @@ class DeleteReviewStoreUsecase extends UseCase<CommentRequest, bool> {
     CommentRequest request,
   ) async {
     try {
+      //ดึง reviewId ที่ต้องการลบจาก request
       final reviewId = request.reviewId;
 
+      // สร้าง collectReview ซึ่งเป็นคอลเลคชันของ Firebase Cloud Firestore ที่เกี่ยวข้องกับรีวิว
       final collectReview = fireCloudStore.collection('review');
 
+      //ดึงความคิดเห็นทั้งหมดที่เกี่ยวข้องกับรีวิว
       final collectComment = await collectReview
           .doc(reviewId)
           .collection('comment')
           .get()
           .then((value) => value.docs);
 
+      //วนลูปลบทุกความคิดเห็นที่เกี่ยวข้อง
       for (final item in collectComment) {
         final _data = item.data();
         await collectReview
@@ -52,6 +57,7 @@ class DeleteReviewStoreUsecase extends UseCase<CommentRequest, bool> {
             .delete();
       }
 
+      //คำสั่งลบการรีวิว
       await collectReview.doc(reviewId).delete();
 
       return true;

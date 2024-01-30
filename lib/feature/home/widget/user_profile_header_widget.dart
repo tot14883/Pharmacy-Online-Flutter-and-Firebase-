@@ -27,8 +27,8 @@ class UserProfileHeaderWidget extends ConsumerWidget {
       profileControllerProvider.select((value) => value.userInfo),
     );
 
-    final profileImg = userInfo?.profileImg;
-    final fullname = userInfo?.fullName;
+    final profileImg = userInfo?.profileImg;   //ดึงข้อมูลมาใช้
+    final fullname = userInfo?.fullName;      //ดึงข้อมูลมาใช้
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16).r,

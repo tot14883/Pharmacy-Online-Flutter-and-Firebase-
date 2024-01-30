@@ -7,6 +7,7 @@ import 'package:pharmacy_online/core/app_color.dart';
 import 'package:pharmacy_online/core/app_style.dart';
 
 class BaseTextField extends StatefulWidget {
+  // ... (ส่วนนี้เป็นการกำหนดพารามิเตอร์ต่าง ๆ ของ TextField)
   final Object? fieldKey;
 
   final bool isAutoFocus;
@@ -102,7 +103,9 @@ class BaseTextField extends StatefulWidget {
 }
 
 class _BaseTextFieldState extends State<BaseTextField>
-    implements BaseFormField<String> {
+    // ... (ส่วนนี้เป็นการสร้าง State สำหรับจัดการสถานะของ TextField)
+    implements
+        BaseFormField<String> {
   late FocusNode fieldFocusNode;
   TextEditingController? _controller;
   bool isValidated = false;
@@ -111,6 +114,7 @@ class _BaseTextFieldState extends State<BaseTextField>
   String? _value;
 
   @override
+  // ... (ส่วนนี้เป็นการเริ่มต้นการทำงานของ State)
   void initState() {
     super.initState();
     final controller = widget.controller;
@@ -161,6 +165,7 @@ class _BaseTextFieldState extends State<BaseTextField>
   }
 
   @override
+  // ... (ส่วนนี้เป็นการสร้าง UI ของ TextField)
   Widget build(BuildContext context) {
     final fieldKey = widget.fieldKey;
     if (fieldKey != null) {
@@ -268,6 +273,7 @@ class _BaseTextFieldState extends State<BaseTextField>
   }
 
   Widget _buildFooter() {
+    // ... (ส่วนนี้เป็นการสร้าง Widget สำหรับแสดงข้อผิดพลาดหากมี)
     final text = errorText;
     Widget? footer;
     if (hasError && text != null) {
@@ -284,6 +290,7 @@ class _BaseTextFieldState extends State<BaseTextField>
   }
 
   void _setValue(String value) {
+    // ... (ส่วนนี้เป็นการกำหนดค่าให้กับ TextField)
     _value = value;
     final text = _controller?.text;
     if (text != null && text != value) {
@@ -293,10 +300,12 @@ class _BaseTextFieldState extends State<BaseTextField>
   }
 
   void _handleFocusChanged() {
+    // ... (ส่วนนี้เป็นการจัดการเมื่อมีการเปลี่ยนแปลงใน Focus)
     if (mounted) setState(() {});
   }
 
   void didChange(String value) {
+    // ... (ส่วนนี้เป็นการจัดการเมื่อมีการเปลี่ยนแปลงใน TextField)
     _setValue(value);
 
     if (widget.fieldKey != null) {
@@ -313,6 +322,7 @@ class _BaseTextFieldState extends State<BaseTextField>
   }
 
   void _validate() {
+    // ... (ส่วนนี้เป็นการตรวจสอบความถูกต้องของข้อมูล)
     final validator = widget.validator;
     if (validator != null) {
       _errorText = validator(value);
@@ -321,6 +331,7 @@ class _BaseTextFieldState extends State<BaseTextField>
   }
 
   void _handleControllerChanged() {
+    // ... (ส่วนนี้เป็นการจัดการเมื่อมีการเปลี่ยนแปลงใน Controller ของ TextField)
     final text = _controller?.text;
     if (text != null && text != value) {
       didChange(text);
@@ -366,6 +377,7 @@ class _BaseTextFieldState extends State<BaseTextField>
 
   @override
   void dispose() {
+    // ... (ส่วนนี้เป็นการจัดการเมื่อ State ถูก dispose)
     fieldFocusNode.removeListener(_handleFocusChanged);
     fieldFocusNode.removeListener(_ensureVisible);
     widget.controller?.removeListener(_handleControllerChanged);
@@ -374,6 +386,7 @@ class _BaseTextFieldState extends State<BaseTextField>
 
   @override
   void didUpdateWidget(BaseTextField oldWidget) {
+    // ... (ส่วนนี้เป็นการจัดการเมื่อ Widget ถูกอัปเดต)
     super.didUpdateWidget(oldWidget);
     if (widget.controller != oldWidget.controller) {
       oldWidget.controller?.removeListener(_handleControllerChanged);
@@ -396,6 +409,7 @@ class _BaseTextFieldState extends State<BaseTextField>
   }
 
   Future<void> _ensureVisible() async {
+    // ... (ส่วนนี้เป็นการแนะนำให้ TextField อยู่ในกรอบของหน้าจอ)
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       await Future.delayed(const Duration(milliseconds: 100), () async {
         if (!fieldFocusNode.hasFocus) {

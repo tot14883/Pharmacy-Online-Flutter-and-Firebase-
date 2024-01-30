@@ -21,16 +21,20 @@ class ChatItemWidget extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref,
   ) {
+    //การดึงข้อมูล uid ของผู้ใช้ปัจจุบัน
     final uid = ref
         .read(baseSharePreferenceProvider)
         .getString(BaseSharePreferenceKey.userId);
 
+    //ตรวจสอบว่าข้อความนี้เป็นของผู้ใช้ปัจจุบันหรือไม่
     final isMe = uid == messageItem.uid;
 
+    //ดึงข้อมูลเวลาสร้างและเวลาปรับปรุงของข้อความ
     final createAt = messageItem.createAt;
     final updateAt = messageItem.updateAt;
     String? dateTime;
 
+    //แปลงรูปแบบวันที่และเวลา
     if (createAt != null || updateAt != null) {
       final convertDate = ref
           .read(baseDateFormatterProvider)
@@ -38,9 +42,9 @@ class ChatItemWidget extends ConsumerWidget {
 
       dateTime = ref
           .read(baseDateFormatterProvider)
-          .formatDateWithFreeStyleFormat('dd/MM/yyyy HH:mm:ss', convertDate);
+          .formatDateWithFreeStyleFormat('dd/MM/yyyy HH:mm', convertDate);
     }
-
+    //สร้าง Widget สำหรับแสดงข้อความ
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       child: Column(
@@ -63,6 +67,7 @@ class ChatItemWidget extends ConsumerWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   if (isMe) ...[
+                    //แสดงเวลาถ้าข้อความเป็นของผู้ใช้ปัจจุบัน
                     Text(
                       '$dateTime',
                       style: AppStyle.txtCaption,
@@ -73,6 +78,7 @@ class ChatItemWidget extends ConsumerWidget {
                   ],
                   Expanded(
                     child: Container(
+                      //กล่องสำหรับแสดงข้อความ
                       padding: const EdgeInsets.all(16).r,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.only(
@@ -93,6 +99,7 @@ class ChatItemWidget extends ConsumerWidget {
                     ),
                   ),
                   if (!isMe) ...[
+                    //แสดงเวลาถ้าข้อความเป็นของผู้ใช้ท่านอื่น
                     SizedBox(
                       width: 8.w,
                     ),
@@ -107,6 +114,7 @@ class ChatItemWidget extends ConsumerWidget {
           ],
           if (messageItem.chatImg != null &&
               messageItem.chatImg!.isNotEmpty) ...[
+              //Widget สำหรับแสดงรูปภาพ
             SizedBox(
               height: 4.h,
             ),
@@ -121,6 +129,7 @@ class ChatItemWidget extends ConsumerWidget {
                     isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
                 children: [
                   if (isMe) ...[
+                    //แสดงเวลาถ้ารูปภาพเป็นของผู้ใช้ปัจจุบัน
                     Text(
                       '$dateTime',
                       style: AppStyle.txtCaption,
@@ -130,6 +139,7 @@ class ChatItemWidget extends ConsumerWidget {
                     ),
                   ],
                   Container(
+                    //กล่องสำหรับแสดงรูปภาพ
                     padding: const EdgeInsets.all(16).r,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.only(
@@ -150,6 +160,7 @@ class ChatItemWidget extends ConsumerWidget {
                     ),
                   ),
                   if (!isMe) ...[
+                    //แสดงเวลาถ้ารูปภาพเป็นของผู้ใช้คนอื่น
                     SizedBox(
                       width: 8.w,
                     ),

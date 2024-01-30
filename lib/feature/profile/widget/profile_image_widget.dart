@@ -7,6 +7,7 @@ import 'package:pharmacy_online/core/app_color.dart';
 import 'package:pharmacy_online/core/app_style.dart';
 
 class ProfileImageWidget extends ConsumerWidget {
+  // รับข้อมูลรูปภาพ URL และชื่อผู้ใช้มาแสดงผล
   final String imageUrl;
   final String label;
 
@@ -19,19 +20,21 @@ class ProfileImageWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center, //ตรงกลางแนวตั้ง
+      mainAxisAlignment: MainAxisAlignment.center, //ตรงกลางแนวนอน
       children: [
+        // แสดงรูปภาพโปรไฟล์
         BaseImageView(
           radius: BorderRadius.circular(30),
           url: imageUrl,
-          width: 80.w,
-          height: 124.h,
-          fit: BoxFit.cover,
+          width: 80.w, // กำหนดความกว้างตามขนาดหน้าจอโดยใช้ ScreenUtil
+          height: 124.h, // กำหนดความสูงตามขนาดหน้าจอโดยใช้ ScreenUtil
+          fit: BoxFit.cover, // ปรับขนาดรูปภาพให้เต็มพื้นที่
         ),
         SizedBox(
           height: 16.h,
         ),
+        // แสดงชื่อผู้ใช้
         Text(
           label,
           style: AppStyle.txtBody2.copyWith(

@@ -39,11 +39,13 @@ class _RequestConsultItemWidgetState
     super.initState();
 
     _timer = Timer.periodic(const Duration(milliseconds: 500), (timer) async {
+      //ตรวจสอบเงื่อนไข จะยกเลิกคำขอหลังจากผ่านไปเวลา 5 นาทีแล้วไม่มีการตอบรับ
       final itemTime = widget.chatWithPharmacyItem.createAt;
       final currentTime = DateTime.now();
       final isMoreThan5Mins = currentTime.difference(itemTime!).inMinutes >= 5;
 
       if (isMoreThan5Mins) {
+        //ทำการยกเลิกคำขอและแจ้งเตือนผู้ใช้
         final result = await ref
             .read(storeControllerProvider.notifier)
             .onApproveChatWithPharmacy(
@@ -73,6 +75,7 @@ class _RequestConsultItemWidgetState
 
   @override
   Widget build(BuildContext context) {
+    //โค้ดที่ใช้สำหรับสร้าง UI ของ RequestConsultItemWidget
     final userInfo = ref.watch(
       profileControllerProvider.select((value) => value.userInfo),
     );
@@ -89,6 +92,7 @@ class _RequestConsultItemWidgetState
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
+          //ภาพโปรไฟล์ของผู้ใช้
           BaseImageView(
             url: '${widget.chatWithPharmacyItem.profileImg}',
             width: 80.w,
@@ -104,6 +108,7 @@ class _RequestConsultItemWidgetState
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
+                //ชื่อผู้ใช้ที่ส่งคำขอ
                 Text(
                   '${widget.chatWithPharmacyItem.fullName}',
                   style: AppStyle.txtHeader3,
@@ -115,7 +120,9 @@ class _RequestConsultItemWidgetState
                   children: [
                     Expanded(
                       child: BaseButton(
+                        //ปุ่ม "ตอบรับ"
                         onTap: () async {
+                          //ตอบรับคำขอ
                           final result = await ref
                               .read(storeControllerProvider.notifier)
                               .onApproveChatWithPharmacy(
@@ -160,7 +167,9 @@ class _RequestConsultItemWidgetState
                     ),
                     Expanded(
                       child: BaseButton(
+                         //ปุ่ม "ปฏิเสธ"
                         onTap: () async {
+                          //ปฏิเสธคำขอ
                           final result = await ref
                               .read(storeControllerProvider.notifier)
                               .onApproveChatWithPharmacy(

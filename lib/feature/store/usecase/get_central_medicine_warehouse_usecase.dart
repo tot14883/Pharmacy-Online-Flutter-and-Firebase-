@@ -38,6 +38,7 @@ class GetCentralMedicineWarehouseUsecase
     void request,
   ) async {
     try {
+      //ในกระบวนการดึงข้อมูล,เพื่อดึงข้อมูลยาที่เป็นคลังกลางจาก Firebase Cloud Firestore.
       final collectMedicine = await fireCloudStore
           .collection('medicineWarehouse')
           .where(
@@ -47,8 +48,9 @@ class GetCentralMedicineWarehouseUsecase
           .get()
           .then((value) => value.docs);
 
+      //สร้าง List เพื่อเก็บข้อมูลยาที่ดึงมา
       List<MedicineResponse> medicineList = [];
-
+      //วนลูปเพื่อดึงข้อมูลแต่ละรายการแล้วเพิ่มเข้า List
       for (final item in collectMedicine) {
         final _data = item.data() as Map<String, dynamic>;
 
@@ -62,7 +64,7 @@ class GetCentralMedicineWarehouseUsecase
           ),
         );
       }
-
+      //ส่ง List ข้อมูลยากลับไป
       return medicineList;
     } catch (e) {
       return const [];

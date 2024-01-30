@@ -1,8 +1,8 @@
-import 'dart:async';
+import 'dart:async'; // สำหรับจัดการกับการทำงานแบบ asynchronous
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart'; //สำหรับจัดการขนาดหน้าจอ
 import 'package:pharmacy_online/core/app_style.dart';
 import 'package:pharmacy_online/core/widget/base_consumer_state.dart';
 import 'package:pharmacy_online/feature/cart/controller/my_cart_controller.dart';
@@ -18,7 +18,9 @@ import 'package:pharmacy_online/feature/order/page/order_detail_screen.dart';
 import 'package:pharmacy_online/feature/profile/controller/profile_controller.dart';
 import 'package:pharmacy_online/generated/assets.gen.dart';
 
+// คลาสสำหรับสร้าง widget แสดงข้อมูลรายการคำสั่งซื้อ
 class OrderItemWidget extends ConsumerStatefulWidget {
+  // รับข้อมูลคำสั่งซื้อจาก cartItem หรือ orderItem
   final CartResponse? cartItem;
   final OrderResponse? orderItem;
 
@@ -40,6 +42,7 @@ class _OrderItemWidgetState extends BaseConsumerState<OrderItemWidget> {
     super.initState();
 
     _timer = Timer.periodic(const Duration(milliseconds: 500), (timer) async {
+      // ตรวจสอบสถานะคำสั่งซื้อทุก 500 มิลลิวินาที
       final cartItem = widget.cartItem;
       final orderItem = widget.orderItem;
 
@@ -60,12 +63,14 @@ class _OrderItemWidgetState extends BaseConsumerState<OrderItemWidget> {
       final isPharmacy = ref
           .watch(profileControllerProvider.select((value) => value.isPharmacy));
 
+      // ถ้าเวลาเกิน 4 ชั่วโมง และสถานะเป็นรอการชำระเงิน
       if (isMoreThan4Hours && isPayment) {
         final result = await ref
             .read(orderControllerProvider.notifier)
             .onDeleteOrder('$id', '$cartId');
 
         if (result) {
+          // แจ้งโนติถึงผู้ใช้
           await ref.read(homeControllerProvider.notifier).onPostNotification(
                 'คำสั่งซื้อถูกยกเลิก เนื่องจากเกินระยะเวลาที่กำหนด',
                 'cancelChat',
@@ -74,6 +79,7 @@ class _OrderItemWidgetState extends BaseConsumerState<OrderItemWidget> {
         }
       }
 
+      // ถ้าสถานะเป็นกำลังจัดส่ง
       if (billStatus == OrderStatus.delivering) {
         final updateAt = orderItem?.updateAt ?? cartItem?.updateAt;
         final isMoreThan4Hours = currentTime.difference(updateAt!).inHours > 4;
@@ -85,10 +91,12 @@ class _OrderItemWidgetState extends BaseConsumerState<OrderItemWidget> {
                     status: OrderStatus.completed,
                   );
           if (result) {
+            // อัพเดทรายการคำสั่งทั้งหมด
             await ref.read(orderControllerProvider.notifier).onGetAllOrder(
                   isPharmacy,
                 );
 
+            // ดึงข้อมูลคำสั่งซื้อที่มี ID ตรงกับคำสั่งซื้อปัจจุบัน
             await ref.read(orderControllerProvider.notifier).onGetOrder(
                   '$uid',
                   '$pharmacyId',
@@ -102,6 +110,7 @@ class _OrderItemWidgetState extends BaseConsumerState<OrderItemWidget> {
                   '$pharmacyId',
                 );
 
+            // แจ้งโนติถึงผู้ใช้
             await ref.read(homeControllerProvider.notifier).onPostNotification(
                   'ยืนยันการจัดส่งสำเร็จ',
                   OrderStatus.completed.name,
@@ -115,7 +124,7 @@ class _OrderItemWidgetState extends BaseConsumerState<OrderItemWidget> {
 
   @override
   void dispose() {
-    _timer?.cancel();
+    _timer?.cancel(); // ยกเลิก Timer เมื่อ widget ถูก destroy
     super.dispose();
   }
 
@@ -151,6 +160,7 @@ class _OrderItemWidgetState extends BaseConsumerState<OrderItemWidget> {
     return GestureDetector(
       onTap: () async {
         if (billStatus == OrderStatus.waitingConfirmOrder) {
+          // ดึงข้อมูลรายการตะกร้าสินค้าที่รอการยืนยัน
           await ref.read(myCartControllerProvider.notifier).onGetCart(
                 '$uid',
                 '$pharmacyId',
@@ -158,6 +168,7 @@ class _OrderItemWidgetState extends BaseConsumerState<OrderItemWidget> {
                 cartId: cartId,
               );
 
+          // นำทางไปยังหน้าจอรายการตะกร้าสินค้า
           Navigator.of(context).pushNamed(
             MyCartScreen.routeName,
             arguments: MyCartArgs(
@@ -169,7 +180,9 @@ class _OrderItemWidgetState extends BaseConsumerState<OrderItemWidget> {
           return;
         }
 
+        // หากสถานะเป็นรอการยืนยัน
         if (billStatus == OrderStatus.confirmOrder) {
+          // ดึงข้อมูลรายการตะกร้าสินค้าที่ยืนยันแล้ว
           await ref.read(myCartControllerProvider.notifier).onGetCart(
                 '$uid',
                 '$pharmacyId',
@@ -177,6 +190,7 @@ class _OrderItemWidgetState extends BaseConsumerState<OrderItemWidget> {
                 cartId: cartId,
               );
 
+          // ดึงข้อมูลคำสั่งซื้อที่มี ID ตรงกับคำสั่งซื้อปัจจุบัน
           await ref.read(orderControllerProvider.notifier).onGetOrder(
                 '$uid',
                 '$pharmacyId',
@@ -184,6 +198,7 @@ class _OrderItemWidgetState extends BaseConsumerState<OrderItemWidget> {
                 orderId: orderId,
               );
 
+          // นำทางไปยังหน้าจอสรุปคำสั่งซื้อ
           Navigator.of(context).pushNamed(
             OrderSummaryScreen.routeName,
           );
@@ -191,6 +206,7 @@ class _OrderItemWidgetState extends BaseConsumerState<OrderItemWidget> {
           return;
         }
 
+        // ดึงข้อมูลคำสั่งซื้อที่มี ID ตรงกับคำสั่งซื้อปัจจุบัน
         await ref.read(orderControllerProvider.notifier).onGetOrder(
               '$uid',
               '$pharmacyId',
@@ -198,6 +214,7 @@ class _OrderItemWidgetState extends BaseConsumerState<OrderItemWidget> {
               orderId: orderId,
             );
 
+        // นำทางไปยังหน้าจอรายละเอียดคำสั่งซื้อ
         Navigator.of(context).pushNamed(OrderDetailScreen.routeName);
       },
       child: Padding(
@@ -210,8 +227,8 @@ class _OrderItemWidgetState extends BaseConsumerState<OrderItemWidget> {
             ),
             Expanded(
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start, //ชิดซ้าย
+                crossAxisAlignment: CrossAxisAlignment.start, //ชิดบน
                 children: [
                   Text(
                     '$billName',
@@ -241,7 +258,7 @@ class _OrderItemWidgetState extends BaseConsumerState<OrderItemWidget> {
                   Row(
                     children: [
                       Text(
-                        'สถานะชำระเงิน: ',
+                        'สถานะ : ',
                         style: AppStyle.txtBody2,
                       ),
                       Text(

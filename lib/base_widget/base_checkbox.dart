@@ -5,17 +5,21 @@ import 'package:pharmacy_online/core/app_color.dart';
 import 'package:pharmacy_online/core/app_style.dart';
 import 'package:pharmacy_online/generated/assets.gen.dart';
 
+// BaseCheckBox Widget ใน Flutter
 class BaseCheckBox extends StatefulWidget {
-  final Object? fieldKey;
-  final bool? initialValue;
-  final FocusNode? focusNode;
+  final Object? fieldKey; // กำหนด fieldKey เพื่อใช้กับ BaseForm
+  final bool? initialValue; // กำหนดค่าเริ่มต้นของ CheckBox
+  final FocusNode? focusNode; // กำหนด focusNode เพื่อให้สามารถควบคุมการ focus
 
-  final bool isEnabled;
-  final ValueChanged<bool>? onChanged;
-  final Widget? label;
-  final bool? error;
-  final FormFieldValidator<String>? validator;
+  final bool isEnabled; // กำหนดให้ CheckBox ใช้งานหรือไม่
+  final ValueChanged<bool>?
+      onChanged; // กำหนดฟังก์ชันที่จะถูกเรียกเมื่อมีการเปลี่ยนแปลงใน CheckBox
+  final Widget? label; // กำหนด Label ที่จะแสดงด้วย CheckBox
+  final bool? error; // กำหนด Error ที่จะแสดงหรือไม่แสดง
+  final FormFieldValidator<String>?
+      validator; // กำหนด Validator สำหรับ validate ค่าของ CheckBox
 
+  // Constructor ของ Widget
   const BaseCheckBox({
     Key? key,
     this.fieldKey,
@@ -40,6 +44,7 @@ class _BaseCheckBoxState extends State<BaseCheckBox>
 
   var isValidated = false;
 
+  // ฟังก์ชันนี้จะถูกเรียกเมื่อ State ถูกสร้าง
   @override
   void initState() {
     super.initState();
@@ -55,8 +60,10 @@ class _BaseCheckBoxState extends State<BaseCheckBox>
     _setValue(widget.initialValue ?? false);
   }
 
+  // ฟังก์ชันนี้จะถูกเรียกเมื่อ Widget ถูก build
   @override
   Widget build(BuildContext context) {
+    // ลงทะเบียน BaseForm
     final fieldKey = widget.fieldKey;
     if (fieldKey != null) {
       BaseForm.of(context)?.register(fieldKey, this);
@@ -64,6 +71,7 @@ class _BaseCheckBoxState extends State<BaseCheckBox>
 
     final textContent = widget.label;
 
+    // สร้าง Widget ของ CheckBox
     final checkBoxContainer = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -71,6 +79,7 @@ class _BaseCheckBoxState extends State<BaseCheckBox>
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            // Widget ของ CheckBox ที่ให้ผู้ใช้เลือก
             _CheckBox(
               isEnabled: widget.isEnabled,
               value: _value,
@@ -86,6 +95,7 @@ class _BaseCheckBoxState extends State<BaseCheckBox>
             ],
           ],
         ),
+        // แสดงข้อผิดพลาด (ถ้ามี)
         if (_errorText != null)
           Padding(
             padding: const EdgeInsets.only(left: 28).w,
@@ -99,6 +109,7 @@ class _BaseCheckBoxState extends State<BaseCheckBox>
     return checkBoxContainer;
   }
 
+  // ฟังก์ชันที่เรียกเมื่อมีการเปลี่ยนแปลงใน CheckBox
   void onChanged(bool? value) {
     _setValue(value ?? false);
     widget.onChanged?.call(_value);
@@ -107,13 +118,16 @@ class _BaseCheckBoxState extends State<BaseCheckBox>
     }
   }
 
+  // Getter ที่ให้ค่า validateValue เป็น String?
   String? get validateValue => _value == false ? '' : _value.toString();
 
+  // ฟังก์ชัน clear ที่กำหนดค่า _value เป็น false
   @override
   void clear() {
     _setValue(false);
   }
 
+  // Getter ที่กำหนดค่า _value และ validate Text
   void _setValue(bool value) {
     _value = value;
     if (_value) {
@@ -124,11 +138,13 @@ class _BaseCheckBoxState extends State<BaseCheckBox>
     setState(() {});
   }
 
+  // ฟังก์ชัน focus ที่ให้ focus ไปที่ fieldFocusNode
   @override
   void focus() {
     fieldFocusNode.requestFocus();
   }
 
+  // ฟังก์ชันที่ให้ค่า validateValue ผ่าน validator
   void _validate() {
     final validator = widget.validator;
     if (validator != null) {
@@ -137,6 +153,7 @@ class _BaseCheckBoxState extends State<BaseCheckBox>
     isValidated = true;
   }
 
+  // Getter ที่คืนค่าว่า CheckBox ถูกต้องหรือไม่
   @override
   bool get isValid {
     final validator = widget.validator;
@@ -161,6 +178,7 @@ class _BaseCheckBoxState extends State<BaseCheckBox>
   bool? get value => _value;
 }
 
+// Widget ของ CheckBox
 class _CheckBox extends StatelessWidget {
   final bool isEnabled;
   final bool value;
@@ -173,6 +191,7 @@ class _CheckBox extends StatelessWidget {
     required this.onChanged,
   }) : super(key: key);
 
+  // สร้าง Widget ของ CheckBox
   @override
   Widget build(BuildContext context) {
     return IconButton(

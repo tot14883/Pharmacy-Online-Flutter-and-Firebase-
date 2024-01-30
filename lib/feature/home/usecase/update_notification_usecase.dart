@@ -31,13 +31,13 @@ class UpdateNotificationUsecase extends UseCase<String, bool> {
     String id,
   ) async {
     try {
-      final collect = fireCloudStore.collection('notification');
+      final collect = fireCloudStore.collection('notification');  //ดึงข้อมูลจาก firebase ในคอนเลคชั่น notification มาใส่ในตัวแปร collect
 
       final Map<String, dynamic> myData = {
         "isRead": true,
       };
 
-      await collect.doc(id).update(myData);
+      await collect.doc(id).update(myData); //เป็นการอัพเดทข้อมูลแทนที่ของเก่าเลย
 
       return true;
     } catch (e) {

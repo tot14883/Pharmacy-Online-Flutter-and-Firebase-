@@ -4,6 +4,7 @@ import 'package:pharmacy_online/core/application/usecase.dart';
 import 'package:pharmacy_online/core/firebase/database/cloud_store_provider.dart';
 import 'package:pharmacy_online/feature/admin/model/response/pharmacy_info_response.dart';
 
+// Provider สำหรับให้ Consumer สามารถเรียกใช้ GetPharmacyDetailUsecase ได้
 final getPharmacyDetailUsecaseProvider =
     Provider<GetPharmacyDetailUsecase>((ref) {
   final fireCloudStore = ref.watch(firebaseCloudStoreProvider);
@@ -30,6 +31,7 @@ class GetPharmacyDetailUsecase
     void request,
   ) async {
     try {
+      // ดึงข้อมูลผู้ใช้ที่มีสถานะ "waiting" หรือ "approve" และเป็นบทบาท "pharmacy"
       final collectUser = await fireCloudStore
           .collection('user')
           .where(
@@ -69,6 +71,7 @@ class GetPharmacyDetailUsecase
         final _pharmacy =
             collectPharmacyStore.first.data() as Map<String, dynamic>;
 
+        // สร้างออบเจ็กต์ PharmacyInfoResponse จากข้อมูลที่ดึงมา
         userInfoList.add(
           PharmacyInfoResponse(
             uid: _data['uid'],
@@ -94,6 +97,7 @@ class GetPharmacyDetailUsecase
 
       return userInfoList;
     } catch (e) {
+      // กรณีเกิดข้อผิดพลาดในการดึงข้อมูล
       return const [];
     }
   }

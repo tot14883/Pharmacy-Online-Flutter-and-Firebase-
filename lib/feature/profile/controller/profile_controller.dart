@@ -19,6 +19,7 @@ import 'package:pharmacy_online/feature/profile/usecase/get_user_info_usecase.da
 final profileControllerProvider =
     StateNotifierProvider<ProfileController, ProfileState>(
   (ref) {
+    // ดึงข้อมูล
     final baseFormData = ref.watch(baseFormDataProvider);
     final baseSharePreference = ref.watch(baseSharePreferenceProvider);
     final appNavigator = ref.watch(appNavigatorProvider);
@@ -29,6 +30,7 @@ final profileControllerProvider =
         ref.watch(updatePharmacyStoreUsecaseProvider);
     final changeQRCodeUsecase = ref.watch(changeQRCodeUsecaseProvider);
 
+    // สร้าง ProfileController พร้อมกับการส่ง Dependency ที่ต้องใช้
     return ProfileController(
       ref,
       const ProfileState(),
@@ -44,7 +46,9 @@ final profileControllerProvider =
   },
 );
 
+// คลาส ProfileController ที่ใช้เป็น StateNotifier สำหรับการจัดการ State ของหน้าจอ Profile
 class ProfileController extends StateNotifier<ProfileState> {
+  // ตัวแปรที่ใช้เก็บ Ref และ Dependency ต่าง ๆ ที่ใช้ใน Controller
   final Ref _ref;
   final BaseFormData _baseFormData;
   final LoaderController _loader;
@@ -56,6 +60,7 @@ class ProfileController extends StateNotifier<ProfileState> {
   final UpdatePharmacyStoreUsecase _updatePharmacyStoreUsecase;
   final ChangeQRCodeUsecase _changeQRCodeUsecase;
 
+  // คอนสตรักเตอร์สำหรับกำหนดค่าเริ่มต้นของตัวแปร
   ProfileController(
     this._ref,
     ProfileState state,
@@ -70,6 +75,7 @@ class ProfileController extends StateNotifier<ProfileState> {
   )   : _loader = _ref.read(loaderControllerProvider.notifier),
         super(state);
 
+  // เมธอดที่ใช้ในการอัพเดทข้อมูลใน State
   void onChanged(BaseFormData baseFormData) {
     final newData = _baseFormData.copyAndMerge(baseFormData);
     state = state.copyWith(baseFormData: newData);
@@ -99,11 +105,13 @@ class ProfileController extends StateNotifier<ProfileState> {
     );
   }
 
+  // เมธอดที่ใช้ในการดึงข้อมูลผู้ใช้
   Future<void> onGetUserInfo() async {
     _loader.onLoad();
     final result = await _getUserInfoUsecase.execute(null);
 
     result.when(
+      // กรณีดึงข้อมูลสำเร็จ
       (success) {
         state = state.copyWith(
           userInfo: success,
@@ -112,29 +120,34 @@ class ProfileController extends StateNotifier<ProfileState> {
 
         _loader.onDismissLoad();
       },
+      // กรณีเกิดข้อผิดพลาด
       (error) => _loader.onDismissLoad(),
     );
   }
 
+  // เมธอดที่ใช้ในการดึงข้อมูลร้านขายยา
   Future<void> onGetPharmacyStore() async {
     _loader.onLoad();
 
     final result = await _getPharmacyUsecase.execute(null);
 
     result.when(
+      // กรณีดึงข้อมูลสำเร็จ
       (success) {
         state = state.copyWith(
           pharmacyStore: success,
         );
         _loader.onDismissLoad();
       },
+      // กรณีเกิดข้อผิดพลาด
       (error) => _loader.onDismissLoad(),
     );
   }
 
+  // เมธอดที่ใช้ในการอัพเดทข้อมูลผู้ใช้
   Future<bool> onUpdateUserInfo(
-    XFile? imgProfile,
-    XFile? imgLicensePharmacy,
+    XFile? imgProfile, //รูปโปรไฟล์
+    XFile? imgLicensePharmacy, //รูปใบอนุญาต
   ) async {
     _loader.onLoad();
 
@@ -174,9 +187,10 @@ class ProfileController extends StateNotifier<ProfileState> {
     return isSuccess;
   }
 
+  // เมธอดที่ใช้ในการอัพเดทข้อมูลร้านขายยา
   Future<bool> onUpdatePharmacyStore(
-    XFile? licensePharmacyStoreImg,
-    XFile? store,
+    XFile? licensePharmacyStoreImg, //รูปใบอนุญาต
+    XFile? store, // รูปร้าน
   ) async {
     _loader.onLoad();
 
@@ -233,6 +247,7 @@ class ProfileController extends StateNotifier<ProfileState> {
     return isSuccess;
   }
 
+  // เมธอดที่ใช้ในการเปลี่ยนรูปภาพ QR Code
   Future<bool> onChangeQRCode(XFile? qrcodeImg) async {
     _loader.onLoad();
     bool isSuccess = false;

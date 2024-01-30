@@ -18,6 +18,7 @@ final firebasePushNotificationProvider =
   );
 });
 
+/// Class ที่ใช้จัดการกับ Firebase Cloud Messaging (FCM) และ Local Notification
 class FirebasePushNotification {
   final FirebaseMessaging messaging;
   final LocalNotification localNotification;
@@ -31,10 +32,12 @@ class FirebasePushNotification {
     _init();
   }
 
+  /// ฟังก์ชันเริ่มต้นการตั้งค่า Firebase Cloud Messaging (FCM)
   void _init() async {
     // On iOS, macOS & web, before FCM payloads can be received on your device,
     // you must first ask the user's permission.
     // Android applications are not required to request permission.
+    // ขออนุญาตการแจ้งเตือนจากระบบ
     NotificationSettings settings = await messaging.requestPermission(
       alert: true,
       announcement: false,
@@ -45,6 +48,7 @@ class FirebasePushNotification {
       sound: true,
     );
 
+    // ตรวจสอบว่าผู้ใช้ได้อนุญาตไหม
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
       debugPrint('User granted permission');
     } else if (settings.authorizationStatus ==
@@ -65,6 +69,7 @@ class FirebasePushNotification {
     );
 
     // Set the background messaging handler early on, as a named top-level function
+    // ตั้งค่าการจัดการข้อความเมื่อแอปพลิเคชันทำงานใน background
     FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
   }
 
@@ -78,6 +83,7 @@ class FirebasePushNotification {
       Map<String, dynamic> data = message.data;
 
       if (notification != null && android != null) {
+        // แสดง Local Notification ด้วยข้อมูลที่ได้รับ
         localNotification.showNotification(
           ReceivedNotification(
             id: notification.hashCode,
@@ -108,6 +114,8 @@ class FirebasePushNotification {
   /// you may wish to handle the users interaction when the application opens.
   ///
   // It is assumed that all messages contain a data field with the key 'type'
+
+  /// ฟังก์ชันตั้งค่าการจัดการเมื่อผู้ใช้คลิกที่ Notification
   Future<void> setupInteractedMessage() async {
     // Get any messages which caused the application to open from
     // a terminated state.

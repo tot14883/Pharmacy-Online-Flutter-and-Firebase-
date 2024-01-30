@@ -21,18 +21,23 @@ class RatingStartWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RatingBar.builder(
-      initialRating: initialRating,
-      minRating: 1,
-      ignoreGestures: isReadable,
-      direction: Axis.horizontal,
-      allowHalfRating: allowHalfRating,
-      itemCount: 5,
-      itemSize: itemSize ?? 40,
-      itemPadding: const EdgeInsets.symmetric(horizontal: 4.0).w,
+      initialRating: initialRating, // ตั้งค่าคะแนนเริ่มต้น
+      minRating: 1, // ตั้งค่าคะแนนต่ำสุด
+      ignoreGestures:
+          isReadable, // กำหนดว่าให้สามารถแสดงคะแนนทศนิยมครึ่งหรือไม่
+      direction: Axis.horizontal, // กำหนดทิศทางของการแสดงดาว (แนวนอน)
+      allowHalfRating:
+          allowHalfRating, // กำหนดให้สามารถให้คะแนนทศนิยมครึ่งได้หรือไม่
+      itemCount: 5, // จำนวนดาวทั้งหมด
+      itemSize: itemSize ?? 40, // กำหนดขนาดของแต่ละดาว
+      itemPadding: const EdgeInsets.symmetric(horizontal: 4.0)
+          .w, // กำหนดระยะห่างระหว่างแต่ละดาว
+      // กำหนดรูปแบบของแต่ละดาว
       itemBuilder: (context, _) => const Icon(
-        Icons.star,
-        color: Colors.amber,
+        Icons.star, //ไอค่อนดาว
+        color: Colors.amber, //สีดาว
       ),
+      // เมื่อมีการแปลงคะแนน
       onRatingUpdate: onRatingUpdate,
     );
   }

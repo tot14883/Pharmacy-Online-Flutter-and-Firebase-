@@ -9,6 +9,7 @@ import 'package:pharmacy_online/feature/order/enum/order_status_enum.dart';
 import 'package:pharmacy_online/feature/store/model/response/medicine_response.dart';
 
 final getAllMyCartUsecaseProvider = Provider<GetAllMyCartUsecase>((ref) {
+  //โค้ดที่ใช้ในการสร้าง GetAllMyCartUsecase และรับ dependencies ต่าง ๆ
   final fireCloudStore = ref.watch(firebaseCloudStoreProvider);
   final baseSharedPreference = ref.watch(baseSharePreferenceProvider);
 
@@ -20,6 +21,7 @@ final getAllMyCartUsecaseProvider = Provider<GetAllMyCartUsecase>((ref) {
 });
 
 class GetAllMyCartUsecase extends UseCase<CartRequest, List<CartResponse>> {
+  //โค้ดที่ประกาศตัวแปรและ dependencies ที่ใช้ใน UseCase
   final FirebaseCloudStore fireCloudStore;
   final BaseSharedPreference baseSharedPreference;
 
@@ -36,6 +38,7 @@ class GetAllMyCartUsecase extends UseCase<CartRequest, List<CartResponse>> {
     CartRequest request,
   ) async {
     try {
+      //โค้ดที่ใช้ในการดึงข้อมูลตะกร้าสินค้า
       final isPharamcy = request.isPharmacy;
       final uid = baseSharedPreference.getString(BaseSharePreferenceKey.userId);
       final status = request.status;
@@ -43,6 +46,7 @@ class GetAllMyCartUsecase extends UseCase<CartRequest, List<CartResponse>> {
       List<QueryDocumentSnapshot<Object?>>? collectCart;
 
       if (isPharamcy) {
+        //ดึงข้อมูลตะกร้าสินค้าจากร้านขายยา
         collectCart = await fireCloudStore
             .collection('cart')
             .where('pharmacyId', isEqualTo: uid)
@@ -51,6 +55,7 @@ class GetAllMyCartUsecase extends UseCase<CartRequest, List<CartResponse>> {
             .get()
             .then((value) => value.docs);
       } else {
+        //ดึงข้อมูลตะกร้าสินค้าของผู้ใช้
         collectCart = await fireCloudStore
             .collection('cart')
             .where('uid', isEqualTo: uid)
@@ -68,6 +73,7 @@ class GetAllMyCartUsecase extends UseCase<CartRequest, List<CartResponse>> {
 
           final List<MedicineResponse> medicineList = [];
 
+          //ดึงข้อมูลสินค้าที่อยู่ในตะกร้าสินค้า
           final collectCartMedicine = await fireCloudStore
               .collection('cart')
               .doc(_data['id'])
@@ -90,6 +96,7 @@ class GetAllMyCartUsecase extends UseCase<CartRequest, List<CartResponse>> {
             );
           }
 
+          //ดึงข้อมูลผู้ใช้ที่ทำการสั่งซื้อ
           final collectUser = await fireCloudStore
               .collection('user')
               .doc(_data['uid'])
@@ -97,6 +104,7 @@ class GetAllMyCartUsecase extends UseCase<CartRequest, List<CartResponse>> {
               .then((value) => value);
           final _user = collectUser.data() as Map<String, dynamic>;
 
+          //เพิ่มข้อมูลตะกร้าสินค้าใน List
           cartList.add(
             CartResponse(
               id: _data['id'],

@@ -53,7 +53,7 @@ class _MyCartScreenState extends BaseConsumerState<MyCartScreen> {
       appBar: BaseAppBar(
         elevation: 0,
         title: Text(
-          'My Cart',
+          'ตะกร้าสินค้า',
           style: AppStyle.txtHeader3,
         ),
         leading: IconButton(
@@ -140,14 +140,14 @@ class _MyCartScreenState extends BaseConsumerState<MyCartScreen> {
                       height: 16.h,
                     ),
                     Text(
-                      'Payment Detail',
+                      'รายละเอียด',
                       style: AppStyle.txtBody,
                     ),
                     SizedBox(
                       height: 8.h,
                     ),
                     RowContentWidget(
-                      header: 'Subtotal',
+                      header: 'ราคารวม',
                       content: '$priceTotal บาท',
                     ),
                     SizedBox(
@@ -165,7 +165,7 @@ class _MyCartScreenState extends BaseConsumerState<MyCartScreen> {
                       height: 8.h,
                     ),
                     RowContentWidget(
-                      header: 'Total',
+                      header: 'ราคารวมทั้งหมด',
                       content: '${priceTotal + 50} บาท',
                       isBold: true,
                     ),

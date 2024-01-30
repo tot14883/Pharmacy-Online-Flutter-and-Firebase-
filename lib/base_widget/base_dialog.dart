@@ -4,6 +4,7 @@ import 'package:pharmacy_online/base_widget/base_button.dart';
 import 'package:pharmacy_online/core/app_color.dart';
 import 'package:pharmacy_online/core/app_style.dart';
 
+/// ฟังก์ชันสำหรับแสดง base dialog.
 Future<T?> showBaseDialog<T>({
   required BuildContext context,
   required Widget Function(BuildContext) builder,
@@ -17,6 +18,7 @@ Future<T?> showBaseDialog<T>({
   );
 }
 
+/// Widget ที่แทนที่ base dialog แก้ไขได้
 class BaseDialog extends StatelessWidget {
   final String? message;
   final VoidCallback? onClick;
@@ -24,6 +26,7 @@ class BaseDialog extends StatelessWidget {
   final Widget? dialogLogo;
   final bool hasCancel;
 
+  /// Constructor สำหรับกำหนดค่า BaseDialog.
   BaseDialog({
     Key? key,
     this.message,
@@ -33,6 +36,7 @@ class BaseDialog extends StatelessWidget {
     this.hasCancel = false,
   }) : super(key: key);
 
+  //ส่วนมุมโค้งของ dialog
   final ShapeBorder shapeBorder = RoundedRectangleBorder(
     borderRadius: BorderRadius.circular(12.0),
   );

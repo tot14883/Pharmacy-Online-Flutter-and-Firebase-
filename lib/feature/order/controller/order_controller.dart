@@ -19,9 +19,11 @@ import 'package:pharmacy_online/feature/order/usecase/upload_delivery_slip_useca
 import 'package:pharmacy_online/feature/store/model/request/comment_request.dart';
 import 'package:pharmacy_online/utils/util/base_utils.dart';
 
+// riverpod สำหรับสร้าง OrderController
 final orderControllerProvider =
     StateNotifierProvider<OrderController, OrderState>(
   (ref) {
+    // อ่าน dependencies ที่จำเป็น
     final baseFormData = ref.watch(baseFormDataProvider);
     final baseUtils = ref.watch(baseUtilsProvider);
     final appNavigator = ref.watch(appNavigatorProvider);
@@ -37,6 +39,7 @@ final orderControllerProvider =
     final checkReviewAlreadyUsecase =
         ref.watch(checkReviewAlreadyUsecaseProvider);
 
+// สร้าง OrderController และคืนค่า
     return OrderController(
       ref,
       const OrderState(),
@@ -55,6 +58,7 @@ final orderControllerProvider =
   },
 );
 
+// OrderController ใช้ในการจัดการ state และการทำงานของคำสั่งซื้อ
 class OrderController extends StateNotifier<OrderState> {
   final Ref _ref;
   final BaseFormData _baseFormData;
@@ -69,6 +73,8 @@ class OrderController extends StateNotifier<OrderState> {
   final UpdatBankTransferUsecase _updatBankTransferUsecase;
   final UpdatDeliverySlipUsecase _updatDeliverySlipUsecase;
   final CheckReviewAlreadyUsecase _checkReviewAlreadyUsecase;
+
+  // กำหนด dependencies และสร้าง OrderController
   OrderController(
     this._ref,
     OrderState state,
@@ -86,15 +92,18 @@ class OrderController extends StateNotifier<OrderState> {
   )   : _loader = _ref.read(loaderControllerProvider.notifier),
         super(state);
 
+  // เมทอด onChanged ใช้ในการเปลี่ยนแปลงข้อมูลใน BaseFormData และอัปเดต state
   void onChanged(BaseFormData baseFormData) {
     final newData = _baseFormData.copyAndMerge(baseFormData);
     state = state.copyWith(baseFormData: newData);
   }
 
+// เมทอด clearForm ใช้ในการล้างข้อมูลใน BaseFormData
   void clearForm() {
     state = state.copyWith(baseFormData: null);
   }
 
+// เมทอด onAddOrder ใช้ในการสร้างคำสั่งซื้อใหม่
   Future<bool> onAddOrder(
     String storeId,
     String uid,
@@ -120,6 +129,7 @@ class OrderController extends StateNotifier<OrderState> {
     return isSuccess;
   }
 
+// เมทอด onGetAllOrder ใช้ในการดึงข้อมูลรายการคำสั่งซื้อทั้งหมด
   Future<void> onGetAllOrder(
     bool isPharmacy,
   ) async {
@@ -135,6 +145,7 @@ class OrderController extends StateNotifier<OrderState> {
     );
   }
 
+// เมทอด onGetOrder ใช้ในการดึงข้อมูลรายละเอียดคำสั่งซื้อ
   Future<void> onGetOrder(
     String uid,
     String pharmacyId,
@@ -164,6 +175,7 @@ class OrderController extends StateNotifier<OrderState> {
     });
   }
 
+  // เมทอด onDeleteOrder ใช้ในการลบคำสั่งซื้อ
   Future<bool> onDeleteOrder(
     String id,
     String cartId,
@@ -186,6 +198,7 @@ class OrderController extends StateNotifier<OrderState> {
     return isSuccess;
   }
 
+// เมทอด onUpdateOrder ใช้ในการอัปเดตข้อมูลคำสั่งซื้อ
   Future<bool> onUpdateOrder(
     String id,
     String cartId, {
@@ -223,10 +236,12 @@ class OrderController extends StateNotifier<OrderState> {
     return isSuccess;
   }
 
+  // เมทอด setBankTransferDateTime ใช้ในการตั้งค่าวันที่และเวลาที่ทำการโอนเงิน
   void setBankTransferDateTime(String bankTransferDateTime) {
     state = state.copyWith(bankTransferDateTime: bankTransferDateTime);
   }
 
+// เมทอด onUpdatBankTransfer ใช้ในการอัปเดตข้อมูลการโอนเงิน
   Future<bool> onUpdatBankTransfer(
     String id,
     String cardId,
@@ -260,6 +275,7 @@ class OrderController extends StateNotifier<OrderState> {
     return isSuccess;
   }
 
+// เมทอด onUpdatDeliverySlip ใช้ในการอัปเดตข้อมูลหลักฐานการจัดส่ง
   Future<bool> onUpdatDeliverySlip(
     String id,
     String cardId,
@@ -287,6 +303,7 @@ class OrderController extends StateNotifier<OrderState> {
     return isSuccess;
   }
 
+  // เมทอด onCheckReviewAlready ใช้ในการตรวจสอบว่าลูกค้าเคยรีวิวไว้ยัง
   Future<void> onCheckReviewAlready(String orderId) async {
     final result = await _checkReviewAlreadyUsecase
         .execute(CommentRequest(orderId: orderId));
@@ -297,6 +314,7 @@ class OrderController extends StateNotifier<OrderState> {
     );
   }
 
+// เมทอด clearState ใช้ในการล้างข้อมูล state ให้ว่างเปล่า
   void clearState() {
     state = state.copyWith();
   }

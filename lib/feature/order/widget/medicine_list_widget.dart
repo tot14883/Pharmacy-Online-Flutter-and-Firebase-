@@ -7,9 +7,10 @@ import 'package:pharmacy_online/feature/store/model/response/medicine_response.d
 import 'package:pharmacy_online/utils/util/vaildators.dart';
 
 class MedicineListWidget extends ConsumerWidget {
-  final bool hasTextForm;
-  final List<MedicineResponse> medicineList;
-  final Function(Map<String, String> text) onChange;
+  final bool hasTextForm; // กำหนดว่าต้องการแสดงช่องกรอกข้อความหรือไม่
+  final List<MedicineResponse> medicineList; // ข้อมูลรายชื่อยา
+  final Function(Map<String, String> text)
+      onChange; //จัดการการเปลี่ยนแปลงในช่องกรอกข้อความ
 
   const MedicineListWidget({
     super.key,
@@ -21,15 +22,19 @@ class MedicineListWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return ListView.separated(
-      physics: const NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
-      itemCount: medicineList.length,
+      // สร้าง ListView สำหรับแสดงข้อมูลยา
+      physics: const NeverScrollableScrollPhysics(), // ปิดการเลื่อนอิสระ
+      shrinkWrap: true, // ให้ ListView ปรับขนาดตามเนื้อหา
+      itemCount: medicineList.length, // จำนวนรายการข้อมูลยา
       itemBuilder: (context, index) {
-        final medicineItem = medicineList[index];
+        // ฟังก์ชั่นสำหรับสร้างแต่ละรายการยา
+        final medicineItem = medicineList[index]; // ข้อมูลยาชิ้นที่ index
 
         return Column(
+          // จัดเรียงข้อมูลยาในแนวตั้ง
           children: [
             MedicineItemWidget(
+              // แสดงข้อมูลยา เช่น รูปภาพ ชื่อ จำนวน ราคา
               imgUrl: '${medicineItem.medicineImg}',
               name: '${medicineItem.name}',
               quantity: 'จำนวน ${medicineItem.quantity}',
@@ -37,13 +42,16 @@ class MedicineListWidget extends ConsumerWidget {
                   '${(medicineItem.price ?? 0.0) * (medicineItem.quantity ?? 1)} บาท',
             ),
             if (hasTextForm) ...[
+              // แสดงช่องกรอกข้อความถ้า hasTextForm เป็น true
               SizedBox(
                 height: 8.h,
               ),
               BaseTextField(
+                // ช่องกรอกข้อความสำหรับคำแนะนำการใช้ยา
                 label: 'วิธีการใช้/คำแนะนำ',
                 isShowLabelField: false,
                 validator: Validators.combine(
+                  // ตรวจสอบข้อมูลกรอก
                   [
                     Validators.withMessage(
                       "Required",
@@ -52,6 +60,7 @@ class MedicineListWidget extends ConsumerWidget {
                   ],
                 ),
                 onChange: (val) {
+                  // เรียกใช้ฟังก์ชั่นเมื่อข้อมูลในช่องกรอกเปลี่ยนแปลง
                   onChange({'${medicineItem.cartMedicineId}': val});
                 },
               ),

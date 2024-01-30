@@ -21,11 +21,13 @@ final getPharmacyUsecaseProvider = Provider<GetPharmacyUseCase>((ref) {
   );
 });
 
+// สร้าง UseCase สำหรับการดึงข้อมูลของร้านเภสัชกร
 class GetPharmacyUseCase extends UseCase<void, PharmacyStoreResponse> {
   final FirebaseCloudStore fireCloudStore;
   final BaseSharedPreference baseSharedPreference;
   final BaseUtils baseUtils;
 
+  // กำหนด Constructor พร้อมรับ Provider ที่ต้องใช้
   GetPharmacyUseCase(
     Ref ref,
     this.fireCloudStore,
@@ -35,16 +37,20 @@ class GetPharmacyUseCase extends UseCase<void, PharmacyStoreResponse> {
     this.ref = ref;
   }
 
+  // ฟังก์ชัน exec ในการดึงข้อมูลของร้านเภสัชกร
   @override
   Future<PharmacyStoreResponse> exec(
     void request,
   ) async {
     try {
+      // ดึงข้อมูล uid จาก SharedPreferences
       final uid = baseSharedPreference.getString(BaseSharePreferenceKey.userId);
 
       if (uid != null) {
+        // ดึง Collection ของ pharmacyStore
         final collect = fireCloudStore.collection('pharmacyStore');
 
+        // ดึงข้อมูลจาก Firestore ด้วย uid
         final data = await collect
             .doc(
               uid,
@@ -52,6 +58,7 @@ class GetPharmacyUseCase extends UseCase<void, PharmacyStoreResponse> {
             .get()
             .then((value) => value.data() as Map<String, dynamic>);
 
+        // สร้าง PharmacyStoreResponse จากข้อมูลที่ได้
         return PharmacyStoreResponse(
           uid: data['uid'],
           address: data['address'],

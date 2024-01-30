@@ -4,12 +4,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+// baseFormDataProvider คือ Provider ที่ให้ค่าเป็น BaseFormData เพื่อให้ Widget ต่าง ๆ สามารถเข้าถึงข้อมูลฟอร์มได้
 final baseFormDataProvider = Provider(
   ((ref) {
     return BaseFormData();
   }),
 );
 
+// BaseFormField คือ Interface ที่ต้องการให้ Widget ของ FormField ต้อง Implement โดยต้องมีเมทอด focus, clear, validate, get value, get isValid
 abstract class BaseFormField<T> {
   void focus();
   void clear();
@@ -19,9 +21,11 @@ abstract class BaseFormField<T> {
   bool get isValid;
 }
 
+// BaseFormData เป็นคลาสที่เก็บข้อมูลฟอร์มทั้งหมด
 class BaseFormData {
   final Map<Object, Object> _formData;
 
+  // เมทอดที่ใช้ในการกำหนดค่าของ key ในข้อมูลฟอร์ม (_formData)
   BaseFormData({Map<Object, Object>? initialData})
       : _formData = initialData ?? {};
 
@@ -33,6 +37,7 @@ class BaseFormData {
     }
   }
 
+  // เมทอดที่ใช้ในการดึงค่าของ key จากข้อมูลฟอร์ม (_formData)
   T? getValue<T>(Object key) {
     final _obj = _formData[key];
     if (_obj == null) {
@@ -45,14 +50,17 @@ class BaseFormData {
     return _obj as T?;
   }
 
+  // เมทอดที่ใช้ในการลบ key ออกจากข้อมูลฟอร์ม (_formData)
   void removeKey(Object key) {
     _formData.remove(key);
   }
 
+  // เมทอดที่ใช้ในการตรวจสอบว่า key นี้มีอยู่ในข้อมูลฟอร์มหรือไม่
   bool hasKey(Object key) {
     return _formData.containsKey(key);
   }
 
+  // เมทอดที่ใช้ในการคัดลอกข้อมูลจาก BaseFormData อื่น และรวมรวมเข้ากับข้อมูลปัจจุบัน
   BaseFormData copyAndMerge(BaseFormData data) {
     return BaseFormData(
       initialData: <Object, Object>{}
@@ -61,6 +69,7 @@ class BaseFormData {
     );
   }
 
+  // เมทอดที่ใช้ในการเปรียบเทียบข้อมูลระหว่าง BaseFormData นี้กับ BaseFormData อื่น
   @override
   bool operator ==(Object other) {
     if (other is BaseFormData) {
@@ -70,6 +79,7 @@ class BaseFormData {
     }
   }
 
+  // เมทอดที่ใช้ในการคำนวณ hashCode ของ BaseFormData
   int get length => _formData.length;
 
   @override
@@ -77,6 +87,7 @@ class BaseFormData {
   int get hashCode => super.hashCode;
 }
 
+// BaseForm เป็น StatefulWidget ที่ถูกใช้เพื่อรวบรวม BaseFormField และมีหน้าที่จัดการกับการ validate, focus, clear ข้อมูลฟอร์ม
 class BaseForm extends StatefulWidget {
   @override
   final Key key;
@@ -189,6 +200,8 @@ class BaseFormState extends State<BaseForm> {
     return false;
   }
 
+  // ... ส่วนนี้เป็นการจัดการ focus, clear, validate ข้อมูลฟอร์ม
+
   BaseFormData? _lastFormData;
   void fieldDidChange() {
     if (_isBulkEditField) {
@@ -221,6 +234,8 @@ class BaseFormState extends State<BaseForm> {
     isFirstTime = true;
   }
 
+  // ... ส่วนนี้เป็นการจัดการการเปลี่ยนแปลงข้อมูลฟอร์ม
+
   BaseFormData get formData {
     final result = BaseFormData();
     fields.forEach((key, state) {
@@ -228,6 +243,8 @@ class BaseFormState extends State<BaseForm> {
     });
     return result;
   }
+
+  // ... ส่วนนี้เป็นการดึงข้อมูลจาก fields และสร้าง BaseFormData
 
   @override
   Widget build(BuildContext context) {

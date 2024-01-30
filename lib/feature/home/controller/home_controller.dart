@@ -28,6 +28,7 @@ final homeControllerProvider = StateNotifierProvider<HomeController, HomeState>(
 );
 
 class HomeController extends StateNotifier<HomeState> {
+  //สร้างตัวแปร เพื่อเก็บค่าเรียกใช้่ usecase ต่างๆ 
   final Ref _ref;
   final LoaderController _loader;
   final GetNotificationUsecase _getNotificationUsecase;
@@ -57,13 +58,14 @@ class HomeController extends StateNotifier<HomeState> {
         (error) => null);
   }
 
-  Future<bool> onPostNotification(
+  Future<bool> onPostNotification( // ฟังชั่นแสดงการแจ้งเตือน
     String message,
     String status,
     String uid,
   ) async {
     bool isSuccess = false;
     _loader.onLoad();
+    //execute คือคำสั่งที่เรียกใช้ usercase
     final result = await _postNotificationUsecase.execute(
       NotificationRequest(
         uid: uid,
@@ -83,11 +85,12 @@ class HomeController extends StateNotifier<HomeState> {
     return isSuccess;
   }
 
-  Future<bool> onDeleteNotification(
+  Future<bool> onDeleteNotification(  // ฟังชั่นลบการแจ้งเตือน
     String id,
   ) async {
     bool isSuccess = false;
     _loader.onLoad();
+    //เรียกใช้ usecase โดยใช้คำสั่ง execute
     final result = await _deleteNotificationUsecase.execute(
       NotificationRequest(id: id),
     );
@@ -108,6 +111,7 @@ class HomeController extends StateNotifier<HomeState> {
   ) async {
     bool isSuccess = false;
     _loader.onLoad();
+    //เรียกใช้ usecase โดยใช้คำสั่ง execute
     final result = await _updateNotificationUsecase.execute(
       id,
     );

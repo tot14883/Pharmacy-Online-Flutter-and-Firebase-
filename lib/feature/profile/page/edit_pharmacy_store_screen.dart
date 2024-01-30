@@ -47,6 +47,7 @@ class _EditPharmacyStoreScreenState
   @override
   void initState() {
     super.initState();
+    // อ่านข้อมูลร้านจาก ProfileController และกำหนดค่าให้กับ Textfield
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       final pharmacyStoreInfo = ref.watch(
         profileControllerProvider.select((value) => value.pharmacyStore),
@@ -72,6 +73,7 @@ class _EditPharmacyStoreScreenState
 
   @override
   Widget build(BuildContext context) {
+    // ดึงข้อมูลร้านจาก ProfileController
     final pharmacyStoreInfo = ref.watch(
       profileControllerProvider.select((value) => value.pharmacyStore),
     );
@@ -88,6 +90,7 @@ class _EditPharmacyStoreScreenState
     final timeOpening = pharmacyStoreInfo?.timeOpening;
     final licenseStore = pharmacyStoreInfo?.licenseStore;
 
+    // สร้างหน้าจอด้วย BaseScaffold
     return BaseScaffold(
       appBar: BaseAppBar(
         bgColor: AppColor.themeWhiteColor,
@@ -97,6 +100,7 @@ class _EditPharmacyStoreScreenState
           style: AppStyle.txtHeader3,
         ),
       ),
+      // สร้าง Body ด้วย SingleChildScrollView เพื่อให้สามารถเลื่อนหน้าจอได้
       bodyBuilder: (context, constrained) {
         return SingleChildScrollView(
           child: BaseForm(
@@ -107,6 +111,7 @@ class _EditPharmacyStoreScreenState
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  // Widget สำหรับอัปโหลดรูปร้าน
                   BaseUploadImageButton(
                     imgPreview: BaseImageView(
                       url: storeFile != null ? null : pharmacyStoreImg,
@@ -115,6 +120,7 @@ class _EditPharmacyStoreScreenState
                       height: 350.h,
                       fit: BoxFit.cover,
                     ),
+                    // Callback เมื่อมีการอัปโหลดรูป
                     onUpload: (val) {
                       setState(() {
                         storeFile = val;
@@ -133,6 +139,7 @@ class _EditPharmacyStoreScreenState
                   SizedBox(
                     height: 16.h,
                   ),
+                  // Textfield สำหรับชื่อร้าน
                   BaseTextField(
                     fieldKey: FieldUserInfo.nameStore,
                     initialValue: nameStore,
@@ -149,15 +156,18 @@ class _EditPharmacyStoreScreenState
                   SizedBox(
                     height: 16.h,
                   ),
+                  // Textfield สำหรับที่อยู่ร้าน
                   BaseTextField(
                     fieldKey: FieldUserInfo.addressStore,
                     placeholder: "ที่อยู่",
                     controller: addressController,
                     isReadOnly: true,
+                    // Callback เมื่อที่อยู่ถูกแตะ จะเปิดหน้าต่างเลือกที่อยู่
                     onTap: () async {
                       final result =
                           await ref.read(baseUtilsProvider).getLocation();
                       result.when((success) {
+                        // เมื่อได้ข้อมูลที่อยู่ จะนำไปแสดงใน Textfield
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -168,6 +178,7 @@ class _EditPharmacyStoreScreenState
                                 popOnNextButtonTaped: true,
                                 currentLatLng:
                                     LatLng(success.latitude, success.longitude),
+                                // Callback เมื่อเลือกที่อยู่แล้ว
                                 onNext: (GeocodingResult? result) {
                                   if (result != null) {
                                     Location location =
@@ -184,6 +195,7 @@ class _EditPharmacyStoreScreenState
                                         );
                                   }
                                 },
+                                // Callback เมื่อเลือกที่อยู่จาก suggestion
                                 onSuggestionSelected:
                                     (PlacesDetailsResponse? result) {
                                   if (result != null) {
@@ -219,6 +231,7 @@ class _EditPharmacyStoreScreenState
                   SizedBox(
                     height: 16.h,
                   ),
+                  // Textfield สำหรับเบอร์โทรศัพท์ร้าน
                   BaseTextField(
                     fieldKey: FieldUserInfo.phoneStore,
                     initialValue: phoneStore,
@@ -235,6 +248,7 @@ class _EditPharmacyStoreScreenState
                   SizedBox(
                     height: 16.h,
                   ),
+                  // Textfield สำหรับเวลาเปิด
                   BaseTextField(
                     fieldKey: FieldUserInfo.timeOpening,
                     placeholder: "เวลาเปิด",
@@ -252,6 +266,7 @@ class _EditPharmacyStoreScreenState
                   SizedBox(
                     height: 16.h,
                   ),
+                  // Textfield สำหรับเวลาปิด
                   BaseTextField(
                     fieldKey: FieldUserInfo.timeClosing,
                     placeholder: "เวลาปิด",
@@ -269,6 +284,7 @@ class _EditPharmacyStoreScreenState
                   SizedBox(
                     height: 16.h,
                   ),
+                  // Textfield สำหรับเลขที่ใบอนุญาตร้าน
                   BaseTextField(
                     fieldKey: FieldUserInfo.licensePharmacyStore,
                     placeholder: "เลขที่ใบอนุญาตร้าน",
@@ -285,6 +301,7 @@ class _EditPharmacyStoreScreenState
                   SizedBox(
                     height: 16.h,
                   ),
+                  // Widget สำหรับอัปโหลดรูปใบอนุญาตร้าน
                   BaseUploadImage(
                     label: 'รูปใบอนุญาต',
                     onUpload: (val) {
@@ -296,6 +313,7 @@ class _EditPharmacyStoreScreenState
                   SizedBox(
                     height: 16.h,
                   ),
+                  // แสดงรูปใบอนุญาตร้าน
                   BaseImageView(
                     url: licenseFile != null ? null : licensePharmacyStore,
                     file: licenseFile != null ? File(licenseFile!.path) : null,
@@ -315,13 +333,16 @@ class _EditPharmacyStoreScreenState
                   SizedBox(
                     height: 16.h,
                   ),
+                  // ปุ่มสำหรับยืนยันการแก้ไขข้อมูล
                   BaseButton(
                     onTap: () async {
+                      // เรียกเมธอดใน ProfileController เพื่อทำการแก้ไขข้อมูล
                       final result = await ref
                           .read(profileControllerProvider.notifier)
                           .onUpdatePharmacyStore(licenseFile, storeFile);
 
                       if (result) {
+                        // ทำการโหลดข้อมูลผู้ใช้และข้อมูลร้านใหม่
                         await ref
                             .read(profileControllerProvider.notifier)
                             .onGetUserInfo();
@@ -329,6 +350,7 @@ class _EditPharmacyStoreScreenState
                             .read(profileControllerProvider.notifier)
                             .onGetPharmacyStore();
 
+                        // แจ้ง Notification ว่าต้องให้ Admin อนุมัติให้ใหม่ถ้าแก้ไขข้อมูล
                         await ref
                             .read(homeControllerProvider.notifier)
                             .onPostNotification(
@@ -337,6 +359,7 @@ class _EditPharmacyStoreScreenState
                               '$uid',
                             );
 
+                        // แสดง Dialog แจ้งเตือนเมื่อแก้ไขสำเร็จ
                         showDialog(
                           context: context,
                           builder: (_) {

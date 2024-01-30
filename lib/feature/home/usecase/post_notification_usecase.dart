@@ -36,8 +36,8 @@ class PostNotificationUsecase extends UseCase<NotificationRequest, bool> {
       final message = request.message;
       final status = request.status;
 
-      final collect = fireCloudStore.collection('notification');
-      final collectId = collect.doc().id;
+      final collect = fireCloudStore.collection('notification'); //ดึงข้อมูลจาก firebase ในคอนเลคชั่น notification มาใส่ในตัวแปร collect
+      final collectId = collect.doc().id; //ดึงข้อมูลจาก  collect และตรงกับ id เก็บไว้ในตัวแปร collectId
 
       final Map<String, dynamic> myData = {
         "id": collectId,
@@ -48,7 +48,7 @@ class PostNotificationUsecase extends UseCase<NotificationRequest, bool> {
         "create_at": DateTime.now(),
       };
 
-      await collect.doc(collectId).set(myData);
+      await collect.doc(collectId).set(myData); //คำสั่ง set เป็นการสร้างข้อมูลใหม่หรือแทนที่ของเก่า
 
       return true;
     } catch (e) {

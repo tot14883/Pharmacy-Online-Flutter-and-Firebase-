@@ -22,6 +22,7 @@ import 'package:pharmacy_online/feature/store/enum/field_medicine_enum.dart';
 import 'package:pharmacy_online/feature/store/model/response/medicine_response.dart';
 import 'package:pharmacy_online/utils/util/vaildators.dart';
 
+// คลาสที่ใช้เก็บข้อมูลที่ส่งมาระหว่างหน้าจอแก้ไขยา
 class MedicineWarehouseArgs {
   final MedicineResponse medicineItem;
 
@@ -30,6 +31,7 @@ class MedicineWarehouseArgs {
   });
 }
 
+// หน้าจอแก้ไขยา
 class EditMedicineWarehouseScreen extends ConsumerStatefulWidget {
   static const routeName = 'EditMedicineWarehouseScreen';
 
@@ -45,6 +47,7 @@ class EditMedicineWarehouseScreen extends ConsumerStatefulWidget {
       _EditMedicineWarehouseScreenState();
 }
 
+// State ของหน้าจอแก้ไขยา
 class _EditMedicineWarehouseScreenState
     extends BaseConsumerState<EditMedicineWarehouseScreen> {
   final formKey = GlobalKey<BaseFormState>();
@@ -60,6 +63,7 @@ class _EditMedicineWarehouseScreenState
   @override
   Widget build(BuildContext context) {
     final medicineItem = widget.args.medicineItem;
+// ดูว่าใช่แอดมินไหม
     final isAdmin = ref
             .read(baseSharePreferenceProvider)
             .getString(BaseSharePreferenceKey.role) ==
@@ -133,6 +137,8 @@ class _EditMedicineWarehouseScreenState
                 // SizedBox(
                 //   height: 16.h,
                 // ),
+
+                // แสดงช่องกรอกราคา ถ้าไม่ใช่ Admin
                 if (!isAdmin) ...[
                   BaseTextField(
                     fieldKey: FieldMedicine.price,
@@ -156,12 +162,14 @@ class _EditMedicineWarehouseScreenState
                   onTap: () async {
                     formKey.currentState?.save(
                       onSave: (_) async {
+                        // เรียกใช้ use case สำหรับแก้ไขยา
                         final result = await ref
                             .read(storeControllerProvider.notifier)
                             .editMedicineWarehouse('${medicineItem.id}',
                                 medicineFIle, medicineItem.medicineImg);
 
                         if (result) {
+                          // โหลดข้อมูลคลังยาใหม่หลังจากแก้ไขสำเร็จ
                           await ref
                               .read(storeControllerProvider.notifier)
                               .onGetCentralMedicineWarehouse();

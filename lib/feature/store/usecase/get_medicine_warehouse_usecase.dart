@@ -38,6 +38,8 @@ class GetMedicineWarehouseUsecase
     void request,
   ) async {
     try {
+      //ในกระบวนการดึงข้อมูล, ใช้ `fireCloudStore.collection('medicineWarehouse').where('uid', isEqualTo: uid).get()` 
+      //เพื่อดึงข้อมูลรายการยาทั้งหมดที่เกี่ยวข้องกับผู้ใช้ที่ล็อกอินอยู่
       final uid = baseSharePreference.getString(BaseSharePreferenceKey.userId);
 
       if (uid != null) {
@@ -49,12 +51,12 @@ class GetMedicineWarehouseUsecase
             )
             .get()
             .then((value) => value.docs);
-
+        //วนลูปเพื่อดึงข้อมูลรายการยา
         List<MedicineResponse> medicineList = [];
 
         for (final item in collectMedicine) {
           final _data = item.data() as Map<String, dynamic>;
-
+          //สร้าง `MedicineResponse` จากข้อมูลที่ได้
           medicineList.add(
             MedicineResponse(
               id: _data['id'],

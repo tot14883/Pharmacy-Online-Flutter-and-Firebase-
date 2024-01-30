@@ -27,8 +27,10 @@ class UserDetailScreen extends ConsumerStatefulWidget {
 class _UserDetailScreenState extends ConsumerState<UserDetailScreen> {
   @override
   Widget build(BuildContext context) {
+    // ดึงข้อมูลผู้ใช้จาก PharmacyArgs
     final userInfo = widget.args.pharmacyItem;
 
+    // ดึงข้อมูลที่ต้องการแสดงผลจาก PharmacyInfoResponse
     final profileImg = userInfo.profileImg;
     final fullname = userInfo.fullName;
     final phone = userInfo.phone;
@@ -40,17 +42,19 @@ class _UserDetailScreenState extends ConsumerState<UserDetailScreen> {
         bgColor: AppColor.themeWhiteColor,
         elevation: 0,
         title: Text(
-          'แก้ไขข้อมูลส่วนตัว',
+          'ข้อมูลเภสัชกร',
           style: AppStyle.txtHeader3,
         ),
       ),
       bodyBuilder: (context, constrianed) {
         return SingleChildScrollView(
+          // ให้หน้าจอสามารถเลื่อนได้
           child: Padding(
             padding: const EdgeInsets.all(16).r,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                // แสดงรูปโปรไฟล์
                 BaseImageView(
                   url: profileImg,
                   width: 350.w,
@@ -60,6 +64,7 @@ class _UserDetailScreenState extends ConsumerState<UserDetailScreen> {
                 SizedBox(
                   height: 16.h,
                 ),
+                // ช่องข้อมูลชื่อ-นามสกุล
                 BaseTextField(
                   isReadOnly: true,
                   initialValue: fullname,
@@ -68,6 +73,7 @@ class _UserDetailScreenState extends ConsumerState<UserDetailScreen> {
                 SizedBox(
                   height: 16.h,
                 ),
+                // ช่องข้อมูลเบอร์โทร
                 BaseTextField(
                   isReadOnly: true,
                   initialValue: phone,
@@ -76,6 +82,7 @@ class _UserDetailScreenState extends ConsumerState<UserDetailScreen> {
                 SizedBox(
                   height: 16.h,
                 ),
+                // ช่องข้อมูลเลขที่ใบอนุญาตเภสัชกร
                 BaseTextField(
                   fieldKey: FieldUserInfo.licensePharmacy,
                   initialValue: licensePharmacy,
@@ -85,6 +92,7 @@ class _UserDetailScreenState extends ConsumerState<UserDetailScreen> {
                 SizedBox(
                   height: 16.h,
                 ),
+                // แสดงรูปใบอนุญาตเภสัชกร
                 BaseImageView(
                   url: licensePharmacyImg,
                   width: 250.w,
@@ -94,6 +102,7 @@ class _UserDetailScreenState extends ConsumerState<UserDetailScreen> {
                 SizedBox(
                   height: 16.h,
                 ),
+                // ปุ่มที่เมื่อคลิกจะกลับไปที่หน้ารายละเอียดของร้านเภสัชกร
                 BaseButton(
                   onTap: () async {
                     Navigator.of(context).pop();

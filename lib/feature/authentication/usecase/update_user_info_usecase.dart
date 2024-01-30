@@ -7,9 +7,11 @@ import 'package:pharmacy_online/feature/authentication/enum/authentication_type_
 import 'package:pharmacy_online/feature/authentication/model/request/user_info_request.dart';
 
 final updateUserInfoUsecaseProvider = Provider<UpdateUserInfoUsecase>((ref) {
+  //รับ dependency จาก Provider ต่างๆ
   final fireCloudStore = ref.watch(firebaseCloudStoreProvider);
   final firebaseCloudStorage = ref.watch(firebaseCloudStorageProvider);
   final baseSharedPreference = ref.watch(baseSharePreferenceProvider);
+  //สร้างและคืนค่า instance ของ UpdateUserInfoUsecase
   return UpdateUserInfoUsecase(
     ref,
     fireCloudStore,
@@ -37,6 +39,7 @@ class UpdateUserInfoUsecase extends UseCase<UserInfoRequest, bool> {
     UserInfoRequest request,
   ) async {
     try {
+      //ดึงข้อมูลจาก request
       final role = request.role ?? '';
       final profileImg = request.profileImg;
       final currentProfileImg = request.currentProfileImg;
@@ -49,19 +52,22 @@ class UpdateUserInfoUsecase extends UseCase<UserInfoRequest, bool> {
       final currentLicensePharmacyImg = request.currentLicensePharmacyImg;
       final licensePharmacy = request.licensePharmacy ?? '';
 
+      //ดึง uid จาก SharedPreferences
       final uid = baseSharedPreference.getString(BaseSharePreferenceKey.userId);
 
+      //ถ้า uid ไม่ใช่ค่าว่าง
       if (uid != null) {
         String urlProfileImage = '';
         String urlLicensePharmacyImg = '';
 
+        //ทำการอัปโหลดรูป profileImg ลงใน Firebase Storage
         if (profileImg != null) {
           urlProfileImage = await firebaseCloudStorage.uploadStorage(
             profileImg,
             'user/$uid',
           );
         }
-
+        //ทำการอัปโหลดรูป licensePharmacyImg ลงใน Firebase Storage
         if (licensePharmacyImg != null) {
           urlLicensePharmacyImg = await firebaseCloudStorage.uploadStorage(
             licensePharmacyImg,
@@ -69,8 +75,9 @@ class UpdateUserInfoUsecase extends UseCase<UserInfoRequest, bool> {
           );
         }
 
+        //เรียกใช้ข้อมูล collection 'user'
         final collectUser = fireCloudStore.collection('user');
-
+        //นำข้อมูลที่ได้อัปโหลดและข้อมูลปัจจุบันมากำหนดค่า
         final Map<String, dynamic> myData = {
           "profileImg":
               profileImg != null ? urlProfileImage : currentProfileImg,
@@ -81,11 +88,12 @@ class UpdateUserInfoUsecase extends UseCase<UserInfoRequest, bool> {
           "longtitude": longtitude,
           "update_at": DateTime.now(),
         };
-
+        //ทำการอัปเดตข้อมูลใน Firestore
         await collectUser.doc(uid).update(
               myData,
             );
 
+        //ถ้า role เป็น 'pharmacy' ทำการอัปเดตข้อมูลเพิ่มเติมใน 'pharmacyStore' collection
         if (role == AuthenticationType.pharmacy.name) {
           final collectPharmacyStore =
               fireCloudStore.collection('pharmacyStore');

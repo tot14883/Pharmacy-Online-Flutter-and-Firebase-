@@ -22,15 +22,18 @@ import 'package:pharmacy_online/utils/util/vaildators.dart';
 class AddMedicineWarehouseScreen extends ConsumerStatefulWidget {
   static const routeName = 'AddMedicineWarehouseScreen';
 
+  // เป็น `ConsumerStatefulWidget` เพื่อเข้าถึง providers ใน Riverpod
   const AddMedicineWarehouseScreen({super.key});
 
   @override
+  // จัดการ state ของหน้าจอ
   _AddMedicineWarehouseScreenState createState() =>
       _AddMedicineWarehouseScreenState();
 }
 
 class _AddMedicineWarehouseScreenState
     extends BaseConsumerState<AddMedicineWarehouseScreen> {
+  // มี `formKey` สำหรับจัดการฟอร์ม
   final formKey = GlobalKey<BaseFormState>();
 
   @override
@@ -39,10 +42,11 @@ class _AddMedicineWarehouseScreenState
     super.dispose();
   }
 
-  XFile? medicineFIle;
+  XFile? medicineFIle; //เก็บรูปยา
 
   @override
   Widget build(BuildContext context) {
+    // ตรวจสอบว่าผู้ใช้เป็นแอดมิน เพื่อกำหนดว่าไม่ต้องแสดงช่องกรอกราคา
     final isAdmin = ref
             .read(baseSharePreferenceProvider)
             .getString(BaseSharePreferenceKey.role) ==
@@ -108,6 +112,8 @@ class _AddMedicineWarehouseScreenState
                 // SizedBox(
                 //   height: 16.h,
                 // ),
+
+                // ช่องกรอกราคา
                 if (!isAdmin) ...[
                   BaseTextField(
                     fieldKey: FieldMedicine.price,
@@ -126,10 +132,15 @@ class _AddMedicineWarehouseScreenState
                 SizedBox(
                   height: 16.h,
                 ),
+                // ปุ่มยืนยันเพิ่มยา
                 BaseButton(
+                  // onTap ฟังก์ชันเมื่อกดปุ่มยืนยันเพิ่มยา
                   onTap: () async {
+                    // บันทึกข้อมูลในฟอร์ม
                     formKey.currentState?.save(
+                      // onSave ฟังก์ชันจะถูกเรียกเมื่อมีการบันทึกข้อมูลในฟอร์มสำเร็จ
                       onSave: (_) async {
+                        // ตรวจสอบว่ามีการอัปโหลดรูปภาพยาหรือไม่ หากไม่มีจะแสดงข้อความแจ้งเตือนให้อัปโหลดรูปภาพยา
                         if (medicineFIle == null) {
                           showDialog(
                             context: context,
@@ -142,15 +153,21 @@ class _AddMedicineWarehouseScreenState
                           return;
                         }
 
+                        // เรียกใช้ฟังก์ชัน addMedicineWarehouse เพื่อเพิ่มยา
                         final result = await ref
+                            // read ข้อมูลจาก provider
                             .read(storeControllerProvider.notifier)
+                            // เรียกใช้ฟังก์ชัน addMedicineWarehouse
                             .addMedicineWarehouse(medicineFIle!);
 
+                        // ตรวจสอบว่าการเพิ่มยาสำเร็จหรือไม่ หากสำเร็จจะแสดงข้อความแจ้งเตือนสำเร็จและปิดหน้าจอ
                         if (result) {
                           await ref
+                              // รีเฟรชข้อมูลยาในคลังกลาง
                               .read(storeControllerProvider.notifier)
                               .onGetCentralMedicineWarehouse();
                           await ref
+                              // รีเฟรชข้อมูลยาในคลัง
                               .read(storeControllerProvider.notifier)
                               .onGetMedicineWarehouse();
 
@@ -167,6 +184,7 @@ class _AddMedicineWarehouseScreenState
                             },
                           );
                         } else {
+                          // หากการเพิ่มยาไม่สำเร็จจะแสดงข้อความแจ้งเตือนไม่สำเร็จ
                           showDialog(
                             context: context,
                             builder: (_) {

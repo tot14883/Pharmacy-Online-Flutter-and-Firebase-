@@ -32,6 +32,7 @@ class _ReviewStoreScreenState extends BaseConsumerState<ReviewStoreScreen> {
     final reviewList = ref
         .watch(storeControllerProvider.select((value) => value.reviewList))
         .value;
+        //หาค่าเฉลี่ย review
     final rating = reviewList?.fold(
             0.0,
             (previousValue, val) =>

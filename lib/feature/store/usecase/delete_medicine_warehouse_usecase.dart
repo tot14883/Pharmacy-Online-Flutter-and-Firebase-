@@ -5,6 +5,7 @@ import 'package:pharmacy_online/feature/store/model/request/medicine_request.dar
 
 final deleteMedicineWarehouseUsecaseProvider =
     Provider<DeleteMedicineWarehouseUsecase>((ref) {
+      //deleteMedicineWarehouseUsecaseProvider คือ Provider ที่ให้บริการ `DeleteMedicineWarehouseUsecase` ซึ่งเป็น `UseCase` ที่ทำหน้าที่ลบข้อมูลยาจากคลังของร้าน
   final fireCloudStore = ref.watch(firebaseCloudStoreProvider);
   return DeleteMedicineWarehouseUsecase(
     ref,
@@ -27,10 +28,12 @@ class DeleteMedicineWarehouseUsecase extends UseCase<MedicineRequest, bool> {
     MedicineRequest request,
   ) async {
     try {
+      //ดึง `id` ของยาที่ต้องการลบจาก `request`
       final id = request.id ?? '';
 
+      //สร้าง `collectUser` ซึ่งเป็นคอลเลคชันของ Firebase Cloud Firestore ที่เกี่ยวข้องกับยา
       final collectUser = fireCloudStore.collection('medicineWarehouse');
-
+      //ใช้ `collectUser.doc(id).delete()` เพื่อลบเอกสารที่มี `id` ที่ระบุ
       await collectUser.doc(id).delete();
 
       return true;

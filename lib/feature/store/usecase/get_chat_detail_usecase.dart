@@ -35,6 +35,9 @@ class GetChatDetailUsecase
     ChatWithPharmacyRequest request,
   ) async {
     try {
+            //ในกระบวนการดึงข้อมูล, ใช้ `fireCloudStore.collection('chat').where(...).get()` 
+            //เพื่อดึงข้อมูลการแชทที่มีสถานะ "approve" สำหรับผู้ใช้งานที่เป็นลูกค้า
+            //หรือ "approve" หรือ "waiting" สำหรับผู้ใช้งานที่เป็นร้านขายยา
       final role = baseSharePreference.getString(BaseSharePreferenceKey.role);
       final pharmacyId = request.pharmacyId ?? '';
 
@@ -50,10 +53,10 @@ class GetChatDetailUsecase
           )
           .get()
           .then((value) => value.docs);
-
+      //วนลูปเพื่อดึงข้อมูลแชทที่ได้มา
       for (final item in collectChat) {
         final _data = item.data() as Map<String, dynamic>;
-
+      //ดึงข้อมูลผู้ใช้งานและข้อมูลร้านขายจาก Firebase Cloud Firestore
         DocumentSnapshot<Object?>? collectUser;
         DocumentSnapshot<Object?>? collectPharmacyStore;
 
@@ -75,7 +78,7 @@ class GetChatDetailUsecase
               .get()
               .then((value) => value);
         }
-
+        //สร้าง `ChatWithPharmacyResponse` จากข้อมูลที่ได้
         return ChatWithPharmacyResponse(
           id: _data['id'],
           uid: _data['uid'],
@@ -89,7 +92,7 @@ class GetChatDetailUsecase
           updateAt: (_data['update_at'] as Timestamp).toDate(),
         );
       }
-
+      //ถ้าไม่พบข้อมูลการแชทที่มีสถานะ "approve" สำหรับผู้ใช้งานนั้น ส่งค่าเริ่มต้นกลับ
       return const ChatWithPharmacyResponse();
     } catch (e) {
       return const ChatWithPharmacyResponse();

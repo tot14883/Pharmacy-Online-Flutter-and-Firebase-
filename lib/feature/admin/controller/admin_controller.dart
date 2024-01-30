@@ -8,9 +8,11 @@ import 'package:pharmacy_online/feature/admin/usecase/get_pharmacy_detail_usecas
 import 'package:pharmacy_online/feature/admin/usecase/update_approve_pharmacy_usecase.dart';
 import 'package:pharmacy_online/utils/util/base_utils.dart';
 
+// สร้าง Provider สำหรับ AdminController
 final adminControllerProvider =
     StateNotifierProvider<AdminController, AdminState>(
   (ref) {
+    // ดูการเปลี่ยนแปลงใน dependencies โดยใช้ ref.watch()
     final baseFormData = ref.watch(baseFormDataProvider);
     final baseUtils = ref.watch(baseUtilsProvider);
     final appNavigator = ref.watch(appNavigatorProvider);
@@ -19,6 +21,7 @@ final adminControllerProvider =
     final updateApprovePharmacyUsecase =
         ref.watch(updateApprovePharmacyUsecaseProvider);
 
+    // สร้าง Instance ของ AdminController และให้ dependencies
     return AdminController(
       ref,
       const AdminState(),
@@ -31,6 +34,7 @@ final adminControllerProvider =
   },
 );
 
+// กำหนดคลาส AdminController
 class AdminController extends StateNotifier<AdminState> {
   final Ref _ref;
   final BaseFormData _baseFormData;
@@ -40,6 +44,7 @@ class AdminController extends StateNotifier<AdminState> {
   final GetPharmacyDetailUsecase _getPharmacyDetailUsecase;
   final UpdateApprovePharmacyUsecase _updateApprovePharmacyUsecase;
 
+  // Constructor พร้อม Dependency Injection
   AdminController(
     this._ref,
     AdminState state,
@@ -51,16 +56,19 @@ class AdminController extends StateNotifier<AdminState> {
   )   : _loader = _ref.read(loaderControllerProvider.notifier),
         super(state);
 
+  // เมธอดในการดึงรายละเอียดร้านขายยา
   Future<void> getPharmacyDetail() async {
     final result = await _getPharmacyDetailUsecase.execute(null);
 
     result.when((success) {
+      // อัปเดต State เมื่อได้ผลลัพธ์สำเร็จ
       state = state.copyWith(
         pharmacyInfoList: AsyncValue.data(success),
       );
     }, (error) => null);
   }
 
+  // เมธอดในการอัปเดตรายละเอียดร้านขายยา
   Future<bool> updatePharmacyDetail(bool isApprove, String uid) async {
     bool isSuccess = false;
     _loader.onLoad();
@@ -71,6 +79,7 @@ class AdminController extends StateNotifier<AdminState> {
 
     result.when(
       (success) {
+        // อัปเดต State เมื่อได้ผลลัพธ์สำเร็จ
         isSuccess = success;
         _loader.onDismissLoad();
       },

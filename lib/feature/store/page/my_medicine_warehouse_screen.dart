@@ -19,12 +19,16 @@ import 'package:pharmacy_online/feature/store/page/add_medicine_warehouse_screen
 import 'package:pharmacy_online/feature/store/page/central_medicine_warehouse_screen.dart';
 import 'package:pharmacy_online/feature/store/widget/medicine_warehouse_list_widget.dart';
 
+// คลาสที่ใช้เก็บข้อมูลที่ส่งมาระหว่างหน้าจอคลังยาของผู้ใช้
 class MyMedicineWarehouseArgs {
-  final bool isFromChat;
-  final ChatWithPharmacyResponse? chatWithPharmacyItem;
-  final CartResponse? cartResponse;
-  final bool isFromOrder;
+  final bool isFromChat; // บอกว่ามาจากหน้าแชทหรือไม่
+  final ChatWithPharmacyResponse?
+      chatWithPharmacyItem; // ข้อมูลแชทกับร้านหรือ null ถ้าไม่ได้มาจากหน้าแชท
+  final CartResponse?
+      cartResponse; // ข้อมูลตะกร้าหรือ null ถ้าไม่ได้มาจากหน้าตะกร้า
+  final bool isFromOrder; // บอกว่ามาจากหน้ารายการสั่งซื้อหรือไม่
 
+// หน้าจอคลังยาของผู้ใช้
   MyMedicineWarehouseArgs({
     this.isFromChat = false,
     this.chatWithPharmacyItem,
@@ -33,6 +37,7 @@ class MyMedicineWarehouseArgs {
   });
 }
 
+// State ของหน้าจอคลังยาของผู้ใช้
 class MyMedicineWarehouseScreen extends ConsumerStatefulWidget {
   static const routeName = 'MyMedicineWarehouseScreen';
 
@@ -63,6 +68,7 @@ class _MyMedicineWarehouseScreenState
     final pharmacyId =
         cartResponse?.pharmacyId ?? chatWithPharmacyItem?.pharmacyId;
 
+// สร้างหน้าจอพื้นหลัง
     return BaseScaffold(
       appBar: BaseAppBar(
         elevation: 0,
@@ -140,6 +146,7 @@ class _MyMedicineWarehouseScreenState
                   );
                 },
               ),
+              //ถ้าไม่ได้มาจากแชท
               if (!isFromChat) ...[
                 Positioned(
                   bottom: 0,
@@ -158,6 +165,7 @@ class _MyMedicineWarehouseScreenState
                   ),
                 ),
               ],
+              //ถ้ามาจากแชท
               if (isFromChat) ...[
                 Positioned(
                   bottom: 0,
@@ -191,14 +199,24 @@ class _MyMedicineWarehouseScreenState
     );
   }
 
+// ฟังก์ชันนี้ทำงานเมื่อเริ่มฟังการเปลี่ยนแปลงของ myCartControllerProvider
   void _onListen() {
+    // ฟังการเปลี่ยนแปลงของ myCartControllerProvider
     ref.listen(myCartControllerProvider, (previous, next) async {
+      // รับค่า cartResponse และ isFromOrder จาก arguments ของ widget
       final cartResponse = widget.args?.cartResponse;
       final isFromOrder = widget.args?.isFromOrder;
+
+      // ถ้ายังอยู่ในหน้าเดิม
       if (isStayThisPage) {
+        // ถ้ามีสินค้าในตะกร้า (next.myCart.value?.id != null)
         if (next.myCart.value?.id != null) {
+          // ถ้ามี cartResponse และ ไม่ได้มาจากหน้าสั่งซื้อ
           if (cartResponse != null) {
             if (!isFromOrder!) {
+              // ตั้งค่า isStayThisPage เป็น false และ pushNamedAndRemoveUntil
+              // ไปหน้า MyCartScreen พร้อมส่ง аргуเมนต์ isPharmacy: true
+              // และ pop จนกว่าถึง routeName ของ MyCartScreen
               setState(() {
                 isStayThisPage = false;
               });
@@ -208,6 +226,7 @@ class _MyMedicineWarehouseScreenState
                 arguments: MyCartArgs(isPharmacy: true),
                 (route) => route.settings.name == MyCartScreen.routeName,
               );
+              // ถ้า result เป็น true ก็ตั้งค่า isStayThisPage เป็น result
               if (result!) {
                 setState(() {
                   isStayThisPage = result;
@@ -215,7 +234,11 @@ class _MyMedicineWarehouseScreenState
               }
             }
           } else {
+            // ถ้าไม่มี cartResponse หรือมาจากหน้าสั่งซื้อ
+            // ถ้าไม่ใช่มาจากหน้าสั่งซื้อ
             if (!isFromOrder!) {
+              // ตั้งค่า isStayThisPage เป็น false และ pushNamed
+              // ไปหน้า MyCartScreen พร้อมส่ง аргуเมนต์ isPharmacy: true
               setState(() {
                 isStayThisPage = false;
               });
@@ -224,6 +247,7 @@ class _MyMedicineWarehouseScreenState
                 arguments: MyCartArgs(isPharmacy: true),
               );
 
+              // ถ้า result เป็น true ก็ตั้งค่า isStayThisPage เป็น result
               if (result!) {
                 setState(() {
                   isStayThisPage = result;
@@ -232,7 +256,9 @@ class _MyMedicineWarehouseScreenState
             }
           }
         } else {
+          // ถ้าไม่มีสินค้าในตะกร้า
           setState(() {
+            // ตั้งค่า isStayThisPage เป็น false และแสดง Toast "ไม่มีของในตะกร้า"
             isStayThisPage = false;
           });
           Fluttertoast.showToast(

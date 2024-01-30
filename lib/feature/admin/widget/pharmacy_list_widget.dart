@@ -15,11 +15,14 @@ class PharmacyListWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // สร้าง Widget รายการร้านเภสัชกรที่ใช้ใน ListView.separated
     return ListView.separated(
-      shrinkWrap: true,
+      shrinkWrap: true, // ทำให้ ListView ทำงานในรูปแบบ shrinkWrap
       itemCount: pharmacyList.length,
       itemBuilder: (context, index) {
+        // ดึงข้อมูลร้านเภสัชกรตามลำดับ index
         final pharmacyItem = pharmacyList[index];
+        // สร้างและคืนค่า Widget ของแต่ละร้านเภสัชกร
         return PharmacyItemWidget(pharmacyItem: pharmacyItem);
       },
       separatorBuilder: (_, __) => const BaseDivider(

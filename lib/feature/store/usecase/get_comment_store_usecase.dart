@@ -35,6 +35,9 @@ class GetCommentStoreUsecase
     CommentRequest request,
   ) async {
     try {
+      //ในกระบวนการดึงข้อมูล, ใช้ `fireCloudStore.collection('review').doc(reviewId).collection('comment').get()` 
+      //เพื่อดึงข้อมูลความคิดเห็นทั้งหมดที่เกี่ยวข้องกับรีวิวนั้น ๆ
+      //และจัดเรียงตามวันที่สร้าง (create_at).
       final reviewId = request.reviewId;
 
       final collectReview = await fireCloudStore
@@ -45,11 +48,14 @@ class GetCommentStoreUsecase
           .get()
           .then((value) => value.docs);
 
+      //วนลูปเพื่อดึงข้อมูลความคิดเห็น.
       List<CommentResponse> commentList = [];
 
       for (final item in collectReview.reversed) {
         final _data = item.data();
 
+
+        //ดึงข้อมูลผู้ใช้งานจาก Firebase Cloud Firestore
         final collectUser = await fireCloudStore
             .collection('user')
             .doc(_data['uid'])
@@ -58,6 +64,7 @@ class GetCommentStoreUsecase
 
         final _user = collectUser.data() as Map<String, dynamic>;
 
+        //สร้าง `CommentResponse` จากข้อมูลที่ได้
         commentList.add(
           CommentResponse(
             commentId: _data['commentId'],
@@ -74,6 +81,7 @@ class GetCommentStoreUsecase
 
       return commentList;
     } catch (e) {
+      //ในกรณีที่เกิดข้อผิดพลาดในการดึงข้อมูล, ส่งรายการความคิดเห็นที่ว่างกลับ
       return [];
     }
   }

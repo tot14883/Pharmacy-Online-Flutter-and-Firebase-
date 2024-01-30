@@ -34,6 +34,9 @@ class GetHistoryOfChatPharmacyUsecase
     void request,
   ) async {
     try {
+      //ในกระบวนการดึงข้อมูล, ใช้ `fireCloudStore.collection('chat').where('status', isEqualTo: 'approve').where('pharmacyId', isEqualTo: uid).orderBy('update_at').get()` 
+      //เพื่อดึงข้อมูลการแชททั้งหมดที่อนุมัติและเกี่ยวข้องกับร้านขายยา
+      //และจัดเรียงตามวันที่อัปเดตล่าสุด (update_at)
       final uid = baseSharePreference.getString(BaseSharePreferenceKey.userId);
 
       final collect = await fireCloudStore
@@ -47,11 +50,12 @@ class GetHistoryOfChatPharmacyUsecase
           .get()
           .then((value) => value.docs);
 
+      //วนลูปเพื่อดึงข้อมูลประวัติการแชท
       List<ChatWithPharmacyResponse> requestChatList = [];
 
       for (final item in collect.reversed) {
         final _data = item.data() as Map<String, dynamic>;
-
+        //ดึงข้อมูลผู้ใช้งานจาก Firebase Cloud Firestore
         final collectUser = await fireCloudStore
             .collection('user')
             .where(
@@ -63,6 +67,8 @@ class GetHistoryOfChatPharmacyUsecase
 
         final _user = collectUser.first.data() as Map<String, dynamic>;
 
+        
+        //ดึงข้อมูลล่าสุดจากการแชท
         final collectMessage = await fireCloudStore
             .collection('chat')
             .doc(_data['id'])
@@ -75,7 +81,7 @@ class GetHistoryOfChatPharmacyUsecase
         if (collectMessage.isNotEmpty) {
           _message = collectMessage.last.data();
         }
-
+        //สร้าง `ChatWithPharmacyResponse` จากข้อมูลที่ได้
         requestChatList.add(
           ChatWithPharmacyResponse(
             id: _data['id'],

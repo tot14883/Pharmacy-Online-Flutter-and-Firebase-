@@ -98,3 +98,5 @@ class TermAndConditionScreen extends StatelessWidget {
     );
   }
 }
+
+

@@ -20,13 +20,14 @@ class InboxItemWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    //ดึงข้อมูลต่าง ๆ จาก chatWithPharmacyItem
     final itemDate = chatWithPharmacyItem.updateAt;
     final isPharmacy = ref.watch(
       profileControllerProvider.select(
         (value) => value.isPharmacy,
       ),
     );
-
+    //สร้าง GestureDetector สำหรับการเปิดหน้าแชท
     return GestureDetector(
       onTap: () {
         Navigator.of(context).pushNamed(
@@ -45,6 +46,7 @@ class InboxItemWidget extends ConsumerWidget {
         ),
         child: Row(
           children: [
+            //แสดงรูปโปรไฟล์ของผู้ใช้
             Stack(
               children: [
                 Padding(
@@ -57,6 +59,7 @@ class InboxItemWidget extends ConsumerWidget {
                     fit: BoxFit.cover,
                   ),
                 ),
+                //แสดงสัญลักษณ์ออนไลน์ ถ้าผู้ใช้ออนไลน์
                 if (chatWithPharmacyItem.isOnline != null &&
                     chatWithPharmacyItem.isOnline!) ...[
                   Positioned(
@@ -80,6 +83,7 @@ class InboxItemWidget extends ConsumerWidget {
             SizedBox(
               width: 16.w,
             ),
+            //แสดงข้อมูลต่างๆ ของ Inbox Item
             Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -105,6 +109,7 @@ class InboxItemWidget extends ConsumerWidget {
                   SizedBox(
                     height: 16.h,
                   ),
+                  // แสดงข้อความ ถ้ามีข้อความล่าสุด
                   if (chatWithPharmacyItem.message != null &&
                       chatWithPharmacyItem.message!.isNotEmpty) ...[
                     Text(
@@ -115,6 +120,7 @@ class InboxItemWidget extends ConsumerWidget {
                           .copyWith(color: AppColor.themeGrayLight),
                     ),
                   ],
+                  //แสดงชื่อไฟล์ภาพ (ถ้าไม่มีข้อความและมีไฟล์ภาพ)
                   if (chatWithPharmacyItem.message == null &&
                       chatWithPharmacyItem.message!.isEmpty &&
                       chatWithPharmacyItem.chatImg != null &&
@@ -136,6 +142,7 @@ class InboxItemWidget extends ConsumerWidget {
     );
   }
 
+  //ฟังก์ชันสำหรับแสดงเวลา
   String displayTime(
     DateTime? itemDate,
     WidgetRef ref,

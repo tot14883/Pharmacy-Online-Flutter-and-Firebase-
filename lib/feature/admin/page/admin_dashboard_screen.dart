@@ -23,8 +23,12 @@ class _AdminDashboardScreenState
     extends BaseConsumerState<AdminDashboardScreen> {
   @override
   void initState() {
+    // เมื่อ Widget ถูกสร้างขึ้นและทำการ Build เสร็จ
+    // ใช้ addPostFrameCallback เพื่อให้โค้ดทำงานหลังจากที่ Widget ถูก render เสร็จ
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      // เรียกใช้งาน notifier จาก provider เพื่อดึงข้อมูล user info
       await ref.read(profileControllerProvider.notifier).onGetUserInfo();
+      // เรียกใช้งาน notifier จาก provider เพื่อดึงข้อมูลร้านขายยา
       await ref.read(profileControllerProvider.notifier).onGetPharmacyStore();
     });
     super.initState();
@@ -47,13 +51,16 @@ class _AdminDashboardScreenState
   @override
   Widget build(BuildContext context) {
     return BaseScaffold(
+      // ใช้ BaseScaffold เป็น Widget หลักที่มีการกำหนดโครงสร้างหน้าจอพื้นฐาน
       bodyBuilder: (context, constraints) {
-        return pages[_currentPage];
+        return pages[_currentPage]; // แสดงหน้าที่เลือกตาม _currentPage
       },
       bottomNavigationBar: AdminBottomNavigationWidget(
+        // Widget ที่แสดง Bottom Navigation Bar สำหรับนำทางระหว่างหน้าจอ
         onChange: (value) {
+          // Callback function เมื่อมีการเปลี่ยนแปลงหน้า
           setState(() {
-            _currentPage = value;
+            _currentPage = value; // กำหนดหน้าปัจจุบันตามค่าที่ถูกเลือก
           });
         },
       ),

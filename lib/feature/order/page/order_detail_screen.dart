@@ -43,10 +43,13 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
 
   @override
   void initState() {
+    // เมื่อ Widget ถูกสร้างขึ้น ในช่วงที่ widget ยังไม่ถูก build บนหน้าจอ
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      // ดึงข้อมูลรายละเอียดคำสั่งซื้อ (orderDetail) จาก state โดยใช้ orderControllerProvider
       final orderDetail = ref
           .watch(orderControllerProvider.select((value) => value.orderDetail));
 
+      // ดึงข้อมูลรายละเอียดของร้าน (pharmacyDetail) และตรวจสอบรีวิว (reviewAlready)
       await ref
           .read(storeControllerProvider.notifier)
           .onGetPharmacyDetail('${orderDetail.value?.pharmacyId}');
@@ -56,17 +59,21 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
           .onCheckReviewAlready('${orderDetail.value?.id}');
     });
 
+    // สร้าง Timer ที่ทำงานเป็นระยะๆ เพื่อตรวจสอบข้อมูลอัพเดท
     timer = Timer.periodic(const Duration(milliseconds: 200), (timer) async {
+      // ดึงข้อมูลรายละเอียดคำสั่งซื้อ (orderDetail) จาก state โดยใช้ orderControllerProvider
       final orderDetail = ref
           .watch(orderControllerProvider.select((value) => value.orderDetail))
           .value;
 
+      // ดึงข้อมูลที่ต้องการจาก orderDetail
       final billStatus = orderDetail?.status;
       final uid = orderDetail?.uid;
       final pharmacyId = orderDetail?.pharmacyId;
       final orderId = orderDetail?.id;
       final cartId = orderDetail?.cartId;
 
+      // ดึงข้อมูลตะกร้า (myCart) และคำสั่งซื้อ (order)
       await ref.read(myCartControllerProvider.notifier).onGetCart(
             '$uid',
             '$pharmacyId',
@@ -83,6 +90,7 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
             orderId: orderId,
           );
 
+      // ดึงข้อมูลรายละเอียดคำสั่งซื้อ (orderItem) จาก orderDetail
       final orderItem = orderDetail;
 
       final itemTime = orderItem?.createAt;
@@ -90,18 +98,22 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
       final fullName = orderItem?.myCart?.fullName;
       final id = orderItem?.id;
       final isPayment = billStatus == OrderStatus.waitingPayment;
-
+      // กำหนดตัวแปล currentTime เป็นเวลาปัจจุบัน
       final currentTime = DateTime.now();
+      // ตรวจสอบว่าเวลาที่ผ่านมาตั้งแต่ itemTime ถึง currentTime มีมากกว่า 4 ชั่วโมงหรือไม่
       final isMoreThan4Hours = currentTime.difference(itemTime!).inHours > 4;
+      // ใช้ Riverpod เพื่อดึงค่า isPharmacy จาก ProfileControllerProvider
       final isPharmacy = ref
           .watch(profileControllerProvider.select((value) => value.isPharmacy));
-
+      // ตรวจสอบเงื่อนไขว่าเวลามากกว่า 4 ชั่วโมง และ isPayment เป็นจริงหรือไม่
       if (isMoreThan4Hours && isPayment) {
+        // ลบคำสั่งซื้อโดยเรียกใช้ onDeleteOrder จาก orderControllerProvider
         final result = await ref
             .read(orderControllerProvider.notifier)
             .onDeleteOrder('$id', '$cartId');
 
         if (result) {
+          // สร้างการแจ้งเตือนโดยเรียกใช้ onPostNotification จาก HomeControllerProvider
           await ref.read(homeControllerProvider.notifier).onPostNotification(
                 'คำสั่งซื้อถูกยกเลิก เนื่องจากเกินระยะเวลาที่กำหนด',
                 'cancelChat',
@@ -158,20 +170,25 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // ดึงข้อมูล isPharmacy จาก ProfileControllerProvider
     final isPharmacy = ref
         .watch(profileControllerProvider.select((value) => value.isPharmacy));
 
+    // ดึงข้อมูลรายละเอียดคำสั่งซื้อ (orderDetail) จาก orderControllerProvider
     final orderDetail =
         ref.watch(orderControllerProvider.select((value) => value.orderDetail));
+    // ดึงข้อมูลตะกร้า (myCart) จาก myCartControllerProvider
     final myCart =
         ref.watch(myCartControllerProvider.select((value) => value.myCart));
 
+    // ดึงข้อมูลการรีวิว (isAlreadyReview) จาก orderControllerProvider
     final isAlreadyReview = ref.watch(
       orderControllerProvider.select(
         (value) => value.isAlreadyReview,
       ),
     );
 
+    // ตรวจสอบว่าสถานะคำสั่งซื้อเป็น completed หรือไม่
     final isCompletedStatus =
         orderDetail.value?.status == OrderStatus.completed;
 
@@ -184,9 +201,11 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
           style: AppStyle.txtHeader3,
         ),
         actions: [
+          // ส่วนของปุ่ม 'ยกเลิกคำสั่งซื้อ'
           if (isPharmacy && !isCompletedStatus) ...[
             GestureDetector(
               onTap: () async {
+                // แสดง Dialog ยืนยันการยกเลิกคำสั่งซื้อ
                 await showDialog(
                   context: context,
                   builder: (_) {
@@ -195,6 +214,7 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
                       hasCancel: true,
                       onClick: () async {
                         final _orderDetail = orderDetail.value;
+                        // เรียกใช้งาน onDeleteOrder เพื่อยกเลิกคำสั่งซื้อ
                         final result = await ref
                             .read(orderControllerProvider.notifier)
                             .onDeleteOrder(
@@ -203,6 +223,7 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
                             );
 
                         if (result) {
+                          // อัปเดตข้อมูลคำสั่งซื้อหลังจากยกเลิก
                           await ref
                               .read(orderControllerProvider.notifier)
                               .onGetAllOrder(true);
@@ -278,6 +299,7 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
+                    // ส่วนรายละเอียดคำสั่งซื้อ
                     CardContentWidget(
                       content: Column(
                         children: [
@@ -319,6 +341,7 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
                     SizedBox(
                       height: 16.h,
                     ),
+                    // ส่วนที่แสดงข้อมูลที่อยู่จัดส่ง
                     CardContentWidget(
                       content: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -347,6 +370,7 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
                     SizedBox(
                       height: 16.h,
                     ),
+                    // ส่วนที่แสดงรายละเอียดสินค้า
                     Text(
                       'รายละเอียดสินค้า',
                       style: AppStyle.txtHeader3,
@@ -354,6 +378,7 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
                     SizedBox(
                       height: 8.h,
                     ),
+                    // ส่วนที่แสดงรายการยา
                     Container(
                       padding: const EdgeInsets.all(16).r,
                       color: AppColor.themeWhiteColor,
@@ -365,6 +390,7 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
                     SizedBox(
                       height: 16.h,
                     ),
+                    // ส่วนที่แสดงวินิจฉัยอาการและรายละเอียดเพิ่มเติม
                     CardContentWidget(
                       content: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -395,7 +421,7 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
                             height: 8.h,
                           ),
                           Text(
-                            'รายละเอียดเพิ่มเติม',
+                            'รายละเอียดยา',
                             style: AppStyle.txtBody
                                 .copyWith(color: AppColor.themePrimaryColor),
                           ),
@@ -408,6 +434,7 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
                             const SizedBox.shrink(),
                           ] else ...[
                             for (final medicineItem in medicineList) ...[
+                              // ส่วนที่แสดงรายละเอียดของแต่ละรายการยา
                               RowContentWidget(
                                 isBold: true,
                                 header: '${medicineItem.name}',
@@ -421,6 +448,7 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
                     SizedBox(
                       height: 16.h,
                     ),
+                    // ส่วนที่แสดงสถานะและข้อมูลการติดตามสินค้า
                     Text(
                       'ติดตามสินค้า',
                       style: AppStyle.txtHeader3,
@@ -428,6 +456,7 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
                     SizedBox(
                       height: 16.h,
                     ),
+                    // ส่วนที่แสดงสถานะการชำระเงิน
                     TrackingContentWidget(
                       contentHeight:
                           _orderDetail?.status != OrderStatus.waitingPayment
@@ -436,15 +465,18 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
                       isSuccess:
                           _orderDetail?.status != OrderStatus.waitingPayment ||
                               _orderDetail?.status == OrderStatus.completed,
+                      // กำหนดการแสดงปุ่มสแกน QR Code ขึ้นอยู่กับสถานะการชำระเงิน
                       hasBtn: !isPharmacy &&
                           _orderDetail?.status == OrderStatus.waitingPayment,
                       onTap: () {
+                        // ส่วนของการเปิดหน้าจอสแกน QR Code
                         Navigator.of(context).pushNamed(
                           UploadBankTransferScreen.routeName,
                         );
                       },
                       number: '1',
                       title: 'การชำระเงิน',
+                      // กำหนดข้อความสถานะการชำระเงิน
                       content: _orderDetail?.status ==
                                   OrderStatus.waitingPayment &&
                               _orderDetail?.status != OrderStatus.completed
@@ -454,15 +486,19 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
                               : null),
                       btnTxt: 'สแกน QR Code',
                     ),
+                    // ส่วนของการจัดส่งสินค้า
                     TrackingContentWidget(
+                      // ตรวจสอบสถานะคำสั่งซื้อ
                       isSuccess: _orderDetail?.status !=
                               OrderStatus.waitingConfirmOrder &&
                           _orderDetail?.status != OrderStatus.confirmOrder &&
                           _orderDetail?.status != OrderStatus.waitingPayment,
+                      // ตรวจสอบว่ามีปุ่มดูรูปภาพหรือไม่
                       hasBtn: _orderDetail?.status !=
                               OrderStatus.waitingConfirmOrder &&
                           _orderDetail?.status != OrderStatus.confirmOrder &&
                           bankTransferSlip != null,
+                      // ฟังก์ชันเมื่อกดปุ่มให้ไปหน้าโอนเงิน
                       onTap: () {
                         Navigator.of(context).pushNamed(
                           EvidenceBankTransferScreen.routeName,
@@ -521,6 +557,7 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
                               '$uid',
                             );
                       },
+                      // ตรวจสอบว่ามีปุ่มยืนยันรายการหรือไม่
                       hasSecondBtn: bankTransferSlip != null &&
                           _orderDetail?.status == OrderStatus.waitingPayment &&
                           isPharmacy,
@@ -530,26 +567,33 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
                           : '',
                     ),
                     TrackingContentWidget(
+// ตรวจสอบสถานะคำสั่งซื้อ
                       isSuccess:
                           _orderDetail?.status == OrderStatus.delivering ||
                               _orderDetail?.status == OrderStatus.completed,
+// บรรทัดนี้ตรวจสอบสถานะคำสั่งซื้อ หากเป็น "กำลังจัดส่ง" หรือ "เสร็จสิ้น" จะแสดงผลลัพธ์แบบสำเร็จ
+
+// ตรวจสอบว่าควรแสดงปุ่มหรือไม่
                       hasBtn:
                           _orderDetail?.status == OrderStatus.waitingDelivery ||
                               _orderDetail?.status == OrderStatus.delivering ||
                               _orderDetail?.status == OrderStatus.completed,
                       onTap: () {
+                        // หากคำสั่งซื้ออยู่ในสถานะ "กำลังจัดส่ง" หรือ "เสร็จสิ้น" ให้แสดงหน้าจอหลักฐานการจัดส่งสินค้า
                         if (_orderDetail?.status == OrderStatus.delivering ||
                             _orderDetail?.status == OrderStatus.completed) {
                           Navigator.of(context).pushNamed(
                             EvidenceTransportationScreen.routeName,
                           );
-                          return;
+                          return; // หยุดการทำงานของฟังก์ชัน
                         }
                         if (isPharmacy) {
+                          // หากผู้ใช้เป็นเภสัชกร ให้ไปยังหน้าจอเพิ่มรูปภาพการจัดส่งสินค้า
                           Navigator.of(context)
                               .pushNamed(UploadTransportationScreen.routeName);
                           return;
                         }
+                        // หากผู้ใช้ไม่ใช่เภสัชกร ให้แสดงหน้าจอหลักฐานการจัดส่งสินค้า
                         Navigator.of(context)
                             .pushNamed(EvidenceTransportationScreen.routeName);
                       },
@@ -572,13 +616,17 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
                               _orderDetail?.status == OrderStatus.completed
                           ? (isPharmacy ? deliveryTextBtn : 'ดูรูปภาพ')
                           : '',
+// ตรวจสอบว่าควรแสดงปุ่มที่สองหรือไม่ โดยจะแสดงปุ่มเมื่อหลักฐานการจัดส่งสินค้าพร้อมแล้วและคำสั่งซื้ออยู่ในสถานะ "รอจัดส่ง"
                       hasSecondBtn: deliverySlip != null &&
-                          _orderDetail?.status == OrderStatus.waitingDelivery,
+                          _orderDetail?.status == OrderStatus.waitingDelivery&&
+                          isPharmacy,
                       btnTxtSecond:
                           _orderDetail?.status == OrderStatus.waitingDelivery
                               ? 'ยืนยันรายการ'
                               : '',
+                      // ฟังก์ชันเมื่อกดปุ่มที่สอง
                       onTapSecond: () async {
+                        // อัพเดทสถานะคำสั่งซื้อเป็น "กำลังจัดส่ง"
                         await ref
                             .read(orderControllerProvider.notifier)
                             .onUpdateOrder(
@@ -586,6 +634,7 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
                               '$cartId',
                               status: OrderStatus.delivering,
                             );
+                        // ดึงข้อมูลคำสั่งซื้อทั้งหมดและคำสั่งซื้อเฉพาะ
                         await ref
                             .read(orderControllerProvider.notifier)
                             .onGetAllOrder(
@@ -599,7 +648,7 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
                               OrderStatus.waitingDelivery,
                               orderId: id,
                             );
-
+                        // โนติยืนยันการจัดส่ง
                         await ref
                             .read(homeControllerProvider.notifier)
                             .onPostNotification(
@@ -610,11 +659,13 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
                       },
                     ),
                     TrackingContentWidget(
+                      // ตรวจสอบว่าคำสั่งซื้อสำเร็จแล้วหรือไม่
                       isSuccess: _orderDetail?.status == OrderStatus.completed,
                       hasBtn: !isPharmacy &&
                           _orderDetail?.status == OrderStatus.delivering,
                       isSecondBtn: false,
                       onTap: () async {
+                        // แสดงหน้าต่างยืนยันการสำเร็จ
                         showDialog(
                             context: context,
                             builder: (_) {
@@ -622,6 +673,7 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
                                 message: 'ยืนยันคำสั่งซื้อสำเร็จ',
                                 hasCancel: true,
                                 onClick: () async {
+                                  // อัพเดทสถานะคำสั่งซื้อเป็น "เสร็จสมบูรณ์"
                                   final result = await ref
                                       .read(orderControllerProvider.notifier)
                                       .onUpdateOrder(
@@ -629,6 +681,7 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
                                         '$cartId',
                                         status: OrderStatus.completed,
                                       );
+                                  // หากอัพเดทสำเร็จ ทำการดึงข้อมูลคำสั่งซื้อทั้งหมด
                                   if (result) {
                                     await ref
                                         .read(orderControllerProvider.notifier)
@@ -636,6 +689,7 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
                                           isPharmacy,
                                         );
 
+                                    // ดึงข้อมูลคำสั่งซื้อที่มี ID ตรงกับคำสั่งซื้อปัจจุบัน
                                     await ref
                                         .read(orderControllerProvider.notifier)
                                         .onGetOrder(
@@ -645,6 +699,7 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
                                           orderId: id,
                                         );
 
+                                    // โนติยืนยันการจัดส่งสำเร็จ
                                     await ref
                                         .read(homeControllerProvider.notifier)
                                         .onPostNotification(
@@ -665,6 +720,7 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
                                     Navigator.of(context)
                                         .pushNamed(AddReviewScreen.routeName);
                                   } else {
+                                    // แสดง Toast แจ้งเตือนหากไม่สามารถอัพเดทได้
                                     Fluttertoast.showToast(
                                       msg: "ไม่สามารถยืนยันได้",
                                       toastLength: Toast.LENGTH_SHORT,
@@ -679,17 +735,20 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
                       number: '4',
                       title: 'สินค้าส่งถึงแล้ว',
                       btnTxt: 'ยืนยัน',
+                      //ของฝั่งร้านขายยา
                       content: isPharmacy &&
                               _orderDetail?.status == OrderStatus.delivering
                           ? 'รอลูกค้ายืนยันรับสินค้า'
                           : null,
                     ),
+                    // กำหนดเงื่อนไขว่าหากสถานะการจัดส่งสินค้าสำเร็จ ผู้ใช้ไม่ใช่เภสัชกร และยังไม่ได้รีวิวสินค้า
                     if (_orderDetail?.status == OrderStatus.completed &&
                         !isPharmacy &&
                         !isAlreadyReview) ...[
                       SizedBox(
                         height: 16.h,
                       ),
+                      // แสดงปุ่ม "เพิ่มรีวิว"
                       BaseButton(
                         onTap: () {
                           Navigator.of(context)

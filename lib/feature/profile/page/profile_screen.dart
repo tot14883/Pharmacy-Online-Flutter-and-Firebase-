@@ -19,6 +19,7 @@ import 'package:pharmacy_online/feature/profile/widget/profile_menu_widget.dart'
 import 'package:pharmacy_online/feature/store/page/store_detail_screen.dart';
 import 'package:pharmacy_online/generated/assets.gen.dart';
 
+// หน้าจอแสดงข้อมูลโปรไฟล์ผู้ใช้
 class ProfileScreen extends ConsumerStatefulWidget {
   static const routeName = 'ProfileScreen';
 
@@ -31,22 +32,28 @@ class ProfileScreen extends ConsumerStatefulWidget {
 class _ProfileScreenState extends BaseConsumerState<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
+    // ดึงข้อมูลผู้ใช้
     final userInfo =
         ref.watch(profileControllerProvider.select((value) => value.userInfo));
+    // ดึงข้อมูลร้าน
     final pharmacyStore = ref.watch(
         profileControllerProvider.select((value) => value.pharmacyStore));
 
+    // ดึงข้อมูลเภสัชกร
     final isPharmacy = ref
         .watch(profileControllerProvider.select((value) => value.isPharmacy));
 
+    // ดึงข้อมูลรูปโปรไฟล์และชื่อผู้ใช้
     final profileImg = userInfo?.profileImg;
     final fullName = userInfo?.fullName;
 
+    // ตรวจสอบว่าผู้ใช้เป็น Admin หรือไม่
     final isAdmin = ref
             .read(baseSharePreferenceProvider)
             .getString(BaseSharePreferenceKey.role) ==
         AuthenticationType.admin.name;
 
+    // สร้างหน้าจอด้วย BaseScaffold
     return BaseScaffold(
       bodyBuilder: (context, constrianed) {
         return SingleChildScrollView(
@@ -56,6 +63,7 @@ class _ProfileScreenState extends BaseConsumerState<ProfileScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                // แสดงข้อมูลโปรไฟล์สำหรับผู้ใช้ทั่วไป
                 if (!isAdmin && userInfo?.uid != null) ...[
                   Text(
                     'My Profile',
@@ -64,6 +72,7 @@ class _ProfileScreenState extends BaseConsumerState<ProfileScreen> {
                   SizedBox(
                     height: 16.h,
                   ),
+                  // แสดงรูปโปรไฟล์และชื่อผู้ใช้
                   ProfileImageWidget(
                     imageUrl: '$profileImg',
                     label: '$fullName',
@@ -71,6 +80,7 @@ class _ProfileScreenState extends BaseConsumerState<ProfileScreen> {
                   SizedBox(
                     height: 16.h,
                   ),
+                  // ปุ่มเพื่อแก้ไขข้อมูลส่วนตัว
                   ProfileMenuWidget(
                     onTap: () {
                       ref.read(profileControllerProvider.notifier).clearForm();
@@ -81,6 +91,7 @@ class _ProfileScreenState extends BaseConsumerState<ProfileScreen> {
                     prefixIcon: Assets.icons.icPersion.svg(),
                     label: 'แก้ไขข้อมูลส่วนตัว',
                   ),
+                  // แสดงเมนูการแก้ไขข้อมูลเภสัชกร
                   if (isPharmacy) ...[
                     const BaseDivider(),
                     ProfileMenuWidget(
@@ -124,6 +135,7 @@ class _ProfileScreenState extends BaseConsumerState<ProfileScreen> {
                   ),
                   const BaseDivider(),
                 ],
+                // แสดงข้อมูลสำหรับ Admin
                 if (isAdmin) ...[
                   Assets.icons.icAdministrator.svg(),
                   SizedBox(
@@ -138,6 +150,7 @@ class _ProfileScreenState extends BaseConsumerState<ProfileScreen> {
                   ),
                   const BaseDivider(),
                 ],
+                // แสดงข้อมูลสำหรับผู้ที่ยังไม่ได้ลงทะเบียนหรือเข้าสู่ระบบ
                 if (userInfo?.uid == null) ...[
                   SizedBox(
                     height: 36.h,
@@ -158,6 +171,7 @@ class _ProfileScreenState extends BaseConsumerState<ProfileScreen> {
                   ),
                   const BaseDivider(),
                 ],
+                // เมนูออกจากระบบ
                 ProfileMenuWidget(
                   onTap: () {
                     showBaseDialog(

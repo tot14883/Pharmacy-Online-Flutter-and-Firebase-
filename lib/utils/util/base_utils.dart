@@ -27,18 +27,23 @@ class BaseUtils {
   //   }
   // }
 
+  // ตรวจสอบว่าไฟล์นามสกุลที่อนุญาต
   bool allowFileExtension(
     String file,
     List<String> allowFiles,
   ) {
-    final _file = p.extension(file);
-    return allowFiles.contains(_file);
+    final _file = p.extension(file); // ดึงนามสกุลไฟล์
+    return allowFiles
+        .contains(_file); // ตรวจสอบว่านามสกุลอยู่ในรายการที่อนุญาตหรือไม่
   }
 
+  // แปลง enum ให้อยู่ในรูป snake_case
   String? enumToStringSnakeCase(enumValue) {
     if (enumValue == null) return null;
 
+    // แยก enum เป็นชื่อคลาสและชื่อตัวแปร
     String enumString = enumValue.toString().split('.')[1];
+    // แปลงตัวอักษรตัวใหญ่เป็นตัวเล็กและใส่ "_" คั่น
     return enumString
         .replaceAllMapped(
           RegExp(r'[A-Z]'),
@@ -47,6 +52,7 @@ class BaseUtils {
         .toLowerCase();
   }
 
+  // ตรวจสอบว่า URL นั้นใช้งานได้หรือไม่
   Future<bool> checkUrl(String? url) async {
     try {
       if (url == null) return false;
@@ -58,38 +64,47 @@ class BaseUtils {
     }
   }
 
+  // สร้างสตริงแบบสุ่ม
   String generateRandomString(int len) {
-    var r = Random();
+    var r = Random(); // สร้างตัวสร้างตัวเลขสุ่ม
+    // ตัวอักษรและตัวเลขที่ใช้ในการสร้างสตริง
     const _chars =
         'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
+    // สร้างสตริงโดยการสุ่มตัวอักษรจาก _chars
     return List.generate(len, (index) => _chars[r.nextInt(_chars.length)])
         .join();
   }
 
+  // ดึงตำแหน่งปัจจุบันของผู้ใช้
   Future<Result<Position, Failure>> getLocation() async {
-    bool serviceEnabled;
-    LocationPermission permission;
+    bool serviceEnabled; // ตรวจสอบว่าเปิดใช้งาน Location Service หรือไม่
+    LocationPermission permission; // ตรวจสอบ Permission
 
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
+      // ถ้าไม่ได้เปิด Location Service
       return Error(Failure(message: 'No Permission'));
     }
 
-    permission = await Geolocator.checkPermission();
+    permission = await Geolocator.checkPermission(); // ตรวจสอบ Permission
     if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
+      // ถ้ายังไม่มี Permission
+      permission = await Geolocator.requestPermission(); // ขอ Permission
       if (permission == LocationPermission.denied) {
+        // ถ้าผู้ใช้ปฏิเสธการขอ Permission
         return Error(Failure(message: 'No Permission'));
       }
     }
 
     if (permission == LocationPermission.deniedForever) {
+      // ถ้าผู้ใช้ปฏิเสธการขอ Permission แบบถาวร
       return Error(Failure(message: 'No Permission'));
     }
-
+    // ถ้ามี Permission ให้ดึงตำแหน่งปัจจุบัน
     return Success(await Geolocator.getCurrentPosition());
   }
 
+  // แปลงวันที่ให้ ios
   DateTime parseTime(dynamic date) {
     return Platform.isIOS ? (date as Timestamp).toDate() : (date as DateTime);
   }

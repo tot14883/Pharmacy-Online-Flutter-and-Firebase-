@@ -11,6 +11,7 @@ import 'package:pharmacy_online/core/widget/base_consumer_state.dart';
 import 'package:pharmacy_online/feature/order/controller/order_controller.dart';
 
 class EvidenceTransportationScreen extends ConsumerStatefulWidget {
+  // ชื่อของ route สำหรับการนำทางไปยังหน้าจอนี้
   static const routeName = 'EvidenceTransportationScreen';
 
   const EvidenceTransportationScreen({super.key});
@@ -20,12 +21,15 @@ class EvidenceTransportationScreen extends ConsumerStatefulWidget {
       _EvidenceTransportationScreenState();
 }
 
+// คลาสสำหรับจัดการสถานะของหน้าจอ
 class _EvidenceTransportationScreenState
     extends BaseConsumerState<EvidenceTransportationScreen> {
+  // ตัวแปรสำหรับเก็บหลักฐานการจัดส่งสินค้า (รูปภาพ)
   XFile? evidenceFile;
 
   @override
   Widget build(BuildContext context) {
+    // ดึงข้อมูลรายละเอียดการสั่งซื้อจาก orderControllerProvider
     final orderDetail = ref
         .watch(orderControllerProvider.select((value) => value.orderDetail))
         .value;
@@ -48,6 +52,7 @@ class _EvidenceTransportationScreenState
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                // แสดงรูปภาพหลักฐานการจัดส่งสินค้า
                 BaseImageView(
                   url: '${orderDetail?.deliverySlip}',
                   width: 350.w,

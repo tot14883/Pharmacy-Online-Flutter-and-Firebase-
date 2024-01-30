@@ -37,12 +37,14 @@ class GetAllOrderUsecase extends UseCase<OrderRequest, List<OrderResponse>> {
     OrderRequest request,
   ) async {
     try {
-      final isPharmacy = request.isPharmacy;
-      final userId =
-          baseSharedPreference.getString(BaseSharePreferenceKey.userId);
+      final isPharmacy = request.isPharmacy; // อ่านค่า isPharmacy จาก request
+      final userId = baseSharedPreference.getString(
+          BaseSharePreferenceKey.userId); // อ่าน user ID จาก SharedPreferences
 
-      List<QueryDocumentSnapshot<Object?>>? getAllOrder;
+      List<QueryDocumentSnapshot<Object?>>?
+          getAllOrder; // ตัวแปรเก็บข้อมูลคำสั่งซื้อทั้งหมด
 
+      // ค้นหาคำสั่งซื้อตามเงื่อนไขว่าผู้ใช้เป็นร้านขายยาหรือผู้ใช้ทั่วไป
       if (isPharmacy) {
         getAllOrder = await fireCloudStore
             .collection('order')
@@ -59,15 +61,19 @@ class GetAllOrderUsecase extends UseCase<OrderRequest, List<OrderResponse>> {
             .then((value) => value.docs);
       }
 
+      // ตรวจสอบหากไม่พบคำสั่งซื้อ คืนค่า list ว่าง
       if (getAllOrder == null) {
         return [];
       }
 
-      List<OrderResponse> orderList = [];
+      List<OrderResponse> orderList =
+          []; // ตัวแปรเก็บข้อมูลคำสั่งซื้อในรูปแบบ OrderResponse
 
+      // วนลูปสร้าง OrderResponse จากข้อมูลคำสั่งซื้อแต่ละอัน
       for (final item in getAllOrder.reversed) {
         final _data = item.data() as Map<String, dynamic>;
 
+        // ดึงข้อมูลตะกร้าสินค้าที่เกี่ยวข้อง
         final getCart = await fireCloudStore
             .collection('cart')
             .where('id', isEqualTo: _data['cartId'])
@@ -76,6 +82,7 @@ class GetAllOrderUsecase extends UseCase<OrderRequest, List<OrderResponse>> {
 
         final cartData = getCart.first.data() as Map<String, dynamic>;
 
+        // ดึงข้อมูลยาในตะกร้าสินค้า
         final List<MedicineResponse> medicineList = [];
 
         final collectCartMedicine = await fireCloudStore
@@ -88,6 +95,7 @@ class GetAllOrderUsecase extends UseCase<OrderRequest, List<OrderResponse>> {
         for (final itemMedicine in collectCartMedicine) {
           final _dataMedicine = itemMedicine.data();
 
+          // ข้อมูลของยาแต่ละตัว
           medicineList.add(
             MedicineResponse(
               id: _dataMedicine['medicineId'],
@@ -100,6 +108,7 @@ class GetAllOrderUsecase extends UseCase<OrderRequest, List<OrderResponse>> {
           );
         }
 
+        // สร้าง CartResponse จากข้อมูลตะกร้าสินค้า
         final cartResponse = CartResponse(
           id: cartData['id'],
           pharmacyId: cartData['pharmacyId'],
@@ -123,6 +132,7 @@ class GetAllOrderUsecase extends UseCase<OrderRequest, List<OrderResponse>> {
           updateAt: (cartData['update_at'] as Timestamp).toDate(),
         );
 
+        // สร้าง OrderResponse และเพิ่มเข้า list
         orderList.add(
           OrderResponse(
             id: _data['id'],

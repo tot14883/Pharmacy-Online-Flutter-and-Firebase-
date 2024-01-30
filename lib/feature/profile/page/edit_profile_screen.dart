@@ -41,6 +41,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   @override
   void initState() {
     super.initState();
+    // เมื่อโหลด Widget เสร็จ อ่านข้อมูลผู้ใช้และข้อมูลร้าน และกำหนดค่าให้กับ Textfield ที่เกี่ยวข้อง
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       final userInfo = ref.watch(
         profileControllerProvider.select((value) => value.userInfo),
@@ -57,12 +58,14 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   @override
   void dispose() {
     super.dispose();
+    // คืนทรัพยากรเมื่อ Widget ถูกทำลาย
     addressController.dispose();
     formKey.currentState?.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    // ดึงข้อมูลจาก Provider
     final isPharmacy = ref.watch(
       profileControllerProvider.select((value) => value.isPharmacy),
     );
@@ -80,6 +83,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     final licensePharmacy = pharmacyStoreInfo?.licensePharmacy;
     final licensePharmacyImg = pharmacyStoreInfo?.licensePharmacyImg;
 
+    // สร้างหน้าจอด้วย BaseScaffold
     return BaseScaffold(
       appBar: BaseAppBar(
         bgColor: AppColor.themeWhiteColor,
@@ -89,6 +93,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
           style: AppStyle.txtHeader3,
         ),
       ),
+      // สร้าง Body ด้วย SingleChildScrollView เพื่อให้สามารถเลื่อนหน้าจอได้
       bodyBuilder: (context, constrianed) {
         return SingleChildScrollView(
           child: BaseForm(
@@ -99,6 +104,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  // Widget สำหรับอัปโหลดรูปโปรไฟล์
                   BaseUploadImageButton(
                     imgPreview: BaseImageView(
                       url: imgProfile != null ? null : profileImg,
@@ -107,6 +113,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                       height: 350.h,
                       fit: BoxFit.cover,
                     ),
+                    // Callback เมื่อมีการอัปโหลดรูป
                     onUpload: (val) {
                       setState(() {
                         imgProfile = val;
@@ -128,6 +135,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                   SizedBox(
                     height: 16.h,
                   ),
+                  // Textfield สำหรับชื่อนามสกุล
                   BaseTextField(
                     fieldKey: FieldUserInfo.name,
                     initialValue: fullname,
@@ -144,6 +152,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                   SizedBox(
                     height: 16.h,
                   ),
+                  // Textfield สำหรับเบอร์โทรศัพท์
                   BaseTextField(
                     fieldKey: FieldUserInfo.phone,
                     initialValue: phone,
@@ -160,12 +169,14 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                   SizedBox(
                     height: 16.h,
                   ),
+                  // ถ้าไม่ใช่ร้านเภสัชกร แสดง Textfield สำหรับที่อยู่
                   if (!isPharmacy) ...[
                     BaseTextField(
                       fieldKey: FieldUserInfo.address,
                       controller: addressController,
                       placeholder: "ที่อยู่",
                       isReadOnly: true,
+                      // Callback เมื่อที่อยู่ถูกแตะ จะเปิดหน้าต่างเลือกที่อยู่
                       onTap: () async {
                         final result =
                             await ref.read(baseUtilsProvider).getLocation();
@@ -180,6 +191,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                                   popOnNextButtonTaped: true,
                                   currentLatLng: LatLng(
                                       success.latitude, success.longitude),
+                                  // Callback เมื่อเลือกที่อยู่
                                   onNext: (GeocodingResult? result) {
                                     if (result != null) {
                                       Location location =
@@ -196,6 +208,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                                           );
                                     }
                                   },
+                                  // Callback เมื่อเลือกที่อยู่จาก suggestion
                                   onSuggestionSelected:
                                       (PlacesDetailsResponse? result) {
                                     if (result != null) {
@@ -232,6 +245,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                       height: 16.h,
                     ),
                   ],
+                  // ถ้าเป็นร้านเภสัชกร แสดง Textfield สำหรับเลขใบอนุญาต
                   if (isPharmacy) ...[
                     BaseTextField(
                       fieldKey: FieldUserInfo.licensePharmacy,
@@ -249,8 +263,10 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                     SizedBox(
                       height: 16.h,
                     ),
+                    // Widget สำหรับอัปโหลดรูปใบอนุญาต
                     BaseUploadImage(
                       label: 'รูปใบอนุญาต',
+                      // Callback เมื่อมีการอัปโหลดรูป
                       onUpload: (val) {
                         setState(() {
                           licenseFile = val;
@@ -260,6 +276,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                     SizedBox(
                       height: 16.h,
                     ),
+                    // แสดงรูปใบอนุญาต
                     BaseImageView(
                       url: licenseFile != null ? null : licensePharmacyImg,
                       file:
@@ -285,6 +302,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                     ),
                   ],
                   BaseButton(
+                    //ปุ่มที่กดเพื่ออัพเดทข้อมูลขึ้น Firebase
                     onTap: () async {
                       final result = await ref
                           .read(profileControllerProvider.notifier)

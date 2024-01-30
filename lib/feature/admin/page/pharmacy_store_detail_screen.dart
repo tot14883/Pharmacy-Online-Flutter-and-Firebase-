@@ -35,8 +35,10 @@ class _PharmacyStoreDetaillScreenState
     extends ConsumerState<PharmacyStoreDetaillScreen> {
   @override
   Widget build(BuildContext context) {
+    // ดึงข้อมูลร้านเภสัชกรที่ถูกส่งมาจากหน้าจอก่อนหน้า
     final pharmacyStoreInfo = widget.args.pharmacyItem;
 
+    // ดึงข้อมูลที่ต้องการแสดงผลจาก PharmacyInfoResponse
     final pharmacyStoreImg = pharmacyStoreInfo.storeImg;
     final licensePharmacyStore = pharmacyStoreInfo.licenseStoreImg;
     final nameStore = pharmacyStoreInfo.nameStore;
@@ -51,17 +53,19 @@ class _PharmacyStoreDetaillScreenState
         bgColor: AppColor.themeWhiteColor,
         elevation: 0,
         title: Text(
-          'แก้ไขข้อมูลร้าน',
+          'ข้อมูลร้านขายยา',
           style: AppStyle.txtHeader3,
         ),
       ),
       bodyBuilder: (context, constrained) {
         return SingleChildScrollView(
+          // ให้หน้าจอสามารถเลื่อนได้
           child: Padding(
             padding: const EdgeInsets.all(16).r,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                // แสดงรูปร้าน
                 BaseImageView(
                   url: pharmacyStoreImg,
                   width: 350.w,
@@ -71,6 +75,7 @@ class _PharmacyStoreDetaillScreenState
                 SizedBox(
                   height: 16.h,
                 ),
+                // ช่องข้อมูลชื่อร้าน
                 BaseTextField(
                   isReadOnly: true,
                   initialValue: nameStore,
@@ -79,6 +84,7 @@ class _PharmacyStoreDetaillScreenState
                 SizedBox(
                   height: 16.h,
                 ),
+                // ช่องข้อมูลที่อยู่
                 BaseTextField(
                   placeholder: "ที่อยู่",
                   initialValue: address,
@@ -87,6 +93,7 @@ class _PharmacyStoreDetaillScreenState
                 SizedBox(
                   height: 16.h,
                 ),
+                // ช่องข้อมูลเบอร์โทร
                 BaseTextField(
                   initialValue: phoneStore,
                   isReadOnly: true,
@@ -95,6 +102,7 @@ class _PharmacyStoreDetaillScreenState
                 SizedBox(
                   height: 16.h,
                 ),
+                // ช่องข้อมูลเวลาเปิด
                 BaseTextField(
                   placeholder: "เวลาเปิด",
                   isReadOnly: true,
@@ -104,6 +112,7 @@ class _PharmacyStoreDetaillScreenState
                 SizedBox(
                   height: 16.h,
                 ),
+                // ช่องข้อมูลเวลาปิด
                 BaseTextField(
                   isReadOnly: true,
                   placeholder: "เวลาปิด",
@@ -113,6 +122,7 @@ class _PharmacyStoreDetaillScreenState
                 SizedBox(
                   height: 16.h,
                 ),
+                // ช่องข้อมูลเลขที่ใบอนุญาตร้าน
                 BaseTextField(
                   isReadOnly: true,
                   placeholder: "เลขที่ใบอนุญาตร้าน",
@@ -121,6 +131,7 @@ class _PharmacyStoreDetaillScreenState
                 SizedBox(
                   height: 16.h,
                 ),
+                // แสดงรูปใบอนุญาตร้าน
                 BaseImageView(
                   url: licensePharmacyStore,
                   width: 250.w,
@@ -130,6 +141,7 @@ class _PharmacyStoreDetaillScreenState
                 SizedBox(
                   height: 16.h,
                 ),
+                // ปุ่มที่เมื่อคลิกจะนำไปยังหน้ารายละเอียดของเภสัชกร
                 BaseButton(
                   onTap: () async {
                     Navigator.of(context).pushNamed(

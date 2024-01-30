@@ -15,9 +15,11 @@ import 'package:pharmacy_online/feature/store/model/response/chat_with_pharmacy_
 import 'package:pharmacy_online/feature/store/model/response/medicine_response.dart';
 import 'package:pharmacy_online/feature/store/widget/quantity_widget.dart';
 
+// คลาส DrugDetailArgs ใช้สำหรับส่งข้อมูลยาไปยังหน้าจอ DrugDetailScreen
 class DrugDetailArgs {
-  final MedicineResponse medicineItem;
-  final ChatWithPharmacyResponse? chatWithPharmacyItem;
+  final MedicineResponse medicineItem; // ข้อมูลยาที่จะแสดงในหน้าจอ
+  final ChatWithPharmacyResponse?
+      chatWithPharmacyItem; // ข้อมูลการแชทกับร้านขายยา (ถ้ามี)
 
   DrugDetailArgs({
     required this.medicineItem,
@@ -25,10 +27,12 @@ class DrugDetailArgs {
   });
 }
 
+// คลาส DrugDetailScreen เป็นหน้าจอสำหรับแสดงรายละเอียดของยา
 class DrugDetailScreen extends ConsumerStatefulWidget {
-  static const routeName = 'DrugDetailScreen';
+  static const routeName =
+      'DrugDetailScreen'; // ชื่อเส้นทางสำหรับนำทางมายังหน้าจอนี้
 
-  final DrugDetailArgs args;
+  final DrugDetailArgs args; // ข้อมูลยาที่ได้รับการส่งมา
 
   const DrugDetailScreen({
     super.key,
@@ -39,23 +43,24 @@ class DrugDetailScreen extends ConsumerStatefulWidget {
   _DrugDetailScreenState createState() => _DrugDetailScreenState();
 }
 
+// State ของหน้าจอ DrugDetailScreen
 class _DrugDetailScreenState extends BaseConsumerState<DrugDetailScreen> {
   int quantity = 1;
   double price = 0.0;
 
   @override
   Widget build(BuildContext context) {
-    final args = widget.args;
-    final name = args.medicineItem.name;
-    price = args.medicineItem.price ?? 0.0;
-    final image = args.medicineItem.medicineImg;
-    final pharmacyInfo = ref.watch(
-        profileControllerProvider.select((value) => value.pharmacyStore));
+    final args = widget.args; // ดึงข้อมูลยาจาก args
+    final name = args.medicineItem.name; // ชื่อยา
+    price = args.medicineItem.price ?? 0.0; // ราคายา (ถ้าไม่มีกำหนดเป็น 0.0)
+    final image = args.medicineItem.medicineImg; // รูปภาพของยา
+    final pharmacyInfo = ref.watch(profileControllerProvider
+        .select((value) => value.pharmacyStore)); // อ่านข้อมูลร้านขายยา
 
     return BaseScaffold(
       appBar: BaseAppBar(
         title: Text(
-          'Drug Detail',
+          'รายละเอียดยา',
           style: AppStyle.txtHeader3,
         ),
         leading: IconButton(
@@ -77,6 +82,7 @@ class _DrugDetailScreenState extends BaseConsumerState<DrugDetailScreen> {
         return SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(16).r,
+            // รายละเอียดยา
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
@@ -106,6 +112,7 @@ class _DrugDetailScreenState extends BaseConsumerState<DrugDetailScreen> {
                 SizedBox(
                   height: 16.h,
                 ),
+                // ตัวเลือกจำนวนยา
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -113,10 +120,11 @@ class _DrugDetailScreenState extends BaseConsumerState<DrugDetailScreen> {
                       maximum: 100,
                       onUpdate: (val) {
                         setState(() {
-                          quantity = val;
+                          quantity = val; // อัปเดตจำนวนยาเมื่อผู้ใช้แก้ไข
                         });
                       },
                     ),
+                    // ... แสดงราคารวม ...
                     Text(
                       '${price * quantity} บาท',
                       style: AppStyle.txtBody,
@@ -127,24 +135,31 @@ class _DrugDetailScreenState extends BaseConsumerState<DrugDetailScreen> {
                   height: 32.h,
                 ),
                 BaseButton(
+                  // ฟังก์ชันที่ทำงานเมื่อกดปุ่ม
                   onTap: () async {
+                    // เรียกใช้ฟังก์ชัน onAddToCart() ของ myCartControllerProvider
+                    // เพื่อเพิ่มยาลงตะกร้า
                     final result = await ref
                         .read(myCartControllerProvider.notifier)
                         .onAddToCart(
+                          // ข้อมูลร้านขายยา
                           '${args.chatWithPharmacyItem?.pharmacyId}',
                           '${args.chatWithPharmacyItem?.uid}',
+                          //ข้อมูลยา
                           '${args.medicineItem.id}',
                           '$image',
                           price,
                           '$name',
                           quantity,
-                          '${pharmacyInfo?.nameStore}',
+                          '${pharmacyInfo?.nameStore}', //ชื่อร้าน
                         );
 
+                    // อัปเดตจำนวนยาในตะกร้า
                     ref
                         .read(myCartControllerProvider.notifier)
                         .setQuantity('${args.medicineItem.id}', quantity);
 
+                    // แสดงข้อความแจ้งเตือนหากเพิ่มยาลงตะกร้าสำเร็จ
                     if (result) {
                       Fluttertoast.showToast(
                         msg: "เพิ่มลงตะกร้าสำเร็จ",

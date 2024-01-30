@@ -9,6 +9,7 @@ import 'package:pharmacy_online/feature/order/enum/order_status_enum.dart';
 import 'package:pharmacy_online/feature/store/model/response/medicine_response.dart';
 
 final getCartUsecaseProvider = Provider<GetCartUsecase>((ref) {
+  //โค้ดที่ใช้ในการสร้าง GetCartUsecase และรับ dependencies ต่าง ๆ
   final fireCloudStore = ref.watch(firebaseCloudStoreProvider);
   final baseSharedPreference = ref.watch(baseSharePreferenceProvider);
 
@@ -20,6 +21,7 @@ final getCartUsecaseProvider = Provider<GetCartUsecase>((ref) {
 });
 
 class GetCartUsecase extends UseCase<CartRequest, CartResponse> {
+  //โค้ดที่ประกาศตัวแปรและ dependencies ที่ใช้ใน UseCase
   final FirebaseCloudStore fireCloudStore;
   final BaseSharedPreference baseSharedPreference;
 
@@ -36,6 +38,7 @@ class GetCartUsecase extends UseCase<CartRequest, CartResponse> {
     CartRequest request,
   ) async {
     try {
+      //โค้ดที่ใช้ในการดึงข้อมูลของตะกร้าสินค้า
       final uid = request.uid;
       final pharmacyId = request.pharmacyId;
       final status = request.status;
@@ -52,6 +55,7 @@ class GetCartUsecase extends UseCase<CartRequest, CartResponse> {
       Map<String, dynamic>? _data;
 
       if (cartId != null) {
+        //ดึงข้อมูลตะกร้าสินค้าจาก ID ที่กำหนด
         final collectCartItem = await fireCloudStore
             .collection('cart')
             .doc(cartId)
@@ -59,10 +63,12 @@ class GetCartUsecase extends UseCase<CartRequest, CartResponse> {
             .then((value) => value);
         _data = collectCartItem.data() as Map<String, dynamic>;
       } else {
+        //ดึงข้อมูลตะกร้าสินค้าล่าสุดของผู้ใช้
         _data = collectCart.first.data() as Map<String, dynamic>;
       }
       final List<MedicineResponse> medicineList = [];
-
+      
+      //ดึงข้อมูลสินค้าที่อยู่ในตะกร้าสินค้า
       final collectCartMedicine = await fireCloudStore
           .collection('cart')
           .doc(_data['id'])
@@ -84,7 +90,7 @@ class GetCartUsecase extends UseCase<CartRequest, CartResponse> {
           ),
         );
       }
-
+      //สร้างและคืนค่าข้อมูลตะกร้าสินค้า
       return CartResponse(
         id: _data['id'],
         uid: _data['uid'],

@@ -18,11 +18,13 @@ final changeQRCodeUsecaseProvider = Provider<ChangeQRCodeUsecase>((ref) {
   );
 });
 
+// สร้าง UseCase สำหรับการเปลี่ยน QR Code
 class ChangeQRCodeUsecase extends UseCase<XFile, bool> {
   final FirebaseCloudStore fireCloudStore;
   final FirebaseStorageProvider firebaseCloudStorage;
   final BaseSharedPreference baseSharedPreference;
 
+  // กำหนด Constructor พร้อมรับ Provider ที่ต้องใช้
   ChangeQRCodeUsecase(
     Ref ref,
     this.fireCloudStore,
@@ -37,21 +39,26 @@ class ChangeQRCodeUsecase extends UseCase<XFile, bool> {
     XFile request,
   ) async {
     try {
+      // ดึงข้อมูล uid จาก SharedPreferences
       final uid = baseSharedPreference.getString(BaseSharePreferenceKey.userId);
 
       if (uid != null) {
+        // อัปโหลดรูปภาพ QR Code ไปยัง Firebase Cloud Storage
         final urlQrCodeImg = await firebaseCloudStorage.uploadStorage(
           request,
           'qrCode/$uid',
         );
 
+        // ดึง Collection ของ pharmacyStore
         final collectPharmacyStore = fireCloudStore.collection('pharmacyStore');
 
+        // กำหนดข้อมูลที่ต้องการอัปเดต
         final Map<String, dynamic> myData = {
           "qrCodeImg": urlQrCodeImg,
           "update_at": DateTime.now(),
         };
 
+        // ทำการอัปเดตข้อมูลใน Firestore
         await collectPharmacyStore.doc(uid).update(myData);
 
         return true;

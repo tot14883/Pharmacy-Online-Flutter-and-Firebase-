@@ -13,9 +13,12 @@ import 'package:pharmacy_online/feature/store/controller/store_controller.dart';
 import 'package:pharmacy_online/feature/store/page/add_medicine_warehouse_screen.dart';
 import 'package:pharmacy_online/feature/store/widget/medicine_warehouse_list_widget.dart';
 
+// คลาส CentralMedicineWarehouseScreen สร้างหน้าจอสำหรับแสดงรายการยาในคลังยากลาง
 class CentralMedicineWarehouseScreen extends ConsumerStatefulWidget {
+  // route name สำหรับนำทางมายังหน้าจอนี้
   static const routeName = 'CentralMedicineWarehouseScreen';
 
+  // Constructor ของคลาส
   const CentralMedicineWarehouseScreen({super.key});
 
   @override
@@ -23,18 +26,22 @@ class CentralMedicineWarehouseScreen extends ConsumerStatefulWidget {
       _CentralMedicineWarehouseScreenState();
 }
 
+// State ของหน้าจอ CentralMedicineWarehouseScreen
 class _CentralMedicineWarehouseScreenState
     extends BaseConsumerState<CentralMedicineWarehouseScreen> {
   @override
   Widget build(BuildContext context) {
+    // ตรวจสอบว่าผู้ใช้เป็นแอดมินหรือไม่
     final isAdmin = ref
             .read(baseSharePreferenceProvider)
             .getString(BaseSharePreferenceKey.role) ==
         AuthenticationType.admin.name;
 
+    // อ่านข้อมูลรายการยาในคลังยากลางจาก riverpod
     final centralMedicineList = ref.watch(
         storeControllerProvider.select((value) => value.centralMedicineList));
 
+    // จัดการการแสดงผลข้อมูลตามสถานะการโหลดข้อมูล
     return AsyncValueWidget(
       value: centralMedicineList,
       data: (_centralMedicineList) {
@@ -45,11 +52,14 @@ class _CentralMedicineWarehouseScreenState
               'คลังยากลาง',
               style: AppStyle.txtHeader3,
             ),
+            // ซ่อนปุ่ม back หากผู้ใช้เป็นแอดมิน
             hideBackButton: isAdmin,
+            // ปุ่มเพิ่มยาหากผู้ใช้เป็นแอดมิน
             actions: isAdmin
                 ? [
                     GestureDetector(
                       onTap: () {
+                        // นำทางไปหน้าจอเพิ่มยา
                         Navigator.of(context).pushNamed(
                           AddMedicineWarehouseScreen.routeName,
                         );
@@ -68,16 +78,19 @@ class _CentralMedicineWarehouseScreenState
           ),
           bgColor: AppColor.themeWhiteColor,
           bodyBuilder: (context, constrained) {
+            // หากข้อมูลรายการยายังไม่พร้อม ให้แสดง SizedBox.shrink()
             if (_centralMedicineList == null) {
               return const SizedBox.shrink();
             }
 
+            // ถ้าข้อมูลพร้อม ให้แสดงรายการยา
             return Padding(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 72).r,
               child: MedicineWarehouseListWidget(
                 onTap: (val) {},
+                // onTap: (val) {}, // ฟังก์ชันเมื่อกดรายการยา (ยังไม่ถูกใช้งาน)
                 medicineList: _centralMedicineList,
-                isCentral: true,
+                isCentral: true, // ระบุว่าเป็นคลังยากลาง
               ),
             );
           },

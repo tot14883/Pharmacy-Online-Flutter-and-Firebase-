@@ -28,6 +28,7 @@ class _RequestConsultScreenState
         (value) => value.chatWithPharmacyList,
       ),
     );
+     
     return AsyncValueWidget(
       value: chatWithPharmacyList,
       data: (_chatWithPharmacyList) {
@@ -49,7 +50,9 @@ class _RequestConsultScreenState
             return Padding(
               padding: const EdgeInsets.all(16).r,
               child: RequestConsiltListWidget(
+                //จะแสดง RequestConsiltListWidget ซึ่งเป็น widget ที่แสดงรายการคำขอการปรึกษาทั้งหมด
                 onTap: (chatResponse) {
+                  //นำไปยังหน้าแชท ChatScreen เพื่อสนทนากับร้านขายยา
                   Navigator.of(context).pushNamed(
                     ChatScreen.routeName,
                     arguments: ChatArgs(chatWithPharmacyItem: chatResponse),

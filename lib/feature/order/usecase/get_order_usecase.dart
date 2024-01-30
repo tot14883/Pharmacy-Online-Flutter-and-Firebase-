@@ -10,6 +10,7 @@ import 'package:pharmacy_online/feature/order/model/response/order_response.dart
 import 'package:pharmacy_online/feature/store/model/response/medicine_response.dart';
 
 final getOrderUsecaseProvider = Provider<GetOrderUsecase>((ref) {
+  // เข้าถึง FirebaseCloudStore และ BaseSharedPreference จาก Riverpod
   final fireCloudStore = ref.watch(firebaseCloudStoreProvider);
   final baseSharedPreference = ref.watch(baseSharePreferenceProvider);
 
@@ -37,11 +38,13 @@ class GetOrderUsecase extends UseCase<OrderRequest, OrderResponse> {
     OrderRequest request,
   ) async {
     try {
+      // อ่านข้อมูลคำขอที่ได้รับ
       final uid = request.uid;
       final pharmacyId = request.pharmacyId;
       final status = request.status;
       final orderId = request.id;
 
+      // ดึงข้อมูลคำสั่งซื้อจาก firebase
       final getOrderDetail = await fireCloudStore
           .collection('order')
           .where('uid', isEqualTo: uid)
@@ -53,7 +56,9 @@ class GetOrderUsecase extends UseCase<OrderRequest, OrderResponse> {
 
       Map<String, dynamic>? orderDetail;
 
+      // ถ้ามีคำสั่งซื้อ
       if (orderId != null) {
+        // ดึงข้อมูลอออเดอร์จากคอลเล็กชัน 'order'
         final getOrderDetailItem = await fireCloudStore
             .collection('order')
             .doc(orderId)
@@ -64,6 +69,7 @@ class GetOrderUsecase extends UseCase<OrderRequest, OrderResponse> {
       } else {
         orderDetail = getOrderDetail.first.data() as Map<String, dynamic>;
       }
+      // ดึงข้อมูลตะกร้าสินค้าที่เกี่ยวข้องจากคอลเล็กชัน 'cart'
       final getCart = await fireCloudStore
           .collection('cart')
           .where('id', isEqualTo: orderDetail['cartId'])
@@ -72,8 +78,10 @@ class GetOrderUsecase extends UseCase<OrderRequest, OrderResponse> {
 
       final cartData = getCart.first.data() as Map<String, dynamic>;
 
+      // สร้างรายการสินค้าในตะกร้า
       final List<MedicineResponse> medicineList = [];
 
+      // ดึงข้อมูลสินค้าในตะกร้าจากคอลเล็กชันย่อย 'medicine' ของตะกร้า
       final collectCartMedicine = await fireCloudStore
           .collection('cart')
           .doc(cartData['id'])
@@ -84,6 +92,7 @@ class GetOrderUsecase extends UseCase<OrderRequest, OrderResponse> {
       for (final itemMedicine in collectCartMedicine) {
         final _dataMedicine = itemMedicine.data();
 
+        // สร้างออบเจ็กต์ MedicineResponse สำหรับแต่ละสินค้าในตะกร้า
         medicineList.add(
           MedicineResponse(
             id: _dataMedicine['medicineId'],
@@ -97,6 +106,7 @@ class GetOrderUsecase extends UseCase<OrderRequest, OrderResponse> {
         );
       }
 
+      // สร้าง CartResponse จากข้อมูลตะกร้าสินค้า
       final cartResponse = CartResponse(
         id: cartData['id'],
         pharmacyId: cartData['pharmacyId'],
@@ -120,6 +130,7 @@ class GetOrderUsecase extends UseCase<OrderRequest, OrderResponse> {
         updateAt: (cartData['update_at'] as Timestamp).toDate(),
       );
 
+      // สร้าง OrderResponse จากข้อมูลคำสั่งซื้อและ CartResponse
       return OrderResponse(
         id: orderDetail['id'],
         pharmacyId: orderDetail['pharmacyId'],

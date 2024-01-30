@@ -8,6 +8,7 @@ import 'package:pharmacy_online/feature/order/model/request/order_request.dart';
 
 final updatBankTransferUsecaseProvider =
     Provider<UpdatBankTransferUsecase>((ref) {
+  // เข้าถึง FirebaseCloudStore, BaseSharedPreference และ FirebaseCloudStorage ผ่าน Riverpod
   final fireCloudStore = ref.watch(firebaseCloudStoreProvider);
   final baseSharedPreference = ref.watch(baseSharePreferenceProvider);
   final firebaseCloudStorage = ref.watch(firebaseCloudStorageProvider);
@@ -39,16 +40,19 @@ class UpdatBankTransferUsecase extends UseCase<OrderRequest, bool> {
     OrderRequest request,
   ) async {
     try {
+      // อ่านข้อมูลคำขอจาก OrderRequest
       final id = request.id;
       final cartId = request.cartId;
       final bankTransferSlip = request.bankTransferSlip;
       final bankTransferDate = request.bankTransferDate;
       final bankTotalPriceSlip = request.bankTotalPriceSlip;
 
+      // อ้างอิงคอลเล็กชัน 'order' ใน Firebase Cloud Firestore
       final collectOrder = fireCloudStore.collection('order');
 
       String urlBankTransferSlip = '';
 
+      // อัปโหลดหลักฐานการโอนเงินไปยัง Firebase Storage (ถ้ามี)
       if (bankTransferSlip != null) {
         urlBankTransferSlip = await firebaseCloudStorage.uploadStorage(
           bankTransferSlip,
@@ -56,6 +60,7 @@ class UpdatBankTransferUsecase extends UseCase<OrderRequest, bool> {
         );
       }
 
+      // สร้างข้อมูลที่จะอัปเดตคำสั่งซื้อ
       final Map<String, dynamic> myData = {
         "bankTransferDate": bankTransferDate,
         "urlBankTransferSlip": urlBankTransferSlip,
@@ -64,8 +69,10 @@ class UpdatBankTransferUsecase extends UseCase<OrderRequest, bool> {
         "update_at": DateTime.now(),
       };
 
+      // อัปเดตข้อมูลคำสั่งซื้อใน Firebase Cloud Firestore
       await collectOrder.doc(id).update(myData);
 
+      // อัปเดตสถานะของตะกร้าสินค้า (ถ้ามี)
       if (cartId != null) {
         await fireCloudStore.collection('cart').doc(cartId).update(
           {

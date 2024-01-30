@@ -29,7 +29,7 @@ class _InboxScreenState extends BaseConsumerState<InboxScreen> {
   @override
   void initState() {
     super.initState();
-
+    //ตั้งค่า Timer เพื่อเรียกใช้งานข้อมูล Inbox ทุก 0.5 วินาที
     timer = Timer.periodic(const Duration(milliseconds: 500), (timer) async {
       final isPharmacy = ref
           .watch(profileControllerProvider.select((value) => value.isPharmacy));

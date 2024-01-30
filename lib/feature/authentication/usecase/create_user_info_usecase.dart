@@ -7,6 +7,7 @@ import 'package:pharmacy_online/feature/authentication/enum/authentication_type_
 import 'package:pharmacy_online/feature/authentication/model/request/user_info_request.dart';
 
 final createUserInfoUsecaseProvider = Provider<CreateUserInfoUsecase>((ref) {
+  //รับ dependency จาก Provider ต่างๆ
   final firebaseAuth = ref.watch(firebaseAuthProvider);
   final fireCloudStore = ref.watch(firebaseCloudStoreProvider);
   final firebaseCloudStorage = ref.watch(firebaseCloudStorageProvider);
@@ -37,6 +38,7 @@ class CreateUserInfoUsecase extends UseCase<UserInfoRequest, bool> {
     UserInfoRequest request,
   ) async {
     try {
+      //ดึงข้อมูลจาก request และกำหนดค่า default ในกรณีที่ไม่ได้รับค่า
       final email = request.email ?? '';
       final password = request.password ?? '';
       final role = request.role ?? '';
@@ -57,10 +59,12 @@ class CreateUserInfoUsecase extends UseCase<UserInfoRequest, bool> {
       final storeImg = request.storeImg;
       final qrCodeImg = request.qrCodeImg;
 
+      //สร้าง user ใน Firebase Authentication
       final userCredential =
           await firebaseAuthProvider.createEmailAndPassword(email, password);
       final uid = userCredential.user?.uid;
 
+      //อัปโหลดรูปภาพโปรไฟล์ถ้ามี
       if (uid != null) {
         String urlProfileImage = '';
 
@@ -71,6 +75,7 @@ class CreateUserInfoUsecase extends UseCase<UserInfoRequest, bool> {
           );
         }
 
+        //สร้าง collection reference ของ 'user' ใน Firestore
         final collectUser = fireCloudStore.collection('user');
 
         final Map<String, dynamic> myData = {
@@ -90,14 +95,17 @@ class CreateUserInfoUsecase extends UseCase<UserInfoRequest, bool> {
           "update_at": DateTime.now(),
         };
 
+        //อัปเดตข้อมูลใน Firestore
         await collectUser.doc('$uid').set(myData);
 
+        //กรณีผู้ใช้มี role เป็นร้านขายยา (pharmacy)
         if (role == AuthenticationType.pharmacy.name) {
           String urlLicensePharmacyImg = '';
           String urlLicenseStoreImg = '';
           String urlQrCodeImg = '';
           String urlStoreImg = '';
 
+          //อัปโหลดรูปภาพใน Firestore
           if (licensePharmacyImg != null) {
             urlLicensePharmacyImg = await firebaseCloudStorage.uploadStorage(
               licensePharmacyImg,
@@ -105,27 +113,31 @@ class CreateUserInfoUsecase extends UseCase<UserInfoRequest, bool> {
             );
           }
 
+          //สร้าง collection reference ของ 'pharmacyStore' ใน Firestore
           if (licenseStoreImg != null && storeImg != null) {
             urlStoreImg = await firebaseCloudStorage.uploadStorage(
               storeImg,
               'pharmacyStore/$uid',
             );
+
             urlLicenseStoreImg = await firebaseCloudStorage.uploadStorage(
               licenseStoreImg,
               'pharmacyStore/$uid',
             );
           }
 
+          //อัปโหลดรูปภาพใน Firestore
           if (qrCodeImg != null) {
             urlQrCodeImg = await firebaseCloudStorage.uploadStorage(
               qrCodeImg,
               'qrCode/$uid',
             );
           }
-
+          //สร้าง collection reference ของ 'pharmacyStore' ใน Firestore ไว้ในตัวแปร collectPharmacyStore
           final collectPharmacyStore =
               fireCloudStore.collection('pharmacyStore');
-
+          
+          //กำหนดข้อมูลที่จะเก็บลง Firestore สำหรับร้านขายยา
           final Map<String, dynamic> myData = {
             "uid": uid,
             "nameStore": nameStore,
@@ -146,6 +158,7 @@ class CreateUserInfoUsecase extends UseCase<UserInfoRequest, bool> {
             "update_at": DateTime.now(),
           };
 
+          //อัปเดตข้อมูลใน Firestore สำหรับร้านขายยา
           await collectPharmacyStore.doc(uid).set(myData);
         }
 

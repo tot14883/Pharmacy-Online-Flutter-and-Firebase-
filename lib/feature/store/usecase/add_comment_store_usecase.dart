@@ -32,17 +32,20 @@ class AddCommentStoreUsecase extends UseCase<CommentRequest, bool> {
     CommentRequest request,
   ) async {
     try {
+      //ดึงข้อมูลที่จำเป็นจาก CommentRequest
       final reviewId = request.reviewId;
       final pharmacyId = request.pharmacyId;
       final uid = request.uid;
       final message = request.message;
-
+      
+      //สร้าง collection ของ comment ใน Firebase Cloud Firestore
       final collectComment = fireCloudStore
           .collection('review')
           .doc(reviewId)
           .collection('comment');
       final commentId = collectComment.doc().id;
 
+      //กำหนดข้อมูลที่จะเพิ่มลงใน comment
       Map<String, dynamic> myData = {
         "commentId": commentId,
         "reviewId": reviewId,
@@ -53,6 +56,7 @@ class AddCommentStoreUsecase extends UseCase<CommentRequest, bool> {
         "update_at": DateTime.now(),
       };
 
+      //เพิ่ม comment ลงใน Firebase Cloud Firestore
       await collectComment.doc(commentId).set(myData);
 
       return true;

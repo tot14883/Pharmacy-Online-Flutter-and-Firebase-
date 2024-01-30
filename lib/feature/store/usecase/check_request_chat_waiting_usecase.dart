@@ -6,8 +6,10 @@ import 'package:pharmacy_online/feature/store/model/request/chat_with_pharmacy_r
 
 final checkRequestChatWaitingUsecaseProvider =
     Provider<CheckRequestChatWaitingUsecase>((ref) {
+    //ประกาศ Provider สำหรับ Use Case ดึงรายการของ dependencies ที่จำเป็นจาก Riverpod
   final fireCloudStore = ref.watch(firebaseCloudStoreProvider);
   final baseSharePreference = ref.watch(baseSharePreferenceProvider);
+  //คืนค่า instance ของ use case พร้อม dependencies ที่ถูก Inject
   return CheckRequestChatWaitingUsecase(
     ref,
     fireCloudStore,
@@ -33,10 +35,13 @@ class CheckRequestChatWaitingUsecase
     ChatWithPharmacyRequest request,
   ) async {
     try {
+       //ดึงพารามิเตอร์จาก request
       final pharmacyId = request.pharmacyId ?? '';
 
+      //ดึง user ID จาก shared preferences
       final uid = baseSharePreference.getString(BaseSharePreferenceKey.userId);
 
+      //ทำ Firestore query เพื่อตรวจสอบคำขอแชทที่รอดำเนินการ
       final hasRequest = await fireCloudStore
           .collection('chat')
           .where('uid', isEqualTo: uid)
@@ -48,6 +53,7 @@ class CheckRequestChatWaitingUsecase
           .get()
           .then((value) => value.docs);
 
+      //คืนค่า true หากมีคำขอแชทที่รอดำเนินการที่ผ่านเงื่อนไขทั้งหมด ถ้าไม่ใช่คืนค่า false
       return hasRequest.isNotEmpty;
     } catch (e) {
       return false;

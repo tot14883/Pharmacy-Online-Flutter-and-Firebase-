@@ -17,6 +17,7 @@ import 'package:pharmacy_online/utils/image_picker/image_picker_provider.dart';
 import 'package:pharmacy_online/utils/image_picker/model/image_picker_config_request.dart';
 import 'package:pharmacy_online/utils/util/base_permission_handler.dart';
 
+// หน้าจอแก้ไข QR Code
 class EditQRCodeScreen extends ConsumerStatefulWidget {
   static const routeName = 'EditQRCodeScreen';
 
@@ -27,16 +28,19 @@ class EditQRCodeScreen extends ConsumerStatefulWidget {
 }
 
 class _EditQRCodeScreenState extends BaseConsumerState<EditQRCodeScreen> {
-  XFile? qrCodeFile;
+  XFile? qrCodeFile; //ตัวแปรสำหรับเก็บไฟล์ QR Code
 
   @override
   Widget build(BuildContext context) {
+    // ดึงข้อมูลร้านเภสัชกรจาก riverpod
     final pharmacyStore = ref.watch(
       profileControllerProvider.select((value) => value.pharmacyStore),
     );
 
+    // ดึง URL ของรูป QR Code จากข้อมูลร้านเภสัชกร
     final qrCodeImg = pharmacyStore?.qrCodeImg;
 
+    // สร้างหน้าจอด้วย BaseScaffold
     return BaseScaffold(
       appBar: BaseAppBar(
         bgColor: AppColor.themeWhiteColor,
@@ -46,12 +50,14 @@ class _EditQRCodeScreenState extends BaseConsumerState<EditQRCodeScreen> {
           style: AppStyle.txtHeader3,
         ),
       ),
+      // สร้าง Body ด้วย Container เพื่อจัดวาง Element ต่าง ๆ
       bodyBuilder: (context, constrained) {
         return Container(
           padding: const EdgeInsets.all(16).r,
           width: MediaQuery.of(context).size.width,
           child: Column(
             children: [
+              // Container สำหรับแสดงรูป QR Code
               Container(
                 padding: const EdgeInsets.all(8).r,
                 decoration: BoxDecoration(
@@ -76,8 +82,10 @@ class _EditQRCodeScreenState extends BaseConsumerState<EditQRCodeScreen> {
               SizedBox(
                 height: 16.h,
               ),
+              // ปุ่มสำหรับอัปโหลดรูป QR Code
               BaseButton(
                 onTap: () async {
+                  // ขอสิทธิ์การเข้าถึงพื้นที่จัดเก็บและการเข้าถึงรูปภาพ
                   final isGrant = await ref
                       .read(basePermissionHandlerProvider)
                       .requestStoragePermission();
@@ -85,6 +93,7 @@ class _EditQRCodeScreenState extends BaseConsumerState<EditQRCodeScreen> {
                       .read(basePermissionHandlerProvider)
                       .requestPhotosPermission();
                   if (isGrant || isGrant31) {
+                    // ให้ผู้ใช้เลือกรูปจากแกลเลอรี
                     final result =
                         await ref.read(imagePickerUtilsProvider).getImage(
                               const ImagePickerConfigRequest(
@@ -96,12 +105,14 @@ class _EditQRCodeScreenState extends BaseConsumerState<EditQRCodeScreen> {
                               ),
                             );
 
+                    // ตรวจสอบผลลัพธ์การเลือกรูป
                     result.when(
                       (success) {
                         setState(() {
                           qrCodeFile = success[0];
                         });
                       },
+                      // กรณีที่เกิดข้อผิดพลาด
                       (error) async {
                         await showBaseDialog(
                           context: context,
@@ -121,19 +132,24 @@ class _EditQRCodeScreenState extends BaseConsumerState<EditQRCodeScreen> {
               SizedBox(
                 height: 16.h,
               ),
+              // ปุ่มสำหรับยืนยันการแก้ไขข้อมูล
               BaseButton(
                 onTap: () async {
+                  // เรียกใช้เมธอดใน ProfileController เพื่อทำการเปลี่ยนแปลงรูป QR Code
                   final result = await ref
                       .read(profileControllerProvider.notifier)
                       .onChangeQRCode(qrCodeFile);
 
+                  // ตรวจสอบผลลัพธ์การแก้ไข
                   if (result) {
+                    // โหลดข้อมูลร้านเภสัชกรใหม่
                     await ref
                         .read(
                           profileControllerProvider.notifier,
                         )
                         .onGetPharmacyStore();
 
+                    // แสดง Dialog เมื่อการแก้ไขสำเร็จ
                     await showBaseDialog(
                       context: context,
                       builder: (ctx) {
@@ -143,6 +159,7 @@ class _EditQRCodeScreenState extends BaseConsumerState<EditQRCodeScreen> {
                       },
                     );
                   } else {
+                    // แสดง Dialog เมื่อการแก้ไขไม่สำเร็จ
                     await showBaseDialog(
                       context: context,
                       builder: (ctx) {

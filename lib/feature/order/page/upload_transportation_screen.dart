@@ -27,7 +27,7 @@ class UploadTransportationScreen extends ConsumerStatefulWidget {
 
 class _UploadTransportationScreenState
     extends BaseConsumerState<UploadTransportationScreen> {
-  XFile? evidenceFile;
+  XFile? evidenceFile; // ตัวแปรเก็บหลักฐานการจัดส่งสินค้า (รูปภาพ)
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +58,7 @@ class _UploadTransportationScreenState
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                // แสดงปุ่มอัปโหลดรูปภาพ หรือแสดงรูปภาพหลักฐานที่มีอยู่แล้ว
                 BaseUploadImageButton(
                   imgPreview: deliverySlip != null
                       ? BaseImageView(
@@ -87,7 +88,9 @@ class _UploadTransportationScreenState
                 ),
                 BaseButton(
                   onTap: () async {
+                    // ตรวจสอบว่ามีการเลือกรูปภาพแล้วหรือไม่
                     if (evidenceFile == null) {
+                      // แสดง Toast แจ้งเตือน
                       Fluttertoast.showToast(
                         msg: "กรุณาเพิ่มรูป",
                         toastLength: Toast.LENGTH_SHORT,
@@ -95,11 +98,13 @@ class _UploadTransportationScreenState
                       );
                       return;
                     }
+                    // อัปโหลดรูปภาพหลักฐานขึ้น firebase
                     final result = await ref
                         .read(orderControllerProvider.notifier)
                         .onUpdatDeliverySlip('$id', '$cartId', evidenceFile!);
 
                     if (result) {
+                      // อัปเดตข้อมูลการสั่งซื้อ
                       await ref
                           .read(orderControllerProvider.notifier)
                           .onGetOrder(
@@ -109,14 +114,17 @@ class _UploadTransportationScreenState
                             orderId: id,
                           );
 
+                      // แสดง Toast แจ้งเตือนการอัปโหลดสำเร็จ
                       Fluttertoast.showToast(
                         msg: "อัพโหลดรูปสำเร็จ",
                         toastLength: Toast.LENGTH_SHORT,
                         gravity: ToastGravity.BOTTOM,
                       );
 
+                      // กลับไปยังหน้าจอก่อนหน้า
                       Navigator.of(context).pop();
                     } else {
+                      // แสดง Toast แจ้งเตือนการอัปโหลดไม่สำเร็จ
                       Fluttertoast.showToast(
                         msg: "ไม่สามารถอัพโหลดรูปได้",
                         toastLength: Toast.LENGTH_SHORT,

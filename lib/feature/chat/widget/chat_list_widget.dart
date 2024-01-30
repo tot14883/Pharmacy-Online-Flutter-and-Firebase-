@@ -25,6 +25,7 @@ class _ChatListWidgetState extends BaseConsumerState<ChatListWidget> {
   void initState() {
     super.initState();
 
+    //ตั้งค่า ScrollController และเริ่มต้นการทำงานของ Timer
     timer = Timer.periodic(const Duration(milliseconds: 100), (timer) async {
       // final uid = ref
       //     .read(baseSharePreferenceProvider)
@@ -48,6 +49,7 @@ class _ChatListWidgetState extends BaseConsumerState<ChatListWidget> {
 
   @override
   void dispose() {
+    //ยกเลิก Timer เมื่อ Widget หายไป
     timer?.cancel();
     super.dispose();
   }

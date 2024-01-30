@@ -6,6 +6,7 @@ import 'package:pharmacy_online/feature/store/model/request/comment_request.dart
 
 final deleteCommentStoreUsecaseProvider =
     Provider<DeleteCommentStoreUsecase>((ref) {
+    //ดึงรายการของ dependencies ที่จำเป็นจาก Riverpod
   final fireCloudStore = ref.watch(firebaseCloudStoreProvider);
   final baseSharedPreference = ref.watch(baseSharePreferenceProvider);
 
@@ -36,12 +37,14 @@ class DeleteCommentStoreUsecase extends UseCase<CommentRequest, bool> {
       final reviewId = request.reviewId;
       final commentId = request.commentId;
 
+      //กำหนดตำแหน่งของ document ที่ต้องการลบ
       final collectReview = fireCloudStore
           .collection('review')
           .doc(reviewId)
           .collection('comment')
           .doc(commentId);
 
+      //ลบ document จาก Firestore
       await collectReview.delete();
 
       return true;

@@ -8,6 +8,7 @@ import 'package:pharmacy_online/feature/cart/model/request/cart_request.dart';
 import 'package:pharmacy_online/feature/order/enum/order_status_enum.dart';
 
 final addToCartUsecaseProvider = Provider<AddToCartUsecase>((ref) {
+   //โค้ดที่ใช้ในการสร้าง AddToCartUsecase และรับ dependencies ต่าง ๆ
   final fireCloudStore = ref.watch(firebaseCloudStoreProvider);
   final baseSharedPreference = ref.watch(baseSharePreferenceProvider);
 
@@ -19,6 +20,7 @@ final addToCartUsecaseProvider = Provider<AddToCartUsecase>((ref) {
 });
 
 class AddToCartUsecase extends UseCase<CartRequest, bool> {
+  //โค้ดที่ประกาศตัวแปรและ dependencies ที่ใช้ใน UseCase
   final FirebaseCloudStore fireCloudStore;
   final BaseSharedPreference baseSharedPreference;
 
@@ -35,6 +37,7 @@ class AddToCartUsecase extends UseCase<CartRequest, bool> {
     CartRequest request,
   ) async {
     try {
+      //โค้ดที่ใช้ในการดึงข้อมูลตะกร้า, สินค้า, และทำการอัปเดตหรือเพิ่มข้อมูลตามเงื่อนไข
       final storeId = request.storeId;
       final _cartId = request.id;
       final uid = request.uid;
@@ -45,9 +48,11 @@ class AddToCartUsecase extends UseCase<CartRequest, bool> {
       final quantity = request.quantity;
       final nameStore = request.nameStore;
 
+      // ดึง pharmacyId ของผู้ใช้จาก shared preferences
       final pharmacyId =
           baseSharedPreference.getString(BaseSharePreferenceKey.userId);
 
+      //ใช้ในการตรวจสอบและอัปเดตหรือเพิ่มข้อมูลตามเงื่อนไข
       final getCart = await fireCloudStore
           .collection('cart')
           .where('uid', isEqualTo: uid)
@@ -60,10 +65,13 @@ class AddToCartUsecase extends UseCase<CartRequest, bool> {
       final cartId = _cartId ?? collectCart.doc().id;
       Map<String, dynamic>? _dataGetCart;
 
+      //การใช้ Random ในการสร้างหมายเลขสุ่ม
       final random = Random();
       int randomNumber = random.nextInt(10000);
 
+      //ตรวจสอบว่ามีตะกร้าที่มีสถานะที่กำหนดหรือไม่
       if (getCart.isNotEmpty) {
+        //อัปเดตข้อมูลตะกร้าที่มีอยู่
         _dataGetCart = getCart.first.data() as Map<String, dynamic>;
 
         final Map<String, dynamic> myData = {
@@ -72,6 +80,7 @@ class AddToCartUsecase extends UseCase<CartRequest, bool> {
 
         await collectCart.doc(_dataGetCart['id']).update(myData);
       } else {
+        //เพิ่มข้อมูลตะกร้าใหม่
         final Map<String, dynamic> myData = {
           "id": cartId,
           "storeId": storeId,
@@ -98,8 +107,9 @@ class AddToCartUsecase extends UseCase<CartRequest, bool> {
       final collectCartMedicine =
           fireCloudStore.collection('cart').doc(cartId).collection("medicine");
       final cartMedicineId = collectCartMedicine.doc().id;
-
+      //ตรวจสอบว่ามียาที่มีอยู่ในตะกร้าหรือไม่
       if (getMedicine.isNotEmpty) {
+        //อัปเดตข้อมูลยาที่มีอยู่
         final _data = getMedicine.first.data();
         final Map<String, dynamic> myMedicine = {
           "quantity": quantity,
@@ -110,6 +120,7 @@ class AddToCartUsecase extends UseCase<CartRequest, bool> {
         };
         await collectCartMedicine.doc(_data['id']).update(myMedicine);
       } else {
+        //เพิ่มข้อมูลยาใหม่
         final Map<String, dynamic> myMedicine = {
           "id": cartMedicineId,
           "quantity": quantity,

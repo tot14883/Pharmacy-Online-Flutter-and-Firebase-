@@ -190,7 +190,7 @@ class StoreDetailContent extends ConsumerWidget {
                   style: AppStyle.txtBody,
                 ),
               ),
-              GestureDetector(
+              GestureDetector(  //รีวิว
                 onTap: () {
                   Navigator.of(context).pushNamed(
                     ReviewStoreScreen.routeName,
@@ -222,13 +222,13 @@ class StoreDetailContent extends ConsumerWidget {
             height: 16.h,
           ),
           Text(
-            "เปิด วันจันทร์ - วันเสาร์ เวลา $timeOpening น. - $timeClosing น. ",
+            "เวลาเปิดทำการ $timeOpening น. - $timeClosing น. ",
             style: AppStyle.txtBody,
           ),
-          Text(
-            "ปิด  ทุกวันอาทิตย์",
-            style: AppStyle.txtBody,
-          ),
+          // Text(
+          //   "",
+          //   style: AppStyle.txtBody,
+          // ),
           SizedBox(
             height: 16.h,
           ),

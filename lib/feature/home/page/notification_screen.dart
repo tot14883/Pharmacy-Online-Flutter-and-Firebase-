@@ -31,7 +31,7 @@ class NotificationScreen extends ConsumerWidget {
       ),
       bgColor: AppColor.themLineColor,
       bodyBuilder: (context, constrined) {
-        return AsyncValueWidget(
+        return AsyncValueWidget(  //เรียกใช้ widget 
           value: notificationList,
           data: (_notificationList) {
             if (_notificationList == null) {

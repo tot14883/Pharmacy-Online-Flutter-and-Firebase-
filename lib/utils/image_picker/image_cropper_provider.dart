@@ -8,10 +8,11 @@ final imageCropperProvider = Provider<ImageCropper>((ref) {
 });
 
 /// Provider logger available only in debug mode
+// กำหนด Provider สำหรับ ImageCropperUtils โดยดึง ImageCropper มาใช้
 final imageCropperUtilsProvider = Provider<ImageCropperUtils>((ref) {
   final imageCropper = ref.watch(imageCropperProvider);
 
-  return ImageCropperUtils(imageCropper);
+  return ImageCropperUtils(imageCropper); // สร้าง ImageCropperUtils
 });
 
 class ImageCropperUtils {
@@ -20,18 +21,21 @@ class ImageCropperUtils {
   ImageCropperUtils(this.imageCropper);
 
   /// Enable logging only in debug mode
+  /// เมธอดสำหรับครอบรูปภาพ
   Future<CroppedFile?> cropImage(XFile? _pickedFile) async {
     final croppedFile = await imageCropper.cropImage(
-      sourcePath: _pickedFile!.path,
-      compressFormat: ImageCompressFormat.jpg,
-      compressQuality: 100,
+      // กำหนดค่าต่าง ๆ สำหรับการ crop ภาพ
+      sourcePath: _pickedFile!.path, // เส้นทางของรูปภาพต้นฉบับ
+      compressFormat: ImageCompressFormat.jpg, // รูปแบบการบีบอัด
+      compressQuality: 100, // คุณภาพการบีบอัด (100 = ดีที่สุด)
       uiSettings: [
+        // การตั้งค่า UI สำหรับ Android
         AndroidUiSettings(
-          toolbarTitle: 'Cropper',
-          toolbarColor: Colors.deepOrange,
-          toolbarWidgetColor: Colors.white,
-          initAspectRatio: CropAspectRatioPreset.original,
-          lockAspectRatio: false,
+          toolbarTitle: 'Cropper', // ชื่อ toolbar
+          toolbarColor: Colors.deepOrange, // สีของ toolbar
+          toolbarWidgetColor: Colors.white, // สีของ widget ใน toolbar
+          initAspectRatio: CropAspectRatioPreset.original, // อัตราส่วนเริ่มต้น
+          lockAspectRatio: false, // อนุญาตให้ปรับอัตราส่วนได้
         ),
         IOSUiSettings(
           title: 'Cropper',
@@ -39,6 +43,6 @@ class ImageCropperUtils {
       ],
     );
 
-    return croppedFile;
+    return croppedFile; // ส่งรูปภาพที่ผ่านการ crop กลับไป
   }
 }

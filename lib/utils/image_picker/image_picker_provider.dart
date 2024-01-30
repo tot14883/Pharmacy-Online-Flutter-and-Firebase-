@@ -31,17 +31,22 @@ class ImagePickerUtils {
   Future<Result<List<XFile?>, Failure>> getImage(
       ImagePickerConfigRequest request) async {
     try {
+      // กำหนดรูปแบบไฟล์ที่อนุญาตให้เลือก
       final _allowFileExtension = ['.jpg', '.png'];
+      // ดึงข้อมูลการตั้งค่าจาก request
       final type = request.type;
       final source = request.source;
       final maxWidth = request.maxWidth;
       final maxHeight = request.maxHeight;
       final imageQuality = request.imageQuality;
       final isMaximum2MB = request.isMaximum2MB;
+      // กำหนดขนาดไฟล์สูงสุด (2MB)
       const maxFileSizeInBytes = 2 *
           1048576; // 2MB (You'll probably want this outside of this function so you can reuse the value elsewhere)
 
+      // เก็บไฟล์ภาพที่เลือกไว้
       List<XFile?> picker = [];
+      // เลือกภาพตามประเภทที่ต้องการ (ภาพเดียวหรือหลายภาพ)
       if (type == ImagePickerType.signle) {
         final result = await imagePicker.pickImage(
           source: source,
@@ -50,11 +55,13 @@ class ImagePickerUtils {
           imageQuality: imageQuality,
         );
 
+        // ตรวจสอบไฟล์ที่เลือก
         if (result != null) {
           if (!baseUtils.allowFileExtension(result.path, _allowFileExtension)) {
-            return const Success([]);
+            return const Success([]); // ส่งกลับรายการว่างหากไม่ตรงตามรูปแบบ
           }
 
+          // ตรวจสอบขนาดไฟล์หากกำหนดขนาดสูงสุดไว้
           if (isMaximum2MB) {
             final imagePath = await result.readAsBytes();
             final fileSize = imagePath.length;
@@ -74,13 +81,14 @@ class ImagePickerUtils {
           imageQuality: imageQuality,
         );
 
+        // ตรวจสอบไฟล์ที่เลือก (แต่ละภาพ)
         if (picker.isNotEmpty) {
           for (final item in picker) {
             if (!baseUtils.allowFileExtension(
               item!.path,
               _allowFileExtension,
             )) {
-              return const Success([]);
+              return const Success([]); // ส่งกลับรายการว่างหากไม่ตรงตามรูปแบบ
             }
 
             if (isMaximum2MB) {
@@ -95,16 +103,21 @@ class ImagePickerUtils {
           }
         }
       }
+// จัดการกรณีภาพหายบน Android
       if (Platform.isAndroid) {
+        // เรียกใช้เมธอด `retrieveLostData()` เพื่อรับรายการไฟล์ภาพที่หายไป
         final response = await imagePicker.retrieveLostData();
 
+        // ตรวจสอบว่ามีไฟล์ภาพที่หายไปหรือไม่
         final List<XFile>? files = response.files;
         if (files != null) {
           return Success(files);
         }
       }
 
+// กำหนดค่าเริ่มต้นสำหรับตัวแปร `res`
       final res = picker;
+// ส่งกลับค่า `res` ไปยัง caller
       return Success(res);
     } catch (e) {
       _logging.warning(e);

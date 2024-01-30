@@ -46,7 +46,7 @@ class GetNotificationUsecase extends UseCase<void, List<NotificationResponse>> {
       for (final item in collect.reversed) {
         final _data = item.data() as Map<String, dynamic>;
 
-        notificationList.add(
+        notificationList.add(//เป็นการเพิ่มข้อมูลในคอลเลคชั่น
           NotificationResponse(
             id: _data['id'],
             uid: _data['uid'],

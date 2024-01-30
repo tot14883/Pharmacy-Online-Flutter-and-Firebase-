@@ -28,6 +28,8 @@ class GetPharmacyDetailUsecase extends UseCase<String, PharmacyInfoResponse> {
     String request,
   ) async {
     try {
+      //ในกระบวนการดึงข้อมูล, ใช้ `fireCloudStore.collection('user').doc(request).get()` 
+      //เพื่อดึงข้อมูลผู้ใช้ (ซึ่งเป็นข้อมูลของเจ้าของร้าน)
       final collectUser = await fireCloudStore
           .collection('user')
           .doc(request)
@@ -35,7 +37,7 @@ class GetPharmacyDetailUsecase extends UseCase<String, PharmacyInfoResponse> {
           .then((value) => value);
 
       final _data = collectUser.data() as Map<String, dynamic>;
-
+      //ใช้ข้อมูลผู้ใช้เพื่อดึงข้อมูลของร้านขายยา
       final collectPharmacyStore = await fireCloudStore
           .collection('pharmacyStore')
           .where(
@@ -47,7 +49,7 @@ class GetPharmacyDetailUsecase extends UseCase<String, PharmacyInfoResponse> {
 
       final _pharmacy =
           collectPharmacyStore.first.data() as Map<String, dynamic>;
-
+      //สร้าง `PharmacyInfoResponse` จากข้อมูลที่ได้
       return PharmacyInfoResponse(
         uid: _data['uid'],
         email: _data['uid'],

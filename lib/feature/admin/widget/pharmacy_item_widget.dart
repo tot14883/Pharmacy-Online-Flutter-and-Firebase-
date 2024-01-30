@@ -80,14 +80,17 @@ class PharmacyItemWidget extends ConsumerWidget {
             BaseButton(
               width: 80.w,
               onTap: () async {
+                // อัปเดตข้อมูลร้านใน Firebase Cloud Firestore เพื่ออนุมัติ
                 ref
                     .read(adminControllerProvider.notifier)
                     .updatePharmacyDetail(true, '${pharmacyItem.uid}');
 
+                // ดึงข้อมูลร้านอีกครั้งหลังจากอัปเดต
                 await ref
                     .read(adminControllerProvider.notifier)
                     .getPharmacyDetail();
 
+                // ส่ง Notification ถึงผู้ใช้ว่าร้านของเขาได้รับการอนุมัติ
                 await ref
                     .read(homeControllerProvider.notifier)
                     .onPostNotification(
@@ -105,14 +108,17 @@ class PharmacyItemWidget extends ConsumerWidget {
               width: 80.w,
               buttonType: ButtonType.danger,
               onTap: () async {
+                // อัปเดตข้อมูลร้านใน Firebase Cloud Firestore เพื่อไม่อนุมัติและแบน
                 ref
                     .read(adminControllerProvider.notifier)
                     .updatePharmacyDetail(false, '${pharmacyItem.uid}');
 
+                // ดึงข้อมูลร้านอีกครั้งหลังจากอัปเดต
                 await ref
                     .read(adminControllerProvider.notifier)
                     .getPharmacyDetail();
 
+                // ส่ง Notification ถึงผู้ใช้ว่าร้านของเขาไม่ได้รับการอนุมัติ
                 await ref
                     .read(homeControllerProvider.notifier)
                     .onPostNotification(
@@ -129,6 +135,7 @@ class PharmacyItemWidget extends ConsumerWidget {
     );
   }
 
+  // กำหนดข้อความสถานะตามสถานะที่ได้รับ
   String statusText(String status) {
     if (status == 'waiting') {
       return 'รออนุมัติ';
@@ -137,6 +144,7 @@ class PharmacyItemWidget extends ConsumerWidget {
     }
   }
 
+  // กำหนดสีข้อความสถานะตามสถานะที่ได้รับ
   Color statusTextColor(String status) {
     if (status == 'waiting') {
       return AppColor.themeYellowColor;

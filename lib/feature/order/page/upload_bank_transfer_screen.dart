@@ -56,11 +56,14 @@ class _UploadBankTransferScreenState
 
   @override
   Widget build(BuildContext context) {
+    // ดึงข้อมูลร้านเภสัช
     final pharmacyDetail = ref
         .watch(storeControllerProvider.select((value) => value.pharmacyDetail));
+    // ดึงข้อมูลคำสั่งซื้อ
     final orderDetail =
         ref.watch(orderControllerProvider.select((value) => value.orderDetail));
 
+    // ดึงข้อมูลต่าง ๆ จากคำสั่งซื้อ
     final uid = orderDetail.value?.uid;
     final pharmacyId = orderDetail.value?.pharmacyId;
     final summaryPrice = orderDetail.value?.myCart?.sumamryPrice;
@@ -71,6 +74,7 @@ class _UploadBankTransferScreenState
     return AsyncValueWidget(
       value: pharmacyDetail,
       data: (_pharmacyDetail) {
+        // ดึงข้อมูล QR Code จากร้านเภสัช
         final qrCode = _pharmacyDetail?.qrCode;
 
         return BaseScaffold(
@@ -92,6 +96,7 @@ class _UploadBankTransferScreenState
                       ref.read(orderControllerProvider.notifier).onChanged,
                   child: Column(
                     children: [
+                      // แสดง QR Code และปุ่ม Download
                       Stack(
                         children: [
                           Container(
@@ -122,11 +127,14 @@ class _UploadBankTransferScreenState
                             bottom: 0,
                             child: GestureDetector(
                               onTap: () async {
+                                // ขออนุญาตเข้าถึงสิทธิ์เข้าถึงไฟล์ในอุปกรณ์
                                 final granted = await ref
                                     .read(basePermissionHandlerProvider)
                                     .requestStoragePermission();
 
+                                // หากได้รับอนุญาต
                                 if (granted) {
+                                  // ทำการสร้างภาพจาก QR Code และบันทึกลงในแกลเลอรี
                                   RenderRepaintBoundary boundary = _globalKey
                                           .currentContext!
                                           .findRenderObject()
@@ -164,6 +172,7 @@ class _UploadBankTransferScreenState
                       SizedBox(
                         height: 16.h,
                       ),
+                      // แสดงจำนวนเงินที่ต้องชำระ
                       Text(
                         'จำนวนเงิน $summaryPrice บาท',
                         style: AppStyle.txtHeader3,
@@ -171,12 +180,14 @@ class _UploadBankTransferScreenState
                       SizedBox(
                         height: 16.h,
                       ),
+                      // กล่องกรอกวันที่ชำระ
                       BaseTextField(
                         label: 'วันที่ชำระ',
                         isReadOnly: true,
                         controller: slipDateTime,
                         isShowLabelField: true,
                         onTap: () async {
+                          // เลือกวันที่และเวลา
                           final picked = await showDatePicker(
                             context: context,
                             initialDate: DateTime.now(),
@@ -189,6 +200,7 @@ class _UploadBankTransferScreenState
                             context: context,
                           );
 
+                          // นำวันที่และเวลาที่เลือกมาแสดงบน TextField
                           if (picked != null && selectedTime != null) {
                             final hour =
                                 selectedTime.hour.toString().padLeft(2, "0");
@@ -204,6 +216,7 @@ class _UploadBankTransferScreenState
 
                             slipDateTime.text = '$result $hour:$min';
 
+                            // นำวันที่และเวลาที่เลือกไปอัพเดทใน Order Controller
                             ref
                                 .read(orderControllerProvider.notifier)
                                 .setBankTransferDateTime('$result $hour:$min');
@@ -221,6 +234,7 @@ class _UploadBankTransferScreenState
                       SizedBox(
                         height: 16.h,
                       ),
+                      // กล่องกรอกจำนวนเงิน
                       BaseTextField(
                         fieldKey: FieldBankTransfer.payPrice,
                         label: 'จำนวนเงิน',
@@ -237,6 +251,7 @@ class _UploadBankTransferScreenState
                       SizedBox(
                         height: 16.h,
                       ),
+                      // กล่องเพื่ออัพโหลดรูปภาพหลักฐานการโอน
                       BaseUploadImage(
                         label: 'หลักฐานการโอน',
                         onUpload: (val) {
@@ -245,6 +260,7 @@ class _UploadBankTransferScreenState
                           });
                         },
                       ),
+                      // แสดงรูปภาพหลักฐานการโอนหากมีการอัพโหลด
                       if (evidenceImg != null) ...[
                         SizedBox(
                           height: 8.h,
@@ -259,10 +275,12 @@ class _UploadBankTransferScreenState
                       SizedBox(
                         height: 16.h,
                       ),
+                      // ปุ่มยืนยันการชำระเงิน
                       BaseButton(
                         onTap: () {
                           formKey.currentState?.save(
                             onSave: (_) async {
+                              // ตรวจสอบว่าวันที่ชำระและหลักฐานการโอนถูกกรอกครบหรือไม่
                               if (slipDateTime.text.isEmpty) {
                                 Fluttertoast.showToast(
                                   msg: "กรุณาระบุวันที่ชำระ",
@@ -281,6 +299,7 @@ class _UploadBankTransferScreenState
                                 return;
                               }
 
+                              // ทำการอัพโหลดข้อมูลการชำระเงิน
                               final result = await ref
                                   .read(orderControllerProvider.notifier)
                                   .onUpdatBankTransfer(
@@ -290,7 +309,9 @@ class _UploadBankTransferScreenState
                                     evidenceImg!,
                                   );
 
+                              // หากการอัพโหลดสำเร็จ
                               if (result) {
+                                // ทำการโนติให้ลูกค้าและร้านเภสัช
                                 await ref
                                     .read(homeControllerProvider.notifier)
                                     .onPostNotification(
@@ -307,6 +328,7 @@ class _UploadBankTransferScreenState
                                       '$uid',
                                     );
 
+                                // ดึงข้อมูลคำสั่งซื้อที่มี ID ตรงกับคำสั่งซื้อปัจจุบัน
                                 await ref
                                     .read(orderControllerProvider.notifier)
                                     .onGetOrder(
@@ -316,14 +338,17 @@ class _UploadBankTransferScreenState
                                       orderId: id,
                                     );
 
+                                //Toast แสดงข้อความ "อัพโหลดสลิปสำเร็จ" บนหน้าจอเป็นเวลาสั้นๆ โดย Toast จะแสดงอยู่ด้านล่างหน้าจอ
                                 Fluttertoast.showToast(
                                   msg: "อัพโหลดสลิปสำเร็จ",
                                   toastLength: Toast.LENGTH_SHORT,
                                   gravity: ToastGravity.BOTTOM,
                                 );
 
+                                // ปิดหน้าจอ
                                 Navigator.of(context).pop();
                               } else {
+                                // แสดง Toast แจ้งเตือนหากอัพโหลดไม่สำเร็จ
                                 Fluttertoast.showToast(
                                   msg: "อัพโหลดสลิปไม่สำเร็จ",
                                   toastLength: Toast.LENGTH_SHORT,

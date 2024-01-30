@@ -16,6 +16,7 @@ final editCartUsecaseProvider = Provider<EditCartUsecase>((ref) {
 });
 
 class EditCartUsecase extends UseCase<CartRequest, bool> {
+  //โค้ดที่ประกาศตัวแปรและ dependencies ที่ใช้ใน UseCase
   final FirebaseCloudStore fireCloudStore;
   final BaseSharedPreference baseSharedPreference;
 
@@ -32,6 +33,7 @@ class EditCartUsecase extends UseCase<CartRequest, bool> {
     CartRequest request,
   ) async {
     try {
+      //โค้ดที่ใช้ในการแก้ไขข้อมูลสินค้าในตะกร้า
       final cartId = request.id;
       final cartMedicineId = request.cartMedicineId;
 
@@ -43,6 +45,7 @@ class EditCartUsecase extends UseCase<CartRequest, bool> {
 
       final collectCart = fireCloudStore.collection('cart');
 
+      //อัปเดตเวลาที่แก้ไขล่าสุดของตะกร้า
       await collectCart.doc(cartId).update({'update_at': DateTime.now()});
 
       final collectCartMedicine =
@@ -59,6 +62,7 @@ class EditCartUsecase extends UseCase<CartRequest, bool> {
         "medicineId": medicineId,
       };
 
+      //ตรวจสอบว่าเป็นการแก้ไขข้อมูลหรือเพิ่มข้อมูลใหม่
       if (cartMedicineId != null) {
         await collectCartMedicine.doc(cartMedicineId).update(myMedicine);
       } else {

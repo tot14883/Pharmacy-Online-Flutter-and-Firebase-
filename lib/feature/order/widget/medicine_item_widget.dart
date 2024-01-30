@@ -5,12 +5,14 @@ import 'package:pharmacy_online/core/app_color.dart';
 import 'package:pharmacy_online/core/app_style.dart';
 
 class MedicineItemWidget extends StatelessWidget {
+  // ประกาศตัวแปรสำหรับเก็บข้อมูลของยา
   final String imgUrl;
   final String name;
-  final String? caption;
+  final String? caption; // caption อาจเป็น null ได้
   final String quantity;
   final String price;
 
+  // constructor รับค่าตัวแปรต่างๆ
   const MedicineItemWidget({
     super.key,
     required this.imgUrl,
@@ -23,9 +25,10 @@ class MedicineItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start, // ชิดบน
+      mainAxisAlignment: MainAxisAlignment.start, // ชิดซ้าย
       children: [
+        // รูปภาพยา
         BaseImageView(
           url: imgUrl,
           width: 80.w,
@@ -36,10 +39,12 @@ class MedicineItemWidget extends StatelessWidget {
           width: 16.w,
         ),
         Expanded(
+          // ให้ข้อมูลยาขยายเต็มพื้นที่ที่เหลือ
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start, // ชิดบน
+            mainAxisAlignment: MainAxisAlignment.start, // ชิดซ้าย
             children: [
+              // ชื่อยา
               Text(
                 name,
                 style: AppStyle.txtBody,
@@ -56,8 +61,8 @@ class MedicineItemWidget extends StatelessWidget {
                 height: 16.h,
               ),
               Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start, // ชิดบน
+                mainAxisAlignment: MainAxisAlignment.start, // ชิดซ้าย
                 children: [
                   Expanded(
                     child: Text(

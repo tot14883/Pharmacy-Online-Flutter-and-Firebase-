@@ -19,6 +19,7 @@ class BaseSwitchButton extends StatefulWidget {
   final double? width;
   final Alignment align;
   final bool isSwitchButton;
+//ประกาศและรับค่าตัวแปร isSwitchButton ซึ่งใช้เพื่อกำหนดว่า SwitchButton ถูกใช้งานหรือไม่
 
   const BaseSwitchButton({
     super.key,
@@ -86,6 +87,7 @@ class _BaseSwitchButtonState extends State<BaseSwitchButton>
     final textContent = widget.label;
     final width = widget.minWidth ?? widget.width;
     final isSwitchButton = widget.isSwitchButton;
+    //isSwitchButton เพื่อเก็บค่าตัวแปร widget.isSwitchButton ไว้ในตัวแปร isSwitchButton ของคลาส
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

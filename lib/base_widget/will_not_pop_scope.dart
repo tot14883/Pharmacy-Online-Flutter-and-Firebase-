@@ -15,3 +15,7 @@ class WillNotPopScope extends StatelessWidget {
     );
   }
 }
+
+
+///โค้ดข้างต้นเป็น Flutter Widget ที่ชื่อ WillNotPopScope ซึ่งถูกออกแบบมาเพื่อป้องกันการ pop ของ Navigator เมื่อกดปุ่ม back บนอุปกรณ์. 
+///การนำ WillNotPopScope ไปใช้จะทำให้ไม่สามารถใช้ปุ่ม back บนอุปกรณ์ได้ และการ navigate ต้องควบคุมได้จากโค้ดเท่านั้น.

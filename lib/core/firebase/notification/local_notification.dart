@@ -14,6 +14,7 @@ final localNotificationProvider =
   return localNotification;
 });
 
+/// Class ที่ใช้จัดการกับ Local Notification
 class LocalNotification {
   final FlutterLocalNotificationsPlugin _localNotificationPlugin;
   final Ref _ref;
@@ -61,6 +62,8 @@ class LocalNotification {
   ///Channels which are used to control how a notification is delivered.
   ///The default FCM channel used is hidden from users, however provides a "default" importance level.
   ///Heads up notifications require a "max" importance level.
+
+  ///ฟังก์ชันแสดง Local Notification
   void showNotification(ReceivedNotification message) async {
     //final String largeIcon = await _base64EncodedImage(message.imageUrl ?? '');
     String? bigPicture;
@@ -86,6 +89,7 @@ class LocalNotification {
     );
   }
 
+  // โค้ดสำหรับดึงรูปภาพจาก URL และแปลงเป็น Base64
   Future<String> _base64EncodedImage(String url) async {
     // final response = await Dio().get<List<int>>(url,
     //     options: Options(responseType: ResponseType.bytes));

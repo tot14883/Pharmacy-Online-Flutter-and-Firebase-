@@ -297,14 +297,14 @@ class _OrderSummaryScreenState extends BaseConsumerState<OrderSummaryScreen> {
                           height: 16.h,
                         ),
                         Text(
-                          'Payment Detail',
+                          'รายละเอียด',
                           style: AppStyle.txtBody,
                         ),
                         SizedBox(
                           height: 8.h,
                         ),
                         RowContentWidget(
-                          header: 'Subtotal',
+                          header: 'ราคารวม',
                           content: '$priceTotal บาท',
                         ),
                         SizedBox(
@@ -322,7 +322,7 @@ class _OrderSummaryScreenState extends BaseConsumerState<OrderSummaryScreen> {
                           height: 8.h,
                         ),
                         RowContentWidget(
-                          header: 'Total',
+                          header: 'ราคารวมทั้งหมด',
                           content: '${priceTotal + 50} บาท',
                           isBold: true,
                         ),

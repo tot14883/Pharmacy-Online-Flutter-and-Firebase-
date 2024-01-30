@@ -71,6 +71,7 @@ class CartItemWidget extends ConsumerWidget {
                     if (isPharmacy) ...[
                       GestureDetector(
                         onTap: () async {
+                          // กดเพื่อลบสินค้าออกจากตะกร้า
                           final result = await ref
                               .read(myCartControllerProvider.notifier)
                               .onDeleteItemCart(
@@ -109,13 +110,15 @@ class CartItemWidget extends ConsumerWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    if (isPharmacy) ...[
+                    //แสดงจำนวนสินค้า
+                    if (isPharmacy) ...[                     
                       QuantityWidget(
                         initial: _quantity?['${medicineItem.id}'] ??
                             medicineItem.quantity,
                         maximum: 100,
                         itemSized: 24,
                         onUpdate: (val) async {
+                          //อัปเดตจำนวนสินค้าในตะกร้า
                           await ref
                               .read(myCartControllerProvider.notifier)
                               .onAddToCart(

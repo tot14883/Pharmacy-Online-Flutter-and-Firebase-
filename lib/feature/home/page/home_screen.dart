@@ -8,12 +8,14 @@ import 'package:pharmacy_online/base_widget/async_value_widget.dart';
 import 'package:pharmacy_online/base_widget/base_scaffold.dart';
 import 'package:pharmacy_online/core/widget/base_consumer_state.dart';
 import 'package:pharmacy_online/feature/admin/model/response/pharmacy_info_response.dart';
-import 'package:pharmacy_online/feature/chat/controller/chat_controller.dart';
-import 'package:pharmacy_online/feature/chat/page/inbox_screen.dart';
+// import 'package:pharmacy_online/feature/chat/controller/chat_controller.dart';
+// import 'package:pharmacy_online/feature/chat/page/inbox_screen.dart';
 import 'package:pharmacy_online/feature/chat/page/request_consult_screen.dart';
 import 'package:pharmacy_online/feature/home/controller/home_controller.dart';
 import 'package:pharmacy_online/feature/home/widget/menu_buttton_widget.dart';
 import 'package:pharmacy_online/feature/home/widget/user_profile_header_widget.dart';
+// import 'package:pharmacy_online/feature/order/controller/order_controller.dart';
+// import 'package:pharmacy_online/feature/order/page/orders_screen.dart';
 import 'package:pharmacy_online/feature/profile/controller/profile_controller.dart';
 import 'package:pharmacy_online/feature/store/controller/store_controller.dart';
 import 'package:pharmacy_online/feature/store/page/my_medicine_warehouse_screen.dart';
@@ -138,7 +140,7 @@ class _HomeScreenState extends BaseConsumerState<HomeScreen> {
                     spacing: 16.0,
                     runSpacing: 16.0,
                     children: [
-                      if (!isPharmacy) ...[
+                      if (!isPharmacy) ...[ //ส่วนของ user
                         MenuButtonWidget(
                           onTap: () {
                             findNearestMarker(
@@ -162,28 +164,10 @@ class _HomeScreenState extends BaseConsumerState<HomeScreen> {
                           label: 'ค้นหาร้านยา',
                         ),
                         if (hasUserInfo) ...[
-                          MenuButtonWidget(
-                            onTap: () {},
-                            isSecondBtn: true,
-                            imgWidget: Assets.icons.icCart.svg(),
-                            label: 'คำสั่งซื้อ',
-                          ),
-                          MenuButtonWidget(
-                            onTap: () async {
-                              await ref
-                                  .read(chatControllerProvider.notifier)
-                                  .onGetHistoryOfChatUser();
-
-                              Navigator.of(context)
-                                  .pushNamed(InboxScreen.routeName);
-                            },
-                            isSecondBtn: true,
-                            imgWidget: Assets.icons.icChatLeftText.svg(),
-                            label: 'ประวัติการสนทนา',
-                          ),
+                          
                         ],
                       ],
-                      if (isPharmacy) ...[
+                      if (isPharmacy) ...[  //ส่วนของ isPharmacy
                         MenuButtonWidget(
                           onTap: () async {
                             await ref
@@ -216,25 +200,7 @@ class _HomeScreenState extends BaseConsumerState<HomeScreen> {
                           imgWidget: Assets.imgs.imgShop.image(),
                           label: 'คลังยา',
                         ),
-                        MenuButtonWidget(
-                          onTap: () {},
-                          isSecondBtn: true,
-                          imgWidget: Assets.icons.icCart.svg(),
-                          label: 'คำสั่งซื้อ',
-                        ),
-                        MenuButtonWidget(
-                          onTap: () async {
-                            await ref
-                                .read(chatControllerProvider.notifier)
-                                .onGetHistoryOfChatPharmacy();
-
-                            Navigator.of(context)
-                                .pushNamed(InboxScreen.routeName);
-                          },
-                          isSecondBtn: true,
-                          imgWidget: Assets.icons.icChat.svg(),
-                          label: 'ประวัติการสนทนา',
-                        ),
+                        
                       ],
                     ],
                   ),
@@ -247,3 +213,4 @@ class _HomeScreenState extends BaseConsumerState<HomeScreen> {
     );
   }
 }
+

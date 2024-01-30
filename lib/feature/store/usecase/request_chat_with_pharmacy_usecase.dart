@@ -33,14 +33,15 @@ class RequestChatWithPharmacyUsecase
     ChatWithPharmacyRequest request,
   ) async {
     try {
+      //ดึงข้อมูลที่จำเป็นในการสร้างคำขอแชท
       final pharmacyId = request.pharmacyId ?? '';
 
       final uid = baseSharePreference.getString(BaseSharePreferenceKey.userId);
-
+      //ในกระบวนการสร้างคำขอแชท, ใช้ `fireCloudStore.collection('chat')` เพื่อสร้างเอกสารใหม่ที่จะเก็บข้อมูลของคำขอแชทใหม่
       final collect = fireCloudStore.collection('chat');
 
       final collectId = collect.doc().id;
-
+      //สร้างข้อมูลที่จะบันทึกลงในคอลเล็กชัน 'chat'
       final Map<String, dynamic> myData = {
         "id": collectId,
         "uid": uid,
@@ -49,7 +50,7 @@ class RequestChatWithPharmacyUsecase
         "create_at": DateTime.now(),
         "update_at": DateTime.now(),
       };
-
+      //บันทึกข้อมูลลงในคอลเล็กชัน 'chat'
       await collect.doc(collectId).set(myData);
 
       return true;

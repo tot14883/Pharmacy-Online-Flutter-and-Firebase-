@@ -7,6 +7,7 @@ import 'package:pharmacy_online/feature/authentication/model/request/user_info_r
 
 final updatePharmacyStoreUsecaseProvider =
     Provider<UpdatePharmacyStoreUsecase>((ref) {
+    //รับ dependency จาก Provider ต่างๆ
   final fireCloudStore = ref.watch(firebaseCloudStoreProvider);
   final firebaseCloudStorage = ref.watch(firebaseCloudStorageProvider);
   final baseSharedPreference = ref.watch(baseSharePreferenceProvider);
@@ -38,6 +39,7 @@ class UpdatePharmacyStoreUsecase extends UseCase<UserInfoRequest, bool> {
     UserInfoRequest request,
   ) async {
     try {
+      //ดึงข้อมูลจาก request
       final address = request.address;
       final licensePharmacy = request.licensePharmacy ?? '';
       final nameStore = request.nameStore ?? '';
@@ -52,19 +54,22 @@ class UpdatePharmacyStoreUsecase extends UseCase<UserInfoRequest, bool> {
       final currentLicenseStoreImg = request.currentLicenseStoreImg;
       final storeImg = request.storeImg;
 
+      //ดึง uid จาก SharedPreferences
       final uid = baseSharedPreference.getString(BaseSharePreferenceKey.userId);
 
+      //ถ้า uid ไม่ใช่ค่าว่าง
       if (uid != null) {
         String urlLicenseStoreImg = '';
         String urlStoreImg = '';
 
+      //ทำการอัปโหลดรูป storeImg ลงใน Firebase Storage
         if (storeImg != null) {
           urlStoreImg = await firebaseCloudStorage.uploadStorage(
             storeImg,
             'pharmacyStore/$uid',
           );
         }
-
+      //ทำการอัปโหลดรูป licenseStoreImg ลงใน Firebase Storage
         if (licenseStoreImg != null) {
           urlLicenseStoreImg = await firebaseCloudStorage.uploadStorage(
             licenseStoreImg,
@@ -72,6 +77,7 @@ class UpdatePharmacyStoreUsecase extends UseCase<UserInfoRequest, bool> {
           );
         }
 
+        //นำข้อมูลที่ได้อัปโหลดและข้อมูลปัจจุบันมากำหนดค่า
         final collectPharmacyStore = fireCloudStore.collection('pharmacyStore');
 
         final Map<String, dynamic> myData = {
@@ -93,6 +99,7 @@ class UpdatePharmacyStoreUsecase extends UseCase<UserInfoRequest, bool> {
           "update_at": DateTime.now(),
         };
 
+        //ทำการอัปเดตข้อมูลใน Firestore
         await collectPharmacyStore.doc(uid).update(
               myData,
             );

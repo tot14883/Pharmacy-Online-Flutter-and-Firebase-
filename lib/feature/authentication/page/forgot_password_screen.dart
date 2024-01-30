@@ -23,6 +23,7 @@ class ForgotPasswordScreen extends ConsumerStatefulWidget {
 
 class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
   final formKey = GlobalKey<BaseFormState>();
+  // สร้าง TextEditingController สำหรับเก็บฟิลด์อีเมล
   TextEditingController emailController = TextEditingController();
 
   @override
@@ -55,6 +56,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  // BaseTextField สำหรับป้อนที่อยู่อีเมล
                   BaseTextField(
                     fieldKey: FieldForgotPassword.email,
                     label: 'Email Address',
@@ -76,10 +78,12 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                   SizedBox(
                     height: 16.h,
                   ),
+                  // BaseButton สำหรับยืนยัน เป็นปุมทำการ submit ฟอร์ม
                   BaseButton(
                     onTap: () {
                       formKey.currentState?.save(
                         onSave: (val) async {
+                          // เรียกใช้ onForgotPassword จาก authentication controller provider
                           final result = await ref
                               .read(authenticationControllerProvider.notifier)
                               .onForgotPassword();
@@ -103,6 +107,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                               },
                             );
                           }
+                           // ล้างข้อมูลใน emailController หลังจากทำการ submit ฟอร์ม
                           emailController.clear();
                         },
                       );

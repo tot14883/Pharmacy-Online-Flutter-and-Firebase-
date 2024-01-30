@@ -95,7 +95,7 @@ class _SignUpStep2WidgetState extends ConsumerState<SignUpStep2Widget> {
             ),
             BaseTextField(
               fieldKey: FieldSignUp.name,
-              placeholder: "ชื่อนาม-สกุล",
+              placeholder: "ชื่อ-นามสกุล",
               validator: Validators.combine(
                 [
                   Validators.withMessage(

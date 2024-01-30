@@ -6,6 +6,7 @@ import 'package:pharmacy_online/feature/cart/widget/cart_item_widget.dart';
 import 'package:pharmacy_online/feature/store/model/response/medicine_response.dart';
 
 class CartListWidget extends ConsumerWidget {
+  //เป็น Widget ที่แสดงรายการสินค้าในตะกร้า โดยรับพารามิเตอร์
   final bool isPharmacy;
   final CartResponse myCart;
   final List<MedicineResponse> medicineList;

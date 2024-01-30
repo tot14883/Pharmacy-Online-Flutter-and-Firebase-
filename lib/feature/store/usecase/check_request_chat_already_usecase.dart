@@ -33,10 +33,13 @@ class CheckRequestChatAlreadyUsecase
     ChatWithPharmacyRequest request,
   ) async {
     try {
+      //ดึงค่าพารามิเตอร์จากอ็อบเจ็กต์ request
       final pharmacyId = request.pharmacyId ?? '';
 
+      //ดึง User ID จาก shared preferences
       final uid = baseSharePreference.getString(BaseSharePreferenceKey.userId);
 
+      //ทำ Firestore query เพื่อตรวจสอบคำขอแชทที่มีอยู่แล้ว
       final hasRequest = await fireCloudStore
           .collection('chat')
           .where('uid', isEqualTo: uid)
@@ -48,6 +51,7 @@ class CheckRequestChatAlreadyUsecase
           .get()
           .then((value) => value.docs);
 
+      //คืนค่า true ถ้ามีคำขอแชทที่ผ่านเงื่อนไขทั้งหมด มิฉะนั้นคืนค่า false
       return hasRequest.isNotEmpty;
     } catch (e) {
       return false;

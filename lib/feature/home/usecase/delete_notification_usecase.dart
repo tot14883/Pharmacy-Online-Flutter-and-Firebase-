@@ -28,15 +28,15 @@ class DeleteNotificationUsecase extends UseCase<NotificationRequest, bool> {
   }
 
   @override
-  Future<bool> exec(
+  Future<bool> exec( 
     NotificationRequest request,
   ) async {
     try {
       final id = request.id;
 
-      final collect = fireCloudStore.collection('notification');
+      final collect = fireCloudStore.collection('notification'); //ดึงข้อมูลจาก firebase ในคอนเลคชั่น notification มาใส่ในตัวแปร collect
 
-      await collect.doc(id).delete();
+      await collect.doc(id).delete(); //ลบ collect ที่ตรงกับ id
 
       return true;
     } catch (e) {

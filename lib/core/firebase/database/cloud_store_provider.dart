@@ -12,10 +12,12 @@ final firebaseCloudStoreProvider = Provider<FirebaseCloudStore>((ref) {
 class FirebaseCloudStore {
   final FirebaseFirestore firestore;
 
+  // กำหนดค่า FirebaseFirestore
   FirebaseCloudStore({
     required this.firestore,
   });
 
+  // เมธอดสำหรับดึง CollectionReference จาก Firebase Firestore โดยระบุชื่อ Collection (table)
   CollectionReference collection(String table) {
     return firestore.collection(table);
   }

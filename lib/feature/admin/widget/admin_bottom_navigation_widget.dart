@@ -26,10 +26,14 @@ class _AdminBottomNavigationWidgetState
 
   @override
   void initState() {
+    // เมื่อ widget ถูกสร้างใหม่
+    // ใช้ addPostFrameCallback เพื่อให้ทำงานหลังจาก frame แรกสร้างเสร็จ
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      // เรียกใช้เมธอด onGetCentralMedicineWarehouse จาก Store Controller
       await ref
           .read(storeControllerProvider.notifier)
           .onGetCentralMedicineWarehouse();
+      // เรียกใช้เมธอด getPharmacyDetail จาก Admin Controller
       await ref.read(adminControllerProvider.notifier).getPharmacyDetail();
     });
     super.initState();
@@ -84,9 +88,11 @@ class _AdminBottomNavigationWidgetState
         ),
       ],
       onTap: (value) {
+        // เมื่อมีการเลือก BottomNavigationBarItem
         setState(() {
           _currentIndex = value;
         });
+        // เรียกเมธอด onChange ที่ถูกส่งเข้ามาผ่าน constructor
         widget.onChange(value);
       },
     );

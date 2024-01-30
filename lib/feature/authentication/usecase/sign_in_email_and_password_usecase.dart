@@ -9,10 +9,12 @@ import 'package:pharmacy_online/feature/authentication/model/request/sign_in_req
 
 final signInEmailAndPasswordUsecaseProvider =
     Provider<SignInEmailAndPasswordUseCase>((ref) {
+      //รับ dependency จาก Provider ต่างๆ
   final firebaseAuth = ref.watch(firebaseAuthProvider);
   final fireCloudStore = ref.watch(firebaseCloudStoreProvider);
   final baseSharedPreference = ref.watch(baseSharePreferenceProvider);
 
+  //สร้างและคืนค่า instance ของ SignInEmailAndPasswordUseCase
   return SignInEmailAndPasswordUseCase(
     ref,
     firebaseAuth,
@@ -43,12 +45,16 @@ class SignInEmailAndPasswordUseCase extends UseCase<SignInRequest, bool> {
       final email = request.email;
       final password = request.password;
 
+      //เรียกใช้ฟังชั่นใน FirebaseAuthProvider เพื่อทำการเข้าสู่ระบบด้วย Email และ Password
       final userCredential =
           await firebaseAuthProvider.singInEmailAndPassword(email, password);
 
+      //ดึง uid จาก UserCredential
       final uid = userCredential.user?.uid;
 
+      //ถ้า uid ไม่ใช่ค่าว่าง
       if (uid != null) {
+        //อัปเดตข้อมูลใน Firestore เพื่อกำหนดสถานะ isOnline เป็น true
         final collect = fireCloudStore.collection('user');
 
         await collect.doc(uid).update(
@@ -57,6 +63,7 @@ class SignInEmailAndPasswordUseCase extends UseCase<SignInRequest, bool> {
           },
         );
 
+        //บันทึก uid ลงใน SharedPreferences
         await baseSharedPreference.setString(
           BaseSharePreferenceKey.userId,
           uid,

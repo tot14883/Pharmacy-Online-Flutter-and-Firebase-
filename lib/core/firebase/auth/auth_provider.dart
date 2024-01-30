@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+// Provider สำหรับให้บริการ FirebaseAuth
 final firebaseAuthProvider = Provider<FirebaseAuthProvider>((ref) {
   return FirebaseAuthProvider(
     fireAuth: FirebaseAuth.instance,
@@ -18,6 +19,7 @@ class FirebaseAuthProvider {
     required this.fireAuth,
   });
 
+  // สร้างบัญชีผู้ใช้ใหม่ด้วยอีเมลและรหัสผ่าน
   Future<UserCredential> createEmailAndPassword(
     String email,
     String password,
@@ -30,6 +32,7 @@ class FirebaseAuthProvider {
     return credential;
   }
 
+  // เข้าสู่ระบบด้วยอีเมลและรหัสผ่าน
   Future<UserCredential> singInEmailAndPassword(
     String email,
     String password,
@@ -42,6 +45,7 @@ class FirebaseAuthProvider {
     return credential;
   }
 
+  // ส่งอีเมลล์เพื่อรีเซ็ตรหัสผ่าน
   Future<bool> sendPasswordResetEmail(String email) async {
     try {
       await fireAuth.sendPasswordResetEmail(email: email);
@@ -51,6 +55,7 @@ class FirebaseAuthProvider {
     }
   }
 
+  // เปลี่ยนรหัสผ่าน
   Future<bool> changePassword(
     String currentPassword,
     String newPassword,
@@ -79,6 +84,7 @@ class FirebaseAuthProvider {
     }
   }
 
+  // ออกจากระบบ
   Future<bool> signOut() async {
     try {
       await fireAuth.signOut();

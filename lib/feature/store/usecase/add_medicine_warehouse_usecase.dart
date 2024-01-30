@@ -8,9 +8,12 @@ import 'package:pharmacy_online/feature/store/model/request/medicine_request.dar
 
 final addMedicineWarehouseUsecaseProvider =
     Provider<AddMedicineWarehouseUsecase>((ref) {
+    //ดึง dependencies ที่จำเป็น
   final fireCloudStore = ref.watch(firebaseCloudStoreProvider);
   final firebaseCloudStorage = ref.watch(firebaseCloudStorageProvider);
   final baseSharePreference = ref.watch(baseSharePreferenceProvider);
+
+  //สร้างและคืน instance ของ UseCase
   return AddMedicineWarehouseUsecase(
     ref,
     fireCloudStore,
@@ -38,6 +41,7 @@ class AddMedicineWarehouseUsecase extends UseCase<MedicineRequest, bool> {
     MedicineRequest request,
   ) async {
     try {
+      //ดึงข้อมูลที่จำเป็นจาก MedicineRequest
       final name = request.name ?? '';
       final price = request.price ?? 0.0;
       final medicineImg = request.medicineImg;
@@ -50,16 +54,17 @@ class AddMedicineWarehouseUsecase extends UseCase<MedicineRequest, bool> {
       if (uid != null) {
         String urlMedicineImg = '';
 
+        //อัปโหลดรูปภาพของยาไปยัง Firebase Cloud Storage (ถ้ามี)
         if (medicineImg != null) {
           urlMedicineImg = await firebaseCloudStorage.uploadStorage(
             medicineImg,
             'medicineWarehouse/$uid',
           );
         }
-
+        //สร้าง collection ของ medicineWarehouse ใน Firebase Cloud Firestore
         final collect = fireCloudStore.collection('medicineWarehouse');
         final id = collect.doc().id;
-
+        //กำหนดข้อมูลที่จะเพิ่มลงใน medicineWarehouse
         final Map<String, dynamic> myData = {
           "id": id,
           "uid": uid,
@@ -70,9 +75,9 @@ class AddMedicineWarehouseUsecase extends UseCase<MedicineRequest, bool> {
           "create_at": DateTime.now(),
           "update_at": DateTime.now(),
         };
-
+        //เพิ่ม medicineWarehouse ลงใน Firebase Cloud Firestore
         await collect.doc(id).set(myData);
-
+        //สำเร็จและคืนค่า true
         return true;
       }
 

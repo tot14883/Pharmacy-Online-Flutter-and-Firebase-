@@ -15,6 +15,7 @@ import 'package:pharmacy_online/feature/order/widget/order_list_widget.dart';
 import 'package:pharmacy_online/feature/profile/controller/profile_controller.dart';
 
 class OrdersScreen extends ConsumerStatefulWidget {
+  static const routeName = 'OrdersScreen';
   const OrdersScreen({super.key});
 
   @override
@@ -22,11 +23,12 @@ class OrdersScreen extends ConsumerStatefulWidget {
 }
 
 class _OrdersScreenState extends BaseConsumerState<OrdersScreen> {
-  Timer? timer;
+  Timer? timer; // ตั้งค่าตัวจับเวลา
 
   @override
   void initState() {
     super.initState();
+    // ตั้งค่าตัวจับเวลาให้เรียกฟังก์ชัน onGetAllOrder และ onGetAllMyCart ทุกๆ 200 มิลลิวินาที
     timer = timer =
         Timer.periodic(const Duration(milliseconds: 200), (timer) async {
       final isPharmacy = ref
@@ -43,7 +45,7 @@ class _OrdersScreenState extends BaseConsumerState<OrdersScreen> {
 
   @override
   void dispose() {
-    timer?.cancel();
+    timer?.cancel(); // ยกเลิกตัวจับเวลาเมื่อ widget หาย
     super.dispose();
   }
 
@@ -52,16 +54,19 @@ class _OrdersScreenState extends BaseConsumerState<OrdersScreen> {
     final isPharmacy = ref
         .watch(profileControllerProvider.select((value) => value.isPharmacy));
 
+    // ดูข้อมูลรายการสินค้าในตะกร้าและรายการคำสั่งซื้อ
     final cartList =
         ref.watch(myCartControllerProvider.select((value) => value.cartList));
     final orderList =
         ref.watch(orderControllerProvider.select((value) => value.orderList));
 
+    // รอจนกว่าข้อมูล cartList และ orderList พร้อมใช้งาน
     return AsyncUtils.merge([
       cartList,
       orderList,
     ]).when(
       data: (_) {
+        // แยกรายการคำสั่งซื้อตามสถานะ
         final _cartList = cartList.unwrap();
         final _orderList = orderList.unwrap();
 
@@ -84,6 +89,7 @@ class _OrdersScreenState extends BaseConsumerState<OrdersScreen> {
         final _orderCompleted = _orderList
             ?.where((val) => val.status == OrderStatus.completed)
             .toList();
+        //แสดง tabbar
         return DefaultTabController(
           initialIndex: 0,
           length: isPharmacy ? 6 : 5,

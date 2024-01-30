@@ -37,10 +37,12 @@ class _AddReviewScreenState extends BaseConsumerState<AddReviewScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // ดึงข้อมูลรายละเอียดการสั่งซื้อ (orderDetail) จาก state โดยใช้ orderControllerProvider
     final orderDetail = ref
         .watch(orderControllerProvider.select((value) => value.orderDetail))
         .value;
 
+    // ดึงข้อมูลที่ต้องการจาก orderDetail
     final orderId = orderDetail?.id;
     final pharmacyId = orderDetail?.pharmacyId;
     final uid = orderDetail?.uid;
@@ -63,6 +65,7 @@ class _AddReviewScreenState extends BaseConsumerState<AddReviewScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  // Widget ที่ให้ผู้ใช้เลือกจำนวนดาวที่ต้องการให้ร้านค้า
                   RatingStartWidget(
                     onRatingUpdate: (val) {
                       setState(() {
@@ -88,8 +91,10 @@ class _AddReviewScreenState extends BaseConsumerState<AddReviewScreen> {
                   SizedBox(
                     height: 16.h,
                   ),
+                  // ปุ่มยืนยันที่เมื่อกดจะทำการเพิ่มรีวิวลงในระบบ
                   BaseButton(
                     onTap: () async {
+                      // เรียกใช้เมธอด onAddReview จาก storeControllerProvider
                       final result = await ref
                           .read(storeControllerProvider.notifier)
                           .onAddReview(
@@ -101,6 +106,7 @@ class _AddReviewScreenState extends BaseConsumerState<AddReviewScreen> {
                           );
 
                       if (result) {
+                        // เมื่อเพิ่มรีวิวสำเร็จ ทำการแจ้งเตือนให้ผู้ใช้ทราบ
                         await ref
                             .read(homeControllerProvider.notifier)
                             .onPostNotification(
@@ -109,6 +115,7 @@ class _AddReviewScreenState extends BaseConsumerState<AddReviewScreen> {
                               '$pharmacyId',
                             );
 
+                        // นำผู้ใช้กลับไปที่หน้า Dashboard
                         Navigator.of(context).pushNamedAndRemoveUntil(
                           DashboardScreen.routeName,
                           (route) => false,

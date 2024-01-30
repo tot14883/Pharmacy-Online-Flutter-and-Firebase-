@@ -18,6 +18,7 @@ import 'package:pharmacy_online/feature/profile/controller/profile_controller.da
 import 'package:pharmacy_online/generated/assets.gen.dart';
 import 'package:pharmacy_online/utils/util/vaildators.dart';
 
+// สร้าง Widget ที่ใช้ในการเปลี่ยนรหัสผ่าน
 class ChangePasswordScreen extends ConsumerStatefulWidget {
   static const routeName = 'ChangePasswordScreen';
 
@@ -29,6 +30,7 @@ class ChangePasswordScreen extends ConsumerStatefulWidget {
 
 class _ChangePasswordScreenState
     extends BaseConsumerState<ChangePasswordScreen> {
+  // ตัวแปรที่ใช้ในการรับข้อมูลจาก Textfield
   TextEditingController currentPassword = TextEditingController();
   TextEditingController newPassword = TextEditingController();
   TextEditingController confirmPassword = TextEditingController();
@@ -45,10 +47,12 @@ class _ChangePasswordScreenState
 
   @override
   Widget build(BuildContext context) {
+    // ดึงข้อมูลผู้ใช้จาก ProfileController
     final userInfo = ref.watch(
       profileControllerProvider.select((value) => value.userInfo),
     );
 
+    // สร้างหน้าจอด้วย BaseScaffold
     return BaseScaffold(
       appBar: BaseAppBar(
         bgColor: AppColor.themeWhiteColor,
@@ -58,6 +62,7 @@ class _ChangePasswordScreenState
           style: AppStyle.txtHeader3,
         ),
       ),
+      // สร้าง Body ด้วย BaseForm
       bodyBuilder: (context, constrained) {
         return BaseForm(
           key: formKey,
@@ -67,6 +72,7 @@ class _ChangePasswordScreenState
             padding: const EdgeInsets.all(16).r,
             child: Column(
               children: [
+                // Textfield สำหรับรหัสผ่านปัจจุบัน
                 BaseTextField(
                   fieldKey: FieldChangePassword.currentPassword,
                   label: 'Password ปัจจุบัน',
@@ -96,6 +102,7 @@ class _ChangePasswordScreenState
                 SizedBox(
                   height: 16.h,
                 ),
+                // Textfield สำหรับรหัสผ่านใหม่
                 BaseTextField(
                   fieldKey: FieldChangePassword.newPassword,
                   label: 'Password ใหม่',
@@ -125,6 +132,7 @@ class _ChangePasswordScreenState
                 SizedBox(
                   height: 16.h,
                 ),
+                // Textfield สำหรับยืนยันรหัสผ่านใหม่
                 BaseTextField(
                   label: 'Confirm Password',
                   controller: confirmPassword,
@@ -153,10 +161,13 @@ class _ChangePasswordScreenState
                 SizedBox(
                   height: 16.h,
                 ),
+                // ปุ่มสำหรับยืนยันการเปลี่ยนรหัสผ่าน
                 BaseButton(
                   onTap: () {
+                    // บันทึกข้อมูลและทำการเปลี่ยนรหัสผ่าน
                     formKey.currentState?.save(
                       onSave: (val) async {
+                        // ตรวจสอบว่ารหัสผ่านปัจจุบันถูกต้องหรือไม่
                         if (currentPassword.text != userInfo?.password) {
                           showDialog(
                             context: context,
@@ -169,6 +180,7 @@ class _ChangePasswordScreenState
                           return;
                         }
 
+                        // ตรวจสอบว่ารหัสผ่านใหม่และการยืนยันรหัสผ่านตรงกันหรือไม่
                         if (newPassword.text != confirmPassword.text) {
                           showDialog(
                             context: context,
@@ -181,11 +193,13 @@ class _ChangePasswordScreenState
                           return;
                         }
 
+                        // เรียกเมธอดที่ใช้ในการเปลี่ยนรหัสผ่าน
                         final result = await ref
                             .read(authenticationControllerProvider.notifier)
                             .onChangePassword();
 
                         if (result) {
+                          // แสดง Dialog เมื่อเปลี่ยนรหัสผ่านสำเร็จ
                           await showDialog(
                             context: context,
                             builder: (_) {
@@ -193,6 +207,7 @@ class _ChangePasswordScreenState
                                 message:
                                     'เปลี่ยนรหัสผ่านเรียบร้อย กรุณา Login ใหม่อีกครั้ง',
                                 onClick: () async {
+                                  // ทำการ Logout และเปลี่ยนหน้าจอไปที่ MainScreen
                                   final result = await ref
                                       .read(
                                         authenticationControllerProvider
@@ -213,6 +228,7 @@ class _ChangePasswordScreenState
                             },
                           );
                         } else {
+                          // แสดง Dialog เมื่อไม่สามารถเปลี่ยนรหัสผ่านได้
                           showDialog(
                             context: context,
                             builder: (_) {

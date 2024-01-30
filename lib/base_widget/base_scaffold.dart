@@ -20,6 +20,7 @@ class BaseScaffold extends ConsumerWidget {
   final bool isWillPop;
   final Widget? floatingActionButton;
 
+  // Constructor สำหรับการสร้าง BaseScaffold
   const BaseScaffold({
     Key? key,
     required this.bodyBuilder,
@@ -39,6 +40,7 @@ class BaseScaffold extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // ตรวจสอบว่ามี Loading หรือไม่
     final isLoading = ref.watch(
       loaderControllerProvider.select(
         (value) => value,
@@ -80,6 +82,7 @@ class BaseScaffold extends ConsumerWidget {
                 FloatingActionButtonLocation.startDocked,
           ),
         ),
+        // แสดง Loading Modal ถ้ามี isLoading
         if (isLoading)
           LoadingDialogModal.asyncLoading(
             isLoading: isLoading,

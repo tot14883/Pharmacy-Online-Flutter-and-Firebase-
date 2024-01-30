@@ -7,6 +7,7 @@ final loggingProvider = Provider<SetupLogger>((ref) {
   return SetupLogger();
 });
 
+/// คลาส SetupLogger ที่ให้เมทอด init() เพื่อกำหนดการทำงานของ Logger
 class SetupLogger {
   SetupLogger();
 

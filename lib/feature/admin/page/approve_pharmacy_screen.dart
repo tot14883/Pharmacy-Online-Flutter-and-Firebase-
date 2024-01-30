@@ -25,13 +25,16 @@ class _ApprovePharmacyScreenState extends ConsumerState<ApprovePharmacyScreen> {
   void initState() {
     super.initState();
 
+    // สร้าง Timer ที่ทำงานทุก 200 มิลลิวินาที
     timer = Timer.periodic(const Duration(milliseconds: 200), (timer) async {
+      // เรียกใช้ notifier จาก provider เพื่อดึงข้อมูลรายละเอียดร้านที่ยังไม่ได้รับการอนุมัติ
       await ref.read(adminControllerProvider.notifier).getPharmacyDetail();
     });
   }
 
   @override
   void dispose() {
+    // ยกเลิก Timer เมื่อ Widget ถูก dispose เพื่อป้องกันการทำงานที่ไม่จำเป็น
     timer?.cancel();
     super.dispose();
   }
@@ -39,7 +42,9 @@ class _ApprovePharmacyScreenState extends ConsumerState<ApprovePharmacyScreen> {
   @override
   Widget build(BuildContext context) {
     return BaseScaffold(
+      // ใช้ BaseScaffold เป็น Widget หลักที่กำหนดโครงสร้างหน้าจอพื้นฐาน
       appBar: BaseAppBar(
+        // กำหนด AppBar ด้านบนของหน้าจอ
         elevation: 0,
         hideBackButton: true,
         bgColor: AppColor.themeWhiteColor,
@@ -50,15 +55,18 @@ class _ApprovePharmacyScreenState extends ConsumerState<ApprovePharmacyScreen> {
       ),
       bgColor: AppColor.themeWhiteColor,
       bodyBuilder: (context, constrained) {
+        // ดึงข้อมูลรายการร้านที่ยังไม่ได้รับการอนุมัติ
         final pharmacyList = ref.watch(
           adminControllerProvider.select((value) => value.pharmacyInfoList),
         );
 
+        // Widget สำหรับแสดงข้อมูลตามสถานะของ AsyncValue
         return AsyncValueWidget(
           value: pharmacyList,
           data: (_pharmacyList) {
             if (_pharmacyList == null) {
-              return const SizedBox.shrink();
+              return const SizedBox
+                  .shrink(); // หากไม่มีข้อมูลให้แสดง Widget ขนาดเล็ก
             }
             return Padding(
               padding: const EdgeInsets.all(16).r,

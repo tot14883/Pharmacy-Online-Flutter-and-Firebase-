@@ -89,6 +89,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
 
   Widget displayScreen(int page) {
     switch (page) {
+      //ถ้าไม่ได้เลือกอะไร ตามหน้า UI คือ เลือกเป็น User ให้ไปที่หน้ากรอกข้อมูล User
       case 0:
         return SignUpStep1Widget(
           onTap: () {
@@ -100,10 +101,12 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
             );
           },
         );
+        //ถ้าเลือกเปลี่ยน Role ตามหน้า UI คือ เลือกเป็น Pharmacy ให้ไปที่หน้ากรอกข้อมูล Pharmacy
       case 1:
         return SignUpStep2Widget(
           onBack: () {
             currentStep -= 1;
+            //เรียกใช้ฟังชั่น onChangePage
             onChangePage();
           },
           onTap: (imgProfile, licensePharmacy) async {
@@ -125,8 +128,10 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
 
             // formKey.currentState?.save(
             //   onSave: (val) {
+            //หลังจากกรอบข้อมูลส่วนตัว กดปุ่มยืนยัน เพิ่มค่าcurrentStep เพื่อไป case ต่อไป 
             if (role == AuthenticationType.pharmacy.name) {
               currentStep += 1;
+              //เรียกใช้ฟังชั่น onChangePage
               onChangePage();
               return;
             }
@@ -149,14 +154,17 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
             }
           },
         );
+      //หลังจากกรอกข้อมูลส่วนตัว จะมาที่ช่วงนี้ต่อคือการกรอกข้อมูลร้าน
       case 2:
         return SignUpPharmacyStoreWidget(
           onBack: () {
             currentStep -= 1;
+            //เรียกใช้ฟังชั่น onChangePage
             onChangePage();
           },
           onTap: (storeFile, licenseStoreFile, qrcodeFile) {
             formKey.currentState?.save(
+              //เซฟข้อมูลที่ถูกกรอกเข้า database
               onSave: (val) async {
                 final result = await ref
                     .read(authenticationControllerProvider.notifier)
@@ -167,7 +175,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                       qrcodeFile,
                       storeFile,
                     );
-
+                //ไปที่หน้าสมัครสมาชิกเสร็จสิ้น
                 if (result) {
                   Navigator.of(context).pushNamedAndRemoveUntil(
                     SignUpSuccessfulScreen.routeName,

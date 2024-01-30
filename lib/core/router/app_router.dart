@@ -25,6 +25,7 @@ import 'package:pharmacy_online/feature/order/page/add_review_screen.dart';
 import 'package:pharmacy_online/feature/order/page/evidence_bank_transfer_screen.dart';
 import 'package:pharmacy_online/feature/order/page/evidence_transportation_screen.dart';
 import 'package:pharmacy_online/feature/order/page/order_detail_screen.dart';
+import 'package:pharmacy_online/feature/order/page/orders_screen.dart';
 import 'package:pharmacy_online/feature/order/page/upload_bank_transfer_screen.dart';
 import 'package:pharmacy_online/feature/order/page/upload_transportation_screen.dart';
 import 'package:pharmacy_online/feature/profile/page/change_password_screen.dart';
@@ -42,10 +43,13 @@ import 'package:pharmacy_online/feature/store/page/review_store_screen.dart';
 import 'package:pharmacy_online/feature/store/page/store_detail_screen.dart';
 
 class AppRouter {
+  // ชื่อของหน้าแรกที่จะถูกเรียกใช้
   static const initialRouterName = MainScreen.routeName;
 
+  // เมธอดที่ให้บริการการนำทางตามชื่อของ route
   static Route<dynamic>? router(RouteSettings settings) {
     switch (settings.name) {
+      // นำทางไปยังหน้า MainScreen
       case MainScreen.routeName:
         return CustomPageRouteBuilder.route(
           name: MainScreen.routeName,
@@ -53,6 +57,7 @@ class AppRouter {
           transitionType: RouteTransition.fade,
         );
 
+      // นำทางไปยังหน้า TermAndConditionScreen ไม่ได้ใช้แล้ว
       case TermAndConditionScreen.routeName:
         return CustomPageRouteBuilder.route(
           name: TermAndConditionScreen.routeName,
@@ -60,6 +65,7 @@ class AppRouter {
           transitionType: RouteTransition.fade,
         );
 
+      // นำทางไปยังหน้า ConsentScreen ไม่ได้ใช้แล้ว
       case ConsentScreen.routeName:
         return CustomPageRouteBuilder.route(
           name: ConsentScreen.routeName,
@@ -67,6 +73,7 @@ class AppRouter {
           transitionType: RouteTransition.fade,
         );
 
+      // นำทางไปยังหน้า DashboardScreen
       case DashboardScreen.routeName:
         return CustomPageRouteBuilder.route(
           name: DashboardScreen.routeName,
@@ -74,6 +81,7 @@ class AppRouter {
           transitionType: RouteTransition.fade,
         );
 
+      // นำทางไปยังหน้า HomeScreen
       case HomeScreen.routeName:
         return CustomPageRouteBuilder.route(
           name: HomeScreen.routeName,
@@ -81,6 +89,7 @@ class AppRouter {
           transitionType: RouteTransition.fade,
         );
 
+      // นำทางไปยังหน้า SignInScreen
       case SignInScreen.routeName:
         return CustomPageRouteBuilder.route(
           name: SignInScreen.routeName,
@@ -88,6 +97,7 @@ class AppRouter {
           transitionType: RouteTransition.fade,
         );
 
+      // นำทางไปยังหน้า SignUpScreen
       case SignUpScreen.routeName:
         return CustomPageRouteBuilder.route(
           name: SignUpScreen.routeName,
@@ -95,6 +105,7 @@ class AppRouter {
           transitionType: RouteTransition.fade,
         );
 
+      // นำทางไปยังหน้า SignUpSuccessfulScreen
       case SignUpSuccessfulScreen.routeName:
         return CustomPageRouteBuilder.route(
           name: SignUpSuccessfulScreen.routeName,
@@ -102,6 +113,7 @@ class AppRouter {
           transitionType: RouteTransition.fade,
         );
 
+      // นำทางไปยังหน้า SignInSuccessfulScreen
       case SignInSuccessfulScreen.routeName:
         return CustomPageRouteBuilder.route(
           name: SignInSuccessfulScreen.routeName,
@@ -109,6 +121,7 @@ class AppRouter {
           transitionType: RouteTransition.fade,
         );
 
+      // นำทางไปยังหน้า NotificationScreen
       case NotificationScreen.routeName:
         return CustomPageRouteBuilder.route(
           name: NotificationScreen.routeName,
@@ -116,6 +129,7 @@ class AppRouter {
           transitionType: RouteTransition.fade,
         );
 
+      // นำทางไปยังหน้า InboxScreen
       case InboxScreen.routeName:
         return CustomPageRouteBuilder.route(
           name: InboxScreen.routeName,
@@ -123,27 +137,42 @@ class AppRouter {
           transitionType: RouteTransition.fade,
         );
 
+      // นำทางไปยังหน้า StoreDetailScreen
       case StoreDetailScreen.routeName:
+        // ตรวจสอบว่า arguments เป็น StoreDetailArgs หรือเป็น null
         assert(
           settings.arguments is StoreDetailArgs || settings.arguments == null,
           'arguments must be StoreDetailArgs or null',
         );
 
+        // ถ้า arguments เป็น StoreDetailArgs ให้แปลงเป็น StoreDetailArgs
         final args = settings.arguments as StoreDetailArgs;
 
+        // สร้างและคืนค่า CustomPageRouteBuilder สำหรับเปิดหน้าจอ StoreDetailScreen
         return CustomPageRouteBuilder.route(
           name: StoreDetailScreen.routeName,
+          // สร้างหน้าจอ StoreDetailScreen โดยให้ args เป็นข้อมูลที่ถูกส่งมา
           builder: (ctx) => StoreDetailScreen(args: args),
+          // กำหนดว่าการเปลี่ยนหน้าจอจะใช้ fade effect
           transitionType: RouteTransition.fade,
         );
 
+      // นำทางไปยังหน้า OrderDetailScreen
       case OrderDetailScreen.routeName:
         return CustomPageRouteBuilder.route(
           name: OrderDetailScreen.routeName,
           builder: (ctx) => const OrderDetailScreen(),
           transitionType: RouteTransition.fade,
         );
+      
+      case OrdersScreen.routeName:
+        return CustomPageRouteBuilder.route(
+          name: OrdersScreen.routeName,
+          builder: (ctx) => const OrdersScreen(),
+          transitionType: RouteTransition.fade,
+        );
 
+      // นำทางไปยังหน้า UploadBankTransferScreen
       case UploadBankTransferScreen.routeName:
         return CustomPageRouteBuilder.route(
           name: UploadBankTransferScreen.routeName,
@@ -151,6 +180,7 @@ class AppRouter {
           transitionType: RouteTransition.fade,
         );
 
+      // นำทางไปยังหน้า UploadTransportationScreen
       case UploadTransportationScreen.routeName:
         return CustomPageRouteBuilder.route(
           name: UploadTransportationScreen.routeName,
@@ -158,6 +188,7 @@ class AppRouter {
           transitionType: RouteTransition.fade,
         );
 
+      // นำทางไปยังหน้า EvidenceTransportationScreen
       case EvidenceTransportationScreen.routeName:
         return CustomPageRouteBuilder.route(
           name: EvidenceTransportationScreen.routeName,
@@ -165,6 +196,7 @@ class AppRouter {
           transitionType: RouteTransition.fade,
         );
 
+      // นำทางไปยังหน้า EvidenceBankTransferScreen
       case EvidenceBankTransferScreen.routeName:
         return CustomPageRouteBuilder.route(
           name: EvidenceBankTransferScreen.routeName,
@@ -172,6 +204,7 @@ class AppRouter {
           transitionType: RouteTransition.fade,
         );
 
+      // นำทางไปยังหน้า AddReviewScreen
       case AddReviewScreen.routeName:
         return CustomPageRouteBuilder.route(
           name: AddReviewScreen.routeName,
@@ -179,6 +212,7 @@ class AppRouter {
           transitionType: RouteTransition.fade,
         );
 
+      // นำทางไปยังหน้า EditQRCodeScreen
       case EditQRCodeScreen.routeName:
         return CustomPageRouteBuilder.route(
           name: EditQRCodeScreen.routeName,
@@ -186,6 +220,7 @@ class AppRouter {
           transitionType: RouteTransition.fade,
         );
 
+      // นำทางไปยังหน้า ChangePasswordScreen
       case ChangePasswordScreen.routeName:
         return CustomPageRouteBuilder.route(
           name: ChangePasswordScreen.routeName,
@@ -193,6 +228,7 @@ class AppRouter {
           transitionType: RouteTransition.fade,
         );
 
+      // นำทางไปยังหน้า EditProfileScreen
       case EditProfileScreen.routeName:
         return CustomPageRouteBuilder.route(
           name: EditProfileScreen.routeName,
@@ -200,6 +236,7 @@ class AppRouter {
           transitionType: RouteTransition.fade,
         );
 
+      // นำทางไปยังหน้า EditPharmacyStoreScreen
       case EditPharmacyStoreScreen.routeName:
         return CustomPageRouteBuilder.route(
           name: EditPharmacyStoreScreen.routeName,
@@ -207,6 +244,7 @@ class AppRouter {
           transitionType: RouteTransition.fade,
         );
 
+      // นำทางไปยังหน้า ReviewStoreScreen
       case ReviewStoreScreen.routeName:
         assert(
           settings.arguments is StoreDetailArgs || settings.arguments == null,
@@ -221,6 +259,7 @@ class AppRouter {
           transitionType: RouteTransition.fade,
         );
 
+      // นำทางไปยังหน้า CommentScreen
       case CommentScreen.routeName:
         assert(
           settings.arguments is CommentArgs || settings.arguments == null,
@@ -236,6 +275,7 @@ class AppRouter {
           transitionType: RouteTransition.fade,
         );
 
+      // นำทางไปยังหน้า RequestConsultScreen
       case RequestConsultScreen.routeName:
         return CustomPageRouteBuilder.route(
           name: RequestConsultScreen.routeName,
@@ -243,6 +283,7 @@ class AppRouter {
           transitionType: RouteTransition.fade,
         );
 
+      // นำทางไปยังหน้า ChatScreen
       case ChatScreen.routeName:
         assert(
           settings.arguments is ChatArgs || settings.arguments == null,
@@ -259,6 +300,7 @@ class AppRouter {
           transitionType: RouteTransition.fade,
         );
 
+      // นำทางไปยังหน้า MyMedicineWarehouseScreen
       case MyMedicineWarehouseScreen.routeName:
         assert(
           settings.arguments is MyMedicineWarehouseArgs ||
@@ -274,6 +316,7 @@ class AppRouter {
           transitionType: RouteTransition.fade,
         );
 
+      // นำทางไปยังหน้า CentralMedicineWarehouseScreen
       case CentralMedicineWarehouseScreen.routeName:
         return CustomPageRouteBuilder.route(
           name: CentralMedicineWarehouseScreen.routeName,
@@ -281,6 +324,7 @@ class AppRouter {
           transitionType: RouteTransition.fade,
         );
 
+      // นำทางไปยังหน้า AddMedicineWarehouseScreen
       case AddMedicineWarehouseScreen.routeName:
         return CustomPageRouteBuilder.route(
           name: AddMedicineWarehouseScreen.routeName,
@@ -288,6 +332,7 @@ class AppRouter {
           transitionType: RouteTransition.fade,
         );
 
+      // นำทางไปยังหน้า EditMedicineWarehouseScreen
       case EditMedicineWarehouseScreen.routeName:
         assert(
           settings.arguments is MedicineWarehouseArgs ||
@@ -303,6 +348,7 @@ class AppRouter {
           transitionType: RouteTransition.fade,
         );
 
+      // นำทางไปยังหน้า MyCartScreen
       case MyCartScreen.routeName:
         assert(
           settings.arguments is MyCartArgs || settings.arguments == null,
@@ -317,6 +363,7 @@ class AppRouter {
           transitionType: RouteTransition.fade,
         );
 
+      // นำทางไปยังหน้า DrugDetailScreen
       case DrugDetailScreen.routeName:
         assert(
           settings.arguments is DrugDetailArgs || settings.arguments == null,
@@ -330,6 +377,7 @@ class AppRouter {
           transitionType: RouteTransition.fade,
         );
 
+      // นำทางไปยังหน้า OrderSummaryScreen
       case OrderSummaryScreen.routeName:
         return CustomPageRouteBuilder.route(
           name: OrderSummaryScreen.routeName,
@@ -337,6 +385,7 @@ class AppRouter {
           transitionType: RouteTransition.fade,
         );
 
+      // นำทางไปยังหน้า AddressDeliveryScreen
       case AddressDeliveryScreen.routeName:
         return CustomPageRouteBuilder.route(
           name: AddressDeliveryScreen.routeName,
@@ -344,6 +393,7 @@ class AppRouter {
           transitionType: RouteTransition.fade,
         );
 
+      // นำทางไปยังหน้า ForgotPasswordScreen
       case ForgotPasswordScreen.routeName:
         return CustomPageRouteBuilder.route(
           name: ForgotPasswordScreen.routeName,
@@ -351,6 +401,7 @@ class AppRouter {
           transitionType: RouteTransition.fade,
         );
 
+      // นำทางไปยังหน้า BannedScreen
       case BannedScreen.routeName:
         return CustomPageRouteBuilder.route(
           name: BannedScreen.routeName,
@@ -358,6 +409,7 @@ class AppRouter {
           transitionType: RouteTransition.fade,
         );
 
+      // นำทางไปยังหน้า NearPharmacyStoreScreen
       case NearPharmacyStoreScreen.routeName:
         return CustomPageRouteBuilder.route(
           name: NearPharmacyStoreScreen.routeName,
@@ -365,7 +417,7 @@ class AppRouter {
           transitionType: RouteTransition.fade,
         );
 
-      // Admin
+      // นำทางไปยังหน้า AdminDashboardScreen
       case AdminDashboardScreen.routeName:
         return CustomPageRouteBuilder.route(
           name: AdminDashboardScreen.routeName,
@@ -373,6 +425,7 @@ class AppRouter {
           transitionType: RouteTransition.fade,
         );
 
+      // นำทางไปยังหน้า PharmacyStoreDetaillScreen
       case PharmacyStoreDetaillScreen.routeName:
         assert(
           settings.arguments is PharmacyArgs || settings.arguments == null,
@@ -389,6 +442,7 @@ class AppRouter {
           transitionType: RouteTransition.fade,
         );
 
+      // นำทางไปยังหน้า UserDetailScreen
       case UserDetailScreen.routeName:
         assert(
           settings.arguments is PharmacyArgs || settings.arguments == null,
@@ -422,6 +476,7 @@ class AppRouter {
       //     transitionType: RouteTransition.slideVertically,
       //   );
 
+      // กรณีที่ไม่ตรงกับเงื่อนไขใดเลย
       default:
         assert(false, 'this should not be reached');
         return null;

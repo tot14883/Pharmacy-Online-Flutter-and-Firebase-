@@ -4,6 +4,7 @@ import 'package:pharmacy_online/core/firebase/database/cloud_store_provider.dart
 
 final checkEmailHasAlreadyUsecaseProvider =
     Provider<CheckEmailHasAlreadyUsecase>((ref) {
+    //รับ dependency จาก Provider ต่างๆ
   final fireCloudStore = ref.watch(firebaseCloudStoreProvider);
   return CheckEmailHasAlreadyUsecase(
     ref,
@@ -26,6 +27,7 @@ class CheckEmailHasAlreadyUsecase extends UseCase<String, bool> {
     String request,
   ) async {
     try {
+      //ค้นหาข้อมูลใน Firestore collection 'user' ที่มี 'email' เท่ากับค่าที่รับเข้ามา
       final collect = await fireCloudStore
           .collection('user')
           .where(
@@ -34,7 +36,7 @@ class CheckEmailHasAlreadyUsecase extends UseCase<String, bool> {
           )
           .get()
           .then((value) => value.docs);
-
+      //ถ้ามีข้อมูล (collect ไม่ว่างเปล่า) แสดงว่าอีเมลนี้มีอยู่ในระบบแล้ว
       return collect.isNotEmpty;
     } catch (e) {
       return false;

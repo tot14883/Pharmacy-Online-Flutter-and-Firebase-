@@ -8,6 +8,7 @@ import 'package:pharmacy_online/utils/image_picker/image_picker_provider.dart';
 import 'package:pharmacy_online/utils/image_picker/model/image_picker_config_request.dart';
 import 'package:pharmacy_online/utils/util/base_permission_handler.dart';
 
+// ส่วนนี้เป็น Widget ที่ใช้ในการอัปโหลดรูปภาพ
 class BaseUploadImage extends StatefulWidget {
   final String? filePath;
   final String label;
@@ -93,6 +94,7 @@ class _BaseUploadImageState extends State<BaseUploadImage> {
   }
 }
 
+// ส่วนนี้เป็น Widget ที่ใช้ในการเลือกรูปภาพและแสดงปุ่ม "Choose"
 class ChooseFileWidget extends ConsumerWidget {
   final Function(XFile? file) onUpload;
   final ImageSource source;
@@ -110,15 +112,18 @@ class ChooseFileWidget extends ConsumerWidget {
         const maxFileSizeInBytes = 2 *
             1048576; // 2MB (You'll probably want this outside of this function so you can reuse the value elsewhere)
 
+        // ขอสิทธิ์ในการเข้าถึง storage
         final isGrant = await ref
             .read(basePermissionHandlerProvider)
             .requestStoragePermission();
 
+        // ขอสิทธิ์ในการเข้าถึงแกลอรี่
         final isGrant31 = await ref
             .read(basePermissionHandlerProvider)
             .requestPhotosPermission();
 
         if (isGrant || isGrant31) {
+          // นำ ref และ ImagePickerConfigRequest ไปใช้เพื่อดึงรูปภาพ
           final result = await ref.read(imagePickerUtilsProvider).getImage(
                 ImagePickerConfigRequest(
                   source: source,
@@ -132,6 +137,7 @@ class ChooseFileWidget extends ConsumerWidget {
           result.when(
             (success) => onUpload(success[0]),
             (error) async {
+              // แสดงข้อความผิดพลาดหากไม่สามารถดึงรูปภาพได้
               await showBaseDialog(
                 context: context,
                 builder: (ctx) {

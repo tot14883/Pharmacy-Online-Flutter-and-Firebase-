@@ -12,14 +12,17 @@ import 'package:pharmacy_online/feature/store/controller/store_controller.dart';
 import 'package:pharmacy_online/feature/store/model/response/reviews_response.dart';
 import 'package:pharmacy_online/feature/store/widget/comment_list_widget.dart';
 
+// คลาส CommentArgs ใช้สำหรับส่งข้อมูลรีวิวไปยังหน้าจอ CommentScreen
 class CommentArgs {
-  final ReviewsResponse reviewItem;
+  final ReviewsResponse
+      reviewItem; // ข้อมูลรีวิวที่จะแสดงในหน้าจอ CommentScreen
 
   CommentArgs({
     required this.reviewItem,
   });
 }
 
+// คลาส CommentScreen เป็นหน้าจอสำหรับแสดงความคิดเห็นเกี่ยวกับรีวิว
 class CommentScreen extends ConsumerStatefulWidget {
   static const routeName = 'CommentScreen';
   final CommentArgs args;
@@ -33,20 +36,23 @@ class CommentScreen extends ConsumerStatefulWidget {
   _CommentScreenState createState() => _CommentScreenState();
 }
 
+// State ของหน้าจอ CommentScreen
 class _CommentScreenState extends BaseConsumerState<CommentScreen> {
+  // Controller สำหรับช่องกรอกข้อความ
   TextEditingController messageController = TextEditingController();
 
   @override
   void dispose() {
-    messageController.dispose();
+    messageController.dispose(); // Dispose controller เมื่อปิดหน้าจอ
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final reviewItem = widget.args.reviewItem;
+    final reviewItem = widget.args.reviewItem; // ดึงข้อมูลรีวิวจาก args
 
     final commentList = ref
+        // อ่านรายการ comment จาก riverpod
         .watch(storeControllerProvider.select((value) => value.commentList))
         .value;
 
@@ -65,6 +71,7 @@ class _CommentScreenState extends BaseConsumerState<CommentScreen> {
           child: Stack(
             children: [
               if (commentList != null) ...[
+                // แสดงรายการความคิดเห็นถ้ามีข้อมูล
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0, 0, 0, 72).r,
                   child: CommentListWidget(
@@ -72,6 +79,7 @@ class _CommentScreenState extends BaseConsumerState<CommentScreen> {
                   ),
                 ),
               ],
+              // ส่วนล่างของหน้าจอสำหรับกรอกและส่งคอมเมนต์
               Positioned(
                 bottom: 0,
                 child: Container(
@@ -82,7 +90,8 @@ class _CommentScreenState extends BaseConsumerState<CommentScreen> {
                     children: [
                       Expanded(
                         child: BaseTextField(
-                          controller: messageController,
+                          controller:
+                              messageController, // เชื่อม controller กับช่องกรอกข้อความ
                           placeholder: 'comment',
                         ),
                       ),
@@ -93,9 +102,10 @@ class _CommentScreenState extends BaseConsumerState<CommentScreen> {
                         width: 60.w,
                         onTap: () async {
                           if (messageController.text.isEmpty) {
-                            return;
+                            return; // ถ้าข้อความว่าง ให้ยกเลิก
                           }
 
+                          // ส่งคอมเมนต์
                           await ref
                               .read(storeControllerProvider.notifier)
                               .onAddComment(
@@ -105,11 +115,12 @@ class _CommentScreenState extends BaseConsumerState<CommentScreen> {
                                 messageController.text,
                               );
 
+                          // โหลดรายการความคิดเห็นใหม่หลังส่ง
                           await ref
                               .read(storeControllerProvider.notifier)
                               .onGetComment('${reviewItem.id}');
 
-                          messageController.clear();
+                          messageController.clear(); // ล้างช่องกรอกข้อความ
                         },
                         text: 'ส่ง',
                       ),

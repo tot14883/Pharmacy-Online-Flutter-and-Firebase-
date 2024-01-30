@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:pharmacy_online/core/app_style.dart';
 
 class RowContentWidget extends StatelessWidget {
-  final bool isBold;
+  final bool isBold; // กำหนดค่าเริ่มต้นให้ header ไม่เป็นตัวหนา
+  // รับค่า header และ content จากภายนอก
   final String header;
   final String content;
 
+  // สร้าง widget Row แสดงเนื้อหาแบบแถว
   const RowContentWidget({
     super.key,
     this.isBold = false,
@@ -16,8 +18,8 @@ class RowContentWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start, //ชิดซ้าย
+      crossAxisAlignment: CrossAxisAlignment.start, //ชิดบน
       children: [
         Expanded(
           child: Text(

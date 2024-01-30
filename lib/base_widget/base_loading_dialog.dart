@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pharmacy_online/core/app_color.dart';
 
+// การสร้าง Dialog ด้วย LoadingDialogModal
 // implement this one as dialog
 // showBaseDialog(
 //               context: context,
@@ -12,11 +13,13 @@ import 'package:pharmacy_online/core/app_color.dart';
 class LoadingDialogModal extends StatefulWidget {
   final Color backdropColor;
 
+  // Constructor ของ LoadingDialogModal ที่สามารถกำหนด backdropColor ได้
   const LoadingDialogModal({
     Key? key,
     this.backdropColor = Colors.transparent,
   }) : super(key: key);
 
+  // สร้าง Widget สำหรับแสดง Loading Modal ในรูปแบบ Asynchronous
   static Widget asyncLoading({
     Color? backdropColor,
     bool? isLoading,

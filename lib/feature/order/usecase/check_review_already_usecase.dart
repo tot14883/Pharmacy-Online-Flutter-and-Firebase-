@@ -16,6 +16,7 @@ final checkReviewAlreadyUsecaseProvider =
   );
 });
 
+// UseCase สำหรับตรวจสอบรีวิว
 class CheckReviewAlreadyUsecase extends UseCase<CommentRequest, bool> {
   final FirebaseCloudStore fireCloudStore;
   final BaseSharedPreference baseSharedPreference;
@@ -29,19 +30,21 @@ class CheckReviewAlreadyUsecase extends UseCase<CommentRequest, bool> {
   }
 
   @override
+  // เมธอดสำหรับดำเนินการตรวจสอบรีวิว
   Future<bool> exec(
     CommentRequest request,
   ) async {
     try {
-      final orderId = request.orderId;
+      final orderId = request.orderId; // อ่าน orderId จาก CommentRequest
 
-      final collectReview = await fireCloudStore
+      final collectReview = await fireCloudStore // ดึงข้อมูลรีวิวจาก Firebase
           .collection('review')
-          .where('orderId', isEqualTo: orderId)
+          .where('orderId', isEqualTo: orderId) // กรองตาม orderId
           .get()
-          .then((value) => value.docs);
+          .then(
+              (value) => value.docs); // แปลงผลลัพธ์เป็น List<DocumentSnapshot>
 
-      return collectReview.isNotEmpty;
+      return collectReview.isNotEmpty; // คืนค่า true ถ้าพบรีวิว, false ถ้าไม่พบ
     } catch (e) {
       return false;
     }

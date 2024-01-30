@@ -25,7 +25,7 @@ import 'package:pharmacy_online/generated/assets.gen.dart';
 import 'package:pharmacy_online/utils/image_picker/image_picker_provider.dart';
 import 'package:pharmacy_online/utils/image_picker/model/image_picker_config_request.dart';
 import 'package:pharmacy_online/utils/util/base_permission_handler.dart';
-
+//คลาส ChatArgs ใช้สำหรับส่งพารามิเตอร์ไปยังหน้าจอแชท
 class ChatArgs {
   final ChatWithPharmacyResponse chatWithPharmacyItem;
   final bool isPharmacy;
@@ -60,6 +60,7 @@ class _ChatScreenState extends BaseConsumerState<ChatScreen> {
 
   @override
   void initState() {
+    //เรียกใช้งาน Usecase เพื่อโหลดข้อมูลข้อความแชท
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       final id = widget.args.chatWithPharmacyItem.id;
 
@@ -68,7 +69,7 @@ class _ChatScreenState extends BaseConsumerState<ChatScreen> {
           .onGetMessageChatUsecase('$id');
     });
     super.initState();
-
+    //ตั้งค่า Timer เพื่อโหลดข้อมูลข้อความแชทแบบ Real-time
     timer = Timer.periodic(const Duration(milliseconds: 200), (timer) async {
       final id = widget.args.chatWithPharmacyItem.id;
 
@@ -116,6 +117,7 @@ class _ChatScreenState extends BaseConsumerState<ChatScreen> {
         actions: [
           GestureDetector(
             onTap: () {
+              //เมื่อคลิกที่ปุ่ม Cart
               if (widget.args.isPharmacy) {
                 Navigator.of(context).pushNamed(
                   MyMedicineWarehouseScreen.routeName,
@@ -126,7 +128,7 @@ class _ChatScreenState extends BaseConsumerState<ChatScreen> {
                 );
                 return;
               }
-
+              //โหลดข้อมูล Cart และนำทางไปยังหน้า MyCartScreen
               ref.read(myCartControllerProvider.notifier).onGetCart(
                     '${args.chatWithPharmacyItem.uid}',
                     '${args.chatWithPharmacyItem.pharmacyId}',
@@ -208,6 +210,7 @@ class _ChatScreenState extends BaseConsumerState<ChatScreen> {
                     children: [
                       GestureDetector(
                         onTap: () async {
+                          //เลือกรูปภาพจากแกลเลอรี
                           final isGrant = await ref
                               .read(basePermissionHandlerProvider)
                               .requestStoragePermission();
@@ -227,7 +230,7 @@ class _ChatScreenState extends BaseConsumerState<ChatScreen> {
                                     isMaximum2MB: true,
                                   ),
                                 );
-
+                             //ส่งรูปภาพในแชท
                             result.when(
                               (success) async {
                                 final id = widget.args.chatWithPharmacyItem.id;
@@ -272,6 +275,7 @@ class _ChatScreenState extends BaseConsumerState<ChatScreen> {
                       ),
                       GestureDetector(
                         onTap: () async {
+                          //ส่งข้อความ
                           final id = widget.args.chatWithPharmacyItem.id;
                           ref
                               .read(chatControllerProvider.notifier)
@@ -280,7 +284,7 @@ class _ChatScreenState extends BaseConsumerState<ChatScreen> {
                                 chatController.text,
                                 chatImgfile,
                               );
-
+                          //การแจ้งเตือนส่งข้อความ
                           if (isNotification) {
                             await ref
                                 .read(homeControllerProvider.notifier)

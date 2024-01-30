@@ -35,8 +35,10 @@ class GetMessageChatUsecase
     ChatWithPharmacyRequest request,
   ) async {
     try {
+      //ดึงข้อมูล request.id หรือใช้ค่าว่างเป็นค่าเริ่มต้น
       final id = request.id ?? '';
 
+        //ดึงข้อมูลทั้งหมดจาก Firestore ใน collection 'chat' -> document(id) -> collection 'chat_message'
       final collectMessage = await fireCloudStore
           .collection('chat')
           .doc(id)
@@ -47,7 +49,8 @@ class GetMessageChatUsecase
       ;
 
       List<ChatWithPharmacyResponse> requestChatList = [];
-
+      
+      //วนลูปเพื่อนำข้อมูลมาเก็บใน List ของ ChatWithPharmacyResponse
       for (final item in collectMessage) {
         final _data = item.data();
 

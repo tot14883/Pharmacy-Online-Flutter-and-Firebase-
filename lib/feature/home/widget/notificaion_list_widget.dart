@@ -14,7 +14,7 @@ class NotificationistWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return ListView.separated(
+    return ListView.separated(    //ListView.separated จะเป็นคำสั่งที่เอาไว้แสดงเป็นกล่องๆ โดนอ่านค่าจาก index ในที่นี้คือกล่องการแจ้งเตือน
       physics: const ClampingScrollPhysics(),
       shrinkWrap: true,
       itemCount: notificationList.length,

@@ -35,6 +35,8 @@ class GetReviewStoreUsecase
     ReviewRequest request,
   ) async {
     try {
+      //ในกระบวนการดึงข้อมูล, ใช้ `fireCloudStore.collection('chat')` 
+      //เพื่อดึงข้อมูลคำขอแชทที่มี `status` เป็น "waiting" และ `pharmacyId` เป็น uid ของผู้ใช้ปัจจุบัน
       final pharmacyId = request.pharmacyId;
 
       final collectReview = await fireCloudStore
@@ -45,10 +47,10 @@ class GetReviewStoreUsecase
           .then((value) => value.docs);
 
       List<ReviewsResponse> reviewList = [];
-
+      //วนลูปเพื่อดึงข้อมูลของแต่ละคำขอแชทที่ยังไม่ได้ตอบรับ
       for (final item in collectReview.reversed) {
         final _data = item.data() as Map<String, dynamic>;
-
+      //ในแต่ละคำขอแชท, ใช้ `fireCloudStore.collection('user')` เพื่อดึงข้อมูลผู้ใช้ที่เป็นผู้ส่งคำขอแชทนี้
         final collectUser = await fireCloudStore
             .collection('user')
             .doc(_data['uid'])

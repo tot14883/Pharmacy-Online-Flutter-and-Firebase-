@@ -35,6 +35,7 @@ import 'package:pharmacy_online/feature/store/usecase/get_review_store_usecase.d
 import 'package:pharmacy_online/feature/store/usecase/request_chat_with_pharmacy_usecase.dart';
 import 'package:pharmacy_online/utils/util/base_utils.dart';
 
+//riverpod ดึงข้อมูลจาก usecase มาใช้
 final storeControllerProvider =
     StateNotifierProvider<StoreController, StoreState>(
   (ref) {
@@ -166,61 +167,75 @@ class StoreController extends StateNotifier<StoreState> {
   )   : _loader = _ref.read(loaderControllerProvider.notifier),
         super(state);
 
+// เมธอดสำหรับอัปเดตสถานะเมื่อข้อมูลในฟอร์มเปลี่ยนแปลง
   void onChanged(BaseFormData baseFormData) {
+    // สร้างสำเนาของข้อมูลฟอร์มปัจจุบันและผสานกับข้อมูลที่เข้ามาใหม่
     final newData = _baseFormData.copyAndMerge(baseFormData);
+    // อัปเดตสถานะโดยแทนที่ข้อมูลฟอร์มด้วยข้อมูลที่ผสานแล้ว
     state = state.copyWith(baseFormData: newData);
   }
 
+// เมธอดสำหรับล้างข้อมูลในฟอร์ม
   void clearForm() {
     state = state.copyWith(baseFormData: null);
   }
 
+// เมธอดสำหรับเพิ่มยาในคลังยา
   Future<bool> addMedicineWarehouse(XFile medicineImg) async {
-    _loader.onLoad();
+    _loader.onLoad(); // แสดง loading indicator
     bool isSuccess = false;
 
+    // ดึงข้อมูลยาจากสถานะปัจจุบัน
     final baseFormData = state.baseFormData;
 
     final name = baseFormData?.getValue<String>(FieldMedicine.name);
 
     final price = baseFormData?.getValue<String>(FieldMedicine.price) ?? '0.0';
 
+    // ตรวจสอบว่าผู้ใช้เป็น admin หรือไม่
     final isAdmin = _ref
             .read(baseSharePreferenceProvider)
             .getString(BaseSharePreferenceKey.role) ==
         AuthenticationType.admin.name;
 
+    // เรียกใช้ usecase เพื่อเพิ่มยาในคลังยา
     final result = await _addMedicineWarehouseUsecase.execute(
       MedicineRequest(
         name: name,
-        price: double.parse(isAdmin ? '0.0' : price),
+        price: double.parse(
+            isAdmin ? '0.0' : price), // หากเป็น admin ให้ราคาเป็น 0
         medicineImg: medicineImg,
       ),
     );
 
+    // จัดการผลลัพธ์ของการเรียกใช้ usecase
     result.when(
       (success) {
         isSuccess = true;
-        _loader.onDismissLoad();
+        _loader.onDismissLoad(); // ปิด loading indicator
       },
-      (error) => _loader.onDismissLoad(),
+      (error) =>
+          _loader.onDismissLoad(), // ปิด loading indicator เมื่อเกิดข้อผิดพลาด
     );
 
     return isSuccess;
   }
 
+// เมธอดสำหรับแก้ไขข้อมูลยาในคลังยา
   Future<bool> editMedicineWarehouse(
     String id,
     XFile? medicineImg,
     String? currentMedicineImg,
   ) async {
-    _loader.onLoad();
+    _loader.onLoad(); // แสดง loading indicator
     bool isSuccess = false;
 
+    // ดึงข้อมูลยาจากสถานะปัจจุบัน
     final baseFormData = state.baseFormData;
     final name = baseFormData?.getValue<String>(FieldMedicine.name);
     final price = baseFormData?.getValue<String>(FieldMedicine.price) ?? '0.0';
 
+    // เรียกใช้ usecase เพื่อแก้ไขข้อมูลยา
     final result = await _editMedicineWarehouseUsecase.execute(
       MedicineRequest(
         id: id,
@@ -231,10 +246,11 @@ class StoreController extends StateNotifier<StoreState> {
       ),
     );
 
+    // จัดการผลลัพธ์ของการเรียกใช้ usecase
     result.when(
       (success) {
         isSuccess = true;
-        _loader.onDismissLoad();
+        _loader.onDismissLoad(); // ปิด loading indicator
       },
       (error) => _loader.onDismissLoad(),
     );
@@ -242,57 +258,67 @@ class StoreController extends StateNotifier<StoreState> {
     return isSuccess;
   }
 
+// เมธอดสำหรับลบยาออกจากคลังยา
   Future<bool> deleteMedicineWarehouse(String? id) async {
     bool isSuccess = false;
 
+    // เรียกใช้ usecase เพื่อลบยา
     final result = await _deleteMedicineWarehouseUsecase.execute(
       MedicineRequest(
         id: id,
       ),
     );
 
+    // จัดการผลลัพธ์ของการเรียกใช้ usecase
     result.when((success) => isSuccess = true, (error) => null);
 
     return isSuccess;
   }
 
+// เมธอดสำหรับดึงข้อมูลยาจากคลังกลาง
   Future<void> onGetCentralMedicineWarehouse() async {
     state = state.copyWith(
-      centralMedicineList: const AsyncValue.loading(),
+      centralMedicineList: const AsyncValue.loading(), // แสดงสถานะ loading
     );
     final result = await _getCentralMedicineWarehouseUsecase.execute(null);
 
     result.when(
       (success) => state = state.copyWith(
-        centralMedicineList: AsyncValue.data(success),
+        centralMedicineList:
+            AsyncValue.data(success), // แสดงข้อมูลยาที่ดึงมาได้
       ),
       (error) => state = state.copyWith(
-        centralMedicineList: const AsyncValue.data([]),
+        centralMedicineList:
+            const AsyncValue.data([]), // แสดงข้อมูลว่างเมื่อเกิดข้อผิดพลาด
       ),
     );
   }
 
+// เมธอดสำหรับดึงข้อมูลยาจากคลังยาของผู้ใช้
   Future<void> onGetMedicineWarehouse() async {
     state = state.copyWith(
-      medicineList: const AsyncValue.loading(),
+      medicineList: const AsyncValue.loading(), // แสดงสถานะ loading
     );
     final result = await _getMedicineWarehouseUsecase.execute(null);
 
     result.when(
       (success) => state = state.copyWith(
-        medicineList: AsyncValue.data(success),
+        medicineList: AsyncValue.data(success), // แสดงข้อมูลยาที่ดึงมาได้
       ),
       (error) => state = state.copyWith(
-        medicineList: const AsyncValue.data([]),
+        medicineList:
+            const AsyncValue.data([]), // แสดงข้อมูลว่างเมื่อเกิดข้อผิดพลาด
       ),
     );
   }
 
+// เมธอดสำหรับเพิ่มยาจากคลังกลางไปยังคลังยาของผู้ใช้
   Future<bool> onAddCentralMedicineToMyWarehouse(
       MedicineResponse medicineItem) async {
-    _loader.onLoad();
+    _loader.onLoad(); // แสดง loading indicator
     bool isSuccess = false;
 
+    // เรียกใช้ usecase เพื่อเพิ่มยา
     final result = await _addCentralMedicineToMyWarehouseUsecase.execute(
       MedicineRequest(
         id: medicineItem.id,
@@ -302,10 +328,11 @@ class StoreController extends StateNotifier<StoreState> {
       ),
     );
 
+    // จัดการผลลัพธ์ของการเรียกใช้ usecase
     result.when(
       (success) {
         isSuccess = success;
-        _loader.onDismissLoad();
+        _loader.onDismissLoad(); // ปิด loading indicator
       },
       (error) => _loader.onDismissLoad(),
     );
@@ -313,69 +340,80 @@ class StoreController extends StateNotifier<StoreState> {
     return isSuccess;
   }
 
+// เมธอดสำหรับดึงข้อมูลร้านขายยาและตำแหน่งปัจจุบันของผู้ใช้
   Future<void> getPharmacyInfo() async {
+    // เรียกใช้ usecase เพื่อดึงข้อมูลร้านขายยา
     final result = await _getPharmacyInfoUsecase.execute(null);
 
+    // จัดการผลลัพธ์ของ usecase
     result.when(
       (success) => state = state.copyWith(
-        pharmacyInfoList: AsyncValue.data(success),
+        pharmacyInfoList: AsyncValue.data(success), // เก็บข้อมูลร้านยา
       ),
       (error) => null,
     );
 
+    // ดึงตำแหน่งปัจจุบันของผู้ใช้
     final myLocation = await _ref.read(baseUtilsProvider).getLocation();
     myLocation.when(
       (success) {
         state = state.copyWith(
           myLatitude: success.latitude,
           myLongtitude: success.longitude,
-        );
+        ); // เก็บพิกัด
       },
       (error) => null,
     );
   }
 
+// เมธอดสำหรับส่งคำขอแชทกับร้านขายยา
   Future<bool> onRequestChatWithPharmacy(String pharmacyId) async {
     bool isSuccess = false;
-    _loader.onLoad();
+    _loader.onLoad(); // แสดง loading indicator
 
+    // เรียกใช้ usecase เพื่อส่งคำขอแชท
     final result = await _requestChatWithPharmacyUsecase.execute(
       ChatWithPharmacyRequest(
         pharmacyId: pharmacyId,
       ),
     );
 
+    // จัดการผลลัพธ์ของ usecase
     result.when(
       (success) {
         isSuccess = success;
         _loader.onDismissLoad();
       },
-      (error) => _loader.onDismissLoad(),
+      (error) => _loader.onDismissLoad(), // ปิด loading indicator
     );
 
     return isSuccess;
   }
 
+// เมธอดสำหรับดึงคำขอแชทที่ผู้ใช้ได้รับ
   Future<void> onGetGetRequestChatWithPharmacy() async {
     final result = await _getGetRequestChatWithPharmacyUsecase.execute(null);
 
+    // จัดการผลลัพธ์ของ usecase
     result.when(
       (success) {
         state = state.copyWith(
-          chatWithPharmacyList: AsyncValue.data(success),
+          chatWithPharmacyList: AsyncValue.data(success), // เก็บข้อมูลคำขอแชท
         );
       },
       (error) => state = state.copyWith(
-        chatWithPharmacyList: const AsyncValue.data([]),
+        chatWithPharmacyList:
+            const AsyncValue.data([]), // แสดงข้อมูลว่างเมื่อเกิดข้อผิดพลาด
       ),
     );
   }
 
+// เมธอดสำหรับอนุมัติหรือปฏิเสธคำขอแชท
   Future<bool> onApproveChatWithPharmacy(
     bool isApprove,
     String id,
   ) async {
-    _loader.onLoad();
+    _loader.onLoad(); // แสดง loading indicator
     bool isSuccess = false;
 
     final result = await _approveChatWithPharmacyUsecase.execute(
@@ -385,6 +423,7 @@ class StoreController extends StateNotifier<StoreState> {
       ),
     );
 
+    // จัดการผลลัพธ์ของ usecase
     result.when(
       (success) {
         _loader.onDismissLoad();
@@ -396,9 +435,11 @@ class StoreController extends StateNotifier<StoreState> {
     return isSuccess;
   }
 
+// เมธอดสำหรับดึงข้อมูลรายละเอียดร้านขายยา
   Future<void> onGetPharmacyDetail(String pharmacyId) async {
     final result = await _getPharmacyDetailUsecase.execute(pharmacyId);
 
+    // จัดการผลลัพธ์ของ usecase
     result.when(
       (success) =>
           state = state.copyWith(pharmacyDetail: AsyncValue.data(success)),
@@ -408,6 +449,7 @@ class StoreController extends StateNotifier<StoreState> {
     );
   }
 
+// เมธอดสำหรับดึงข้อมูลรีวิวของร้านขายยา
   Future<void> onGetReview(
     String pharmacyId,
   ) async {
@@ -415,6 +457,7 @@ class StoreController extends StateNotifier<StoreState> {
       ReviewRequest(pharmacyId: pharmacyId),
     );
 
+    // จัดการผลลัพธ์ของ usecase
     result.when(
       (success) {
         state = state.copyWith(reviewList: AsyncValue.data(success));
@@ -425,6 +468,7 @@ class StoreController extends StateNotifier<StoreState> {
     );
   }
 
+// เมธอดสำหรับดึงข้อมูลคอมเมนต์ของรีวิว
   Future<void> onGetComment(
     String reviewId,
   ) async {
@@ -432,6 +476,7 @@ class StoreController extends StateNotifier<StoreState> {
       CommentRequest(reviewId: reviewId),
     );
 
+    // จัดการผลลัพธ์ของ usecase
     result.when(
       (success) {
         state = state.copyWith(commentList: AsyncValue.data(success));
@@ -442,6 +487,7 @@ class StoreController extends StateNotifier<StoreState> {
     );
   }
 
+// เมธอดสำหรับเพิ่มรีวิวร้านขายยา
   Future<bool> onAddReview(
     String orderId,
     String pharmacyId,
@@ -449,10 +495,11 @@ class StoreController extends StateNotifier<StoreState> {
     String message,
     double rating,
   ) async {
-    _loader.onLoad();
+    _loader.onLoad(); // แสดง loading indicator
     bool isSuccess = false;
 
     if (message.isEmpty) {
+      // ข้ามการเรียกใช้ usecase หากข้อความรีวิวว่าง
       return true;
     }
 
@@ -466,6 +513,7 @@ class StoreController extends StateNotifier<StoreState> {
       ),
     );
 
+    // จัดการผลลัพธ์ของ usecase
     result.when(
       (success) {
         isSuccess = success;
@@ -477,6 +525,7 @@ class StoreController extends StateNotifier<StoreState> {
     return isSuccess;
   }
 
+// เมธอดสำหรับเพิ่มคอมเมนต์ใต้รีวิว
   Future<bool> onAddComment(
     String reviewId,
     String pharmacyId,
@@ -495,6 +544,7 @@ class StoreController extends StateNotifier<StoreState> {
       ),
     );
 
+    // จัดการผลลัพธ์ของ usecase
     result.when(
       (success) {
         isSuccess = success;
@@ -506,6 +556,7 @@ class StoreController extends StateNotifier<StoreState> {
     return isSuccess;
   }
 
+// เมธอดสำหรับแก้ไขรีวิวร้านขายยา
   Future<bool> onEditReview(
     String reviewId,
     double rating,
@@ -514,6 +565,7 @@ class StoreController extends StateNotifier<StoreState> {
     _loader.onLoad();
     bool isSuccess = false;
 
+    // เรียกใช้ usecase เพื่อแก้ไขรีวิว
     final result = await _editReviewStoreUsecase.execute(
       ReviewRequest(
         reviewId: reviewId,
@@ -522,6 +574,7 @@ class StoreController extends StateNotifier<StoreState> {
       ),
     );
 
+    // จัดการผลลัพธ์ของ usecase
     result.when(
       (success) {
         isSuccess = success;
@@ -533,14 +586,16 @@ class StoreController extends StateNotifier<StoreState> {
     return isSuccess;
   }
 
+// เมธอดสำหรับแก้ไขคอมเมนต์ใต้รีวิว
   Future<bool> onEditComment(
     String reviewId,
     String commentId,
     String message,
   ) async {
-    _loader.onLoad();
+    _loader.onLoad(); // แสดง loading indicator
     bool isSuccess = false;
 
+    // เรียกใช้ usecase เพื่อแก้ไขคอมเมนต์
     final result = await _editCommentStoreUsecase.execute(
       CommentRequest(
         reviewId: reviewId,
@@ -549,10 +604,11 @@ class StoreController extends StateNotifier<StoreState> {
       ),
     );
 
+    // จัดการผลลัพธ์ของ usecase
     result.when(
       (success) {
         isSuccess = success;
-        _loader.onDismissLoad();
+        _loader.onDismissLoad(); // ปิด loading indicator
       },
       (error) => _loader.onDismissLoad(),
     );
@@ -560,10 +616,11 @@ class StoreController extends StateNotifier<StoreState> {
     return isSuccess;
   }
 
+// เมธอดสำหรับลบรีวิวร้านขายยา
   Future<bool> onDeleteReview(
     String reviewId,
   ) async {
-    _loader.onLoad();
+    _loader.onLoad(); // แสดง loading indicator
     bool isSuccess = false;
 
     final result = await _deleteReviewStoreUsecase.execute(
@@ -572,6 +629,7 @@ class StoreController extends StateNotifier<StoreState> {
       ),
     );
 
+    // จัดการผลลัพธ์ของ usecase
     result.when(
       (success) {
         isSuccess = success;
@@ -583,6 +641,7 @@ class StoreController extends StateNotifier<StoreState> {
     return isSuccess;
   }
 
+// เมธอดสำหรับลบคอมเมนต์ใต้รีวิว
   Future<bool> onDeleteComment(
     String reviewId,
     String commentId,
@@ -590,6 +649,7 @@ class StoreController extends StateNotifier<StoreState> {
     _loader.onLoad();
     bool isSuccess = false;
 
+    // เรียกใช้ usecase เพื่อลบคอมเมนต์
     final result = await _deleteCommentStoreUsecase.execute(
       CommentRequest(
         reviewId: reviewId,
@@ -597,6 +657,7 @@ class StoreController extends StateNotifier<StoreState> {
       ),
     );
 
+    // จัดการผลลัพธ์ของ usecase
     result.when(
       (success) {
         isSuccess = success;
@@ -608,6 +669,7 @@ class StoreController extends StateNotifier<StoreState> {
     return isSuccess;
   }
 
+// เมธอดสำหรับตรวจสอบว่ามีคำขอแชทกับร้านขายยานี้อยู่แล้วหรือไม่
   Future<void> onCheckRequestChatAlready(String pharmacyId) async {
     final result = await _checkRequestChatAlreadyUsecase.execute(
       ChatWithPharmacyRequest(
@@ -615,6 +677,7 @@ class StoreController extends StateNotifier<StoreState> {
       ),
     );
 
+    // จัดการผลลัพธ์ของ usecase
     result.when(
       (success) => state = state.copyWith(
         checkRequestChatAlready: success,
@@ -623,14 +686,18 @@ class StoreController extends StateNotifier<StoreState> {
     );
   }
 
+// เมธอดสำหรับตรวจสอบว่ามีคำขอแชทกับร้านขายยานี้ที่รอการอนุมัติหรือไม่
   Future<void> onCheckRequestChatWaiting(String pharmacyId) async {
+    // เรียกใช้ usecase เพื่อตรวจสอบ
     final result = await _checkRequestChatWaitingUsecase.execute(
       ChatWithPharmacyRequest(
         pharmacyId: pharmacyId,
       ),
     );
 
+    // จัดการผลลัพธ์ของ usecase
     result.when(
+      // หากสำเร็จ เก็บข้อมูลผลลัพธ์ลงใน state
       (success) => state = state.copyWith(
         checkRequestChatWaiting: success,
       ),

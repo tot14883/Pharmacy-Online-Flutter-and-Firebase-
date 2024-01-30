@@ -4,6 +4,7 @@ import 'package:pharmacy_online/core/app_style.dart';
 import 'package:pharmacy_online/generated/assets.gen.dart';
 
 class ProfileMenuWidget extends StatelessWidget {
+  // รับข้อมูลไอคอนหน้าปก ข้อความ และฟังก์ชันสำหรับเรียกใช้งานเมื่อแตะมาแสดงผล
   final VoidCallback onTap;
   final Widget prefixIcon;
   final String label;

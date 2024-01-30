@@ -22,6 +22,7 @@ class BaseButton extends StatelessWidget {
   final EdgeInsets? margin;
   final bool isEnable;
 
+  // คอนสตรักเตอร์ที่ใช้รับค่าต่าง ๆ ที่จำเป็นสำหรับการสร้าง Button
   const BaseButton({
     Key? key,
     this.buttonType = ButtonType.primary,
@@ -41,6 +42,7 @@ class BaseButton extends StatelessWidget {
     this.isEnable = true,
   }) : super(key: key);
 
+  // กำหนดสีขอบของ Button
   Color _getBorderColor() {
     if (!isEnable) {
       return AppColor.themeGrayLight;
@@ -61,6 +63,7 @@ class BaseButton extends StatelessWidget {
     }
   }
 
+// กำหนดสีพื้นหลังของ Button
   Color _getButtonColor() {
     if (!isEnable) {
       return AppColor.themeGrayLight;
@@ -81,6 +84,7 @@ class BaseButton extends StatelessWidget {
     }
   }
 
+// กำหนดสีของ Text บน Button
   Color _getButtonTextColor() {
     if (!isEnable) {
       return AppColor.themeWhiteColor;
@@ -101,6 +105,7 @@ class BaseButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // คำนวณขนาดของ Button ตามตัวเลือกที่กำหนด
     final minWidth = this.minWidth ?? 0;
     final width = this.width;
     final hasIcon = iconWidget != null;
@@ -115,6 +120,7 @@ class BaseButton extends StatelessWidget {
       width: width,
       margin: margin,
       child: Container(
+        // กำหนดรูปแบบการแสดงผลของ Button
         decoration: BoxDecoration(
           border: Border.all(
             color: _getBorderColor(),
@@ -128,25 +134,32 @@ class BaseButton extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(borderRadius),
           ),
+          // กำหนด InkWell เพื่อให้สามารถรับ Event การ Tap
           child: InkWell(
-            onTap: isEnable ? onTap : null,
-            splashColor: Colors.transparent,
-            highlightColor: Colors.transparent,
-            hoverColor: Colors.transparent,
-            borderRadius: BorderRadius.circular(borderRadius),
+            onTap: isEnable
+                ? onTap
+                : null, // ตรวจสอบว่า Button ได้เปิดใช้งานหรือไม่
+            splashColor: Colors.transparent, // สีที่แสดงขณะแตะ
+            highlightColor: Colors.transparent, // สีที่เน้นขณะแตะ (ถ้ามี)
+            hoverColor: Colors.transparent, // สีที่แสดงขณะเมาส์วาง
+            borderRadius:
+                BorderRadius.circular(borderRadius), // กำหนดรูปร่างของขอบ
             child: Container(
               padding: padding,
               child: Row(
                 mainAxisAlignment: rowMainAxisAlignment,
                 children: [
+                  // ตรวจสอบว่ามี Icon ใน Button หรือไม่
                   if (hasIcon) ...[
                     iconWidget!,
                   ],
+                  // ตรวจสอบว่ามีทั้ง Icon และ Text ใน Button หรือไม่
                   if (hasIcon && hasText) ...[
                     SizedBox(
                       width: 8.0.w,
                     ),
                   ],
+                  // ตรวจสอบว่ามี Text ใน Button หรือไม่
                   if (hasText) ...[
                     Flexible(
                       child: FittedBox(

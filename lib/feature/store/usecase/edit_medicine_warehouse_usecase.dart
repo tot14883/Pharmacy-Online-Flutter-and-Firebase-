@@ -7,6 +7,7 @@ import 'package:pharmacy_online/feature/store/model/request/medicine_request.dar
 
 final editMedicineWarehouseUsecaseProvider =
     Provider<EditMedicineWarehouseUsecase>((ref) {
+  //editMedicineWarehouseUsecaseProvider คือ Provider ที่ให้บริการ `EditMedicineWarehouseUsecase` ซึ่งเป็น `UseCase` ที่ทำหน้าที่แก้ไขข้อมูลของยา
   final fireCloudStore = ref.watch(firebaseCloudStoreProvider);
   final firebaseCloudStorage = ref.watch(firebaseCloudStorageProvider);
   final baseSharePreference = ref.watch(baseSharePreferenceProvider);
@@ -37,15 +38,18 @@ class EditMedicineWarehouseUsecase extends UseCase<MedicineRequest, bool> {
     MedicineRequest request,
   ) async {
     try {
+      //ดึงข้อมูลที่ต้องการแก้ไขจาก `request`
       final id = request.id ?? '';
       final name = request.name ?? '';
       final price = request.price ?? 0.0;
       final medicineImg = request.medicineImg;
       final currentMedicineImg = request.currentMedicineImg;
 
+      //ดึง uid จาก SharedPreferences
       final uid = baseSharePreference.getString(BaseSharePreferenceKey.userId);
 
       if (uid != null) {
+        //ตรวจสอบว่ามีรูปภาพของยาใหม่หรือไม่ และทำการอัปโหลดในกรณีที่มีรูปภาพใหม่
         String urlMedicineImg = '';
 
         if (medicineImg != null) {
@@ -55,8 +59,9 @@ class EditMedicineWarehouseUsecase extends UseCase<MedicineRequest, bool> {
           );
         }
 
+        //สร้าง collectUser ซึ่งเป็นคอลเลคชันของ Firebase Cloud Firestore ที่เกี่ยวข้องกับข้อมูลของยา
         final collectUser = fireCloudStore.collection('medicineWarehouse');
-
+        //สร้าง Map ที่ประกอบด้วยข้อมูลที่ต้องการแก้ไข เช่น `name`, `price`, `medicineImg`, และ `update_at`
         final Map<String, dynamic> myData = {
           "name": name,
           "price": price,
@@ -65,6 +70,7 @@ class EditMedicineWarehouseUsecase extends UseCase<MedicineRequest, bool> {
           "update_at": DateTime.now(),
         };
 
+        //ทำการอัปเดตข้อมูลของยาด้วย `collectUser.doc(id).update(myData)`
         await collectUser.doc(id).update(myData);
 
         return true;

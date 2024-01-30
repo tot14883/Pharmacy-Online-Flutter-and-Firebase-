@@ -22,11 +22,13 @@ final getUserInfoUsecaseProvider = Provider<GetUserInfoUseCase>((ref) {
   );
 });
 
+// สร้าง UseCase สำหรับการดึงข้อมูลของผู้ใช้
 class GetUserInfoUseCase extends UseCase<void, UserInfoResponse> {
   final FirebaseCloudStore fireCloudStore;
   final BaseSharedPreference baseSharedPreference;
   final BaseUtils baseUtils;
 
+  // กำหนด Constructor พร้อมรับ Provider ที่ต้องใช้
   GetUserInfoUseCase(
     Ref ref,
     this.fireCloudStore,
@@ -36,16 +38,20 @@ class GetUserInfoUseCase extends UseCase<void, UserInfoResponse> {
     this.ref = ref;
   }
 
+  // ฟังก์ชัน exec ในการดึงข้อมูลของผู้ใช้
   @override
   Future<UserInfoResponse> exec(
     void request,
   ) async {
     try {
+      // ดึงข้อมูล uid จาก SharedPreferences
       final uid = baseSharedPreference.getString(BaseSharePreferenceKey.userId);
 
       if (uid != null) {
+        // ดึง Collection ของ user
         final collect = fireCloudStore.collection('user');
 
+        // ดึงข้อมูลจาก Firestore ด้วย uid
         final data = await collect
             .doc(
               uid,
@@ -53,17 +59,20 @@ class GetUserInfoUseCase extends UseCase<void, UserInfoResponse> {
             .get()
             .then((value) => value.data() as Map<String, dynamic>);
 
+        // อัปเดตข้อมูล isOnline ใน Firestore
         await collect.doc(uid).update(
           {
             "isOnline": true,
           },
         );
 
+        // อัปเดตข้อมูลบางส่วนใน SharedPreferences
         await baseSharedPreference.setString(
           BaseSharePreferenceKey.role,
           data['role'],
         );
 
+        // ตรวจสอบ rold ของผู้ใช้และสร้าง UserInfoResponse ตามเงื่อนไข
         if (data['role'] == AuthenticationType.admin.name) {
           return UserInfoResponse(
             uid: data['uid'],

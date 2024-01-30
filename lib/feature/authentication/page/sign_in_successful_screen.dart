@@ -56,22 +56,25 @@ class _SignInSuccessfulScreenState
               BaseButton(
                 width: 100.w,
                 onTap: () {
+                  // ตรวจสอบสถานะของ userInfo
                   if (userInfo?.status == 'cancel') {
+                     // ถ้าสถานะเป็น cancel นำทางผู้ใช้ไปยังหน้าจอ BannedScreen และลบทุกทางที่ถูกเรียกใช้
                     Navigator.of(context).pushNamedAndRemoveUntil(
                       BannedScreen.routeName,
                       (route) => false,
                     );
                     return;
                   }
-
+                  // ตรวจสอบว่าผู้ใช้เป็น Admin หรือไม่
                   if (isAdmin) {
+                    // ถ้าเป็น Admin นำทางผู้ใช้ไปยังหน้าจอ AdminDashboardScreen และลบทุกทางที่ถูกเรียกใช้
                     Navigator.of(context).pushNamedAndRemoveUntil(
                       AdminDashboardScreen.routeName,
                       (route) => false,
                     );
                     return;
                   }
-
+                  // นำทางผู้ใช้ไปยังหน้าจอ DashboardScreen และลบทุกทางที่ถูกเรียกใช้
                   Navigator.of(context).pushNamedAndRemoveUntil(
                     DashboardScreen.routeName,
                     (route) => false,
