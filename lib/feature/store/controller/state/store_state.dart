@@ -31,5 +31,9 @@ class StoreState with _$StoreState {
     AsyncValue<List<CommentResponse>?> commentList,
     @Default(false) bool checkRequestChatAlready,
     @Default(false) bool checkRequestChatWaiting,
+    List<MedicineResponse>? searchCentralMedicineList,
+    List<MedicineResponse>? searchMedicineList,
+    List<PharmacyInfoResponse>? searchPharmacyInfoList,
+    double? searchDistance,
   }) = _StoreState;
 }

@@ -67,8 +67,9 @@ class _UserDetailScreenState extends ConsumerState<UserDetailScreen> {
                 // ช่องข้อมูลชื่อ-นามสกุล
                 BaseTextField(
                   isReadOnly: true,
+                  isShowLabelField: true,
                   initialValue: fullname,
-                  placeholder: "ชื่อนาม-สกุล",
+                  label: "ชื่อนาม-สกุล",
                 ),
                 SizedBox(
                   height: 16.h,
@@ -76,8 +77,9 @@ class _UserDetailScreenState extends ConsumerState<UserDetailScreen> {
                 // ช่องข้อมูลเบอร์โทร
                 BaseTextField(
                   isReadOnly: true,
+                  isShowLabelField: true,
                   initialValue: phone,
-                  placeholder: "เบอร์โทรศัพท์",
+                  label: "เบอร์โทรศัพท์",
                 ),
                 SizedBox(
                   height: 16.h,
@@ -87,7 +89,8 @@ class _UserDetailScreenState extends ConsumerState<UserDetailScreen> {
                   fieldKey: FieldUserInfo.licensePharmacy,
                   initialValue: licensePharmacy,
                   isReadOnly: true,
-                  placeholder: "เลขที่ใบอนุญาตเภสัชกร",
+                  isShowLabelField: true,
+                  label: "เลขที่ใบอนุญาตเภสัชกร",
                 ),
                 SizedBox(
                   height: 16.h,

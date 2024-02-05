@@ -95,7 +95,8 @@ class _SignUpStep2WidgetState extends ConsumerState<SignUpStep2Widget> {
             ),
             BaseTextField(
               fieldKey: FieldSignUp.name,
-              placeholder: "ชื่อ-นามสกุล",
+              label: "ชื่อ-นามสกุล",
+              isShowLabelField: true,
               validator: Validators.combine(
                 [
                   Validators.withMessage(
@@ -110,7 +111,8 @@ class _SignUpStep2WidgetState extends ConsumerState<SignUpStep2Widget> {
             ),
             BaseTextField(
               fieldKey: FieldSignUp.phone,
-              placeholder: "เบอร์โทรศัพท์",
+              label: "เบอร์โทรศัพท์",
+              isShowLabelField: true,
               validator: Validators.combine(
                 [
                   Validators.withMessage(
@@ -127,7 +129,8 @@ class _SignUpStep2WidgetState extends ConsumerState<SignUpStep2Widget> {
               BaseTextField(
                 fieldKey: FieldSignUp.address,
                 controller: addressController,
-                placeholder: "ที่อยู่",
+                label: "ที่อยู่",
+                isShowLabelField: true,
                 isReadOnly: true,
                 onTap: () async {
                   final result =
@@ -196,7 +199,8 @@ class _SignUpStep2WidgetState extends ConsumerState<SignUpStep2Widget> {
             if (isPharmacy) ...[
               BaseTextField(
                 fieldKey: FieldSignUp.licensePharmacy,
-                placeholder: "เลขที่ใบอนุญาตเภสัชกร",
+                label: "เลขที่ใบอนุญาตเภสัชกร",
+                isShowLabelField: true,
                 validator: Validators.combine(
                   [
                     Validators.withMessage(

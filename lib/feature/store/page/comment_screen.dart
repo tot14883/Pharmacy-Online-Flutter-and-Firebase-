@@ -92,7 +92,8 @@ class _CommentScreenState extends BaseConsumerState<CommentScreen> {
                         child: BaseTextField(
                           controller:
                               messageController, // เชื่อม controller กับช่องกรอกข้อความ
-                          placeholder: 'comment',
+                          label: 'comment',
+                          isShowLabelField: true,
                         ),
                       ),
                       SizedBox(

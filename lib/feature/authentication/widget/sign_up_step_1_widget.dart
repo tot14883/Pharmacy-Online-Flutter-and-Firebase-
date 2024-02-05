@@ -74,7 +74,8 @@ class _SignUpStep1WidgetState extends ConsumerState<SignUpStep1Widget> {
               initialValue: email,
               fieldKey: FieldSignUp.email,
               prefixIcon: Assets.icons.icEmail.svg(),
-              placeholder: "Enter email",
+              label: "Enter email",
+              isShowLabelField: true,
               validator: Validators.combine(
                 [
                   Validators.withMessage(
@@ -96,6 +97,7 @@ class _SignUpStep1WidgetState extends ConsumerState<SignUpStep1Widget> {
               fieldKey: FieldSignUp.password,
               controller: passwordController,
               prefixIcon: Assets.icons.icLock.svg(),
+              isShowLabelField: true,
               suffixIcon: GestureDetector(
                 onTap: () {
                   setState(() {
@@ -107,7 +109,7 @@ class _SignUpStep1WidgetState extends ConsumerState<SignUpStep1Widget> {
                     : Assets.icons.icEyeSlash.svg(),
               ),
               isObscureText: !isHidePassword,
-              placeholder: "Password",
+              label: "Password",
               validator: Validators.combine(
                 [
                   Validators.withMessage(
@@ -123,6 +125,7 @@ class _SignUpStep1WidgetState extends ConsumerState<SignUpStep1Widget> {
             BaseTextField(
               fieldKey: FieldSignUp.confirmPassword,
               prefixIcon: Assets.icons.icLock.svg(),
+              isShowLabelField: true,
               suffixIcon: GestureDetector(
                 onTap: () {
                   setState(() {
@@ -135,7 +138,7 @@ class _SignUpStep1WidgetState extends ConsumerState<SignUpStep1Widget> {
               ),
               controller: confirmPasswordController,
               isObscureText: !isHidePasswordConfirm,
-              placeholder: "Confirm Password",
+              label: "Confirm Password",
               validator: Validators.combine(
                 [
                   Validators.withMessage(

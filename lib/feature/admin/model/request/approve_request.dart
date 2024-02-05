@@ -13,6 +13,7 @@ abstract class ApproveRequest with _$ApproveRequest {
   const factory ApproveRequest({
     required bool isApprove,
     required String uid,
+    required bool isWarning,
   }) = _ApproveRequest;
 
   // สร้างเมธอดช่วยในการแปลง JSON เป็น Object และใช้คำสั่ง _$ApproveRequestFromJson

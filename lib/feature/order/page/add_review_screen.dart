@@ -85,7 +85,8 @@ class _AddReviewScreenState extends BaseConsumerState<AddReviewScreen> {
                   ),
                   BaseTextField(
                     controller: messageController,
-                    placeholder: 'ระบุข้อความรีวิว',
+                    label: 'ระบุข้อความรีวิว',
+                    isShowLabelField: true,
                     maxLines: 5,
                   ),
                   SizedBox(

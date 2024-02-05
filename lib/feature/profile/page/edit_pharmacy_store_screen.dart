@@ -143,7 +143,8 @@ class _EditPharmacyStoreScreenState
                   BaseTextField(
                     fieldKey: FieldUserInfo.nameStore,
                     initialValue: nameStore,
-                    placeholder: "ชื่อร้าน",
+                    label: "ชื่อร้าน",
+                    isShowLabelField: true,
                     validator: Validators.combine(
                       [
                         Validators.withMessage(
@@ -159,9 +160,10 @@ class _EditPharmacyStoreScreenState
                   // Textfield สำหรับที่อยู่ร้าน
                   BaseTextField(
                     fieldKey: FieldUserInfo.addressStore,
-                    placeholder: "ที่อยู่",
+                    label: "ที่อยู่",
                     controller: addressController,
                     isReadOnly: true,
+                    isShowLabelField: true,
                     // Callback เมื่อที่อยู่ถูกแตะ จะเปิดหน้าต่างเลือกที่อยู่
                     onTap: () async {
                       final result =
@@ -235,7 +237,8 @@ class _EditPharmacyStoreScreenState
                   BaseTextField(
                     fieldKey: FieldUserInfo.phoneStore,
                     initialValue: phoneStore,
-                    placeholder: "เบอร์โทรศัพท์",
+                    label: "เบอร์โทรศัพท์",
+                    isShowLabelField: true,
                     validator: Validators.combine(
                       [
                         Validators.withMessage(
@@ -251,9 +254,10 @@ class _EditPharmacyStoreScreenState
                   // Textfield สำหรับเวลาเปิด
                   BaseTextField(
                     fieldKey: FieldUserInfo.timeOpening,
-                    placeholder: "เวลาเปิด",
+                    label: "เวลาเปิด",
                     initialValue: timeOpening,
                     textInputType: TextInputType.datetime,
+                    isShowLabelField: true,
                     validator: Validators.combine(
                       [
                         Validators.withMessage(
@@ -269,9 +273,10 @@ class _EditPharmacyStoreScreenState
                   // Textfield สำหรับเวลาปิด
                   BaseTextField(
                     fieldKey: FieldUserInfo.timeClosing,
-                    placeholder: "เวลาปิด",
+                    label: "เวลาปิด",
                     initialValue: timeClosing,
                     textInputType: TextInputType.datetime,
+                    isShowLabelField: true,
                     validator: Validators.combine(
                       [
                         Validators.withMessage(
@@ -287,8 +292,9 @@ class _EditPharmacyStoreScreenState
                   // Textfield สำหรับเลขที่ใบอนุญาตร้าน
                   BaseTextField(
                     fieldKey: FieldUserInfo.licensePharmacyStore,
-                    placeholder: "เลขที่ใบอนุญาตร้าน",
+                    label: "เลขที่ใบอนุญาตร้าน",
                     initialValue: licenseStore,
+                    isShowLabelField: true,
                     validator: Validators.combine(
                       [
                         Validators.withMessage(

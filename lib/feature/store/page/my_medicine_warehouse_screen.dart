@@ -6,6 +6,7 @@ import 'package:pharmacy_online/base_widget/async_value_widget.dart';
 import 'package:pharmacy_online/base_widget/base_app_bar.dart';
 import 'package:pharmacy_online/base_widget/base_button.dart';
 import 'package:pharmacy_online/base_widget/base_scaffold.dart';
+import 'package:pharmacy_online/base_widget/base_text_field.dart';
 import 'package:pharmacy_online/core/app_color.dart';
 import 'package:pharmacy_online/core/app_style.dart';
 import 'package:pharmacy_online/core/widget/base_consumer_state.dart';
@@ -114,6 +115,8 @@ class _MyMedicineWarehouseScreenState
       bodyBuilder: (context, constrained) {
         final medicineList = ref.watch(
             storeControllerProvider.select((value) => value.medicineList));
+        final searchMedicineList = ref.watch(storeControllerProvider
+            .select((value) => value.searchMedicineList));
 
         return SizedBox(
           height: MediaQuery.of(context).size.height,
@@ -133,15 +136,31 @@ class _MyMedicineWarehouseScreenState
                       16,
                       MediaQuery.of(context).padding.bottom + 72,
                     ).r,
-                    child: MedicineWarehouseListWidget(
-                      onTap: (val) {
-                        setState(() {
-                          isStayThisPage = val;
-                        });
-                      },
-                      isFromChat: isFromChat,
-                      medicineList: _medicineList,
-                      chatWithPharmacyItem: widget.args?.chatWithPharmacyItem,
+                    child: Column(
+                      children: [
+                        BaseTextField(
+                          placeholder: 'ค้นหายา',
+                          onChange: (val) {
+                            ref
+                                .read(storeControllerProvider.notifier)
+                                .onSearchMyMedicine(val);
+                          },
+                        ),
+                        SizedBox(
+                          height: 8.h,
+                        ),
+                        MedicineWarehouseListWidget(
+                          onTap: (val) {
+                            setState(() {
+                              isStayThisPage = val;
+                            });
+                          },
+                          isFromChat: isFromChat,
+                          medicineList: searchMedicineList ?? _medicineList,
+                          chatWithPharmacyItem:
+                              widget.args?.chatWithPharmacyItem,
+                        ),
+                      ],
                     ),
                   );
                 },

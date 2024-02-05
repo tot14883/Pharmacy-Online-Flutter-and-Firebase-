@@ -78,17 +78,19 @@ class _PharmacyStoreDetaillScreenState
                 // ช่องข้อมูลชื่อร้าน
                 BaseTextField(
                   isReadOnly: true,
+                  isShowLabelField: true,
                   initialValue: nameStore,
-                  placeholder: "ชื่อร้าน",
+                  label: "ชื่อร้าน",
                 ),
                 SizedBox(
                   height: 16.h,
                 ),
                 // ช่องข้อมูลที่อยู่
                 BaseTextField(
-                  placeholder: "ที่อยู่",
+                  label: "ที่อยู่",
                   initialValue: address,
                   isReadOnly: true,
+                  isShowLabelField: true,
                 ),
                 SizedBox(
                   height: 16.h,
@@ -97,15 +99,17 @@ class _PharmacyStoreDetaillScreenState
                 BaseTextField(
                   initialValue: phoneStore,
                   isReadOnly: true,
-                  placeholder: "เบอร์โทรศัพท์",
+                  isShowLabelField: true,
+                  label: "เบอร์โทรศัพท์",
                 ),
                 SizedBox(
                   height: 16.h,
                 ),
                 // ช่องข้อมูลเวลาเปิด
                 BaseTextField(
-                  placeholder: "เวลาเปิด",
+                  label: "เวลาเปิด",
                   isReadOnly: true,
+                  isShowLabelField: true,
                   initialValue: timeOpening,
                   textInputType: TextInputType.datetime,
                 ),
@@ -115,7 +119,8 @@ class _PharmacyStoreDetaillScreenState
                 // ช่องข้อมูลเวลาปิด
                 BaseTextField(
                   isReadOnly: true,
-                  placeholder: "เวลาปิด",
+                  isShowLabelField: true,
+                  label: "เวลาปิด",
                   initialValue: timeClosing,
                   textInputType: TextInputType.datetime,
                 ),
@@ -125,7 +130,8 @@ class _PharmacyStoreDetaillScreenState
                 // ช่องข้อมูลเลขที่ใบอนุญาตร้าน
                 BaseTextField(
                   isReadOnly: true,
-                  placeholder: "เลขที่ใบอนุญาตร้าน",
+                  isShowLabelField: true,
+                  label: "เลขที่ใบอนุญาตร้าน",
                   initialValue: licenseStore,
                 ),
                 SizedBox(

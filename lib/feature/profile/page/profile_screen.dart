@@ -181,16 +181,14 @@ class _ProfileScreenState extends BaseConsumerState<ProfileScreen> {
                           dialogLogo: Assets.icons.icLogout.svg(),
                           message: 'ต้องการออกจากระบบ',
                           onClick: () async {
-                            final result = await ref
+                            await ref
                                 .read(authenticationControllerProvider.notifier)
                                 .onLogout();
-                            if (result) {
-                              Navigator.of(context).pop();
-                              Navigator.of(context).pushNamedAndRemoveUntil(
-                                MainScreen.routeName,
-                                (route) => false,
-                              );
-                            }
+                            Navigator.of(context).pop();
+                            Navigator.of(context).pushNamedAndRemoveUntil(
+                              MainScreen.routeName,
+                              (route) => false,
+                            );
                           },
                           hasCancel: true,
                         );

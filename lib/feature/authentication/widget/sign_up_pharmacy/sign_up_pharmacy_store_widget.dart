@@ -79,7 +79,8 @@ class _SignUpPharmacyStoreWidgetState
         ),
         BaseTextField(
           fieldKey: FieldSignUp.nameStore,
-          placeholder: "ชื่อร้าน",
+          label: "ชื่อร้าน",
+          isShowLabelField: true,
           validator: Validators.combine(
             [
               Validators.withMessage(
@@ -95,7 +96,8 @@ class _SignUpPharmacyStoreWidgetState
         BaseTextField(
           fieldKey: FieldSignUp.addressStore,
           controller: addressController,
-          placeholder: "ที่อยู่",
+          label: "ที่อยู่",
+          isShowLabelField: true,
           isReadOnly: true,
           onTap: () async {
             final result = await ref.read(baseUtilsProvider).getLocation();
@@ -160,7 +162,8 @@ class _SignUpPharmacyStoreWidgetState
         ),
         BaseTextField(
           fieldKey: FieldSignUp.phoneStore,
-          placeholder: "เบอร์โทรศัพท์",
+          label: "เบอร์โทรศัพท์",
+          isShowLabelField: true,
           validator: Validators.combine(
             [
               Validators.withMessage(
@@ -175,7 +178,8 @@ class _SignUpPharmacyStoreWidgetState
         ),
         BaseTextField(
           fieldKey: FieldSignUp.timeOpening,
-          placeholder: "เวลาเปิด",
+          label: "เวลาเปิด",
+          isShowLabelField: true,
           textInputType: TextInputType.datetime,
           validator: Validators.combine(
             [
@@ -191,7 +195,8 @@ class _SignUpPharmacyStoreWidgetState
         ),
         BaseTextField(
           fieldKey: FieldSignUp.timeClosing,
-          placeholder: "เวลาปิด",
+          label: "เวลาปิด",
+          isShowLabelField: true,
           textInputType: TextInputType.datetime,
           validator: Validators.combine(
             [
@@ -207,7 +212,8 @@ class _SignUpPharmacyStoreWidgetState
         ),
         BaseTextField(
           fieldKey: FieldSignUp.licensePharmacyStore,
-          placeholder: "เลขที่ใบอนุญาตร้าน",
+          label: "เลขที่ใบอนุญาตร้าน",
+          isShowLabelField: true,
           validator: Validators.combine(
             [
               Validators.withMessage(

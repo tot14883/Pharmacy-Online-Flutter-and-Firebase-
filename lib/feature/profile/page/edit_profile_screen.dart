@@ -139,7 +139,8 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                   BaseTextField(
                     fieldKey: FieldUserInfo.name,
                     initialValue: fullname,
-                    placeholder: "ชื่อนาม-สกุล",
+                    label: "ชื่อนาม-สกุล",
+                    isShowLabelField: true,
                     validator: Validators.combine(
                       [
                         Validators.withMessage(
@@ -156,7 +157,8 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                   BaseTextField(
                     fieldKey: FieldUserInfo.phone,
                     initialValue: phone,
-                    placeholder: "เบอร์โทรศัพท์",
+                    label: "เบอร์โทรศัพท์",
+                    isShowLabelField: true,
                     validator: Validators.combine(
                       [
                         Validators.withMessage(
@@ -174,7 +176,8 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                     BaseTextField(
                       fieldKey: FieldUserInfo.address,
                       controller: addressController,
-                      placeholder: "ที่อยู่",
+                      label: "ที่อยู่",
+                      isShowLabelField: true,
                       isReadOnly: true,
                       // Callback เมื่อที่อยู่ถูกแตะ จะเปิดหน้าต่างเลือกที่อยู่
                       onTap: () async {
@@ -250,7 +253,8 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                     BaseTextField(
                       fieldKey: FieldUserInfo.licensePharmacy,
                       initialValue: licensePharmacy,
-                      placeholder: "เลขที่ใบอนุญาตเภสัชกร",
+                      label: "เลขที่ใบอนุญาตเภสัชกร",
+                      isShowLabelField: true,
                       validator: Validators.combine(
                         [
                           Validators.withMessage(

@@ -4,6 +4,7 @@ import 'package:pharmacy_online/base_widget/base_form_field.dart';
 import 'package:pharmacy_online/core/loader/loader_controller.dart';
 import 'package:pharmacy_online/core/local/base_shared_preference.dart';
 import 'package:pharmacy_online/core/router/app_naviagor.dart';
+import 'package:pharmacy_online/feature/admin/model/response/pharmacy_info_response.dart';
 import 'package:pharmacy_online/feature/authentication/enum/authentication_type_enum.dart';
 import 'package:pharmacy_online/feature/order/model/request/review_request.dart';
 import 'package:pharmacy_online/feature/store/controller/state/store_state.dart';
@@ -191,6 +192,9 @@ class StoreController extends StateNotifier<StoreState> {
     final name = baseFormData?.getValue<String>(FieldMedicine.name);
 
     final price = baseFormData?.getValue<String>(FieldMedicine.price) ?? '0.0';
+    final medicineType =
+        baseFormData?.getValue<String>(FieldMedicine.medicineType) ?? '';
+    final band = baseFormData?.getValue<String>(FieldMedicine.band) ?? '';
 
     // ตรวจสอบว่าผู้ใช้เป็น admin หรือไม่
     final isAdmin = _ref
@@ -205,6 +209,8 @@ class StoreController extends StateNotifier<StoreState> {
         price: double.parse(
             isAdmin ? '0.0' : price), // หากเป็น admin ให้ราคาเป็น 0
         medicineImg: medicineImg,
+        medicineType: medicineType,
+        band: band,
       ),
     );
 
@@ -234,6 +240,9 @@ class StoreController extends StateNotifier<StoreState> {
     final baseFormData = state.baseFormData;
     final name = baseFormData?.getValue<String>(FieldMedicine.name);
     final price = baseFormData?.getValue<String>(FieldMedicine.price) ?? '0.0';
+    final medicineType =
+        baseFormData?.getValue<String>(FieldMedicine.medicineType);
+    final band = baseFormData?.getValue<String>(FieldMedicine.band);
 
     // เรียกใช้ usecase เพื่อแก้ไขข้อมูลยา
     final result = await _editMedicineWarehouseUsecase.execute(
@@ -243,6 +252,8 @@ class StoreController extends StateNotifier<StoreState> {
         price: double.parse(price),
         currentMedicineImg: currentMedicineImg,
         medicineImg: medicineImg,
+        medicineType: medicineType,
+        band: band,
       ),
     );
 
@@ -702,6 +713,94 @@ class StoreController extends StateNotifier<StoreState> {
         checkRequestChatWaiting: success,
       ),
       (error) => null,
+    );
+  }
+
+  void onSearchMedicine(String medicine) async {
+    final centralMedicineList = state.centralMedicineList.value;
+
+    if (centralMedicineList == null) return;
+
+    final searchcentralMedicineList = centralMedicineList.where(
+      (e) {
+        final name = e.name!.contains(
+          medicine,
+        );
+        final band = e.band?.contains(
+          medicine,
+        );
+        final medicineType = e.medicineType?.contains(
+          medicine,
+        );
+
+        if (e.band != null && medicineType != null) {
+          return name || band! || medicineType;
+        }
+
+        return name;
+      },
+    ).toList();
+
+    state =
+        state.copyWith(searchCentralMedicineList: searchcentralMedicineList);
+  }
+
+  void onSearchMyMedicine(String medicine) async {
+    final medicineList = state.medicineList.value;
+
+    if (medicineList == null) return;
+
+    final searchMedicineList = medicineList.where(
+      (e) {
+        final name = e.name!.contains(
+          medicine,
+        );
+        final band = e.band?.contains(
+          medicine,
+        );
+        final medicineType = e.medicineType?.contains(
+          medicine,
+        );
+
+        if (e.band != null && medicineType != null) {
+          return name || band! || medicineType;
+        }
+
+        return name;
+      },
+    ).toList();
+
+    state = state.copyWith(searchMedicineList: searchMedicineList);
+  }
+
+  void onSearchPharmacyStore({
+    String? name,
+    double? distance,
+    double? rating,
+    int? countReviewer,
+    String? timeCloseOpen,
+  }) async {
+    final pharmacyInfoList = state.pharmacyInfoList.value;
+
+    if (pharmacyInfoList == null) return;
+
+    List<PharmacyInfoResponse>? searchPharmacyInfoList;
+
+    if (name != null) {
+      searchPharmacyInfoList = pharmacyInfoList.where(
+        (e) {
+          final _name = e.nameStore!.contains(
+            name,
+          );
+
+          return _name;
+        },
+      ).toList();
+    }
+
+    state = state.copyWith(
+      searchPharmacyInfoList: searchPharmacyInfoList,
+      searchDistance: distance,
     );
   }
 }

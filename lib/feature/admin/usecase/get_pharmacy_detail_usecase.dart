@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pharmacy_online/core/application/usecase.dart';
 import 'package:pharmacy_online/core/firebase/database/cloud_store_provider.dart';
@@ -34,18 +33,30 @@ class GetPharmacyDetailUsecase
       // ดึงข้อมูลผู้ใช้ที่มีสถานะ "waiting" หรือ "approve" และเป็นบทบาท "pharmacy"
       final collectUser = await fireCloudStore
           .collection('user')
-          .where(
-            Filter.or(
-              Filter(
-                'status',
-                isEqualTo: "waiting",
-              ),
-              Filter(
-                'status',
-                isEqualTo: "approve",
-              ),
-            ),
-          )
+          // .where(
+          //   Filter.or(
+          //     Filter(
+          //       'status',
+          //       isEqualTo: "waiting",
+          //     ),
+          //     Filter(
+          //       'status',
+          //       isEqualTo: "approve",
+          //     ),
+          //     Filter(
+          //       'status',
+          //       isEqualTo: "cancel",
+          //     ),
+          //     Filter(
+          //       'status',
+          //       isEqualTo: "approve",
+          //     ),
+          //  Filter(
+          //       'status',
+          //       isEqualTo: "waitingEdit",
+          //     ),
+          //   ),
+          // )
           .where(
             'role',
             isEqualTo: "pharmacy",

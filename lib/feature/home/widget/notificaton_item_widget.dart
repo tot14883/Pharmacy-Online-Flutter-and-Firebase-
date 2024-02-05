@@ -60,12 +60,15 @@ class _NotificationItemWidgetState
       ),
     );
   }
+
   //ดึงไอค่อนมาใช้
   Widget statusIcon(String status) {
     switch (status) {
       case 'approveChat':
         return Assets.icons.icSuccessStatus.svg();
       case 'cancelChat':
+        return Assets.icons.icWarning.svg();
+      case 'warningChat':
         return Assets.icons.icWarning.svg();
       case 'waitingPayment':
         return Assets.icons.icWarning.svg();

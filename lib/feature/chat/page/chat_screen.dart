@@ -25,6 +25,7 @@ import 'package:pharmacy_online/generated/assets.gen.dart';
 import 'package:pharmacy_online/utils/image_picker/image_picker_provider.dart';
 import 'package:pharmacy_online/utils/image_picker/model/image_picker_config_request.dart';
 import 'package:pharmacy_online/utils/util/base_permission_handler.dart';
+
 //คลาส ChatArgs ใช้สำหรับส่งพารามิเตอร์ไปยังหน้าจอแชท
 class ChatArgs {
   final ChatWithPharmacyResponse chatWithPharmacyItem;
@@ -230,7 +231,7 @@ class _ChatScreenState extends BaseConsumerState<ChatScreen> {
                                     isMaximum2MB: true,
                                   ),
                                 );
-                             //ส่งรูปภาพในแชท
+                            //ส่งรูปภาพในแชท
                             result.when(
                               (success) async {
                                 final id = widget.args.chatWithPharmacyItem.id;
@@ -267,7 +268,8 @@ class _ChatScreenState extends BaseConsumerState<ChatScreen> {
                       Expanded(
                         child: BaseTextField(
                           controller: chatController,
-                          placeholder: 'Message',
+                          label: 'Message',
+                          isShowLabelField: true,
                         ),
                       ),
                       SizedBox(

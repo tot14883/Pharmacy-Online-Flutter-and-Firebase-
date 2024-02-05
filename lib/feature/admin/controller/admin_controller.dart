@@ -69,12 +69,16 @@ class AdminController extends StateNotifier<AdminState> {
   }
 
   // เมธอดในการอัปเดตรายละเอียดร้านขายยา
-  Future<bool> updatePharmacyDetail(bool isApprove, String uid) async {
+  Future<bool> updatePharmacyDetail(
+    bool isApprove,
+    String uid,
+    bool isWarning,
+  ) async {
     bool isSuccess = false;
     _loader.onLoad();
 
     final result = await _updateApprovePharmacyUsecase.execute(
-      ApproveRequest(isApprove: isApprove, uid: uid),
+      ApproveRequest(isApprove: isApprove, uid: uid, isWarning: isWarning),
     );
 
     result.when(

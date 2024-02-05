@@ -2,7 +2,7 @@
 /// *****************************************************
 ///  FlutterGen
 /// *****************************************************
-// ไฟล์เรียกใช้ icon ต่างๆ
+
 // coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: directives_ordering,unnecessary_import,implicit_dynamic_list_literal,deprecated_member_use
@@ -89,6 +89,9 @@ class $AssetsIconsGen {
   /// File path: assets/icons/ic_eye_slash.svg
   SvgGenImage get icEyeSlash =>
       const SvgGenImage('assets/icons/ic_eye_slash.svg');
+
+  /// File path: assets/icons/ic_filter.svg
+  SvgGenImage get icFilter => const SvgGenImage('assets/icons/ic_filter.svg');
 
   /// File path: assets/icons/ic_heart.svg
   SvgGenImage get icHeart => const SvgGenImage('assets/icons/ic_heart.svg');
@@ -206,6 +209,7 @@ class $AssetsIconsGen {
         icEmailNotfication,
         icEye,
         icEyeSlash,
+        icFilter,
         icHeart,
         icHome,
         icLocationPin,

@@ -20,10 +20,12 @@ class DrugDetailArgs {
   final MedicineResponse medicineItem; // ข้อมูลยาที่จะแสดงในหน้าจอ
   final ChatWithPharmacyResponse?
       chatWithPharmacyItem; // ข้อมูลการแชทกับร้านขายยา (ถ้ามี)
+  final bool isOnlyDetail;
 
   DrugDetailArgs({
     required this.medicineItem,
     this.chatWithPharmacyItem,
+    this.isOnlyDetail = false,
   });
 }
 
@@ -56,6 +58,8 @@ class _DrugDetailScreenState extends BaseConsumerState<DrugDetailScreen> {
     final image = args.medicineItem.medicineImg; // รูปภาพของยา
     final pharmacyInfo = ref.watch(profileControllerProvider
         .select((value) => value.pharmacyStore)); // อ่านข้อมูลร้านขายยา
+    final band = args.medicineItem.band; // รูปภาพของยา
+    final medicineType = args.medicineItem.medicineType; // รูปภาพของยา
 
     return BaseScaffold(
       appBar: BaseAppBar(
@@ -101,6 +105,20 @@ class _DrugDetailScreenState extends BaseConsumerState<DrugDetailScreen> {
                   '$name',
                   style: AppStyle.txtHeader3,
                 ),
+                SizedBox(
+                  height: 16.h,
+                ),
+                Text(
+                  '$band',
+                  style: AppStyle.txtBody,
+                ),
+                SizedBox(
+                  height: 16.h,
+                ),
+                Text(
+                  '$medicineType',
+                  style: AppStyle.txtBody,
+                ),
                 // SizedBox(
                 //   height: 8.h,
                 // ),
@@ -131,45 +149,47 @@ class _DrugDetailScreenState extends BaseConsumerState<DrugDetailScreen> {
                     ),
                   ],
                 ),
-                SizedBox(
-                  height: 32.h,
-                ),
-                BaseButton(
-                  // ฟังก์ชันที่ทำงานเมื่อกดปุ่ม
-                  onTap: () async {
-                    // เรียกใช้ฟังก์ชัน onAddToCart() ของ myCartControllerProvider
-                    // เพื่อเพิ่มยาลงตะกร้า
-                    final result = await ref
-                        .read(myCartControllerProvider.notifier)
-                        .onAddToCart(
-                          // ข้อมูลร้านขายยา
-                          '${args.chatWithPharmacyItem?.pharmacyId}',
-                          '${args.chatWithPharmacyItem?.uid}',
-                          //ข้อมูลยา
-                          '${args.medicineItem.id}',
-                          '$image',
-                          price,
-                          '$name',
-                          quantity,
-                          '${pharmacyInfo?.nameStore}', //ชื่อร้าน
+                if (!args.isOnlyDetail) ...[
+                  SizedBox(
+                    height: 32.h,
+                  ),
+                  BaseButton(
+                    // ฟังก์ชันที่ทำงานเมื่อกดปุ่ม
+                    onTap: () async {
+                      // เรียกใช้ฟังก์ชัน onAddToCart() ของ myCartControllerProvider
+                      // เพื่อเพิ่มยาลงตะกร้า
+                      final result = await ref
+                          .read(myCartControllerProvider.notifier)
+                          .onAddToCart(
+                            // ข้อมูลร้านขายยา
+                            '${args.chatWithPharmacyItem?.pharmacyId}',
+                            '${args.chatWithPharmacyItem?.uid}',
+                            //ข้อมูลยา
+                            '${args.medicineItem.id}',
+                            '$image',
+                            price,
+                            '$name',
+                            quantity,
+                            '${pharmacyInfo?.nameStore}', //ชื่อร้าน
+                          );
+
+                      // อัปเดตจำนวนยาในตะกร้า
+                      ref
+                          .read(myCartControllerProvider.notifier)
+                          .setQuantity('${args.medicineItem.id}', quantity);
+
+                      // แสดงข้อความแจ้งเตือนหากเพิ่มยาลงตะกร้าสำเร็จ
+                      if (result) {
+                        Fluttertoast.showToast(
+                          msg: "เพิ่มลงตะกร้าสำเร็จ",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.BOTTOM,
                         );
-
-                    // อัปเดตจำนวนยาในตะกร้า
-                    ref
-                        .read(myCartControllerProvider.notifier)
-                        .setQuantity('${args.medicineItem.id}', quantity);
-
-                    // แสดงข้อความแจ้งเตือนหากเพิ่มยาลงตะกร้าสำเร็จ
-                    if (result) {
-                      Fluttertoast.showToast(
-                        msg: "เพิ่มลงตะกร้าสำเร็จ",
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.BOTTOM,
-                      );
-                    }
-                  },
-                  text: 'เพิ่มใส่ตะกร้า',
-                ),
+                      }
+                    },
+                    text: 'เพิ่มใส่ตะกร้า',
+                  ),
+                ],
               ],
             ),
           ),

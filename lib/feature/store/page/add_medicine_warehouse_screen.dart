@@ -84,7 +84,8 @@ class _AddMedicineWarehouseScreenState
                 ),
                 BaseTextField(
                   fieldKey: FieldMedicine.name,
-                  placeholder: "ชื่อยา",
+                  label: "ชื่อยา",
+                  isShowLabelField: true,
                   validator: Validators.combine(
                     [
                       Validators.withMessage(
@@ -98,7 +99,7 @@ class _AddMedicineWarehouseScreenState
                   height: 16.h,
                 ),
                 // BaseTextField(
-                //   placeholder: "จำนวน",
+                //   label: "จำนวน",
                 //   textInputType: TextInputType.number,
                 //   validator: Validators.combine(
                 //     [
@@ -117,7 +118,8 @@ class _AddMedicineWarehouseScreenState
                 if (!isAdmin) ...[
                   BaseTextField(
                     fieldKey: FieldMedicine.price,
-                    placeholder: "ราคา",
+                    label: "ราคา",
+                    isShowLabelField: true,
                     textInputType: TextInputType.number,
                     validator: Validators.combine(
                       [
@@ -129,6 +131,38 @@ class _AddMedicineWarehouseScreenState
                     ),
                   ),
                 ],
+                SizedBox(
+                  height: 16.h,
+                ),
+                BaseTextField(
+                  fieldKey: FieldMedicine.medicineType,
+                  label: "ชนิด",
+                  isShowLabelField: true,
+                  validator: Validators.combine(
+                    [
+                      Validators.withMessage(
+                        "Required",
+                        Validators.isEmpty,
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 16.h,
+                ),
+                BaseTextField(
+                  fieldKey: FieldMedicine.band,
+                  label: "ยี่ห้อ",
+                  isShowLabelField: true,
+                  validator: Validators.combine(
+                    [
+                      Validators.withMessage(
+                        "Required",
+                        Validators.isEmpty,
+                      ),
+                    ],
+                  ),
+                ),
                 SizedBox(
                   height: 16.h,
                 ),

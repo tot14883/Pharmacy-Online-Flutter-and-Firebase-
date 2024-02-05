@@ -8,7 +8,7 @@ import 'package:pharmacy_online/feature/store/model/request/medicine_request.dar
 
 final addMedicineWarehouseUsecaseProvider =
     Provider<AddMedicineWarehouseUsecase>((ref) {
-    //ดึง dependencies ที่จำเป็น
+  //ดึง dependencies ที่จำเป็น
   final fireCloudStore = ref.watch(firebaseCloudStoreProvider);
   final firebaseCloudStorage = ref.watch(firebaseCloudStorageProvider);
   final baseSharePreference = ref.watch(baseSharePreferenceProvider);
@@ -45,6 +45,8 @@ class AddMedicineWarehouseUsecase extends UseCase<MedicineRequest, bool> {
       final name = request.name ?? '';
       final price = request.price ?? 0.0;
       final medicineImg = request.medicineImg;
+      final medicineType = request.medicineType ?? '';
+      final band = request.band ?? '';
 
       final uid = baseSharePreference.getString(BaseSharePreferenceKey.userId);
       final isAdmin =
@@ -71,6 +73,8 @@ class AddMedicineWarehouseUsecase extends UseCase<MedicineRequest, bool> {
           "name": name,
           "price": price,
           "medicineImg": urlMedicineImg,
+          "medicineType": medicineType,
+          "band": band,
           "isCentral": isAdmin ? true : false,
           "create_at": DateTime.now(),
           "update_at": DateTime.now(),

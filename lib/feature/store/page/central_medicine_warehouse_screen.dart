@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pharmacy_online/base_widget/async_value_widget.dart';
 import 'package:pharmacy_online/base_widget/base_app_bar.dart';
 import 'package:pharmacy_online/base_widget/base_scaffold.dart';
+import 'package:pharmacy_online/base_widget/base_text_field.dart';
 import 'package:pharmacy_online/core/app_color.dart';
 import 'package:pharmacy_online/core/app_style.dart';
 import 'package:pharmacy_online/core/local/base_shared_preference.dart';
@@ -39,7 +40,13 @@ class _CentralMedicineWarehouseScreenState
 
     // อ่านข้อมูลรายการยาในคลังยากลางจาก riverpod
     final centralMedicineList = ref.watch(
-        storeControllerProvider.select((value) => value.centralMedicineList));
+      storeControllerProvider.select((value) => value.centralMedicineList),
+    );
+
+    final searchCentralMedicineList = ref.watch(
+      storeControllerProvider
+          .select((value) => value.searchCentralMedicineList),
+    );
 
     // จัดการการแสดงผลข้อมูลตามสถานะการโหลดข้อมูล
     return AsyncValueWidget(
@@ -85,12 +92,28 @@ class _CentralMedicineWarehouseScreenState
 
             // ถ้าข้อมูลพร้อม ให้แสดงรายการยา
             return Padding(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 72).r,
-              child: MedicineWarehouseListWidget(
-                onTap: (val) {},
-                // onTap: (val) {}, // ฟังก์ชันเมื่อกดรายการยา (ยังไม่ถูกใช้งาน)
-                medicineList: _centralMedicineList,
-                isCentral: true, // ระบุว่าเป็นคลังยากลาง
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 72).r,
+              child: Column(
+                children: [
+                  BaseTextField(
+                    placeholder: 'ค้นหายา',
+                    onChange: (val) {
+                      ref
+                          .read(storeControllerProvider.notifier)
+                          .onSearchMedicine(val);
+                    },
+                  ),
+                  SizedBox(
+                    height: 8.h,
+                  ),
+                  MedicineWarehouseListWidget(
+                    onTap: (val) {},
+                    // onTap: (val) {}, // ฟังก์ชันเมื่อกดรายการยา (ยังไม่ถูกใช้งาน)
+                    medicineList:
+                        searchCentralMedicineList ?? _centralMedicineList,
+                    isCentral: true, // ระบุว่าเป็นคลังยากลาง
+                  ),
+                ],
               ),
             );
           },

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -11,6 +12,8 @@ import 'package:pharmacy_online/core/app_style.dart';
 import 'package:pharmacy_online/feature/admin/model/response/pharmacy_info_response.dart';
 import 'package:pharmacy_online/feature/store/controller/store_controller.dart';
 import 'package:pharmacy_online/feature/store/page/store_detail_screen.dart';
+import 'package:pharmacy_online/feature/store/widget/filter_widget.dart';
+import 'package:pharmacy_online/generated/assets.gen.dart';
 
 class NearPharmacyStoreScreen extends ConsumerStatefulWidget {
   static const routeName = 'NearPharmacyStoreScreen';
@@ -159,17 +162,41 @@ class _NearPharmacyStoreScreenState
         return AsyncValueWidget(
           value: pharmacyInfoList,
           data: (_pharmacyInfoList) {
-            return GoogleMap(
-              markers: createMarker(_pharmacyInfoList ?? []),
-              mapType: MapType.normal,
-              onMapCreated: (GoogleMapController controller) {
-                mapController.complete(controller);
-              },
-              myLocationEnabled: true,
-              initialCameraPosition: CameraPosition(
-                target: LatLng(myLatitude, myLongtitude),
-                zoom: 15,
-              ),
+            return Stack(
+              children: [
+                GoogleMap(
+                  markers: createMarker(_pharmacyInfoList ?? []),
+                  mapType: MapType.normal,
+                  onMapCreated: (GoogleMapController controller) {
+                    mapController.complete(controller);
+                  },
+                  myLocationEnabled: true,
+                  initialCameraPosition: CameraPosition(
+                    target: LatLng(myLatitude, myLongtitude),
+                    zoom: 15,
+                  ),
+                ),
+                Positioned(
+                  right: 12,
+                  top: 56,
+                  child: GestureDetector(
+                    onTap: () {
+                      showModalBottomSheet<void>(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return const FilterWidget();
+                        },
+                      );
+                    },
+                    child: Container(
+                      width: 35.w,
+                      height: 35.h,
+                      color: AppColor.themeWhiteColor,
+                      child: Assets.icons.icFilter.svg(),
+                    ),
+                  ),
+                ),
+              ],
             );
           },
         );

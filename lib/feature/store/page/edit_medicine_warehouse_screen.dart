@@ -108,7 +108,8 @@ class _EditMedicineWarehouseScreenState
                 ),
                 BaseTextField(
                   fieldKey: FieldMedicine.name,
-                  placeholder: "ชื่อยา",
+                  label: "ชื่อยา",
+                  isShowLabelField: true,
                   initialValue: medicineItem.name,
                   validator: Validators.combine(
                     [
@@ -143,7 +144,8 @@ class _EditMedicineWarehouseScreenState
                   BaseTextField(
                     fieldKey: FieldMedicine.price,
                     initialValue: '${medicineItem.price}',
-                    placeholder: "ราคา",
+                    label: "ราคา",
+                    isShowLabelField: true,
                     textInputType: TextInputType.number,
                     validator: Validators.combine(
                       [
@@ -155,6 +157,40 @@ class _EditMedicineWarehouseScreenState
                     ),
                   ),
                 ],
+                SizedBox(
+                  height: 16.h,
+                ),
+                BaseTextField(
+                  fieldKey: FieldMedicine.medicineType,
+                  initialValue: '${medicineItem.medicineType}',
+                  label: "ชนิด",
+                  isShowLabelField: true,
+                  validator: Validators.combine(
+                    [
+                      Validators.withMessage(
+                        "Required",
+                        Validators.isEmpty,
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 16.h,
+                ),
+                BaseTextField(
+                  fieldKey: FieldMedicine.band,
+                  initialValue: '${medicineItem.band}',
+                  label: "ยี่ห้อ",
+                  isShowLabelField: true,
+                  validator: Validators.combine(
+                    [
+                      Validators.withMessage(
+                        "Required",
+                        Validators.isEmpty,
+                      ),
+                    ],
+                  ),
+                ),
                 SizedBox(
                   height: 16.h,
                 ),

@@ -58,8 +58,9 @@ class MedicineWarehouseItemWidget extends ConsumerWidget {
           },
           child: BaseImageView(
             url: '${medicineItem.medicineImg}',
-            width: 90.w,
-            height: 90.h,
+            width: 120.w,
+            height: 120.h,
+            fit: BoxFit.cover,
           ),
         ),
         SizedBox(
@@ -90,9 +91,26 @@ class MedicineWarehouseItemWidget extends ConsumerWidget {
 
                         onTap(result!);
                       },
-                      child: Text(
-                        '${medicineItem.name}',
-                        style: AppStyle.txtBody,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(
+                            '${medicineItem.name}',
+                            style: AppStyle.txtBody,
+                          ),
+                          if (medicineItem.band != null &&
+                              medicineItem.medicineType != null) ...[
+                            Text(
+                              '${medicineItem.band}',
+                              style: AppStyle.txtBody,
+                            ),
+                            Text(
+                              '${medicineItem.medicineType}',
+                              style: AppStyle.txtBody,
+                            ),
+                          ],
+                        ],
                       ),
                     ),
                   ),

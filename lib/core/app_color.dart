@@ -15,4 +15,5 @@ class AppColor {
   static const Color themLineColor = Color(0xFFE8F3F1);
   static const Color hyperLinkColor = Color(0xFFFF8981);
   static const Color themeSuccess = Color(0xFF5AD439);
+  static const Color warningColor = Color.fromARGB(255, 253, 198, 0);
 }

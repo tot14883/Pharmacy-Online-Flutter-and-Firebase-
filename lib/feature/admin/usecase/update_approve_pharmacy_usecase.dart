@@ -33,13 +33,22 @@ class UpdateApprovePharmacyUsecase extends UseCase<ApproveRequest, bool> {
       final collectUser = fireCloudStore.collection('user');
       final collectPharmacyStore = fireCloudStore.collection('pharmacyStore');
 
-      // อัปเดตสถานะของผู้ใช้และร้านเภสัชกรตามคำขอ
-      await collectUser
-          .doc(request.uid)
-          .update({'status': request.isApprove ? 'approve' : 'cancel'});
-      await collectPharmacyStore
-          .doc(request.uid)
-          .update({'status': request.isApprove ? 'approve' : 'cancel'});
+      final isWarning = request.isWarning;
+
+      if (isWarning) {
+        await collectUser.doc(request.uid).update({'status': 'waitingEdit'});
+        await collectPharmacyStore
+            .doc(request.uid)
+            .update({'status': 'waitingEdit'});
+      } else {
+        // อัปเดตสถานะของผู้ใช้และร้านเภสัชกรตามคำขอ
+        await collectUser
+            .doc(request.uid)
+            .update({'status': request.isApprove ? 'approve' : 'cancel'});
+        await collectPharmacyStore
+            .doc(request.uid)
+            .update({'status': request.isApprove ? 'approve' : 'cancel'});
+      }
 
       // คืนค่า true หากปรับปรุงข้อมูลสำเร็จ
       return true;

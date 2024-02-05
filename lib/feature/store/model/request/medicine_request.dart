@@ -6,6 +6,8 @@ class MedicineRequest {
   final double? price;
   final XFile? medicineImg;
   final String? currentMedicineImg;
+  final String? medicineType;
+  final String? band;
 
   MedicineRequest({
     this.id,
@@ -13,6 +15,8 @@ class MedicineRequest {
     this.price,
     this.medicineImg,
     this.currentMedicineImg,
+    this.medicineType,
+    this.band,
   });
 
   Map<String, dynamic> toJson() {
@@ -22,6 +26,8 @@ class MedicineRequest {
       'price': price,
       'medicineImg': medicineImg,
       'currentMedicineImg': currentMedicineImg,
+      'medicineType': medicineType,
+      'band': band,
     };
   }
 }

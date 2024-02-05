@@ -23,7 +23,7 @@ class PharmacyItemWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Expanded(
@@ -40,7 +40,7 @@ class PharmacyItemWidget extends ConsumerWidget {
               children: [
                 BaseImageView(
                   url: '${pharmacyItem.storeImg}',
-                  width: 60.w,
+                  width: 80.w,
                   height: 70.h,
                   fit: BoxFit.cover,
                   radius: const BorderRadius.all(
@@ -83,7 +83,7 @@ class PharmacyItemWidget extends ConsumerWidget {
                 // อัปเดตข้อมูลร้านใน Firebase Cloud Firestore เพื่ออนุมัติ
                 ref
                     .read(adminControllerProvider.notifier)
-                    .updatePharmacyDetail(true, '${pharmacyItem.uid}');
+                    .updatePharmacyDetail(true, '${pharmacyItem.uid}', false);
 
                 // ดึงข้อมูลร้านอีกครั้งหลังจากอัปเดต
                 await ref
@@ -106,12 +106,41 @@ class PharmacyItemWidget extends ConsumerWidget {
             ),
             BaseButton(
               width: 80.w,
+              buttonType: ButtonType.primary,
+              color: AppColor.warningColor,
+              onTap: () async {
+                // อัปเดตข้อมูลร้านใน Firebase Cloud Firestore เพื่อแจ้งเตือน
+                ref
+                    .read(adminControllerProvider.notifier)
+                    .updatePharmacyDetail(false, '${pharmacyItem.uid}', true);
+
+                // ดึงข้อมูลร้านอีกครั้งหลังจากอัปเดต
+                await ref
+                    .read(adminControllerProvider.notifier)
+                    .getPharmacyDetail();
+
+                // ส่ง Notification ถึงผู้ใช้ว่าร้านของเขาข้อมูลไม่ถูกต้อง
+                await ref
+                    .read(homeControllerProvider.notifier)
+                    .onPostNotification(
+                      'ข้อมูลไม่ถูกต้อง กรุณาแก้ไขข้อมูล',
+                      'warningChat',
+                      '${pharmacyItem.uid}',
+                    );
+              },
+              text: 'แจ้งเตือน',
+            ),
+            SizedBox(
+              height: 8.h,
+            ),
+            BaseButton(
+              width: 80.w,
               buttonType: ButtonType.danger,
               onTap: () async {
                 // อัปเดตข้อมูลร้านใน Firebase Cloud Firestore เพื่อไม่อนุมัติและแบน
                 ref
                     .read(adminControllerProvider.notifier)
-                    .updatePharmacyDetail(false, '${pharmacyItem.uid}');
+                    .updatePharmacyDetail(false, '${pharmacyItem.uid}', false);
 
                 // ดึงข้อมูลร้านอีกครั้งหลังจากอัปเดต
                 await ref
@@ -122,8 +151,8 @@ class PharmacyItemWidget extends ConsumerWidget {
                 await ref
                     .read(homeControllerProvider.notifier)
                     .onPostNotification(
-                      'แอดมินไม่อนุมัติร้านของคุณ',
-                      'cancelChat',
+                      'ข้อมูลไม่ถูกต้อง กรุณาแก้ไขข้อมูล',
+                      'cancel',
                       '${pharmacyItem.uid}',
                     );
               },
@@ -139,17 +168,23 @@ class PharmacyItemWidget extends ConsumerWidget {
   String statusText(String status) {
     if (status == 'waiting') {
       return 'รออนุมัติ';
-    } else {
+    } else if (status == 'waitingEdit') {
+      return 'รอการแก้ไข';
+    } else if (status == 'approve') {
       return 'ร้านได้รับการอนุมัติแล้ว';
+    } else {
+      return 'แบนชั่วคราว';
     }
   }
 
   // กำหนดสีข้อความสถานะตามสถานะที่ได้รับ
   Color statusTextColor(String status) {
-    if (status == 'waiting') {
+    if (status == 'waiting' || status == 'waitingEdit') {
       return AppColor.themeYellowColor;
-    } else {
+    } else if (status == 'approve') {
       return AppColor.themeSuccess;
+    } else {
+      return AppColor.errorColor;
     }
   }
 }

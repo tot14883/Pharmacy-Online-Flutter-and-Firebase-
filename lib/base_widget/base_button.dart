@@ -123,7 +123,7 @@ class BaseButton extends StatelessWidget {
         // กำหนดรูปแบบการแสดงผลของ Button
         decoration: BoxDecoration(
           border: Border.all(
-            color: _getBorderColor(),
+            color: color ?? _getBorderColor(),
             width: 1.w,
           ),
           borderRadius: BorderRadius.circular(borderRadius),

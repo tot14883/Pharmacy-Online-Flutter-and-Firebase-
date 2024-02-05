@@ -71,7 +71,6 @@ class _AddressDeliveryScreenState
                     initialValue: fullName,
                     label: 'ชื่อ-นามสกุลผู้รับ',
                     isShowLabelField: true,
-                    placeholder: 'ชื่อ-นามสกุลผู้รับ',
                     validator: Validators.combine(
                       [
                         Validators.withMessage(
@@ -89,7 +88,6 @@ class _AddressDeliveryScreenState
                     initialValue: phone,
                     label: 'เบอร์โทรศัพท์ผู้รับ',
                     isShowLabelField: true,
-                    placeholder: 'เบอร์โทรศัพท์ผู้รับ',
                     validator: Validators.combine(
                       [
                         Validators.withMessage(
@@ -107,7 +105,6 @@ class _AddressDeliveryScreenState
                     initialValue: address,
                     label: 'บ้านเลขที่/หมู่บ้าน/อาคาร/ซอย/ถนน ผู้รับ',
                     isShowLabelField: true,
-                    placeholder: 'ที่อยู่',
                     validator: Validators.combine(
                       [
                         Validators.withMessage(
@@ -124,7 +121,6 @@ class _AddressDeliveryScreenState
                     fieldKey: FieldAddressDelivery.subDistrict,
                     label: 'ตำบล/แขวง',
                     isShowLabelField: true,
-                    placeholder: 'ตำบล/แขวง',
                     validator: Validators.combine(
                       [
                         Validators.withMessage(
@@ -141,7 +137,6 @@ class _AddressDeliveryScreenState
                     fieldKey: FieldAddressDelivery.district,
                     label: 'อำเภอ/เขต',
                     isShowLabelField: true,
-                    placeholder: 'อำเภอ/เขต',
                     validator: Validators.combine(
                       [
                         Validators.withMessage(
@@ -158,7 +153,6 @@ class _AddressDeliveryScreenState
                     fieldKey: FieldAddressDelivery.province,
                     label: 'จังหวัด',
                     isShowLabelField: true,
-                    placeholder: 'จังหวัด',
                     validator: Validators.combine(
                       [
                         Validators.withMessage(
@@ -175,7 +169,6 @@ class _AddressDeliveryScreenState
                     fieldKey: FieldAddressDelivery.post,
                     label: 'รหัสไปรษณีย์',
                     isShowLabelField: true,
-                    placeholder: 'รหัสไปรษณีย์',
                     validator: Validators.combine(
                       [
                         Validators.withMessage(

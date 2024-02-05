@@ -33,13 +33,18 @@ class MedicineListWidget extends ConsumerWidget {
         return Column(
           // จัดเรียงข้อมูลยาในแนวตั้ง
           children: [
-            MedicineItemWidget(
-              // แสดงข้อมูลยา เช่น รูปภาพ ชื่อ จำนวน ราคา
-              imgUrl: '${medicineItem.medicineImg}',
-              name: '${medicineItem.name}',
-              quantity: 'จำนวน ${medicineItem.quantity}',
-              price:
-                  '${(medicineItem.price ?? 0.0) * (medicineItem.quantity ?? 1)} บาท',
+            GestureDetector(
+              onTap: () {},
+              child: MedicineItemWidget(
+                // แสดงข้อมูลยา เช่น รูปภาพ ชื่อ จำนวน ราคา
+                imgUrl: '${medicineItem.medicineImg}',
+                name: '${medicineItem.name}',
+                quantity: 'จำนวน ${medicineItem.quantity}',
+                price:
+                    '${(medicineItem.price ?? 0.0) * (medicineItem.quantity ?? 1)} บาท',
+                band: '${medicineItem.band}',
+                medicineType: '${medicineItem.medicineType}',
+              ),
             ),
             if (hasTextForm) ...[
               // แสดงช่องกรอกข้อความถ้า hasTextForm เป็น true
