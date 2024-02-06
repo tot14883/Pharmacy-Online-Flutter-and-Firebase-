@@ -136,7 +136,7 @@ class CreateUserInfoUsecase extends UseCase<UserInfoRequest, bool> {
           //สร้าง collection reference ของ 'pharmacyStore' ใน Firestore ไว้ในตัวแปร collectPharmacyStore
           final collectPharmacyStore =
               fireCloudStore.collection('pharmacyStore');
-          
+
           //กำหนดข้อมูลที่จะเก็บลง Firestore สำหรับร้านขายยา
           final Map<String, dynamic> myData = {
             "uid": uid,
@@ -154,6 +154,8 @@ class CreateUserInfoUsecase extends UseCase<UserInfoRequest, bool> {
             "licenseStoreImg": urlLicenseStoreImg,
             "qrCodeImg": urlQrCodeImg,
             "storeImg": urlStoreImg,
+            "ratingScore": 0.0,
+            "countReviewer": 0,
             "create_at": DateTime.now(),
             "update_at": DateTime.now(),
           };

@@ -40,6 +40,7 @@ import 'package:pharmacy_online/feature/store/page/edit_medicine_warehouse_scree
 import 'package:pharmacy_online/feature/store/page/my_medicine_warehouse_screen.dart';
 import 'package:pharmacy_online/feature/store/page/near_pharmacy_store_screen.dart';
 import 'package:pharmacy_online/feature/store/page/review_store_screen.dart';
+import 'package:pharmacy_online/feature/store/page/search_result_pharmacy_store_screen.dart';
 import 'package:pharmacy_online/feature/store/page/store_detail_screen.dart';
 
 class AppRouter {
@@ -164,7 +165,7 @@ class AppRouter {
           builder: (ctx) => const OrderDetailScreen(),
           transitionType: RouteTransition.fade,
         );
-      
+
       case OrdersScreen.routeName:
         return CustomPageRouteBuilder.route(
           name: OrdersScreen.routeName,
@@ -456,6 +457,13 @@ class AppRouter {
           builder: (ctx) => UserDetailScreen(
             args: args,
           ),
+          transitionType: RouteTransition.fade,
+        );
+
+      case SearchResultPharmacyStoreScreen.routeName:
+        return CustomPageRouteBuilder.route(
+          name: SearchResultPharmacyStoreScreen.routeName,
+          builder: (ctx) => const SearchResultPharmacyStoreScreen(),
           transitionType: RouteTransition.fade,
         );
 

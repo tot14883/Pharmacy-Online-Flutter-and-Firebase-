@@ -36,6 +36,8 @@ abstract class PharmacyInfoResponse with _$PharmacyInfoResponse {
     double? latitude,
     double? longtitude,
     String? qrCode,
+    int? countReviewer,
+    double? ratingScore,
   }) = _PharmacyInfoResponse;
 
   // ใช้ factory method สำหรับการสร้าง object ของ class PharmacyInfoResponse จาก JSON

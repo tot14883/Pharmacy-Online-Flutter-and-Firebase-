@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:pharmacy_online/base_widget/base_form_field.dart';
+import 'package:pharmacy_online/base_widget/base_switch_button.dart';
 import 'package:pharmacy_online/feature/admin/model/response/pharmacy_info_response.dart';
 import 'package:pharmacy_online/feature/store/model/response/chat_with_pharmacy_response.dart';
 import 'package:pharmacy_online/feature/store/model/response/medicine_response.dart';
@@ -34,6 +35,11 @@ class StoreState with _$StoreState {
     List<MedicineResponse>? searchCentralMedicineList,
     List<MedicineResponse>? searchMedicineList,
     List<PharmacyInfoResponse>? searchPharmacyInfoList,
-    double? searchDistance,
+    int? searchDistance,
+    SwitchButtonItem<dynamic>? searchReviewScore,
+    SwitchButtonItem<dynamic>? searchCountReviewer,
+    String? searchOpeningTime,
+    String? searchClosingTime,
+    PharmacyInfoResponse? selectPharmacyInfoResponse,
   }) = _StoreState;
 }

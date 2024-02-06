@@ -1,6 +1,9 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:map_location_picker/map_location_picker.dart';
 import 'package:pharmacy_online/base_widget/base_form_field.dart';
+import 'package:pharmacy_online/base_widget/base_switch_button.dart';
 import 'package:pharmacy_online/core/loader/loader_controller.dart';
 import 'package:pharmacy_online/core/local/base_shared_preference.dart';
 import 'package:pharmacy_online/core/router/app_naviagor.dart';
@@ -569,6 +572,7 @@ class StoreController extends StateNotifier<StoreState> {
 
 // เมธอดสำหรับแก้ไขรีวิวร้านขายยา
   Future<bool> onEditReview(
+    String pharmacyId,
     String reviewId,
     double rating,
     String message,
@@ -579,6 +583,7 @@ class StoreController extends StateNotifier<StoreState> {
     // เรียกใช้ usecase เพื่อแก้ไขรีวิว
     final result = await _editReviewStoreUsecase.execute(
       ReviewRequest(
+        pharmacyId: pharmacyId,
         reviewId: reviewId,
         rating: rating,
         message: message,
@@ -629,6 +634,7 @@ class StoreController extends StateNotifier<StoreState> {
 
 // เมธอดสำหรับลบรีวิวร้านขายยา
   Future<bool> onDeleteReview(
+    String pharmacyId,
     String reviewId,
   ) async {
     _loader.onLoad(); // แสดง loading indicator
@@ -636,6 +642,7 @@ class StoreController extends StateNotifier<StoreState> {
 
     final result = await _deleteReviewStoreUsecase.execute(
       CommentRequest(
+        pharmacyId: pharmacyId,
         reviewId: reviewId,
       ),
     );
@@ -775,32 +782,191 @@ class StoreController extends StateNotifier<StoreState> {
 
   void onSearchPharmacyStore({
     String? name,
-    double? distance,
-    double? rating,
-    int? countReviewer,
-    String? timeCloseOpen,
   }) async {
     final pharmacyInfoList = state.pharmacyInfoList.value;
+
+    final distance = state.searchDistance;
+    final reviewScore = state.searchReviewScore;
+    final countReviewer = state.searchCountReviewer;
+    final openingTime = state.searchOpeningTime;
+    final closingTime = state.searchClosingTime;
 
     if (pharmacyInfoList == null) return;
 
     List<PharmacyInfoResponse>? searchPharmacyInfoList;
 
-    if (name != null) {
-      searchPharmacyInfoList = pharmacyInfoList.where(
-        (e) {
-          final _name = e.nameStore!.contains(
+    bool hasName = false;
+    bool hasDistance = false;
+    bool hasReviewScore = false;
+    bool hasCountReviewer = false;
+    bool hasOpeningTime = false;
+    bool hasClosingTime = false;
+    bool hasOpeningAndClosingTime = false;
+    TimeOfDay? timeClosingParsed;
+    TimeOfDay? timeOpeningParsed;
+    double myLatitude = state.myLatitude ?? 0.0;
+    double myLongtitude = state.myLongtitude ?? 0.0;
+
+    searchPharmacyInfoList = pharmacyInfoList.where(
+      (e) {
+        if (name != null && name.isNotEmpty) {
+          hasName = e.nameStore!.contains(
             name,
           );
+        }
 
-          return _name;
-        },
-      ).toList();
-    }
+        if (distance != null) {
+          double _distance = Geolocator.distanceBetween(
+            myLatitude,
+            myLongtitude,
+            e.latitude ?? 0.0,
+            e.longtitude ?? 0.0,
+          );
+
+          if (_distance <= distance) {
+            hasDistance = true;
+          }
+        }
+
+        if (reviewScore != null) {
+          hasReviewScore = (e.ratingScore ?? 0) >= int.parse(reviewScore.value);
+        }
+
+        if (countReviewer != null) {
+          hasCountReviewer =
+              (e.countReviewer ?? 0) >= int.parse(countReviewer.value);
+        }
+
+        if (e.timeOpening != null && e.timeClosing != null) {
+          List<String> timeClosingParts = e.timeClosing!.split(':');
+          int closingHour = int.parse(timeClosingParts[0]);
+          int closingMinute = int.parse(timeClosingParts[1]);
+          List<String> timeOpeningParts = e.timeOpening!.split(':');
+          int openingHour = int.parse(timeOpeningParts[0]);
+          int openingMinute = int.parse(timeOpeningParts[1]);
+
+          timeClosingParsed =
+              TimeOfDay(hour: closingHour, minute: closingMinute);
+
+          timeOpeningParsed =
+              TimeOfDay(hour: openingHour, minute: openingMinute);
+        }
+
+        if (openingTime != null && closingTime != null) {
+          List<String> searchTimeClosingParts = closingTime.split(':');
+          int searchClosingHour = int.parse(searchTimeClosingParts[0]);
+          int searchClosingMinute = int.parse(searchTimeClosingParts[1]);
+          List<String> searchTimeOpeningParts = openingTime.split(':');
+          int searchOpeningHour = int.parse(searchTimeOpeningParts[0]);
+          int searchOpeningMinute = int.parse(searchTimeOpeningParts[1]);
+
+          final searchClosingTimeParsed =
+              TimeOfDay(hour: searchClosingHour, minute: searchClosingMinute);
+
+          final searchOpeningTimeParsed =
+              TimeOfDay(hour: searchOpeningHour, minute: searchOpeningMinute);
+
+          hasOpeningAndClosingTime =
+              (timeOpeningParsed!.hour >= searchOpeningTimeParsed.hour) &&
+                  (timeClosingParsed!.hour >= searchClosingTimeParsed.hour);
+        } else {
+          if (openingTime != null) {
+            List<String> searchTimeOpeningParts = openingTime.split(':');
+            int searchOpeningHour = int.parse(searchTimeOpeningParts[0]);
+            int searchOpeningMinute = int.parse(searchTimeOpeningParts[1]);
+            final searchOpeningTimeParsed =
+                TimeOfDay(hour: searchOpeningHour, minute: searchOpeningMinute);
+
+            hasOpeningTime =
+                timeOpeningParsed!.hour >= searchOpeningTimeParsed.hour;
+          }
+
+          if (closingTime != null) {
+            List<String> searchTimeClosingParts = closingTime.split(':');
+            int searchClosingHour = int.parse(searchTimeClosingParts[0]);
+            int searchClosingMinute = int.parse(searchTimeClosingParts[1]);
+            final searchClosingTimeParsed =
+                TimeOfDay(hour: searchClosingHour, minute: searchClosingMinute);
+
+            hasClosingTime =
+                timeClosingParsed!.hour >= searchClosingTimeParsed.hour;
+          }
+        }
+
+        return hasName ||
+            hasReviewScore ||
+            hasCountReviewer ||
+            hasOpeningTime ||
+            hasClosingTime ||
+            hasOpeningAndClosingTime ||
+            hasDistance;
+      },
+    ).toList();
 
     state = state.copyWith(
       searchPharmacyInfoList: searchPharmacyInfoList,
+    );
+  }
+
+  void onSetSearchDistance(
+    int? distance,
+  ) async {
+    state = state.copyWith(
       searchDistance: distance,
+    );
+  }
+
+  void onSetSearchRaiting(
+    SwitchButtonItem<dynamic>? rating,
+  ) async {
+    state = state.copyWith(
+      searchReviewScore: rating,
+    );
+  }
+
+  void onSetSearchCountReviewer(
+    SwitchButtonItem<dynamic>? countReviewer,
+  ) async {
+    state = state.copyWith(
+      searchCountReviewer: countReviewer,
+    );
+  }
+
+  void onSetSearchOpeningTime(
+    String? openingTime,
+  ) async {
+    state = state.copyWith(
+      searchOpeningTime: openingTime,
+    );
+  }
+
+  void onSetSearchClosingTime(
+    String? closingTime,
+  ) async {
+    state = state.copyWith(
+      searchClosingTime: closingTime,
+    );
+  }
+
+  void onClearSearch() async {
+    state = state.copyWith(
+      searchDistance: null,
+      searchReviewScore: null,
+      searchCountReviewer: null,
+      searchOpeningTime: null,
+      searchClosingTime: null,
+    );
+  }
+
+  void onSelectedPharmacyStore(PharmacyInfoResponse result) async {
+    state = state.copyWith(
+      selectPharmacyInfoResponse: result,
+    );
+  }
+
+  void onClearSelectedPharmacyStore() async {
+    state = state.copyWith(
+      selectPharmacyInfoResponse: null,
     );
   }
 }

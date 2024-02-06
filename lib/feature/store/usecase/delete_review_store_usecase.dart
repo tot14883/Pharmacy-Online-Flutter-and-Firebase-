@@ -6,7 +6,7 @@ import 'package:pharmacy_online/feature/store/model/request/comment_request.dart
 
 final deleteReviewStoreUsecaseProvider =
     Provider<DeleteReviewStoreUsecase>((ref) {
-      //deleteReviewStoreUsecaseProvider คือ Provider ที่ให้บริการ `DeleteReviewStoreUsecase` ซึ่งเป็น `UseCase` ที่ทำหน้าที่ลบรีวิวและความคิดเห็นทั้งหมด
+  //deleteReviewStoreUsecaseProvider คือ Provider ที่ให้บริการ `DeleteReviewStoreUsecase` ซึ่งเป็น `UseCase` ที่ทำหน้าที่ลบรีวิวและความคิดเห็นทั้งหมด
   final fireCloudStore = ref.watch(firebaseCloudStoreProvider);
   final baseSharedPreference = ref.watch(baseSharePreferenceProvider);
 
@@ -35,6 +35,7 @@ class DeleteReviewStoreUsecase extends UseCase<CommentRequest, bool> {
   ) async {
     try {
       //ดึง reviewId ที่ต้องการลบจาก request
+      final pharmacyId = request.pharmacyId;
       final reviewId = request.reviewId;
 
       // สร้าง collectReview ซึ่งเป็นคอลเลคชันของ Firebase Cloud Firestore ที่เกี่ยวข้องกับรีวิว
@@ -59,6 +60,42 @@ class DeleteReviewStoreUsecase extends UseCase<CommentRequest, bool> {
 
       //คำสั่งลบการรีวิว
       await collectReview.doc(reviewId).delete();
+
+      final collectPharmacyStore = fireCloudStore.collection('pharmacyStore');
+
+      final getCollectPharmacyStore = await fireCloudStore
+          .collection('pharmacyStore')
+          .doc(pharmacyId)
+          .get()
+          .then((value) => value);
+
+      final _dataPharmacy = getCollectPharmacyStore as Map<String, dynamic>;
+
+      final getReviewScore = await collectReview
+          .where('pharmacyId', isEqualTo: pharmacyId)
+          .get()
+          .then((value) => value.docs);
+
+      double ratingScore = 0.0;
+      double avgRatingScore = 0.0;
+
+      if (getReviewScore.isNotEmpty) {
+        for (final item in getReviewScore) {
+          final _data = item.data() as Map<String, dynamic>;
+          ratingScore += _data['rating'];
+        }
+
+        avgRatingScore = ratingScore / getReviewScore.length;
+      }
+      final countReviewer = _dataPharmacy['countReviewer'] - 1;
+
+      Map<String, dynamic> myPharmacyStore = {
+        "ratingScore": avgRatingScore,
+        "countReviewer": countReviewer,
+        "update_at": DateTime.now(),
+      };
+
+      await collectPharmacyStore.doc(pharmacyId).update(myPharmacyStore);
 
       return true;
     } catch (e) {

@@ -59,6 +59,42 @@ class AddReviewStoreUsecase extends UseCase<ReviewRequest, bool> {
       //เพิ่ม review ลงใน Firebase Cloud Firestore
       await collectReview.doc(reviewId).set(myData);
 
+      final collectPharmacyStore = fireCloudStore.collection('pharmacyStore');
+
+      final getCollectPharmacyStore = await fireCloudStore
+          .collection('pharmacyStore')
+          .doc(pharmacyId)
+          .get()
+          .then((value) => value);
+
+      final _dataPharmacy = getCollectPharmacyStore as Map<String, dynamic>;
+
+      final getReviewScore = await collectReview
+          .where('pharmacyId', isEqualTo: pharmacyId)
+          .get()
+          .then((value) => value.docs);
+
+      double ratingScore = 0.0;
+      double avgRatingScore = 0.0;
+
+      if (getReviewScore.isNotEmpty) {
+        for (final item in getReviewScore) {
+          final _data = item.data() as Map<String, dynamic>;
+          ratingScore += _data['rating'];
+        }
+
+        avgRatingScore = ratingScore / getReviewScore.length;
+      }
+      final countReviewer = _dataPharmacy['countReviewer'] + 1;
+
+      Map<String, dynamic> myPharmacyStore = {
+        "ratingScore": avgRatingScore,
+        "countReviewer": countReviewer,
+        "update_at": DateTime.now(),
+      };
+
+      await collectPharmacyStore.doc(pharmacyId).update(myPharmacyStore);
+
       return true;
     } catch (e) {
       return false;

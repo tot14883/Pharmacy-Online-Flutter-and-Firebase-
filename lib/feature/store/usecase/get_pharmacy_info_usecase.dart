@@ -85,6 +85,8 @@ class GetPharmacyInfoUsecase extends UseCase<void, List<PharmacyInfoResponse>> {
             status: _pharmacy['status'],
             longtitude: _pharmacy['longtitude'],
             latitude: _pharmacy['latitude'],
+            ratingScore: _pharmacy['ratingScore'] + 0.0,
+            countReviewer: _pharmacy['countReviewer'],
           ),
         );
       }

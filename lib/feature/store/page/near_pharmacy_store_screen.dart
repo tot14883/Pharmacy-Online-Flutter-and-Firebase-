@@ -40,6 +40,8 @@ class _NearPharmacyStoreScreenState
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       final GoogleMapController controller = await mapController.future;
 
+      ref.read(storeControllerProvider.notifier).onClearSearch();
+
       final _myLatitude = ref.watch(
         storeControllerProvider.select((value) => value.myLatitude),
       );
@@ -142,8 +144,25 @@ class _NearPharmacyStoreScreenState
     return markerList;
   }
 
+  void findNearestMarkerSearch({
+    required PharmacyInfoResponse pharmacyInfoList,
+  }) async {
+    final GoogleMapController controller = await mapController.future;
+
+    controller.animateCamera(
+      CameraUpdate.newLatLng(
+        LatLng(
+          pharmacyInfoList.latitude ?? 0.0,
+          pharmacyInfoList.longtitude ?? 0.0,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    _onListen();
+
     final pharmacyInfoList = ref.watch(
       storeControllerProvider.select(
         (value) => value.pharmacyInfoList,
@@ -180,11 +199,21 @@ class _NearPharmacyStoreScreenState
                   right: 12,
                   top: 56,
                   child: GestureDetector(
-                    onTap: () {
-                      showModalBottomSheet<void>(
+                    onTap: () async {
+                      await showModalBottomSheet<void>(
+                        isScrollControlled: true,
+                        backgroundColor: Colors.transparent,
                         context: context,
                         builder: (BuildContext context) {
-                          return const FilterWidget();
+                          return DraggableScrollableSheet(
+                            initialChildSize: 0.9, //set this as you want
+                            maxChildSize: 0.9, //set this as you want
+                            minChildSize: 0.9, //set this as you want
+                            expand: true,
+                            builder: (context, scrollController) {
+                              return const FilterWidget();
+                            },
+                          );
                         },
                       );
                     },
@@ -227,5 +256,16 @@ class _NearPharmacyStoreScreenState
         ],
       ),
     );
+  }
+
+  void _onListen() {
+    ref.listen(storeControllerProvider.select((value) => value),
+        (previous, next) {
+      if (next.selectPharmacyInfoResponse != null) {
+        findNearestMarkerSearch(
+          pharmacyInfoList: next.selectPharmacyInfoResponse!,
+        );
+      }
+    });
   }
 }

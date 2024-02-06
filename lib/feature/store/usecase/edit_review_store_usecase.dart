@@ -34,6 +34,7 @@ class EditReviewStoreUsecase extends UseCase<ReviewRequest, bool> {
   ) async {
     try {
       //ดึงข้อมูลที่ต้องการแก้ไขจาก `request`
+      final pharmacyId = request.pharmacyId;
       final reviewId = request.reviewId;
       final message = request.message;
       final rating = request.rating;
@@ -49,6 +50,32 @@ class EditReviewStoreUsecase extends UseCase<ReviewRequest, bool> {
       };
       //ทำการอัปเดตข้อมูลรีวิวด้วย `collectReview.doc(reviewId).update(myData)`
       await collectReview.doc(reviewId).update(myData);
+
+      final collectPharmacyStore = fireCloudStore.collection('pharmacyStore');
+
+      final getReviewScore = await collectReview
+          .where('pharmacyId', isEqualTo: pharmacyId)
+          .get()
+          .then((value) => value.docs);
+
+      double ratingScore = 0.0;
+      double avgRatingScore = 0.0;
+
+      if (getReviewScore.isNotEmpty) {
+        for (final item in getReviewScore) {
+          final _data = item.data() as Map<String, dynamic>;
+          ratingScore += _data['rating'];
+        }
+
+        avgRatingScore = ratingScore / getReviewScore.length;
+      }
+
+      Map<String, dynamic> myPharmacyStore = {
+        "ratingScore": avgRatingScore,
+        "update_at": DateTime.now(),
+      };
+
+      await collectPharmacyStore.doc(pharmacyId).update(myPharmacyStore);
 
       return true;
     } catch (e) {

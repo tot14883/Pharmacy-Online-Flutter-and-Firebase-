@@ -10,7 +10,7 @@ class FilterDistanceWidget extends StatefulWidget {
 
   const FilterDistanceWidget({
     super.key,
-    this.maximum = 0,
+    this.maximum = 50,
     required this.onUpdate,
     this.initial,
   });
@@ -20,7 +20,7 @@ class FilterDistanceWidget extends StatefulWidget {
 }
 
 class _FilterDistanceWidgetState extends State<FilterDistanceWidget> {
-  int _distance = 1;
+  int _distance = 0;
 
   @override
   void initState() {

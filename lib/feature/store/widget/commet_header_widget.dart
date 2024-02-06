@@ -77,7 +77,8 @@ class CommentHeaderWidget extends ConsumerWidget {
                 if (isShowRating) {
                   await ref
                       .read(storeControllerProvider.notifier)
-                      .onDeleteReview('${reviewItem?.id}');
+                      .onDeleteReview(
+                          '${reviewItem?.pharmacyId}', '${reviewItem?.id}');
                   await ref
                       .read(storeControllerProvider.notifier)
                       .onGetReview('${reviewItem?.pharmacyId}');
