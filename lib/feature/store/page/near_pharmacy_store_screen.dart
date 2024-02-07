@@ -206,9 +206,9 @@ class _NearPharmacyStoreScreenState
                         context: context,
                         builder: (BuildContext context) {
                           return DraggableScrollableSheet(
-                            initialChildSize: 0.9, //set this as you want
-                            maxChildSize: 0.9, //set this as you want
-                            minChildSize: 0.9, //set this as you want
+                            initialChildSize: 1, //set this as you want
+                            maxChildSize: 1, //set this as you want
+                            minChildSize: 1, //set this as you want
                             expand: true,
                             builder: (context, scrollController) {
                               return const FilterWidget();

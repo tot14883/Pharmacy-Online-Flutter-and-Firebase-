@@ -90,7 +90,7 @@ class _ReviewStoreScreenState extends BaseConsumerState<ReviewStoreScreen> {
                   height: 8.h,
                 ),
                 Text(
-                  '$rating',
+                  rating == 0.0 ? '0.0' : rating.toStringAsFixed(2),
                   style: AppStyle.txtBody,
                 ),
                 SizedBox(

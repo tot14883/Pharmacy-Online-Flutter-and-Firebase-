@@ -730,18 +730,22 @@ class StoreController extends StateNotifier<StoreState> {
 
     final searchcentralMedicineList = centralMedicineList.where(
       (e) {
-        final name = e.name!.contains(
+        final _name = e.name!.toLowerCase();
+        final _band = e.band?.toLowerCase();
+        final _medicineType = e.medicineType?.toLowerCase();
+
+        final name = _name.contains(
           medicine,
         );
-        final band = e.band?.contains(
+        final band = _band?.contains(
           medicine,
         );
-        final medicineType = e.medicineType?.contains(
+        final medicineType = _medicineType?.contains(
           medicine,
         );
 
-        if (e.band != null && medicineType != null) {
-          return name || band! || medicineType;
+        if (_band != null && _medicineType != null) {
+          return name || band! || medicineType!;
         }
 
         return name;
@@ -759,13 +763,17 @@ class StoreController extends StateNotifier<StoreState> {
 
     final searchMedicineList = medicineList.where(
       (e) {
-        final name = e.name!.contains(
+        final _name = e.name!.toLowerCase();
+        final _band = e.band?.toLowerCase();
+        final _medicineType = e.medicineType?.toLowerCase();
+
+        final name = _name.contains(
           medicine,
         );
-        final band = e.band?.contains(
+        final band = _band?.contains(
           medicine,
         );
-        final medicineType = e.medicineType?.contains(
+        final medicineType = _medicineType?.contains(
           medicine,
         );
 
@@ -810,7 +818,8 @@ class StoreController extends StateNotifier<StoreState> {
     searchPharmacyInfoList = pharmacyInfoList.where(
       (e) {
         if (name != null && name.isNotEmpty) {
-          hasName = e.nameStore!.contains(
+          final _name = e.nameStore!.toLowerCase();
+          hasName = _name.contains(
             name,
           );
         }

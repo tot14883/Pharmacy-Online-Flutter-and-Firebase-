@@ -50,24 +50,26 @@ class PharmacyItemWidget extends ConsumerWidget {
                 SizedBox(
                   width: 8.w,
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text(
-                      '${pharmacyItem.nameStore}',
-                      style: AppStyle.txtBody2,
-                    ),
-                    SizedBox(
-                      height: 8.h,
-                    ),
-                    Text(
-                      statusText('${pharmacyItem.status}'),
-                      style: AppStyle.txtBody2.copyWith(
-                        color: statusTextColor('${pharmacyItem.status}'),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        '${pharmacyItem.nameStore}',
+                        style: AppStyle.txtBody2,
                       ),
-                    ),
-                  ],
+                      SizedBox(
+                        height: 8.h,
+                      ),
+                      Text(
+                        statusText('${pharmacyItem.status}'),
+                        style: AppStyle.txtBody2.copyWith(
+                          color: statusTextColor('${pharmacyItem.status}'),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
