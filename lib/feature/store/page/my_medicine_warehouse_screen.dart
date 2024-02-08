@@ -132,38 +132,40 @@ class _MyMedicineWarehouseScreenState
                   return Padding(
                     padding: EdgeInsets.fromLTRB(
                       16,
-                      16,
+                      50,
                       16,
                       MediaQuery.of(context).padding.bottom + 72,
                     ).r,
-                    child: Column(
-                      children: [
-                        BaseTextField(
-                          placeholder: 'ค้นหายา',
-                          onChange: (val) {
-                            ref
-                                .read(storeControllerProvider.notifier)
-                                .onSearchMyMedicine(val);
-                          },
-                        ),
-                        SizedBox(
-                          height: 8.h,
-                        ),
-                        MedicineWarehouseListWidget(
-                          onTap: (val) {
-                            setState(() {
-                              isStayThisPage = val;
-                            });
-                          },
-                          isFromChat: isFromChat,
-                          medicineList: searchMedicineList ?? _medicineList,
-                          chatWithPharmacyItem:
-                              widget.args?.chatWithPharmacyItem,
-                        ),
-                      ],
+                    child: SingleChildScrollView(
+                      child: MedicineWarehouseListWidget(
+                        onTap: (val) {
+                          setState(() {
+                            isStayThisPage = val;
+                          });
+                        },
+                        isFromChat: isFromChat,
+                        medicineList: searchMedicineList ?? _medicineList,
+                        chatWithPharmacyItem: widget.args?.chatWithPharmacyItem,
+                      ),
                     ),
                   );
                 },
+              ),
+              Positioned(
+                top: 0,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16).w,
+                  width: MediaQuery.of(context).size.width,
+                  height: 50.h,
+                  child: BaseTextField(
+                    placeholder: 'ค้นหายา',
+                    onChange: (val) {
+                      ref
+                          .read(storeControllerProvider.notifier)
+                          .onSearchMyMedicine(val);
+                    },
+                  ),
+                ),
               ),
               //ถ้าไม่ได้มาจากแชท
               if (!isFromChat) ...[

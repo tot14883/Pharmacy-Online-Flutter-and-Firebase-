@@ -79,6 +79,7 @@ class _UserDetailScreenState extends ConsumerState<UserDetailScreen> {
                   isReadOnly: true,
                   isShowLabelField: true,
                   initialValue: phone,
+                  textInputType: TextInputType.phone,
                   label: "เบอร์โทรศัพท์",
                 ),
                 SizedBox(

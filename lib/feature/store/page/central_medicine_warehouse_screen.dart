@@ -91,31 +91,39 @@ class _CentralMedicineWarehouseScreenState
             }
 
             // ถ้าข้อมูลพร้อม ให้แสดงรายการยา
-            return SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 8, 16, 72).r,
-                child: Column(
-                  children: [
-                    BaseTextField(
-                      placeholder: 'ค้นหายา',
-                      onChange: (val) {
-                        ref
-                            .read(storeControllerProvider.notifier)
-                            .onSearchMedicine(val);
-                      },
+            return Padding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 0).r,
+              child: Stack(
+                children: [
+                  SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 50).h,
+                      child: MedicineWarehouseListWidget(
+                        onTap: (val) {},
+                        // onTap: (val) {}, // ฟังก์ชันเมื่อกดรายการยา (ยังไม่ถูกใช้งาน)
+                        medicineList:
+                            searchCentralMedicineList ?? _centralMedicineList,
+                        isCentral: true, // ระบุว่าเป็นคลังยากลาง
+                      ),
                     ),
-                    SizedBox(
-                      height: 8.h,
+                  ),
+                  Positioned(
+                    top: 0,
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: 50.h,
+                      color: AppColor.themeWhiteColor,
+                      child: BaseTextField(
+                        placeholder: 'ค้นหายา',
+                        onChange: (val) {
+                          ref
+                              .read(storeControllerProvider.notifier)
+                              .onSearchMedicine(val);
+                        },
+                      ),
                     ),
-                    MedicineWarehouseListWidget(
-                      onTap: (val) {},
-                      // onTap: (val) {}, // ฟังก์ชันเมื่อกดรายการยา (ยังไม่ถูกใช้งาน)
-                      medicineList:
-                          searchCentralMedicineList ?? _centralMedicineList,
-                      isCentral: true, // ระบุว่าเป็นคลังยากลาง
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             );
           },

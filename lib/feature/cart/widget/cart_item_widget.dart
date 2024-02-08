@@ -9,6 +9,7 @@ import 'package:pharmacy_online/feature/cart/model/response/cart_response.dart';
 import 'package:pharmacy_online/feature/order/enum/order_status_enum.dart';
 import 'package:pharmacy_online/feature/profile/controller/profile_controller.dart';
 import 'package:pharmacy_online/feature/store/model/response/medicine_response.dart';
+import 'package:pharmacy_online/feature/store/page/drug_detail_screen.dart';
 import 'package:pharmacy_online/feature/store/widget/quantity_widget.dart';
 import 'package:pharmacy_online/generated/assets.gen.dart';
 
@@ -46,11 +47,22 @@ class CartItemWidget extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          BaseImageView(
-            url: medicineItem.medicineImg,
-            width: 80.w,
-            height: 80.h,
-            fit: BoxFit.cover,
+          GestureDetector(
+            onTap: () async {
+              await Navigator.of(context).pushNamed<bool>(
+                DrugDetailScreen.routeName,
+                arguments: DrugDetailArgs(
+                  medicineItem: medicineItem,
+                  isOnlyDetail: true,
+                ),
+              );
+            },
+            child: BaseImageView(
+              url: medicineItem.medicineImg,
+              width: 80.w,
+              height: 80.h,
+              fit: BoxFit.cover,
+            ),
           ),
           SizedBox(
             width: 8.w,
@@ -62,10 +74,21 @@ class CartItemWidget extends ConsumerWidget {
               children: [
                 Row(
                   children: [
-                    Expanded(
-                      child: Text(
-                        '${medicineItem.name}',
-                        style: AppStyle.txtBody,
+                    GestureDetector(
+                      onTap: () async {
+                        await Navigator.of(context).pushNamed<bool>(
+                          DrugDetailScreen.routeName,
+                          arguments: DrugDetailArgs(
+                            medicineItem: medicineItem,
+                            isOnlyDetail: true,
+                          ),
+                        );
+                      },
+                      child: Expanded(
+                        child: Text(
+                          '${medicineItem.name}',
+                          style: AppStyle.txtBody,
+                        ),
                       ),
                     ),
                     if (isPharmacy) ...[
@@ -148,14 +171,36 @@ class CartItemWidget extends ConsumerWidget {
                         },
                       ),
                     ] else ...[
-                      Text(
-                        'จำนวน ${medicineItem.quantity}',
-                        style: AppStyle.txtBody2,
+                      GestureDetector(
+                        onTap: () async {
+                          await Navigator.of(context).pushNamed<bool>(
+                            DrugDetailScreen.routeName,
+                            arguments: DrugDetailArgs(
+                              medicineItem: medicineItem,
+                              isOnlyDetail: true,
+                            ),
+                          );
+                        },
+                        child: Text(
+                          'จำนวน ${medicineItem.quantity}',
+                          style: AppStyle.txtBody2,
+                        ),
                       ),
                     ],
-                    Text(
-                      '${(medicineItem.price ?? 0.0) * ((medicineItem.quantity ?? 0.0) * 1.0)} บาท',
-                      style: AppStyle.txtBody2,
+                    GestureDetector(
+                      onTap: () async {
+                        await Navigator.of(context).pushNamed<bool>(
+                          DrugDetailScreen.routeName,
+                          arguments: DrugDetailArgs(
+                            medicineItem: medicineItem,
+                            isOnlyDetail: true,
+                          ),
+                        );
+                      },
+                      child: Text(
+                        '${(medicineItem.price ?? 0.0) * ((medicineItem.quantity ?? 0.0) * 1.0)} บาท',
+                        style: AppStyle.txtBody2,
+                      ),
                     ),
                   ],
                 ),

@@ -164,7 +164,8 @@ class _EditMedicineWarehouseScreenState
 
                   BaseTextField(
                     fieldKey: FieldMedicine.size,
-                    initialValue: '${medicineItem.size}',
+                    initialValue:
+                        medicineItem.size == null ? '' : '${medicineItem.size}',
                     label: "ขนาด",
                     isShowLabelField: true,
                     validator: Validators.combine(
@@ -181,7 +182,9 @@ class _EditMedicineWarehouseScreenState
                   ),
                   BaseTextField(
                     fieldKey: FieldMedicine.material,
-                    initialValue: '${medicineItem.material}',
+                    initialValue: medicineItem.material == null
+                        ? ''
+                        : '${medicineItem.material}',
                     label: "ส่วนประกอบ",
                     isShowLabelField: true,
                     validator: Validators.combine(

@@ -87,6 +87,7 @@ class _AddressDeliveryScreenState
                     fieldKey: FieldAddressDelivery.phone,
                     initialValue: phone,
                     label: 'เบอร์โทรศัพท์ผู้รับ',
+                    textInputType: TextInputType.phone,
                     isShowLabelField: true,
                     validator: Validators.combine(
                       [

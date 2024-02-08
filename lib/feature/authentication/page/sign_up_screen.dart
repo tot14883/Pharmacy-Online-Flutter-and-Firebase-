@@ -101,7 +101,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
             );
           },
         );
-        //ถ้าเลือกเปลี่ยน Role ตามหน้า UI คือ เลือกเป็น Pharmacy ให้ไปที่หน้ากรอกข้อมูล Pharmacy
+      //ถ้าเลือกเปลี่ยน Role ตามหน้า UI คือ เลือกเป็น Pharmacy ให้ไปที่หน้ากรอกข้อมูล Pharmacy
       case 1:
         return SignUpStep2Widget(
           onBack: () {
@@ -128,7 +128,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
 
             // formKey.currentState?.save(
             //   onSave: (val) {
-            //หลังจากกรอบข้อมูลส่วนตัว กดปุ่มยืนยัน เพิ่มค่าcurrentStep เพื่อไป case ต่อไป 
+            //หลังจากกรอบข้อมูลส่วนตัว กดปุ่มยืนยัน เพิ่มค่าcurrentStep เพื่อไป case ต่อไป
             if (role == AuthenticationType.pharmacy.name) {
               currentStep += 1;
               //เรียกใช้ฟังชั่น onChangePage
@@ -144,6 +144,8 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                   _licensePharmacyStore,
                   _qrCodeImg,
                   _store,
+                  null,
+                  null,
                 );
 
             if (result) {
@@ -162,7 +164,13 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
             //เรียกใช้ฟังชั่น onChangePage
             onChangePage();
           },
-          onTap: (storeFile, licenseStoreFile, qrcodeFile) {
+          onTap: (
+            storeFile,
+            licenseStoreFile,
+            qrcodeFile,
+            openingTime,
+            closingTime,
+          ) {
             formKey.currentState?.save(
               //เซฟข้อมูลที่ถูกกรอกเข้า database
               onSave: (val) async {
@@ -174,6 +182,8 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                       licenseStoreFile,
                       qrcodeFile,
                       storeFile,
+                      openingTime,
+                      closingTime,
                     );
                 //ไปที่หน้าสมัครสมาชิกเสร็จสิ้น
                 if (result) {

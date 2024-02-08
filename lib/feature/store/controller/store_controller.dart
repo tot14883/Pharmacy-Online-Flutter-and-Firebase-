@@ -733,7 +733,6 @@ class StoreController extends StateNotifier<StoreState> {
       (e) {
         final _name = e.name!.toLowerCase();
         final _size = e.size?.toLowerCase();
-        final _material = e.material?.toLowerCase();
 
         final name = _name.contains(
           medicine,
@@ -741,12 +740,9 @@ class StoreController extends StateNotifier<StoreState> {
         final size = _size?.contains(
           medicine,
         );
-        final material = _material?.contains(
-          medicine,
-        );
 
-        if (_size != null && _material != null) {
-          return name || size! || material!;
+        if (_size != null) {
+          return name || size!;
         }
 
         return name;
@@ -766,23 +762,25 @@ class StoreController extends StateNotifier<StoreState> {
       (e) {
         final _name = e.name!.toLowerCase();
         final _size = e.size?.toLowerCase();
-        final _material = e.material?.toLowerCase();
+        final _price = '${e.price}';
 
         final name = _name.contains(
           medicine,
         );
+
         final size = _size?.contains(
           medicine,
         );
-        final material = _material?.contains(
+
+        final price = _price.contains(
           medicine,
         );
 
-        if (e.size != null && _material != null) {
-          return name || size! || material!;
+        if (_size != null) {
+          return name || size! || price;
         }
 
-        return name;
+        return name || price;
       },
     ).toList();
 

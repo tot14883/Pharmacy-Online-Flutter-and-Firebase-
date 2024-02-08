@@ -100,6 +100,7 @@ class _PharmacyStoreDetaillScreenState
                   initialValue: phoneStore,
                   isReadOnly: true,
                   isShowLabelField: true,
+                  textInputType: TextInputType.phone,
                   label: "เบอร์โทรศัพท์",
                 ),
                 SizedBox(

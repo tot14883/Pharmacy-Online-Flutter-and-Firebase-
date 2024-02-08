@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:map_location_picker/map_location_picker.dart';
 import 'package:pharmacy_online/base_widget/base_button.dart';
@@ -22,8 +23,13 @@ import 'package:pharmacy_online/utils/util/vaildators.dart';
 class SignUpPharmacyStoreWidget extends ConsumerStatefulWidget {
   static const routeName = 'SignUpPharmacyStoreWidget';
 
-  final Function(XFile? storeFile, XFile? licenseStoreFile, XFile? qrcodeFile)
-      onTap;
+  final Function(
+    XFile? storeFile,
+    XFile? licenseStoreFile,
+    XFile? qrcodeFile,
+    TimeOfDay openingTime,
+    TimeOfDay closingTime,
+  ) onTap;
 
   final VoidCallback onBack;
 
@@ -45,6 +51,7 @@ class _SignUpPharmacyStoreWidgetState
   bool isRequiredStore = false,
       isRequiredLicenseStore = false,
       isRequiredQrcode = false;
+  TimeOfDay? openingTime, closingTime;
 
   @override
   void dispose() {
@@ -164,6 +171,7 @@ class _SignUpPharmacyStoreWidgetState
           fieldKey: FieldSignUp.phoneStore,
           label: "เบอร์โทรศัพท์",
           isShowLabelField: true,
+          textInputType: TextInputType.phone,
           validator: Validators.combine(
             [
               Validators.withMessage(
@@ -177,35 +185,57 @@ class _SignUpPharmacyStoreWidgetState
           height: 16.h,
         ),
         BaseTextField(
-          fieldKey: FieldSignUp.timeOpening,
+          key: UniqueKey(),
           label: "เวลาเปิด",
+          isReadOnly: true,
           isShowLabelField: true,
           textInputType: TextInputType.datetime,
-          validator: Validators.combine(
-            [
-              Validators.withMessage(
-                "Required",
-                Validators.isEmpty,
-              ),
-            ],
-          ),
+          initialValue: openingTime == null
+              ? ''
+              : '${openingTime?.hour}:${openingTime?.minute == 0 ? '00' : openingTime?.minute}',
+          onTap: () async {
+            openingTime = await showTimePicker(
+              context: context,
+              initialTime: openingTime ?? TimeOfDay.now(),
+              builder: (BuildContext context, Widget? child) {
+                return MediaQuery(
+                  data: MediaQuery.of(context)
+                      .copyWith(alwaysUse24HourFormat: true),
+                  child: child!,
+                );
+              },
+            );
+
+            setState(() {});
+          },
         ),
         SizedBox(
           height: 16.h,
         ),
         BaseTextField(
-          fieldKey: FieldSignUp.timeClosing,
+          key: UniqueKey(),
           label: "เวลาปิด",
           isShowLabelField: true,
+          isReadOnly: true,
           textInputType: TextInputType.datetime,
-          validator: Validators.combine(
-            [
-              Validators.withMessage(
-                "Required",
-                Validators.isEmpty,
-              ),
-            ],
-          ),
+          initialValue: closingTime == null
+              ? ''
+              : '${closingTime?.hour}:${closingTime?.minute == 0 ? '00' : closingTime?.minute}',
+          onTap: () async {
+            closingTime = await showTimePicker(
+              context: context,
+              initialTime: closingTime ?? TimeOfDay.now(),
+              builder: (BuildContext context, Widget? child) {
+                return MediaQuery(
+                  data: MediaQuery.of(context)
+                      .copyWith(alwaysUse24HourFormat: true),
+                  child: child!,
+                );
+              },
+            );
+
+            setState(() {});
+          },
         ),
         SizedBox(
           height: 16.h,
@@ -309,15 +339,29 @@ class _SignUpPharmacyStoreWidgetState
                   isRequiredLicenseStore =
                       licenseStoreFile != null ? false : true;
                   isRequiredQrcode = qrcodeFile != null ? false : true;
+
+                  if (openingTime == null || closingTime == null) {
+                    Fluttertoast.showToast(
+                      msg: "กรุณาระบุเวลาเปิดและปิด",
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.BOTTOM,
+                    );
+                    return;
+                  }
+
                   setState(() {});
 
                   if (storeFile != null &&
                       licenseStoreFile != null &&
-                      qrcodeFile != null) {
+                      qrcodeFile != null &&
+                      openingTime != null &&
+                      closingTime != null) {
                     licenseStoreFile = widget.onTap(
                       storeFile,
                       licenseStoreFile,
                       qrcodeFile,
+                      openingTime!,
+                      closingTime!,
                     );
                   }
                 },

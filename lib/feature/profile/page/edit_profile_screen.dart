@@ -158,6 +158,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                     fieldKey: FieldUserInfo.phone,
                     initialValue: phone,
                     label: "เบอร์โทรศัพท์",
+                    textInputType: TextInputType.phone,
                     isShowLabelField: true,
                     validator: Validators.combine(
                       [

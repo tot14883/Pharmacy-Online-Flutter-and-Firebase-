@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pharmacy_online/base_widget/base_form_field.dart';
@@ -106,6 +107,8 @@ class AuthenticationController extends StateNotifier<AuthenticationState> {
     XFile? licensePharmacyStoreImg,
     XFile? qrCodeImg,
     XFile? store,
+    TimeOfDay? openingTime,
+    TimeOfDay? closingTime,
   ) async {
     bool isSuccess = false;
     _loader.onLoad();
@@ -129,9 +132,9 @@ class AuthenticationController extends StateNotifier<AuthenticationState> {
     final phoneStore =
         baseFormData?.getValue<String>(FieldSignUp.phoneStore) ?? '';
     final timeOpening =
-        baseFormData?.getValue<String>(FieldSignUp.timeOpening) ?? '';
+        openingTime == null ? '' : '${openingTime.hour}:${openingTime.minute}';
     final timeClosing =
-        baseFormData?.getValue<String>(FieldSignUp.timeClosing) ?? '';
+        closingTime == null ? '' : '${closingTime.hour}:${closingTime.minute}';
     final licensePharmacy =
         baseFormData?.getValue<String>(FieldSignUp.licensePharmacy) ?? '';
     final licensePharmacyStore =

@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pharmacy_online/base_widget/base_form_field.dart';
@@ -191,6 +192,8 @@ class ProfileController extends StateNotifier<ProfileState> {
   Future<bool> onUpdatePharmacyStore(
     XFile? licensePharmacyStoreImg, //รูปใบอนุญาต
     XFile? store, // รูปร้าน
+    TimeOfDay openingTime,
+    TimeOfDay closingTime,
   ) async {
     _loader.onLoad();
 
@@ -209,11 +212,9 @@ class ProfileController extends StateNotifier<ProfileState> {
         baseFormData?.getValue<String>(FieldUserInfo.phoneStore) ??
             pharmacyStore?.phoneStore;
     final timeOpening =
-        baseFormData?.getValue<String>(FieldUserInfo.timeOpening) ??
-            pharmacyStore?.timeOpening;
+        '${openingTime.hour}:${openingTime.minute == 0 ? '00' : openingTime.minute}';
     final timeClosing =
-        baseFormData?.getValue<String>(FieldUserInfo.timeClosing) ??
-            pharmacyStore?.timeClosing;
+        '${closingTime.hour}:${closingTime.minute == 0 ? '00' : closingTime.minute}';
     final licensePharmacy =
         baseFormData?.getValue<String>(FieldUserInfo.licensePharmacy) ??
             pharmacyStore?.licensePharmacy;

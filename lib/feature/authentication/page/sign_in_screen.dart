@@ -131,7 +131,8 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                   SizedBox(
                     height: 8.h,
                   ),
-                  BaseButton(//ปุ่ม login
+                  BaseButton(
+                    //ปุ่ม login
                     onTap: () async {
                       if (passwordController.text.length < 6) {
                         showDialog(
@@ -150,7 +151,8 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                           .read(authenticationControllerProvider.notifier)
                           .onSignIn();
                       //ตรวจสอบ
-                      if (result) { //เรียกฟังชั่นตรวจสอบการ Login
+                      if (result) {
+                        //เรียกฟังชั่นตรวจสอบการ Login
                         await ref
                             .read(profileControllerProvider.notifier)
                             .onGetUserInfo();

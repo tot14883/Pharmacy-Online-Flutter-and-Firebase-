@@ -133,7 +133,7 @@ class _FilterWidgetState extends BaseConsumerState<FilterWidget> {
           ),
           BaseSwitchButton(
             isSwitchButton: true,
-            label: "จำนวนคนรีวิว​ (จำนวนคน) ขึ้นไป",
+            label: "จำนวนคนรีวิว​",
             minWidth: 100.w,
             contentPadding: const EdgeInsets.symmetric(
               vertical: 8,
@@ -169,7 +169,7 @@ class _FilterWidgetState extends BaseConsumerState<FilterWidget> {
               SwitchButtonItem(
                 id: 5,
                 value: '50',
-                content: "50 ดาว",
+                content: "50 คนขึ้นไป",
               ),
             ],
             onChange: (val) {

@@ -113,6 +113,7 @@ class _SignUpStep2WidgetState extends ConsumerState<SignUpStep2Widget> {
               fieldKey: FieldSignUp.phone,
               label: "เบอร์โทรศัพท์",
               isShowLabelField: true,
+              textInputType: TextInputType.phone,
               validator: Validators.combine(
                 [
                   Validators.withMessage(

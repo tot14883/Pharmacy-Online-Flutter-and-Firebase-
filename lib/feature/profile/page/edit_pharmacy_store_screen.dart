@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:map_location_picker/map_location_picker.dart';
 import 'package:pharmacy_online/base_widget/base_app_bar.dart';
@@ -43,6 +44,7 @@ class _EditPharmacyStoreScreenState
   XFile? storeFile, licenseFile;
   TextEditingController addressController = TextEditingController();
   bool isRequiredStore = false, isRequiredLicenseStore = false;
+  TimeOfDay? openingTime, closingTime;
 
   @override
   void initState() {
@@ -86,9 +88,19 @@ class _EditPharmacyStoreScreenState
     final licensePharmacyStore = pharmacyStoreInfo?.licenseStoreImg;
     final nameStore = pharmacyStoreInfo?.nameStore;
     final phoneStore = pharmacyStoreInfo?.phoneStore;
-    final timeClosing = pharmacyStoreInfo?.timeClosing;
-    final timeOpening = pharmacyStoreInfo?.timeOpening;
     final licenseStore = pharmacyStoreInfo?.licenseStore;
+
+    List<String> timeOpeningParts = pharmacyStoreInfo!.timeOpening!.split(':');
+    int openingHour = int.parse(timeOpeningParts[0]);
+    int openingMinute = int.parse(timeOpeningParts[1]);
+    List<String> timeClosingParts = pharmacyStoreInfo.timeClosing!.split(':');
+    int closinggHour = int.parse(timeClosingParts[0]);
+    int closingMinute = int.parse(timeClosingParts[1]);
+
+    openingTime =
+        openingTime ?? TimeOfDay(hour: openingHour, minute: openingMinute);
+    closingTime =
+        closingTime ?? TimeOfDay(hour: closinggHour, minute: closingMinute);
 
     // สร้างหน้าจอด้วย BaseScaffold
     return BaseScaffold(
@@ -238,6 +250,7 @@ class _EditPharmacyStoreScreenState
                     fieldKey: FieldUserInfo.phoneStore,
                     initialValue: phoneStore,
                     label: "เบอร์โทรศัพท์",
+                    textInputType: TextInputType.phone,
                     isShowLabelField: true,
                     validator: Validators.combine(
                       [
@@ -253,38 +266,56 @@ class _EditPharmacyStoreScreenState
                   ),
                   // Textfield สำหรับเวลาเปิด
                   BaseTextField(
-                    fieldKey: FieldUserInfo.timeOpening,
+                    key: UniqueKey(),
                     label: "เวลาเปิด",
-                    initialValue: timeOpening,
                     textInputType: TextInputType.datetime,
+                    isReadOnly: true,
                     isShowLabelField: true,
-                    validator: Validators.combine(
-                      [
-                        Validators.withMessage(
-                          "Required",
-                          Validators.isEmpty,
-                        ),
-                      ],
-                    ),
+                    initialValue:
+                        '${openingTime?.hour}:${openingTime?.minute == 0 ? '00' : openingTime?.minute}',
+                    onTap: () async {
+                      openingTime = await showTimePicker(
+                        context: context,
+                        initialTime: openingTime!,
+                        builder: (BuildContext context, Widget? child) {
+                          return MediaQuery(
+                            data: MediaQuery.of(context)
+                                .copyWith(alwaysUse24HourFormat: true),
+                            child: child!,
+                          );
+                        },
+                      );
+
+                      setState(() {});
+                    },
                   ),
                   SizedBox(
                     height: 16.h,
                   ),
                   // Textfield สำหรับเวลาปิด
                   BaseTextField(
-                    fieldKey: FieldUserInfo.timeClosing,
+                    key: UniqueKey(),
                     label: "เวลาปิด",
-                    initialValue: timeClosing,
                     textInputType: TextInputType.datetime,
                     isShowLabelField: true,
-                    validator: Validators.combine(
-                      [
-                        Validators.withMessage(
-                          "Required",
-                          Validators.isEmpty,
-                        ),
-                      ],
-                    ),
+                    isReadOnly: true,
+                    initialValue:
+                        '${closingTime?.hour}:${closingTime?.minute == 0 ? '00' : closingTime?.minute}',
+                    onTap: () async {
+                      openingTime = await showTimePicker(
+                        context: context,
+                        initialTime: closingTime!,
+                        builder: (BuildContext context, Widget? child) {
+                          return MediaQuery(
+                            data: MediaQuery.of(context)
+                                .copyWith(alwaysUse24HourFormat: true),
+                            child: child!,
+                          );
+                        },
+                      );
+
+                      setState(() {});
+                    },
                   ),
                   SizedBox(
                     height: 16.h,
@@ -342,10 +373,23 @@ class _EditPharmacyStoreScreenState
                   // ปุ่มสำหรับยืนยันการแก้ไขข้อมูล
                   BaseButton(
                     onTap: () async {
+                      if (openingTime == null || closingTime == null) {
+                        Fluttertoast.showToast(
+                          msg: "กรุณาระบุเวลาเปิด-ปิด",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.BOTTOM,
+                        );
+                        return;
+                      }
                       // เรียกเมธอดใน ProfileController เพื่อทำการแก้ไขข้อมูล
                       final result = await ref
                           .read(profileControllerProvider.notifier)
-                          .onUpdatePharmacyStore(licenseFile, storeFile);
+                          .onUpdatePharmacyStore(
+                            licenseFile,
+                            storeFile,
+                            openingTime!,
+                            closingTime!,
+                          );
 
                       if (result) {
                         // ทำการโหลดข้อมูลผู้ใช้และข้อมูลร้านใหม่

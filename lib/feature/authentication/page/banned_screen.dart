@@ -34,7 +34,7 @@ class _BannedScreenState extends ConsumerState<BannedScreen> {
                 height: 32.h,
               ),
               Text(
-                'บัญชีคุณถูกระงับการใช้งาน กรุณาติดต่อ admin@gmail.com"',
+                'บัญชีคุณถูกระงับการใช้งาน\nกรุณาติดต่อ admin@gmail.com',
                 style: AppStyle.txtBody2,
                 textAlign: TextAlign.center,
               ),

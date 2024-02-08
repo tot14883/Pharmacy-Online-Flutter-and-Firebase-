@@ -150,13 +150,13 @@ class PharmacyItemWidget extends ConsumerWidget {
                     .getPharmacyDetail();
 
                 // ส่ง Notification ถึงผู้ใช้ว่าร้านของเขาไม่ได้รับการอนุมัติ
-                await ref
-                    .read(homeControllerProvider.notifier)
-                    .onPostNotification(
-                      'ข้อมูลไม่ถูกต้อง กรุณาแก้ไขข้อมูล',
-                      'cancel',
-                      '${pharmacyItem.uid}',
-                    );
+                // await ref
+                //     .read(homeControllerProvider.notifier)
+                //     .onPostNotification(
+                //       'ข้อมูลไม่ถูกต้อง กรุณาแก้ไขข้อมูล',
+                //       'cancel',
+                //       '${pharmacyItem.uid}',
+                //     );
               },
               text: 'แบน',
             ),
