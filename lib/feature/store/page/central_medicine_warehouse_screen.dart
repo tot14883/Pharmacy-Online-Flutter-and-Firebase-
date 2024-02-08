@@ -91,29 +91,31 @@ class _CentralMedicineWarehouseScreenState
             }
 
             // ถ้าข้อมูลพร้อม ให้แสดงรายการยา
-            return Padding(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 72).r,
-              child: Column(
-                children: [
-                  BaseTextField(
-                    placeholder: 'ค้นหายา',
-                    onChange: (val) {
-                      ref
-                          .read(storeControllerProvider.notifier)
-                          .onSearchMedicine(val);
-                    },
-                  ),
-                  SizedBox(
-                    height: 8.h,
-                  ),
-                  MedicineWarehouseListWidget(
-                    onTap: (val) {},
-                    // onTap: (val) {}, // ฟังก์ชันเมื่อกดรายการยา (ยังไม่ถูกใช้งาน)
-                    medicineList:
-                        searchCentralMedicineList ?? _centralMedicineList,
-                    isCentral: true, // ระบุว่าเป็นคลังยากลาง
-                  ),
-                ],
+            return SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 72).r,
+                child: Column(
+                  children: [
+                    BaseTextField(
+                      placeholder: 'ค้นหายา',
+                      onChange: (val) {
+                        ref
+                            .read(storeControllerProvider.notifier)
+                            .onSearchMedicine(val);
+                      },
+                    ),
+                    SizedBox(
+                      height: 8.h,
+                    ),
+                    MedicineWarehouseListWidget(
+                      onTap: (val) {},
+                      // onTap: (val) {}, // ฟังก์ชันเมื่อกดรายการยา (ยังไม่ถูกใช้งาน)
+                      medicineList:
+                          searchCentralMedicineList ?? _centralMedicineList,
+                      isCentral: true, // ระบุว่าเป็นคลังยากลาง
+                    ),
+                  ],
+                ),
               ),
             );
           },

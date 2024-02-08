@@ -32,6 +32,9 @@ class $AssetsIconsGen {
   /// File path: assets/icons/ic_attach.svg
   SvgGenImage get icAttach => const SvgGenImage('assets/icons/ic_attach.svg');
 
+  /// File path: assets/icons/ic_bannd.svg
+  SvgGenImage get icBannd => const SvgGenImage('assets/icons/ic_bannd.svg');
+
   /// File path: assets/icons/ic_btn_plus.svg
   SvgGenImage get icBtnPlus =>
       const SvgGenImage('assets/icons/ic_btn_plus.svg');
@@ -192,6 +195,7 @@ class $AssetsIconsGen {
         icAddShoppingCart,
         icAdministrator,
         icAttach,
+        icBannd,
         icBtnPlus,
         icBuy,
         icCancel,

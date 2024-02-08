@@ -102,17 +102,6 @@ class MedicineWarehouseItemWidget extends ConsumerWidget {
                             '${medicineItem.name}',
                             style: AppStyle.txtBody,
                           ),
-                          if (medicineItem.size != null &&
-                              medicineItem.material != null) ...[
-                            Text(
-                              '${medicineItem.size}',
-                              style: AppStyle.txtBody,
-                            ),
-                            Text(
-                              '${medicineItem.material}',
-                              style: AppStyle.txtBody,
-                            ),
-                          ],
                         ],
                       ),
                     ),

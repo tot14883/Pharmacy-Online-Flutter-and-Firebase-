@@ -29,13 +29,14 @@ class _BannedScreenState extends ConsumerState<BannedScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Assets.icons.icSuccessful.svg(),
+              Assets.icons.icBannd.svg(width: 150, height: 150),
               SizedBox(
                 height: 32.h,
               ),
               Text(
-                'บัญชีคุณถูกระงับการใช้งาน',
+                'บัญชีคุณถูกระงับการใช้งาน กรุณาติดต่อ admin@gmail.com"',
                 style: AppStyle.txtBody2,
+                textAlign: TextAlign.center,
               ),
               SizedBox(
                 height: 16.h,

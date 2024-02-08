@@ -41,5 +41,6 @@ class StoreState with _$StoreState {
     String? searchOpeningTime,
     String? searchClosingTime,
     PharmacyInfoResponse? selectPharmacyInfoResponse,
+    String? searchError,
   }) = _StoreState;
 }

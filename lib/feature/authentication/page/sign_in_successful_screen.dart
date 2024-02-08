@@ -58,7 +58,7 @@ class _SignInSuccessfulScreenState
                 onTap: () {
                   // ตรวจสอบสถานะของ userInfo
                   if (userInfo?.status == 'cancel') {
-                     // ถ้าสถานะเป็น cancel นำทางผู้ใช้ไปยังหน้าจอ BannedScreen และลบทุกทางที่ถูกเรียกใช้
+                    // ถ้าสถานะเป็น cancel นำทางผู้ใช้ไปยังหน้าจอ BannedScreen และลบทุกทางที่ถูกเรียกใช้
                     Navigator.of(context).pushNamedAndRemoveUntil(
                       BannedScreen.routeName,
                       (route) => false,

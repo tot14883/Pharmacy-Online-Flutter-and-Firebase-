@@ -338,6 +338,8 @@ class StoreController extends StateNotifier<StoreState> {
         name: medicineItem.name,
         price: medicineItem.price,
         currentMedicineImg: medicineItem.medicineImg,
+        material: medicineItem.material,
+        size: medicineItem.size,
       ),
     );
 
@@ -901,6 +903,34 @@ class StoreController extends StateNotifier<StoreState> {
           }
         }
 
+        if (name != null && name.isNotEmpty && !hasName) {
+          print('12321');
+          state = state.copyWith(searchError: 'ค้นหาด้วยชื่อไม่เจอ');
+        }
+
+        if (reviewScore != null && !hasReviewScore) {
+          state = state.copyWith(searchError: 'ค้นหาด้วยดาวไม่เจอ');
+        }
+
+        if (countReviewer != null && !hasCountReviewer) {
+          state = state.copyWith(searchError: 'ค้นหาจำนวนคนรีวิวไม่เจอ');
+        }
+
+        if ((openingTime != null || closingTime != null) &&
+            (!hasOpeningTime || !hasClosingTime)) {
+          state = state.copyWith(searchError: 'ด้วยเวลาเปิด-ปิดไม่เจอ');
+        }
+
+        if (openingTime != null &&
+            closingTime != null &&
+            !hasOpeningAndClosingTime) {
+          state = state.copyWith(searchError: 'ด้วยเวลาเปิด-ปิดไม่เจอ');
+        }
+
+        if (distance != null && !hasDistance) {
+          state = state.copyWith(searchError: 'ค้นหาด้วยระยะทางไม่เจอ');
+        }
+
         return hasName ||
             hasReviewScore ||
             hasCountReviewer ||
@@ -975,6 +1005,12 @@ class StoreController extends StateNotifier<StoreState> {
   void onClearSelectedPharmacyStore() async {
     state = state.copyWith(
       selectPharmacyInfoResponse: null,
+    );
+  }
+
+  void onClearError() async {
+    state = state.copyWith(
+      searchError: null,
     );
   }
 }

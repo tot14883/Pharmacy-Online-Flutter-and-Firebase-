@@ -57,7 +57,7 @@ class _FilterWidgetState extends BaseConsumerState<FilterWidget> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           BaseTextField(
-            label: 'ค้นหายา',
+            label: 'ค้นหาร้านยา',
             isShowLabelField: true,
             onChange: (val) {
               nameController.text = val;
@@ -227,11 +227,19 @@ class _FilterWidgetState extends BaseConsumerState<FilterWidget> {
                   SearchResultPharmacyStoreScreen.routeName,
                 );
               } else {
+                final result = ref.read(
+                  storeControllerProvider.select(
+                    (value) => value.searchError,
+                  ),
+                );
+
                 Fluttertoast.showToast(
-                  msg: "ไม่พบเจอร้านเภสัชใน",
+                  msg: result ?? "ไม่พบเจอร้านเภสัช",
                   toastLength: Toast.LENGTH_SHORT,
                   gravity: ToastGravity.BOTTOM,
                 );
+
+                ref.read(storeControllerProvider.notifier).onClearError();
               }
             },
             text: 'ค้นหา',
