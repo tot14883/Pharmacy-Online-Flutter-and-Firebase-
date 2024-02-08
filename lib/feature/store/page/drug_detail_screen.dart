@@ -58,8 +58,8 @@ class _DrugDetailScreenState extends BaseConsumerState<DrugDetailScreen> {
     final image = args.medicineItem.medicineImg; // รูปภาพของยา
     final pharmacyInfo = ref.watch(profileControllerProvider
         .select((value) => value.pharmacyStore)); // อ่านข้อมูลร้านขายยา
-    final band = args.medicineItem.band; // รูปภาพของยา
-    final medicineType = args.medicineItem.medicineType; // รูปภาพของยา
+    final size = args.medicineItem.size;
+    final material = args.medicineItem.material;
 
     return BaseScaffold(
       appBar: BaseAppBar(
@@ -109,14 +109,14 @@ class _DrugDetailScreenState extends BaseConsumerState<DrugDetailScreen> {
                   height: 16.h,
                 ),
                 Text(
-                  '$band',
+                  '$size',
                   style: AppStyle.txtBody,
                 ),
                 SizedBox(
                   height: 16.h,
                 ),
                 Text(
-                  '$medicineType',
+                  '$material',
                   style: AppStyle.txtBody,
                 ),
                 // SizedBox(
@@ -171,6 +171,8 @@ class _DrugDetailScreenState extends BaseConsumerState<DrugDetailScreen> {
                             '$name',
                             quantity,
                             '${pharmacyInfo?.nameStore}', //ชื่อร้าน
+                            '$size',
+                            '$material',
                           );
 
                       // อัปเดตจำนวนยาในตะกร้า

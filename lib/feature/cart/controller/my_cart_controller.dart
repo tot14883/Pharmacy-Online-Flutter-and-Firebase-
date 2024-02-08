@@ -106,6 +106,8 @@ class MyCartController extends StateNotifier<MyCartState> {
     String medicineName,
     int quantity,
     String nameStore,
+    String medicineSize,
+    String medicineMaterial,
   ) async {
     bool isSuccess = false;
     final myCart = state.myCart.value;
@@ -123,6 +125,8 @@ class MyCartController extends StateNotifier<MyCartState> {
         medicineName: medicineName,
         medicinePrice: medicinePrice,
         nameStore: nameStore,
+        medicineSize: medicineSize,
+        medicineMaterial: medicineMaterial,
       ),
     );
 
@@ -162,6 +166,8 @@ class MyCartController extends StateNotifier<MyCartState> {
     double medicinePrice,
     String medicineName,
     int quantity,
+    String medicineSize,
+    String medicineMaterial,
   ) async {
     bool isSuccess = false;
 
@@ -173,6 +179,8 @@ class MyCartController extends StateNotifier<MyCartState> {
         medicineImg: medicineImg,
         medicineName: medicineName,
         medicinePrice: medicinePrice,
+        medicineSize: medicineSize,
+        medicineMaterial: medicineMaterial,
       ),
     );
 

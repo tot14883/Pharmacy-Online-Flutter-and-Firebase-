@@ -16,8 +16,8 @@ abstract class MedicineResponse with _$MedicineResponse {
     int? quantity,
     String? howToUse,
     String? cartMedicineId,
-    String? band,
-    String? medicineType,
+    String? size,
+    String? material,
   }) = _MedicineResponse;
 
   factory MedicineResponse.fromJson(Map<String, dynamic> json) =>

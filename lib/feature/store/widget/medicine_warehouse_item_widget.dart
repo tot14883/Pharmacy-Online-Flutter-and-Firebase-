@@ -78,18 +78,21 @@ class MedicineWarehouseItemWidget extends ConsumerWidget {
                   Expanded(
                     child: GestureDetector(
                       onTap: () async {
-                        onTap(false);
+                        if (isFromChat) {
+                          onTap(false);
 
-                        final result =
-                            await Navigator.of(context).pushNamed<bool>(
-                          DrugDetailScreen.routeName,
-                          arguments: DrugDetailArgs(
-                            medicineItem: medicineItem,
-                            chatWithPharmacyItem: chatWithPharmacyItem,
-                          ),
-                        );
+                          final result =
+                              await Navigator.of(context).pushNamed<bool>(
+                            DrugDetailScreen.routeName,
+                            arguments: DrugDetailArgs(
+                              medicineItem: medicineItem,
+                              chatWithPharmacyItem: chatWithPharmacyItem,
+                            ),
+                          );
 
-                        onTap(result!);
+                          onTap(result!);
+                          return;
+                        }
                       },
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -99,14 +102,14 @@ class MedicineWarehouseItemWidget extends ConsumerWidget {
                             '${medicineItem.name}',
                             style: AppStyle.txtBody,
                           ),
-                          if (medicineItem.band != null &&
-                              medicineItem.medicineType != null) ...[
+                          if (medicineItem.size != null &&
+                              medicineItem.material != null) ...[
                             Text(
-                              '${medicineItem.band}',
+                              '${medicineItem.size}',
                               style: AppStyle.txtBody,
                             ),
                             Text(
-                              '${medicineItem.medicineType}',
+                              '${medicineItem.material}',
                               style: AppStyle.txtBody,
                             ),
                           ],

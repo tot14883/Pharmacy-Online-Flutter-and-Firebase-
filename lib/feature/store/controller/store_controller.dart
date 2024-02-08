@@ -195,9 +195,9 @@ class StoreController extends StateNotifier<StoreState> {
     final name = baseFormData?.getValue<String>(FieldMedicine.name);
 
     final price = baseFormData?.getValue<String>(FieldMedicine.price) ?? '0.0';
-    final medicineType =
-        baseFormData?.getValue<String>(FieldMedicine.medicineType) ?? '';
-    final band = baseFormData?.getValue<String>(FieldMedicine.band) ?? '';
+    final material =
+        baseFormData?.getValue<String>(FieldMedicine.material) ?? '';
+    final size = baseFormData?.getValue<String>(FieldMedicine.size) ?? '';
 
     // ตรวจสอบว่าผู้ใช้เป็น admin หรือไม่
     final isAdmin = _ref
@@ -212,8 +212,8 @@ class StoreController extends StateNotifier<StoreState> {
         price: double.parse(
             isAdmin ? '0.0' : price), // หากเป็น admin ให้ราคาเป็น 0
         medicineImg: medicineImg,
-        medicineType: medicineType,
-        band: band,
+        material: material,
+        size: size,
       ),
     );
 
@@ -243,9 +243,8 @@ class StoreController extends StateNotifier<StoreState> {
     final baseFormData = state.baseFormData;
     final name = baseFormData?.getValue<String>(FieldMedicine.name);
     final price = baseFormData?.getValue<String>(FieldMedicine.price) ?? '0.0';
-    final medicineType =
-        baseFormData?.getValue<String>(FieldMedicine.medicineType);
-    final band = baseFormData?.getValue<String>(FieldMedicine.band);
+    final material = baseFormData?.getValue<String>(FieldMedicine.material);
+    final size = baseFormData?.getValue<String>(FieldMedicine.size);
 
     // เรียกใช้ usecase เพื่อแก้ไขข้อมูลยา
     final result = await _editMedicineWarehouseUsecase.execute(
@@ -255,8 +254,8 @@ class StoreController extends StateNotifier<StoreState> {
         price: double.parse(price),
         currentMedicineImg: currentMedicineImg,
         medicineImg: medicineImg,
-        medicineType: medicineType,
-        band: band,
+        material: material,
+        size: size,
       ),
     );
 
@@ -731,21 +730,21 @@ class StoreController extends StateNotifier<StoreState> {
     final searchcentralMedicineList = centralMedicineList.where(
       (e) {
         final _name = e.name!.toLowerCase();
-        final _band = e.band?.toLowerCase();
-        final _medicineType = e.medicineType?.toLowerCase();
+        final _size = e.size?.toLowerCase();
+        final _material = e.material?.toLowerCase();
 
         final name = _name.contains(
           medicine,
         );
-        final band = _band?.contains(
+        final size = _size?.contains(
           medicine,
         );
-        final medicineType = _medicineType?.contains(
+        final material = _material?.contains(
           medicine,
         );
 
-        if (_band != null && _medicineType != null) {
-          return name || band! || medicineType!;
+        if (_size != null && _material != null) {
+          return name || size! || material!;
         }
 
         return name;
@@ -764,21 +763,21 @@ class StoreController extends StateNotifier<StoreState> {
     final searchMedicineList = medicineList.where(
       (e) {
         final _name = e.name!.toLowerCase();
-        final _band = e.band?.toLowerCase();
-        final _medicineType = e.medicineType?.toLowerCase();
+        final _size = e.size?.toLowerCase();
+        final _material = e.material?.toLowerCase();
 
         final name = _name.contains(
           medicine,
         );
-        final band = _band?.contains(
+        final size = _size?.contains(
           medicine,
         );
-        final medicineType = _medicineType?.contains(
+        final material = _material?.contains(
           medicine,
         );
 
-        if (e.band != null && medicineType != null) {
-          return name || band! || medicineType;
+        if (e.size != null && _material != null) {
+          return name || size! || material!;
         }
 
         return name;

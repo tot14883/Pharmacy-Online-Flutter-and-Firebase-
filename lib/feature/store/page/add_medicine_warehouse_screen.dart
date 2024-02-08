@@ -66,61 +66,27 @@ class _AddMedicineWarehouseScreenState
         return BaseForm(
           key: formKey,
           onChanged: ref.read(storeControllerProvider.notifier).onChanged,
-          child: Padding(
-            padding: const EdgeInsets.all(16).r,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                BaseUploadImageButton(
-                  imgPreview: Assets.icons.icAddImg.svg(),
-                  onUpload: (val) {
-                    setState(() {
-                      medicineFIle = val;
-                    });
-                  },
-                ),
-                SizedBox(
-                  height: 16.h,
-                ),
-                BaseTextField(
-                  fieldKey: FieldMedicine.name,
-                  label: "ชื่อยา",
-                  isShowLabelField: true,
-                  validator: Validators.combine(
-                    [
-                      Validators.withMessage(
-                        "Required",
-                        Validators.isEmpty,
-                      ),
-                    ],
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(16).r,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  BaseUploadImageButton(
+                    imgPreview: Assets.icons.icAddImg.svg(),
+                    onUpload: (val) {
+                      setState(() {
+                        medicineFIle = val;
+                      });
+                    },
                   ),
-                ),
-                SizedBox(
-                  height: 16.h,
-                ),
-                // BaseTextField(
-                //   label: "จำนวน",
-                //   textInputType: TextInputType.number,
-                //   validator: Validators.combine(
-                //     [
-                //       Validators.withMessage(
-                //         "Required",
-                //         Validators.isEmpty,
-                //       ),
-                //     ],
-                //   ),
-                // ),
-                // SizedBox(
-                //   height: 16.h,
-                // ),
-
-                // ช่องกรอกราคา
-                if (!isAdmin) ...[
+                  SizedBox(
+                    height: 16.h,
+                  ),
                   BaseTextField(
-                    fieldKey: FieldMedicine.price,
-                    label: "ราคา",
+                    fieldKey: FieldMedicine.name,
+                    label: "ชื่อยา",
                     isShowLabelField: true,
-                    textInputType: TextInputType.number,
                     validator: Validators.combine(
                       [
                         Validators.withMessage(
@@ -130,110 +96,143 @@ class _AddMedicineWarehouseScreenState
                       ],
                     ),
                   ),
+                  SizedBox(
+                    height: 16.h,
+                  ),
+                  // BaseTextField(
+                  //   label: "จำนวน",
+                  //   textInputType: TextInputType.number,
+                  //   validator: Validators.combine(
+                  //     [
+                  //       Validators.withMessage(
+                  //         "Required",
+                  //         Validators.isEmpty,
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
+                  // SizedBox(
+                  //   height: 16.h,
+                  // ),
+
+                  // ช่องกรอกราคา
+                  if (!isAdmin) ...[
+                    BaseTextField(
+                      fieldKey: FieldMedicine.price,
+                      label: "ราคา",
+                      isShowLabelField: true,
+                      textInputType: TextInputType.number,
+                      validator: Validators.combine(
+                        [
+                          Validators.withMessage(
+                            "Required",
+                            Validators.isEmpty,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                  BaseTextField(
+                    fieldKey: FieldMedicine.size,
+                    label: "ขนาด",
+                    isShowLabelField: true,
+                    validator: Validators.combine(
+                      [
+                        Validators.withMessage(
+                          "Required",
+                          Validators.isEmpty,
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 16.h,
+                  ),
+                  BaseTextField(
+                    fieldKey: FieldMedicine.material,
+                    label: "ส่วนประกอบ",
+                    isShowLabelField: true,
+                    validator: Validators.combine(
+                      [
+                        Validators.withMessage(
+                          "Required",
+                          Validators.isEmpty,
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 16.h,
+                  ),
+                  // ปุ่มยืนยันเพิ่มยา
+                  BaseButton(
+                    // onTap ฟังก์ชันเมื่อกดปุ่มยืนยันเพิ่มยา
+                    onTap: () async {
+                      // บันทึกข้อมูลในฟอร์ม
+                      formKey.currentState?.save(
+                        // onSave ฟังก์ชันจะถูกเรียกเมื่อมีการบันทึกข้อมูลในฟอร์มสำเร็จ
+                        onSave: (_) async {
+                          // ตรวจสอบว่ามีการอัปโหลดรูปภาพยาหรือไม่ หากไม่มีจะแสดงข้อความแจ้งเตือนให้อัปโหลดรูปภาพยา
+                          if (medicineFIle == null) {
+                            showDialog(
+                              context: context,
+                              builder: (_) {
+                                return BaseDialog(
+                                  message: 'กรุณาเลือกรูปภาพ',
+                                );
+                              },
+                            );
+                            return;
+                          }
+
+                          // เรียกใช้ฟังก์ชัน addMedicineWarehouse เพื่อเพิ่มยา
+                          final result = await ref
+                              // read ข้อมูลจาก provider
+                              .read(storeControllerProvider.notifier)
+                              // เรียกใช้ฟังก์ชัน addMedicineWarehouse
+                              .addMedicineWarehouse(medicineFIle!);
+
+                          // ตรวจสอบว่าการเพิ่มยาสำเร็จหรือไม่ หากสำเร็จจะแสดงข้อความแจ้งเตือนสำเร็จและปิดหน้าจอ
+                          if (result) {
+                            await ref
+                                // รีเฟรชข้อมูลยาในคลังกลาง
+                                .read(storeControllerProvider.notifier)
+                                .onGetCentralMedicineWarehouse();
+                            await ref
+                                // รีเฟรชข้อมูลยาในคลัง
+                                .read(storeControllerProvider.notifier)
+                                .onGetMedicineWarehouse();
+
+                            showDialog(
+                              context: context,
+                              builder: (_) {
+                                return BaseDialog(
+                                  message: 'เพิ่มยาสำเร็จ',
+                                  onClick: () {
+                                    Navigator.of(context).pop();
+                                    Navigator.of(context).pop();
+                                  },
+                                );
+                              },
+                            );
+                          } else {
+                            // หากการเพิ่มยาไม่สำเร็จจะแสดงข้อความแจ้งเตือนไม่สำเร็จ
+                            showDialog(
+                              context: context,
+                              builder: (_) {
+                                return BaseDialog(
+                                  message: 'เพิ่มยาไม่สำเร็จ',
+                                );
+                              },
+                            );
+                          }
+                        },
+                      );
+                    },
+                    text: 'ยืนยัน',
+                  ),
                 ],
-                SizedBox(
-                  height: 16.h,
-                ),
-                BaseTextField(
-                  fieldKey: FieldMedicine.medicineType,
-                  label: "ชนิด",
-                  isShowLabelField: true,
-                  validator: Validators.combine(
-                    [
-                      Validators.withMessage(
-                        "Required",
-                        Validators.isEmpty,
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  height: 16.h,
-                ),
-                BaseTextField(
-                  fieldKey: FieldMedicine.band,
-                  label: "ยี่ห้อ",
-                  isShowLabelField: true,
-                  validator: Validators.combine(
-                    [
-                      Validators.withMessage(
-                        "Required",
-                        Validators.isEmpty,
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  height: 16.h,
-                ),
-                // ปุ่มยืนยันเพิ่มยา
-                BaseButton(
-                  // onTap ฟังก์ชันเมื่อกดปุ่มยืนยันเพิ่มยา
-                  onTap: () async {
-                    // บันทึกข้อมูลในฟอร์ม
-                    formKey.currentState?.save(
-                      // onSave ฟังก์ชันจะถูกเรียกเมื่อมีการบันทึกข้อมูลในฟอร์มสำเร็จ
-                      onSave: (_) async {
-                        // ตรวจสอบว่ามีการอัปโหลดรูปภาพยาหรือไม่ หากไม่มีจะแสดงข้อความแจ้งเตือนให้อัปโหลดรูปภาพยา
-                        if (medicineFIle == null) {
-                          showDialog(
-                            context: context,
-                            builder: (_) {
-                              return BaseDialog(
-                                message: 'กรุณาเลือกรูปภาพ',
-                              );
-                            },
-                          );
-                          return;
-                        }
-
-                        // เรียกใช้ฟังก์ชัน addMedicineWarehouse เพื่อเพิ่มยา
-                        final result = await ref
-                            // read ข้อมูลจาก provider
-                            .read(storeControllerProvider.notifier)
-                            // เรียกใช้ฟังก์ชัน addMedicineWarehouse
-                            .addMedicineWarehouse(medicineFIle!);
-
-                        // ตรวจสอบว่าการเพิ่มยาสำเร็จหรือไม่ หากสำเร็จจะแสดงข้อความแจ้งเตือนสำเร็จและปิดหน้าจอ
-                        if (result) {
-                          await ref
-                              // รีเฟรชข้อมูลยาในคลังกลาง
-                              .read(storeControllerProvider.notifier)
-                              .onGetCentralMedicineWarehouse();
-                          await ref
-                              // รีเฟรชข้อมูลยาในคลัง
-                              .read(storeControllerProvider.notifier)
-                              .onGetMedicineWarehouse();
-
-                          showDialog(
-                            context: context,
-                            builder: (_) {
-                              return BaseDialog(
-                                message: 'เพิ่มยาสำเร็จ',
-                                onClick: () {
-                                  Navigator.of(context).pop();
-                                  Navigator.of(context).pop();
-                                },
-                              );
-                            },
-                          );
-                        } else {
-                          // หากการเพิ่มยาไม่สำเร็จจะแสดงข้อความแจ้งเตือนไม่สำเร็จ
-                          showDialog(
-                            context: context,
-                            builder: (_) {
-                              return BaseDialog(
-                                message: 'เพิ่มยาไม่สำเร็จ',
-                              );
-                            },
-                          );
-                        }
-                      },
-                    );
-                  },
-                  text: 'ยืนยัน',
-                ),
-              ],
+              ),
             ),
           ),
         );

@@ -45,8 +45,8 @@ class AddMedicineWarehouseUsecase extends UseCase<MedicineRequest, bool> {
       final name = request.name ?? '';
       final price = request.price ?? 0.0;
       final medicineImg = request.medicineImg;
-      final medicineType = request.medicineType ?? '';
-      final band = request.band ?? '';
+      final material = request.material ?? '';
+      final size = request.size ?? '';
 
       final uid = baseSharePreference.getString(BaseSharePreferenceKey.userId);
       final isAdmin =
@@ -73,8 +73,8 @@ class AddMedicineWarehouseUsecase extends UseCase<MedicineRequest, bool> {
           "name": name,
           "price": price,
           "medicineImg": urlMedicineImg,
-          "medicineType": medicineType,
-          "band": band,
+          "material": material,
+          "size": size,
           "isCentral": isAdmin ? true : false,
           "create_at": DateTime.now(),
           "update_at": DateTime.now(),

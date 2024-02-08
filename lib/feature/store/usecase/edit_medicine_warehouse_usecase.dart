@@ -44,8 +44,8 @@ class EditMedicineWarehouseUsecase extends UseCase<MedicineRequest, bool> {
       final price = request.price ?? 0.0;
       final medicineImg = request.medicineImg;
       final currentMedicineImg = request.currentMedicineImg;
-      final medicineType = request.medicineType ?? '';
-      final band = request.band ?? '';
+      final material = request.material ?? '';
+      final size = request.size ?? '';
       //ดึง uid จาก SharedPreferences
       final uid = baseSharePreference.getString(BaseSharePreferenceKey.userId);
 
@@ -68,8 +68,8 @@ class EditMedicineWarehouseUsecase extends UseCase<MedicineRequest, bool> {
           "price": price,
           "medicineImg":
               medicineImg != null ? urlMedicineImg : currentMedicineImg,
-          "medicineType": medicineType,
-          "band": band,
+          "material": material,
+          "size": size,
           "update_at": DateTime.now(),
         };
 

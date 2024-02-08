@@ -13,8 +13,8 @@ class MedicineItemWidget extends StatelessWidget {
   final String? caption; // caption อาจเป็น null ได้
   final String quantity;
   final String price;
-  final String band;
-  final String medicineType;
+  final String size;
+  final String material;
 
   // constructor รับค่าตัวแปรต่างๆ
   const MedicineItemWidget({
@@ -24,8 +24,8 @@ class MedicineItemWidget extends StatelessWidget {
     this.caption,
     required this.quantity,
     required this.price,
-    required this.band,
-    required this.medicineType,
+    required this.size,
+    required this.material,
   });
 
   @override
@@ -40,8 +40,8 @@ class MedicineItemWidget extends StatelessWidget {
               name: name,
               price: double.parse(price),
               quantity: int.parse(quantity),
-              band: band,
-              medicineType: medicineType,
+              size: size,
+              material: material,
             ),
             isOnlyDetail: true,
           ),
@@ -73,11 +73,11 @@ class MedicineItemWidget extends StatelessWidget {
                   style: AppStyle.txtBody,
                 ),
                 Text(
-                  band,
+                  size,
                   style: AppStyle.txtBody,
                 ),
                 Text(
-                  band,
+                  material,
                   style: AppStyle.txtBody,
                   textAlign: TextAlign.end,
                 ),

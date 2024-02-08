@@ -111,7 +111,7 @@ class CartItemWidget extends ConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     //แสดงจำนวนสินค้า
-                    if (isPharmacy) ...[                     
+                    if (isPharmacy) ...[
                       QuantityWidget(
                         initial: _quantity?['${medicineItem.id}'] ??
                             medicineItem.quantity,
@@ -130,6 +130,8 @@ class CartItemWidget extends ConsumerWidget {
                                 '${medicineItem.name}',
                                 val,
                                 '${pharmacyStoreInfo?.nameStore}',
+                                '${medicineItem.size}',
+                                '${medicineItem.material}',
                               );
 
                           ref

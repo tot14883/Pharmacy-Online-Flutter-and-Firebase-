@@ -38,7 +38,7 @@ class GetMedicineWarehouseUsecase
     void request,
   ) async {
     try {
-      //ในกระบวนการดึงข้อมูล, ใช้ `fireCloudStore.collection('medicineWarehouse').where('uid', isEqualTo: uid).get()` 
+      //ในกระบวนการดึงข้อมูล, ใช้ `fireCloudStore.collection('medicineWarehouse').where('uid', isEqualTo: uid).get()`
       //เพื่อดึงข้อมูลรายการยาทั้งหมดที่เกี่ยวข้องกับผู้ใช้ที่ล็อกอินอยู่
       final uid = baseSharePreference.getString(BaseSharePreferenceKey.userId);
 
@@ -63,6 +63,8 @@ class GetMedicineWarehouseUsecase
               uid: _data['uid'],
               name: _data['name'],
               price: _data['price'],
+              size: _data['size'],
+              material: _data['material'],
               medicineImg: _data['medicineImg'],
             ),
           );

@@ -91,6 +91,8 @@ class GetAllMyCartUsecase extends UseCase<CartRequest, List<CartResponse>> {
                 medicineImg: _data['medicineImg'],
                 name: _data['medicineName'],
                 price: _data['medicinePrice'],
+                material: _data['medicineMaterial'],
+                size: _data['medicineSize'],
                 cartMedicineId: _data['id'],
               ),
             );

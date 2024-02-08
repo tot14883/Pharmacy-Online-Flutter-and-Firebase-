@@ -103,6 +103,8 @@ class GetAllOrderUsecase extends UseCase<OrderRequest, List<OrderResponse>> {
               medicineImg: _dataMedicine['medicineImg'],
               name: _dataMedicine['medicineName'],
               price: _dataMedicine['medicinePrice'],
+              size: _dataMedicine['medicineSize'],
+              material: _dataMedicine['medicineMaterial'],
               cartMedicineId: _dataMedicine['id'],
             ),
           );

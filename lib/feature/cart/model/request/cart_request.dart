@@ -32,6 +32,8 @@ abstract class CartRequest with _$CartRequest {
     String? medicineImg,
     double? medicinePrice,
     String? medicineName,
+    String? medicineSize,
+    String? medicineMaterial,
     OrderStatus? status,
     String? cartMedicineId,
   }) = _CartRequest;

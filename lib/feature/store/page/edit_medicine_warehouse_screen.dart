@@ -83,70 +83,38 @@ class _EditMedicineWarehouseScreenState
         return BaseForm(
           key: formKey,
           onChanged: ref.read(storeControllerProvider.notifier).onChanged,
-          child: Padding(
-            padding: const EdgeInsets.all(16).r,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                BaseUploadImageButton(
-                  imgPreview: BaseImageView(
-                    url: medicineFIle != null ? null : medicineItem.medicineImg,
-                    file:
-                        medicineFIle != null ? File(medicineFIle!.path) : null,
-                    width: 250.w,
-                    height: 250.h,
-                    fit: BoxFit.cover,
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(16).r,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  BaseUploadImageButton(
+                    imgPreview: BaseImageView(
+                      url: medicineFIle != null
+                          ? null
+                          : medicineItem.medicineImg,
+                      file: medicineFIle != null
+                          ? File(medicineFIle!.path)
+                          : null,
+                      width: 250.w,
+                      height: 250.h,
+                      fit: BoxFit.cover,
+                    ),
+                    onUpload: (val) {
+                      setState(() {
+                        medicineFIle = val;
+                      });
+                    },
                   ),
-                  onUpload: (val) {
-                    setState(() {
-                      medicineFIle = val;
-                    });
-                  },
-                ),
-                SizedBox(
-                  height: 16.h,
-                ),
-                BaseTextField(
-                  fieldKey: FieldMedicine.name,
-                  label: "ชื่อยา",
-                  isShowLabelField: true,
-                  initialValue: medicineItem.name,
-                  validator: Validators.combine(
-                    [
-                      Validators.withMessage(
-                        "Required",
-                        Validators.isEmpty,
-                      ),
-                    ],
+                  SizedBox(
+                    height: 16.h,
                   ),
-                ),
-                SizedBox(
-                  height: 16.h,
-                ),
-                // BaseTextField(
-                //   placeholder: "จำนวน",
-                //   textInputType: TextInputType.number,
-                //   validator: Validators.combine(
-                //     [
-                //       Validators.withMessage(
-                //         "Required",
-                //         Validators.isEmpty,
-                //       ),
-                //     ],
-                //   ),
-                // ),
-                // SizedBox(
-                //   height: 16.h,
-                // ),
-
-                // แสดงช่องกรอกราคา ถ้าไม่ใช่ Admin
-                if (!isAdmin) ...[
                   BaseTextField(
-                    fieldKey: FieldMedicine.price,
-                    initialValue: '${medicineItem.price}',
-                    label: "ราคา",
+                    fieldKey: FieldMedicine.name,
+                    label: "ชื่อยา",
                     isShowLabelField: true,
-                    textInputType: TextInputType.number,
+                    initialValue: medicineItem.name,
                     validator: Validators.combine(
                       [
                         Validators.withMessage(
@@ -156,91 +124,126 @@ class _EditMedicineWarehouseScreenState
                       ],
                     ),
                   ),
+                  SizedBox(
+                    height: 16.h,
+                  ),
+                  // BaseTextField(
+                  //   placeholder: "จำนวน",
+                  //   textInputType: TextInputType.number,
+                  //   validator: Validators.combine(
+                  //     [
+                  //       Validators.withMessage(
+                  //         "Required",
+                  //         Validators.isEmpty,
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
+                  // SizedBox(
+                  //   height: 16.h,
+                  // ),
+
+                  // แสดงช่องกรอกราคา ถ้าไม่ใช่ Admin
+                  if (!isAdmin) ...[
+                    BaseTextField(
+                      fieldKey: FieldMedicine.price,
+                      initialValue: '${medicineItem.price}',
+                      label: "ราคา",
+                      isShowLabelField: true,
+                      textInputType: TextInputType.number,
+                      validator: Validators.combine(
+                        [
+                          Validators.withMessage(
+                            "Required",
+                            Validators.isEmpty,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+
+                  BaseTextField(
+                    fieldKey: FieldMedicine.size,
+                    initialValue: '${medicineItem.size}',
+                    label: "ขนาด",
+                    isShowLabelField: true,
+                    validator: Validators.combine(
+                      [
+                        Validators.withMessage(
+                          "Required",
+                          Validators.isEmpty,
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 16.h,
+                  ),
+                  BaseTextField(
+                    fieldKey: FieldMedicine.material,
+                    initialValue: '${medicineItem.material}',
+                    label: "ส่วนประกอบ",
+                    isShowLabelField: true,
+                    validator: Validators.combine(
+                      [
+                        Validators.withMessage(
+                          "Required",
+                          Validators.isEmpty,
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 16.h,
+                  ),
+                  BaseButton(
+                    onTap: () async {
+                      formKey.currentState?.save(
+                        onSave: (_) async {
+                          // เรียกใช้ use case สำหรับแก้ไขยา
+                          final result = await ref
+                              .read(storeControllerProvider.notifier)
+                              .editMedicineWarehouse('${medicineItem.id}',
+                                  medicineFIle, medicineItem.medicineImg);
+
+                          if (result) {
+                            // โหลดข้อมูลคลังยาใหม่หลังจากแก้ไขสำเร็จ
+                            await ref
+                                .read(storeControllerProvider.notifier)
+                                .onGetCentralMedicineWarehouse();
+                            await ref
+                                .read(storeControllerProvider.notifier)
+                                .onGetMedicineWarehouse();
+
+                            showDialog(
+                              context: context,
+                              builder: (_) {
+                                return BaseDialog(
+                                  message: 'แก้ไขสำเร็จ',
+                                  onClick: () {
+                                    Navigator.of(context).pop();
+                                    Navigator.of(context).pop();
+                                  },
+                                );
+                              },
+                            );
+                          } else {
+                            showDialog(
+                              context: context,
+                              builder: (_) {
+                                return BaseDialog(
+                                  message: 'แก้ไขไม่สำเร็จ',
+                                );
+                              },
+                            );
+                          }
+                        },
+                      );
+                    },
+                    text: 'ยืนยัน',
+                  ),
                 ],
-                SizedBox(
-                  height: 16.h,
-                ),
-                BaseTextField(
-                  fieldKey: FieldMedicine.medicineType,
-                  initialValue: '${medicineItem.medicineType}',
-                  label: "ชนิด",
-                  isShowLabelField: true,
-                  validator: Validators.combine(
-                    [
-                      Validators.withMessage(
-                        "Required",
-                        Validators.isEmpty,
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  height: 16.h,
-                ),
-                BaseTextField(
-                  fieldKey: FieldMedicine.band,
-                  initialValue: '${medicineItem.band}',
-                  label: "ยี่ห้อ",
-                  isShowLabelField: true,
-                  validator: Validators.combine(
-                    [
-                      Validators.withMessage(
-                        "Required",
-                        Validators.isEmpty,
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  height: 16.h,
-                ),
-                BaseButton(
-                  onTap: () async {
-                    formKey.currentState?.save(
-                      onSave: (_) async {
-                        // เรียกใช้ use case สำหรับแก้ไขยา
-                        final result = await ref
-                            .read(storeControllerProvider.notifier)
-                            .editMedicineWarehouse('${medicineItem.id}',
-                                medicineFIle, medicineItem.medicineImg);
-
-                        if (result) {
-                          // โหลดข้อมูลคลังยาใหม่หลังจากแก้ไขสำเร็จ
-                          await ref
-                              .read(storeControllerProvider.notifier)
-                              .onGetCentralMedicineWarehouse();
-                          await ref
-                              .read(storeControllerProvider.notifier)
-                              .onGetMedicineWarehouse();
-
-                          showDialog(
-                            context: context,
-                            builder: (_) {
-                              return BaseDialog(
-                                message: 'แก้ไขสำเร็จ',
-                                onClick: () {
-                                  Navigator.of(context).pop();
-                                  Navigator.of(context).pop();
-                                },
-                              );
-                            },
-                          );
-                        } else {
-                          showDialog(
-                            context: context,
-                            builder: (_) {
-                              return BaseDialog(
-                                message: 'แก้ไขไม่สำเร็จ',
-                              );
-                            },
-                          );
-                        }
-                      },
-                    );
-                  },
-                  text: 'ยืนยัน',
-                ),
-              ],
+              ),
             ),
           ),
         );

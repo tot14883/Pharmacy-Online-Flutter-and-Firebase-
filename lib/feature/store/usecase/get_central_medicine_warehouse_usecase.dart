@@ -60,6 +60,8 @@ class GetCentralMedicineWarehouseUsecase
             uid: _data['uid'],
             name: _data['name'],
             price: _data['price'],
+            material: _data['material'],
+            size: _data['size'],
             medicineImg: _data['medicineImg'],
           ),
         );

@@ -8,7 +8,7 @@ import 'package:pharmacy_online/feature/cart/model/request/cart_request.dart';
 import 'package:pharmacy_online/feature/order/enum/order_status_enum.dart';
 
 final addToCartUsecaseProvider = Provider<AddToCartUsecase>((ref) {
-   //โค้ดที่ใช้ในการสร้าง AddToCartUsecase และรับ dependencies ต่าง ๆ
+  //โค้ดที่ใช้ในการสร้าง AddToCartUsecase และรับ dependencies ต่าง ๆ
   final fireCloudStore = ref.watch(firebaseCloudStoreProvider);
   final baseSharedPreference = ref.watch(baseSharePreferenceProvider);
 
@@ -47,6 +47,8 @@ class AddToCartUsecase extends UseCase<CartRequest, bool> {
       final medicinePrice = request.medicinePrice;
       final quantity = request.quantity;
       final nameStore = request.nameStore;
+      final medicineSize = request.medicineSize;
+      final medicineMaterial = request.medicineMaterial;
 
       // ดึง pharmacyId ของผู้ใช้จาก shared preferences
       final pharmacyId =
@@ -117,6 +119,8 @@ class AddToCartUsecase extends UseCase<CartRequest, bool> {
           "medicineName": medicineName,
           "medicinePrice": medicinePrice,
           "medicineId": medicineId,
+          "medicineSize": medicineSize,
+          "medicineMaterial": medicineMaterial,
         };
         await collectCartMedicine.doc(_data['id']).update(myMedicine);
       } else {
@@ -129,6 +133,8 @@ class AddToCartUsecase extends UseCase<CartRequest, bool> {
           "medicineName": medicineName,
           "medicinePrice": medicinePrice,
           "medicineId": medicineId,
+          "medicineSize": medicineSize,
+          "medicineMaterial": medicineMaterial,
         };
         await collectCartMedicine.doc(cartMedicineId).set(myMedicine);
       }

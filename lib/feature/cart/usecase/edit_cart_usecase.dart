@@ -42,6 +42,8 @@ class EditCartUsecase extends UseCase<CartRequest, bool> {
       final medicineName = request.medicineName;
       final medicinePrice = request.medicinePrice;
       final quantity = request.quantity;
+      final medicineSize = request.medicineSize;
+      final medicineMaterial = request.medicineMaterial;
 
       final collectCart = fireCloudStore.collection('cart');
 
@@ -60,6 +62,8 @@ class EditCartUsecase extends UseCase<CartRequest, bool> {
         "medicineName": medicineName,
         "medicinePrice": medicinePrice,
         "medicineId": medicineId,
+        "medicineSize": medicineSize,
+        "medicineMaterial": medicineMaterial,
       };
 
       //ตรวจสอบว่าเป็นการแก้ไขข้อมูลหรือเพิ่มข้อมูลใหม่

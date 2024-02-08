@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pharmacy_online/base_widget/base_text_field.dart';
 import 'package:pharmacy_online/feature/order/widget/medicine_item_widget.dart';
 import 'package:pharmacy_online/feature/store/model/response/medicine_response.dart';
+import 'package:pharmacy_online/feature/store/page/drug_detail_screen.dart';
 import 'package:pharmacy_online/utils/util/vaildators.dart';
 
 class MedicineListWidget extends ConsumerWidget {
@@ -34,7 +35,15 @@ class MedicineListWidget extends ConsumerWidget {
           // จัดเรียงข้อมูลยาในแนวตั้ง
           children: [
             GestureDetector(
-              onTap: () {},
+              onTap: () async {
+                await Navigator.of(context).pushNamed<bool>(
+                  DrugDetailScreen.routeName,
+                  arguments: DrugDetailArgs(
+                    medicineItem: medicineItem,
+                    isOnlyDetail: true,
+                  ),
+                );
+              },
               child: MedicineItemWidget(
                 // แสดงข้อมูลยา เช่น รูปภาพ ชื่อ จำนวน ราคา
                 imgUrl: '${medicineItem.medicineImg}',
@@ -42,8 +51,8 @@ class MedicineListWidget extends ConsumerWidget {
                 quantity: 'จำนวน ${medicineItem.quantity}',
                 price:
                     '${(medicineItem.price ?? 0.0) * (medicineItem.quantity ?? 1)} บาท',
-                band: '${medicineItem.band}',
-                medicineType: '${medicineItem.medicineType}',
+                size: '${medicineItem.size}',
+                material: '${medicineItem.material}',
               ),
             ),
             if (hasTextForm) ...[

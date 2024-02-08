@@ -67,7 +67,7 @@ class GetCartUsecase extends UseCase<CartRequest, CartResponse> {
         _data = collectCart.first.data() as Map<String, dynamic>;
       }
       final List<MedicineResponse> medicineList = [];
-      
+
       //ดึงข้อมูลสินค้าที่อยู่ในตะกร้าสินค้า
       final collectCartMedicine = await fireCloudStore
           .collection('cart')
@@ -86,6 +86,8 @@ class GetCartUsecase extends UseCase<CartRequest, CartResponse> {
             medicineImg: _data['medicineImg'],
             name: _data['medicineName'],
             price: _data['medicinePrice'],
+            size: _data['medicineSize'],
+            material: _data['medicineMaterial'],
             cartMedicineId: _data['id'],
           ),
         );
