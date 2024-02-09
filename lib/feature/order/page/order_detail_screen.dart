@@ -383,6 +383,7 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
                       padding: const EdgeInsets.all(16).r,
                       color: AppColor.themeWhiteColor,
                       child: MedicineListWidget(
+                        isOrder: true,
                         medicineList: medicineList ?? [],
                         onChange: (val) {},
                       ),
@@ -618,7 +619,7 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
                           : '',
 // ตรวจสอบว่าควรแสดงปุ่มที่สองหรือไม่ โดยจะแสดงปุ่มเมื่อหลักฐานการจัดส่งสินค้าพร้อมแล้วและคำสั่งซื้ออยู่ในสถานะ "รอจัดส่ง"
                       hasSecondBtn: deliverySlip != null &&
-                          _orderDetail?.status == OrderStatus.waitingDelivery&&
+                          _orderDetail?.status == OrderStatus.waitingDelivery &&
                           isPharmacy,
                       btnTxtSecond:
                           _orderDetail?.status == OrderStatus.waitingDelivery

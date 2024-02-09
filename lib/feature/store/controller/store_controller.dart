@@ -294,7 +294,6 @@ class StoreController extends StateNotifier<StoreState> {
       centralMedicineList: const AsyncValue.loading(), // แสดงสถานะ loading
     );
     final result = await _getCentralMedicineWarehouseUsecase.execute(null);
-
     result.when(
       (success) => state = state.copyWith(
         centralMedicineList:
@@ -728,6 +727,11 @@ class StoreController extends StateNotifier<StoreState> {
     final centralMedicineList = state.centralMedicineList.value;
 
     if (medicine.isEmpty) {
+      state = state.copyWith(searchCentralMedicineList: null);
+      return;
+    }
+
+    if (medicine == 'all') {
       state = state.copyWith(searchCentralMedicineList: centralMedicineList);
       return;
     }
@@ -762,6 +766,11 @@ class StoreController extends StateNotifier<StoreState> {
     final medicineList = state.medicineList.value;
 
     if (medicine.isEmpty) {
+      state = state.copyWith(searchMedicineList: null);
+      return;
+    }
+
+    if (medicine == 'all') {
       state = state.copyWith(searchMedicineList: medicineList);
       return;
     }

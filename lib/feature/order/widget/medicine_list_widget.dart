@@ -54,7 +54,9 @@ class MedicineListWidget extends ConsumerWidget {
                 price:
                     '${(medicineItem.price ?? 0.0) * (medicineItem.quantity ?? 1)} บาท',
                 size: '${medicineItem.size}',
-                material: isOrder ? '' : '${medicineItem.material}',
+                material: '${medicineItem.material}',
+                purePrice: '${medicineItem.price ?? 0.0}',
+                isOrder: isOrder,
               ),
             ),
             if (hasTextForm) ...[

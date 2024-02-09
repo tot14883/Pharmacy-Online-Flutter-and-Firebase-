@@ -15,6 +15,8 @@ class MedicineItemWidget extends StatelessWidget {
   final String price;
   final String size;
   final String material;
+  final bool isOrder;
+  final String purePrice;
 
   // constructor รับค่าตัวแปรต่างๆ
   const MedicineItemWidget({
@@ -26,13 +28,14 @@ class MedicineItemWidget extends StatelessWidget {
     required this.price,
     required this.size,
     required this.material,
+    this.isOrder = false,
+    required this.purePrice,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        final priceParsed = price.split(' บาท');
         final quantityParsed = quantity.split('จำนวน ');
 
         Navigator.of(context).pushNamed<bool>(
@@ -41,7 +44,7 @@ class MedicineItemWidget extends StatelessWidget {
             medicineItem: MedicineResponse(
               medicineImg: imgUrl,
               name: name,
-              price: double.parse(priceParsed[0]),
+              price: double.parse(purePrice),
               quantity: int.parse(quantityParsed[1]),
               size: size,
               material: material,
@@ -79,12 +82,13 @@ class MedicineItemWidget extends StatelessWidget {
                   size,
                   style: AppStyle.txtBody,
                 ),
-                Text(
-                  material,
-                  style: AppStyle.txtBody,
-                  textAlign: TextAlign.end,
-                ),
-
+                if (!isOrder) ...[
+                  Text(
+                    material,
+                    style: AppStyle.txtBody,
+                    textAlign: TextAlign.end,
+                  ),
+                ],
                 if (caption != null) ...[
                   Text(
                     '$caption',
@@ -93,9 +97,6 @@ class MedicineItemWidget extends StatelessWidget {
                     ),
                   ),
                 ],
-                SizedBox(
-                  height: 16.h,
-                ),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start, // ชิดบน
                   mainAxisAlignment: MainAxisAlignment.start, // ชิดซ้าย

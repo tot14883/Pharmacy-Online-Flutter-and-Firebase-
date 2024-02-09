@@ -67,7 +67,8 @@ class AddReviewStoreUsecase extends UseCase<ReviewRequest, bool> {
           .get()
           .then((value) => value);
 
-      final _dataPharmacy = getCollectPharmacyStore as Map<String, dynamic>;
+      final _dataPharmacy =
+          getCollectPharmacyStore.data() as Map<String, dynamic>;
 
       final getReviewScore = await collectReview
           .where('pharmacyId', isEqualTo: pharmacyId)
@@ -97,6 +98,7 @@ class AddReviewStoreUsecase extends UseCase<ReviewRequest, bool> {
 
       return true;
     } catch (e) {
+      print(e);
       return false;
     }
   }
