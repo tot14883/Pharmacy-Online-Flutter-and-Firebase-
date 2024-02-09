@@ -22,6 +22,8 @@ abstract class PharmacyStoreResponse with _$PharmacyStoreResponse {
     String? licenseStore,
     String? licenseStoreImg,
     String? qrCodeImg,
+    int? countReviewer,
+    double? ratingScore,
     String? status,
     DateTime? update_at,
     DateTime? create_at,

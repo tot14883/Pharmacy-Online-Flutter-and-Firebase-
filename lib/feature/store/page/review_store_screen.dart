@@ -68,7 +68,7 @@ class _ReviewStoreScreenState extends BaseConsumerState<ReviewStoreScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      '($countReview)',
+                      '(${pharmacyStoreInfo?.countReviewer})',
                       style: AppStyle.txtBody,
                     ),
                     SizedBox(
@@ -83,14 +83,14 @@ class _ReviewStoreScreenState extends BaseConsumerState<ReviewStoreScreen> {
                 ),
                 RatingStartWidget(
                   isReadable: true,
-                  initialRating: double.parse(rating.toStringAsFixed(2)),
+                  initialRating: pharmacyStoreInfo?.ratingScore ?? 0,
                   onRatingUpdate: (val) {},
                 ),
                 SizedBox(
                   height: 8.h,
                 ),
                 Text(
-                  rating == 0.0 ? '0.0' : rating.toStringAsFixed(2),
+                  '${pharmacyStoreInfo?.ratingScore}',
                   style: AppStyle.txtBody,
                 ),
                 SizedBox(

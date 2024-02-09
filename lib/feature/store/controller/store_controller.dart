@@ -829,6 +829,7 @@ class StoreController extends StateNotifier<StoreState> {
 
     List<PharmacyInfoResponse>? searchPharmacyInfoList;
 
+    bool hasQuery = false;
     bool hasName = false;
     bool hasDistance = false;
     bool hasReviewScore = false;
@@ -848,28 +849,36 @@ class StoreController extends StateNotifier<StoreState> {
           hasName = _name.contains(
             name,
           );
+
+          hasQuery = _name.contains(
+            name,
+          );
         }
 
         if (distance != null) {
           double _distance = Geolocator.distanceBetween(
-            myLatitude,
-            myLongtitude,
-            e.latitude ?? 0.0,
-            e.longtitude ?? 0.0,
-          );
+                myLatitude,
+                myLongtitude,
+                e.latitude ?? 0.0,
+                e.longtitude ?? 0.0,
+              ) /
+              1000.0;
 
           if (_distance <= distance) {
             hasDistance = true;
+            hasQuery = true;
           }
         }
 
         if (reviewScore != null) {
-          hasReviewScore = (e.ratingScore ?? 0) <= int.parse(reviewScore.value);
+          hasReviewScore = (e.ratingScore ?? 0) >= int.parse(reviewScore.value);
+          hasQuery = true;
         }
 
         if (countReviewer != null) {
           hasCountReviewer =
               (e.countReviewer ?? 0) >= int.parse(countReviewer.value);
+          hasQuery = true;
         }
 
         if (e.timeOpening != null && e.timeClosing != null) {
@@ -904,6 +913,7 @@ class StoreController extends StateNotifier<StoreState> {
           hasOpeningAndClosingTime =
               (timeOpeningParsed!.hour >= searchOpeningTimeParsed.hour) &&
                   (timeClosingParsed!.hour >= searchClosingTimeParsed.hour);
+          hasQuery = true;
         } else {
           if (openingTime != null) {
             List<String> searchTimeOpeningParts = openingTime.split(':');
@@ -914,6 +924,7 @@ class StoreController extends StateNotifier<StoreState> {
 
             hasOpeningTime =
                 timeOpeningParsed!.hour >= searchOpeningTimeParsed.hour;
+            hasQuery = true;
           }
 
           if (closingTime != null) {
@@ -925,6 +936,7 @@ class StoreController extends StateNotifier<StoreState> {
 
             hasClosingTime =
                 timeClosingParsed!.hour >= searchClosingTimeParsed.hour;
+            hasQuery = true;
           }
         }
 
@@ -955,13 +967,7 @@ class StoreController extends StateNotifier<StoreState> {
           state = state.copyWith(searchError: 'ค้นหาด้วยระยะทางไม่เจอ');
         }
 
-        return hasName ||
-            hasReviewScore ||
-            hasCountReviewer ||
-            hasOpeningTime ||
-            hasClosingTime ||
-            hasOpeningAndClosingTime ||
-            hasDistance;
+        return hasQuery;
       },
     ).toList();
 

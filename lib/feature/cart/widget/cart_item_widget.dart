@@ -18,12 +18,14 @@ class CartItemWidget extends ConsumerWidget {
   final bool isPharmacy;
   final MedicineResponse medicineItem;
   final CartResponse myCart;
+  final bool isFromOrder;
 
   CartItemWidget({
     super.key,
     required this.isPharmacy,
     required this.medicineItem,
     required this.myCart,
+    required this.isFromOrder,
   });
 
   @override
@@ -111,6 +113,18 @@ class CartItemWidget extends ConsumerWidget {
                                   OrderStatus.waitingConfirmOrder,
                                   cartId: myCart.id,
                                 );
+
+                            if (isFromOrder) {
+                              final myCart = ref
+                                  .watch(myCartControllerProvider
+                                      .select((value) => value.myCart))
+                                  .value;
+
+                              if (myCart == null ||
+                                  myCart.medicineList!.isNotEmpty) {
+                                Navigator.of(context).pop();
+                              }
+                            }
                           }
                         },
                         child: Assets.icons.icDelete.svg(),

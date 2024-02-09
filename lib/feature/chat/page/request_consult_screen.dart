@@ -9,6 +9,7 @@ import 'package:pharmacy_online/core/app_style.dart';
 import 'package:pharmacy_online/core/widget/base_consumer_state.dart';
 import 'package:pharmacy_online/feature/chat/page/chat_screen.dart';
 import 'package:pharmacy_online/feature/chat/widget/request_consult_list_widget.dart';
+import 'package:pharmacy_online/feature/profile/controller/profile_controller.dart';
 import 'package:pharmacy_online/feature/store/controller/store_controller.dart';
 
 class RequestConsultScreen extends ConsumerStatefulWidget {
@@ -28,7 +29,13 @@ class _RequestConsultScreenState
         (value) => value.chatWithPharmacyList,
       ),
     );
-     
+
+    final isPharmacy = ref.watch(
+      profileControllerProvider.select(
+        (value) => value.isPharmacy,
+      ),
+    );
+
     return AsyncValueWidget(
       value: chatWithPharmacyList,
       data: (_chatWithPharmacyList) {
@@ -55,7 +62,10 @@ class _RequestConsultScreenState
                   //นำไปยังหน้าแชท ChatScreen เพื่อสนทนากับร้านขายยา
                   Navigator.of(context).pushNamed(
                     ChatScreen.routeName,
-                    arguments: ChatArgs(chatWithPharmacyItem: chatResponse),
+                    arguments: ChatArgs(
+                      chatWithPharmacyItem: chatResponse,
+                      isPharmacy: isPharmacy,
+                    ),
                   );
                 },
                 chatWithPharmacyList: _chatWithPharmacyList,

@@ -134,6 +134,7 @@ class _MyCartScreenState extends BaseConsumerState<MyCartScreen> {
                         isPharmacy: isPharmacy,
                         myCart: _myCart,
                         medicineList: medicineList,
+                        isFromOrder: widget.args.isFromOrder,
                       ),
                     ],
                     SizedBox(
@@ -193,7 +194,7 @@ class _MyCartScreenState extends BaseConsumerState<MyCartScreen> {
 
   void _onListen() {
     ref.listen(myCartControllerProvider, (previous, next) {
-      if (next.myCart.value?.id == null) {
+      if (!widget.args.isFromOrder && next.myCart.value?.id == null) {
         Fluttertoast.showToast(
           msg: "ไม่มีของในตะกร้า",
           toastLength: Toast.LENGTH_SHORT,

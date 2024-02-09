@@ -10,11 +10,14 @@ class CartListWidget extends ConsumerWidget {
   final bool isPharmacy;
   final CartResponse myCart;
   final List<MedicineResponse> medicineList;
+  final bool isFromOrder;
+
   const CartListWidget({
     super.key,
     this.isPharmacy = false,
     required this.myCart,
     required this.medicineList,
+    this.isFromOrder = false,
   });
 
   @override
@@ -30,6 +33,7 @@ class CartListWidget extends ConsumerWidget {
           isPharmacy: isPharmacy,
           myCart: myCart,
           medicineItem: medicineItem,
+          isFromOrder: isFromOrder,
         );
       },
       separatorBuilder: (_, __) => SizedBox(

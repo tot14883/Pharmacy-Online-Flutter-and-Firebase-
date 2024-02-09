@@ -31,15 +31,17 @@ class _OrdersScreenState extends BaseConsumerState<OrdersScreen> {
     // ตั้งค่าตัวจับเวลาให้เรียกฟังก์ชัน onGetAllOrder และ onGetAllMyCart ทุกๆ 200 มิลลิวินาที
     timer = timer =
         Timer.periodic(const Duration(milliseconds: 200), (timer) async {
-      final isPharmacy = ref
-          .read(profileControllerProvider.select((value) => value.isPharmacy));
-      await ref
-          .read(orderControllerProvider.notifier)
-          .onGetAllOrder(isPharmacy);
-      await ref.read(myCartControllerProvider.notifier).onGetAllMyCart(
-            OrderStatus.waitingConfirmOrder,
-            isPhamarcy: isPharmacy,
-          );
+      if (mounted) {
+        final isPharmacy = ref.read(
+            profileControllerProvider.select((value) => value.isPharmacy));
+        await ref
+            .read(orderControllerProvider.notifier)
+            .onGetAllOrder(isPharmacy);
+        await ref.read(myCartControllerProvider.notifier).onGetAllMyCart(
+              OrderStatus.waitingConfirmOrder,
+              isPhamarcy: isPharmacy,
+            );
+      }
     });
   }
 
