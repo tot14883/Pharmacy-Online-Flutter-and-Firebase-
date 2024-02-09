@@ -12,7 +12,6 @@ import 'package:pharmacy_online/core/widget/base_consumer_state.dart';
 import 'package:pharmacy_online/feature/store/controller/store_controller.dart';
 import 'package:pharmacy_online/feature/store/page/search_result_pharmacy_store_screen.dart';
 import 'package:pharmacy_online/feature/store/widget/filter_distance_widget.dart';
-import 'package:pharmacy_online/feature/store/widget/filter_time_close_open_widget.dart';
 
 class FilterWidget extends ConsumerStatefulWidget {
   const FilterWidget({super.key});
@@ -99,22 +98,22 @@ class _FilterWidgetState extends BaseConsumerState<FilterWidget> {
               SwitchButtonItem(
                 id: 1,
                 value: '1',
-                content: "1 ดาวขึ้นไป",
+                content: "1 ดาว",
               ),
               SwitchButtonItem(
                 id: 2,
                 value: '2',
-                content: "2 ดาวขึ้นไป",
+                content: "2 ดาว",
               ),
               SwitchButtonItem(
                 id: 3,
                 value: '3',
-                content: "3 ดาวขึ้นไป",
+                content: "3 ดาว",
               ),
               SwitchButtonItem(
                 id: 4,
                 value: '4',
-                content: "4 ดาวขึ้นไป",
+                content: "4 ดาว",
               ),
               SwitchButtonItem(
                 id: 5,
@@ -181,30 +180,30 @@ class _FilterWidgetState extends BaseConsumerState<FilterWidget> {
           SizedBox(
             height: 8.h,
           ),
-          Text(
-            'เวลาเปิด-ปิด',
-            style: AppStyle.txtBody2,
-          ),
-          SizedBox(
-            height: 8.h,
-          ),
-          FilterTimeCloseOpenWidget(
-            initialOpen: opeingTime,
-            initialClose: closingTime,
-            onUpdateOpen: (open) {
-              ref
-                  .read(storeControllerProvider.notifier)
-                  .onSetSearchOpeningTime(open);
-            },
-            onUpdateClose: (close) {
-              ref
-                  .read(storeControllerProvider.notifier)
-                  .onSetSearchClosingTime(close);
-            },
-          ),
-          SizedBox(
-            height: 8.h,
-          ),
+          // Text(
+          //   'เวลาเปิด-ปิด',
+          //   style: AppStyle.txtBody2,
+          // ),
+          // SizedBox(
+          //   height: 8.h,
+          // ),
+          // FilterTimeCloseOpenWidget(
+          //   initialOpen: opeingTime,
+          //   initialClose: closingTime,
+          //   onUpdateOpen: (open) {
+          //     ref
+          //         .read(storeControllerProvider.notifier)
+          //         .onSetSearchOpeningTime(open);
+          //   },
+          //   onUpdateClose: (close) {
+          //     ref
+          //         .read(storeControllerProvider.notifier)
+          //         .onSetSearchClosingTime(close);
+          //   },
+          // ),
+          // SizedBox(
+          //   height: 8.h,
+          // ),
           BaseButton(
             onTap: () async {
               ref
@@ -243,6 +242,49 @@ class _FilterWidgetState extends BaseConsumerState<FilterWidget> {
               }
             },
             text: 'ค้นหา',
+          ),
+          SizedBox(
+            height: 8.h,
+          ),
+          BaseButton(
+            buttonType: ButtonType.secondary,
+            onTap: () async {
+              ref
+                  .read(storeControllerProvider.notifier)
+                  .onClearSelectedPharmacyStore();
+              ref
+                  .read(storeControllerProvider.notifier)
+                  .onSearchPharmacyStore(isAll: true);
+
+              final searchPharmacyInfoList = ref.watch(
+                storeControllerProvider.select(
+                  (value) => value.searchPharmacyInfoList,
+                ),
+              );
+
+              if (searchPharmacyInfoList != null &&
+                  searchPharmacyInfoList.isNotEmpty) {
+                Navigator.of(context).pop();
+                Navigator.of(context).pushNamed(
+                  SearchResultPharmacyStoreScreen.routeName,
+                );
+              } else {
+                final result = ref.read(
+                  storeControllerProvider.select(
+                    (value) => value.searchError,
+                  ),
+                );
+
+                Fluttertoast.showToast(
+                  msg: result ?? "ไม่พบเจอร้านเภสัช",
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.BOTTOM,
+                );
+
+                ref.read(storeControllerProvider.notifier).onClearError();
+              }
+            },
+            text: 'ค้นหาทุกร้าน',
           ),
           SizedBox(
             height: 8.h,

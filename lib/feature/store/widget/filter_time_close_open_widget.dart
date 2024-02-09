@@ -69,8 +69,8 @@ class _FilterTimeCloseOpenWidgetState extends State<FilterTimeCloseOpenWidget> {
               );
 
               if (openingTime != null) {
-                widget
-                    .onUpdateOpen('${openingTime.hour}:${openingTime.minute}');
+                widget.onUpdateOpen(
+                    '${openingTime.hour}:${openingTime.minute.toString().padLeft(2, '0')}');
               }
             },
           ),

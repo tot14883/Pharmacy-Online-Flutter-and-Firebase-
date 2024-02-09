@@ -32,14 +32,17 @@ class MedicineItemWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
+        final priceParsed = price.split(' บาท');
+        final quantityParsed = quantity.split('จำนวน ');
+
         Navigator.of(context).pushNamed<bool>(
           DrugDetailScreen.routeName,
           arguments: DrugDetailArgs(
             medicineItem: MedicineResponse(
               medicineImg: imgUrl,
               name: name,
-              price: double.parse(price),
-              quantity: int.parse(quantity),
+              price: double.parse(priceParsed[0]),
+              quantity: int.parse(quantityParsed[1]),
               size: size,
               material: material,
             ),

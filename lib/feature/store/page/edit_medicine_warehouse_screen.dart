@@ -161,7 +161,9 @@ class _EditMedicineWarehouseScreenState
                       ),
                     ),
                   ],
-
+                  SizedBox(
+                    height: 16.h,
+                  ),
                   BaseTextField(
                     fieldKey: FieldMedicine.size,
                     initialValue:

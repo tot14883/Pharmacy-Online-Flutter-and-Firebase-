@@ -59,6 +59,14 @@ class _MyMedicineWarehouseScreenState
   bool isStayThisPage = true;
 
   @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      ref.read(storeControllerProvider.notifier).onSearchMyMedicine('');
+    });
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     _onListen();
 
@@ -129,13 +137,14 @@ class _MyMedicineWarehouseScreenState
                     return const SizedBox.shrink();
                   }
 
-                  return Padding(
+                  return Container(
                     padding: EdgeInsets.fromLTRB(
                       16,
                       50,
                       16,
                       MediaQuery.of(context).padding.bottom + 72,
                     ).r,
+                    height: MediaQuery.of(context).size.height,
                     child: SingleChildScrollView(
                       child: MedicineWarehouseListWidget(
                         onTap: (val) {

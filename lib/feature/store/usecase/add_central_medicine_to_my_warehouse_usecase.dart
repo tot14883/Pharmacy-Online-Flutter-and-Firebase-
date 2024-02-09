@@ -37,6 +37,8 @@ class AddCentralMedicineToMyWarehouseUsecase
       final name = request.name ?? '';
       final price = request.price ?? 0.0;
       final medicineImg = request.currentMedicineImg;
+      final size = request.size ?? '';
+      final material = request.material ?? '';
 
       //ดึง uid ของผู้ใช้จาก SharedPreferences
       final uid = baseSharePreference.getString(BaseSharePreferenceKey.userId);
@@ -52,6 +54,8 @@ class AddCentralMedicineToMyWarehouseUsecase
         "name": name,
         "price": price,
         "medicineImg": medicineImg,
+        "size": size,
+        "material": material,
         "isCentral": false,
         "create_at": DateTime.now(),
         "update_at": DateTime.now(),

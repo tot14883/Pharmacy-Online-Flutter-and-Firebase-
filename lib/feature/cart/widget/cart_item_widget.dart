@@ -74,17 +74,17 @@ class CartItemWidget extends ConsumerWidget {
               children: [
                 Row(
                   children: [
-                    GestureDetector(
-                      onTap: () async {
-                        await Navigator.of(context).pushNamed<bool>(
-                          DrugDetailScreen.routeName,
-                          arguments: DrugDetailArgs(
-                            medicineItem: medicineItem,
-                            isOnlyDetail: true,
-                          ),
-                        );
-                      },
-                      child: Expanded(
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () async {
+                          await Navigator.of(context).pushNamed<bool>(
+                            DrugDetailScreen.routeName,
+                            arguments: DrugDetailArgs(
+                              medicineItem: medicineItem,
+                              isOnlyDetail: true,
+                            ),
+                          );
+                        },
                         child: Text(
                           '${medicineItem.name}',
                           style: AppStyle.txtBody,

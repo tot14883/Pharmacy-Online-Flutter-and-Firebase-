@@ -131,10 +131,12 @@ class AuthenticationController extends StateNotifier<AuthenticationState> {
         baseFormData?.getValue<String>(FieldSignUp.addressStore) ?? '';
     final phoneStore =
         baseFormData?.getValue<String>(FieldSignUp.phoneStore) ?? '';
-    final timeOpening =
-        openingTime == null ? '' : '${openingTime.hour}:${openingTime.minute}';
-    final timeClosing =
-        closingTime == null ? '' : '${closingTime.hour}:${closingTime.minute}';
+    final timeOpening = openingTime == null
+        ? ''
+        : '${openingTime.hour}:${openingTime.minute.toString().padLeft(2, '0')}';
+    final timeClosing = closingTime == null
+        ? ''
+        : '${closingTime.hour}:${closingTime.minute.toString().padLeft(2, '0')}';
     final licensePharmacy =
         baseFormData?.getValue<String>(FieldSignUp.licensePharmacy) ?? '';
     final licensePharmacyStore =

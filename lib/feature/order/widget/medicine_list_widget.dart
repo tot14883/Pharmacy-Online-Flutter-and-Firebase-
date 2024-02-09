@@ -12,12 +12,14 @@ class MedicineListWidget extends ConsumerWidget {
   final List<MedicineResponse> medicineList; // ข้อมูลรายชื่อยา
   final Function(Map<String, String> text)
       onChange; //จัดการการเปลี่ยนแปลงในช่องกรอกข้อความ
+  final bool isOrder;
 
   const MedicineListWidget({
     super.key,
     this.hasTextForm = false,
     required this.medicineList,
     required this.onChange,
+    this.isOrder = false,
   });
 
   @override
@@ -52,7 +54,7 @@ class MedicineListWidget extends ConsumerWidget {
                 price:
                     '${(medicineItem.price ?? 0.0) * (medicineItem.quantity ?? 1)} บาท',
                 size: '${medicineItem.size}',
-                material: '${medicineItem.material}',
+                material: isOrder ? '' : '${medicineItem.material}',
               ),
             ),
             if (hasTextForm) ...[

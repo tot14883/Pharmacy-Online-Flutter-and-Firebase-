@@ -31,6 +31,14 @@ class CentralMedicineWarehouseScreen extends ConsumerStatefulWidget {
 class _CentralMedicineWarehouseScreenState
     extends BaseConsumerState<CentralMedicineWarehouseScreen> {
   @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      ref.read(storeControllerProvider.notifier).onSearchMedicine('');
+    });
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     // ตรวจสอบว่าผู้ใช้เป็นแอดมินหรือไม่
     final isAdmin = ref
@@ -91,13 +99,20 @@ class _CentralMedicineWarehouseScreenState
             }
 
             // ถ้าข้อมูลพร้อม ให้แสดงรายการยา
-            return Padding(
+            return Container(
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 0).r,
+              height: MediaQuery.of(context).size.height,
               child: Stack(
                 children: [
                   SingleChildScrollView(
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 50).h,
+                    child: Container(
+                      padding: EdgeInsets.only(
+                        top: 50,
+                        bottom: !isAdmin
+                            ? 72
+                            : MediaQuery.of(context).padding.bottom + 150,
+                      ).h,
+                      height: MediaQuery.of(context).size.height,
                       child: MedicineWarehouseListWidget(
                         onTap: (val) {},
                         // onTap: (val) {}, // ฟังก์ชันเมื่อกดรายการยา (ยังไม่ถูกใช้งาน)
@@ -110,7 +125,7 @@ class _CentralMedicineWarehouseScreenState
                   Positioned(
                     top: 0,
                     child: Container(
-                      width: MediaQuery.of(context).size.width,
+                      width: MediaQuery.of(context).size.width - 40,
                       height: 50.h,
                       color: AppColor.themeWhiteColor,
                       child: BaseTextField(

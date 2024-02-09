@@ -54,6 +54,14 @@ class MedicineWarehouseItemWidget extends ConsumerWidget {
               );
               onTap(result!);
               return;
+            } else {
+              await Navigator.of(context).pushNamed<bool>(
+                DrugDetailScreen.routeName,
+                arguments: DrugDetailArgs(
+                  medicineItem: medicineItem,
+                  isOnlyDetail: true,
+                ),
+              );
             }
           },
           child: BaseImageView(
@@ -92,6 +100,14 @@ class MedicineWarehouseItemWidget extends ConsumerWidget {
 
                           onTap(result!);
                           return;
+                        } else {
+                          await Navigator.of(context).pushNamed<bool>(
+                            DrugDetailScreen.routeName,
+                            arguments: DrugDetailArgs(
+                              medicineItem: medicineItem,
+                              isOnlyDetail: true,
+                            ),
+                          );
                         }
                       },
                       child: Column(
@@ -200,15 +216,29 @@ class MedicineWarehouseItemWidget extends ConsumerWidget {
                   onTap: () async {
                     onTap(false);
 
-                    final result = await Navigator.of(context).pushNamed<bool>(
-                      DrugDetailScreen.routeName,
-                      arguments: DrugDetailArgs(
-                        medicineItem: medicineItem,
-                        chatWithPharmacyItem: chatWithPharmacyItem,
-                      ),
-                    );
+                    if (isFromChat) {
+                      onTap(false);
 
-                    onTap(result!);
+                      final result =
+                          await Navigator.of(context).pushNamed<bool>(
+                        DrugDetailScreen.routeName,
+                        arguments: DrugDetailArgs(
+                          medicineItem: medicineItem,
+                          chatWithPharmacyItem: chatWithPharmacyItem,
+                        ),
+                      );
+
+                      onTap(result!);
+                      return;
+                    } else {
+                      await Navigator.of(context).pushNamed<bool>(
+                        DrugDetailScreen.routeName,
+                        arguments: DrugDetailArgs(
+                          medicineItem: medicineItem,
+                          isOnlyDetail: true,
+                        ),
+                      );
+                    }
                   },
                   child: Text(
                     'ราคา ${medicineItem.price}',

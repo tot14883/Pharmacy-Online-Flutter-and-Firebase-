@@ -47,6 +47,9 @@ class SignUpPharmacyStoreWidget extends ConsumerStatefulWidget {
 class _SignUpPharmacyStoreWidgetState
     extends ConsumerState<SignUpPharmacyStoreWidget> {
   TextEditingController addressController = TextEditingController();
+  TextEditingController openingController = TextEditingController();
+  TextEditingController closingController = TextEditingController();
+
   XFile? licenseStoreFile, qrcodeFile, storeFile;
   bool isRequiredStore = false,
       isRequiredLicenseStore = false,
@@ -57,6 +60,8 @@ class _SignUpPharmacyStoreWidgetState
   void dispose() {
     super.dispose();
     addressController.dispose();
+    openingController.dispose();
+    closingController.dispose();
   }
 
   @override
@@ -185,14 +190,11 @@ class _SignUpPharmacyStoreWidgetState
           height: 16.h,
         ),
         BaseTextField(
-          key: UniqueKey(),
           label: "เวลาเปิด",
           isReadOnly: true,
           isShowLabelField: true,
           textInputType: TextInputType.datetime,
-          initialValue: openingTime == null
-              ? ''
-              : '${openingTime?.hour}:${openingTime?.minute == 0 ? '00' : openingTime?.minute}',
+          controller: openingController,
           onTap: () async {
             openingTime = await showTimePicker(
               context: context,
@@ -206,21 +208,22 @@ class _SignUpPharmacyStoreWidgetState
               },
             );
 
-            setState(() {});
+            setState(() {
+              openingController.text = openingTime == null
+                  ? ''
+                  : '${openingTime?.hour}:${openingTime?.minute.toString().padLeft(2, '0')}';
+            });
           },
         ),
         SizedBox(
           height: 16.h,
         ),
         BaseTextField(
-          key: UniqueKey(),
           label: "เวลาปิด",
           isShowLabelField: true,
           isReadOnly: true,
           textInputType: TextInputType.datetime,
-          initialValue: closingTime == null
-              ? ''
-              : '${closingTime?.hour}:${closingTime?.minute == 0 ? '00' : closingTime?.minute}',
+          controller: closingController,
           onTap: () async {
             closingTime = await showTimePicker(
               context: context,
@@ -234,7 +237,11 @@ class _SignUpPharmacyStoreWidgetState
               },
             );
 
-            setState(() {});
+            setState(() {
+              closingController.text = closingTime == null
+                  ? ''
+                  : '${closingTime?.hour}:${closingTime?.minute.toString().padLeft(2, '0')}';
+            });
           },
         ),
         SizedBox(

@@ -277,6 +277,7 @@ class _OrderSummaryScreenState extends BaseConsumerState<OrderSummaryScreen> {
                           child: MedicineListWidget(
                             hasTextForm: isPharmacy,
                             medicineList: medicineList,
+                            isOrder: true,
                             onChange: (val) {
                               setState(() {
                                 if (_howToUse.isNotEmpty) {

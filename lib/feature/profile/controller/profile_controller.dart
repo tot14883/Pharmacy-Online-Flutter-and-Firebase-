@@ -212,9 +212,9 @@ class ProfileController extends StateNotifier<ProfileState> {
         baseFormData?.getValue<String>(FieldUserInfo.phoneStore) ??
             pharmacyStore?.phoneStore;
     final timeOpening =
-        '${openingTime.hour}:${openingTime.minute == 0 ? '00' : openingTime.minute}';
+        '${openingTime.hour}:${openingTime.minute.toString().padLeft(2, '0')}';
     final timeClosing =
-        '${closingTime.hour}:${closingTime.minute == 0 ? '00' : closingTime.minute}';
+        '${closingTime.hour}:${closingTime.minute.toString().padLeft(2, '0')}';
     final licensePharmacy =
         baseFormData?.getValue<String>(FieldUserInfo.licensePharmacy) ??
             pharmacyStore?.licensePharmacy;

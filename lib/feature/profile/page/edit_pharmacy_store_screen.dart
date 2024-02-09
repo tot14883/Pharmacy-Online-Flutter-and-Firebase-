@@ -43,6 +43,9 @@ class _EditPharmacyStoreScreenState
   final formKey = GlobalKey<BaseFormState>();
   XFile? storeFile, licenseFile;
   TextEditingController addressController = TextEditingController();
+  TextEditingController openingController = TextEditingController();
+  TextEditingController closingController = TextEditingController();
+
   bool isRequiredStore = false, isRequiredLicenseStore = false;
   TimeOfDay? openingTime, closingTime;
 
@@ -70,6 +73,9 @@ class _EditPharmacyStoreScreenState
   @override
   void dispose() {
     formKey.currentState?.dispose();
+    addressController.dispose();
+    openingController.dispose();
+    closingController.dispose();
     super.dispose();
   }
 
@@ -272,7 +278,7 @@ class _EditPharmacyStoreScreenState
                     isReadOnly: true,
                     isShowLabelField: true,
                     initialValue:
-                        '${openingTime?.hour}:${openingTime?.minute == 0 ? '00' : openingTime?.minute}',
+                        '${openingTime?.hour}:${openingTime?.minute.toString().padLeft(2, '0')}',
                     onTap: () async {
                       openingTime = await showTimePicker(
                         context: context,
@@ -300,7 +306,7 @@ class _EditPharmacyStoreScreenState
                     isShowLabelField: true,
                     isReadOnly: true,
                     initialValue:
-                        '${closingTime?.hour}:${closingTime?.minute == 0 ? '00' : closingTime?.minute}',
+                        '${closingTime?.hour}:${closingTime?.minute.toString().padLeft(2, '0')}',
                     onTap: () async {
                       openingTime = await showTimePicker(
                         context: context,

@@ -134,14 +134,16 @@ class _DrugDetailScreenState extends BaseConsumerState<DrugDetailScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    QuantityWidget(
-                      maximum: 100,
-                      onUpdate: (val) {
-                        setState(() {
-                          quantity = val; // อัปเดตจำนวนยาเมื่อผู้ใช้แก้ไข
-                        });
-                      },
-                    ),
+                    if (!args.isOnlyDetail) ...[
+                      QuantityWidget(
+                        maximum: 100,
+                        onUpdate: (val) {
+                          setState(() {
+                            quantity = val; // อัปเดตจำนวนยาเมื่อผู้ใช้แก้ไข
+                          });
+                        },
+                      ),
+                    ],
                     // ... แสดงราคารวม ...
                     Text(
                       '${price * quantity} บาท',

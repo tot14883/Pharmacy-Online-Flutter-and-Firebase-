@@ -238,6 +238,7 @@ class _UploadBankTransferScreenState
                       BaseTextField(
                         fieldKey: FieldBankTransfer.payPrice,
                         label: 'จำนวนเงิน',
+                        textInputType: TextInputType.number,
                         isShowLabelField: true,
                         validator: Validators.combine(
                           [

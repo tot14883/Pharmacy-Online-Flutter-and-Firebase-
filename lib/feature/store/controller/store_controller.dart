@@ -727,6 +727,11 @@ class StoreController extends StateNotifier<StoreState> {
   void onSearchMedicine(String medicine) async {
     final centralMedicineList = state.centralMedicineList.value;
 
+    if (medicine.isEmpty) {
+      state = state.copyWith(searchCentralMedicineList: centralMedicineList);
+      return;
+    }
+
     if (centralMedicineList == null) return;
 
     final searchcentralMedicineList = centralMedicineList.where(
@@ -755,6 +760,11 @@ class StoreController extends StateNotifier<StoreState> {
 
   void onSearchMyMedicine(String medicine) async {
     final medicineList = state.medicineList.value;
+
+    if (medicine.isEmpty) {
+      state = state.copyWith(searchMedicineList: medicineList);
+      return;
+    }
 
     if (medicineList == null) return;
 
@@ -788,9 +798,17 @@ class StoreController extends StateNotifier<StoreState> {
   }
 
   void onSearchPharmacyStore({
+    bool isAll = false,
     String? name,
   }) async {
     final pharmacyInfoList = state.pharmacyInfoList.value;
+
+    if (isAll) {
+      state = state.copyWith(
+        searchPharmacyInfoList: pharmacyInfoList,
+      );
+      return;
+    }
 
     final distance = state.searchDistance;
     final reviewScore = state.searchReviewScore;
@@ -837,7 +855,7 @@ class StoreController extends StateNotifier<StoreState> {
         }
 
         if (reviewScore != null) {
-          hasReviewScore = (e.ratingScore ?? 0) >= int.parse(reviewScore.value);
+          hasReviewScore = (e.ratingScore ?? 0) <= int.parse(reviewScore.value);
         }
 
         if (countReviewer != null) {
@@ -902,7 +920,6 @@ class StoreController extends StateNotifier<StoreState> {
         }
 
         if (name != null && name.isNotEmpty && !hasName) {
-          print('12321');
           state = state.copyWith(searchError: 'ค้นหาด้วยชื่อไม่เจอ');
         }
 
