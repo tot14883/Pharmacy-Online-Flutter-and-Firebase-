@@ -9,7 +9,9 @@ import 'package:pharmacy_online/base_widget/base_scaffold.dart';
 import 'package:pharmacy_online/base_widget/base_text_field.dart';
 import 'package:pharmacy_online/core/app_color.dart';
 import 'package:pharmacy_online/core/app_style.dart';
+import 'package:pharmacy_online/core/local/base_shared_preference.dart';
 import 'package:pharmacy_online/core/widget/base_consumer_state.dart';
+import 'package:pharmacy_online/feature/authentication/enum/authentication_type_enum.dart';
 import 'package:pharmacy_online/feature/cart/controller/my_cart_controller.dart';
 import 'package:pharmacy_online/feature/cart/model/response/cart_response.dart';
 import 'package:pharmacy_online/feature/cart/page/my_cart_screen.dart';
@@ -74,8 +76,16 @@ class _MyMedicineWarehouseScreenState
     final chatWithPharmacyItem = widget.args?.chatWithPharmacyItem;
     final cartResponse = widget.args?.cartResponse;
     final uid = cartResponse?.uid ?? chatWithPharmacyItem?.uid;
-    final pharmacyId =
-        cartResponse?.pharmacyId ?? chatWithPharmacyItem?.pharmacyId;
+    final isPharmacy = ref
+            .read(baseSharePreferenceProvider)
+            .getString(BaseSharePreferenceKey.role) ==
+        AuthenticationType.pharmacy.name;
+    final _pharmacyId = ref
+        .read(baseSharePreferenceProvider)
+        .getString(BaseSharePreferenceKey.userId);
+    final pharmacyId = isPharmacy
+        ? _pharmacyId
+        : (cartResponse?.pharmacyId ?? chatWithPharmacyItem?.pharmacyId);
 
 // สร้างหน้าจอพื้นหลัง
     return BaseScaffold(

@@ -851,7 +851,7 @@ class StoreController extends StateNotifier<StoreState> {
               ) /
               1000.0;
 
-          hasDistance = _distance <= distance;
+          hasDistance = _distance >= distance;
         }
 
         if (reviewScore != null) {
@@ -879,7 +879,63 @@ class StoreController extends StateNotifier<StoreState> {
           state = state.copyWith(searchError: 'ค้นหาด้วยระยะทางไม่เจอ');
         }
 
-        return hasName || hasDistance || hasReviewScore || hasCountReviewer;
+        if (name != null &&
+            name.isNotEmpty &&
+            reviewScore == null &&
+            countReviewer == null &&
+            distance == null) {
+          return hasName;
+        } else if (name != null &&
+            name.isNotEmpty &&
+            reviewScore != null &&
+            countReviewer == null &&
+            distance == null) {
+          return hasName && hasReviewScore;
+        } else if (name != null &&
+            name.isNotEmpty &&
+            reviewScore == null &&
+            countReviewer != null &&
+            distance == null) {
+          return hasName && hasCountReviewer;
+        } else if (name != null &&
+            name.isNotEmpty &&
+            reviewScore == null &&
+            countReviewer == null &&
+            distance != null) {
+          return hasName && hasDistance;
+        } else if ((name == null || name.isEmpty) &&
+            reviewScore != null &&
+            countReviewer == null &&
+            distance == null) {
+          return hasReviewScore;
+        } else if ((name == null || name.isEmpty) &&
+            reviewScore != null &&
+            countReviewer != null &&
+            distance == null) {
+          return hasReviewScore && hasCountReviewer;
+        } else if ((name == null || name.isEmpty) &&
+            reviewScore != null &&
+            countReviewer == null &&
+            distance != null) {
+          return hasReviewScore && hasDistance;
+        } else if ((name == null || name.isEmpty) &&
+            reviewScore == null &&
+            countReviewer != null &&
+            distance == null) {
+          return hasCountReviewer;
+        } else if ((name == null || name.isEmpty) &&
+            reviewScore == null &&
+            countReviewer != null &&
+            distance != null) {
+          return hasCountReviewer && hasDistance;
+        } else if ((name == null || name.isEmpty) &&
+            reviewScore == null &&
+            countReviewer == null &&
+            distance != null) {
+          return hasDistance;
+        }
+
+        return hasName && hasDistance && hasReviewScore && hasCountReviewer;
       },
     ).toList();
 
