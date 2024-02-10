@@ -73,6 +73,7 @@ class ChatController extends StateNotifier<ChatState> {
     final newData = _baseFormData.copyAndMerge(baseFormData);
     state = state.copyWith(baseFormData: newData);
   }
+
   //ฟังก์ชั่น ล้างฟอร์ม
   void clearForm() {
     state = state.copyWith(baseFormData: null);
@@ -81,7 +82,7 @@ class ChatController extends StateNotifier<ChatState> {
   Future<void> onGetHistoryOfChatUser() async {
     //เรียกใช้ usecase เพื่อดึงประวัติการแชทของผู้ใช้
     final result = await _getHistoryOfChatUserUsecase.execute(null);
-    
+
     //ตรวจสอบผลลัพธ์และอัปเดตสถานะของแอปพลิเคชัน
     result.when(
       (success) => state =
@@ -89,6 +90,10 @@ class ChatController extends StateNotifier<ChatState> {
       (error) => state =
           state.copyWith(chatWithPharmacyList: const AsyncValue.data([])),
     );
+  }
+
+  void onClearChat() async {
+    state = state.copyWith(chatWithPharmacyList: const AsyncValue.data(null));
   }
 
   Future<void> onGetHistoryOfChatPharmacy() async {

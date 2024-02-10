@@ -9,6 +9,7 @@ import 'package:pharmacy_online/core/local/base_shared_preference.dart';
 import 'package:pharmacy_online/core/widget/base_consumer_state.dart';
 import 'package:pharmacy_online/feature/authentication/controller/authentication_controller.dart';
 import 'package:pharmacy_online/feature/authentication/enum/authentication_type_enum.dart';
+import 'package:pharmacy_online/feature/chat/controller/chat_controller.dart';
 import 'package:pharmacy_online/feature/main/page/main_screen.dart';
 import 'package:pharmacy_online/feature/profile/controller/profile_controller.dart';
 import 'package:pharmacy_online/feature/profile/page/change_password_screen.dart';
@@ -181,6 +182,9 @@ class _ProfileScreenState extends BaseConsumerState<ProfileScreen> {
                           dialogLogo: Assets.icons.icLogout.svg(),
                           message: 'ต้องการออกจากระบบ',
                           onClick: () async {
+                            ref
+                                .read(chatControllerProvider.notifier)
+                                .onClearChat();
                             await ref
                                 .read(authenticationControllerProvider.notifier)
                                 .onLogout();
