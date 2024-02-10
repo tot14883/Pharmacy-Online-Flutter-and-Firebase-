@@ -211,7 +211,7 @@ class _SignUpPharmacyStoreWidgetState
             setState(() {
               openingController.text = openingTime == null
                   ? ''
-                  : '${openingTime?.hour}:${openingTime?.minute.toString().padLeft(2, '0')}';
+                  : '${openingTime?.hour.toString().padLeft(2, '0')}:${openingTime?.minute.toString().padLeft(2, '0')}';
             });
           },
         ),
@@ -240,7 +240,7 @@ class _SignUpPharmacyStoreWidgetState
             setState(() {
               closingController.text = closingTime == null
                   ? ''
-                  : '${closingTime?.hour}:${closingTime?.minute.toString().padLeft(2, '0')}';
+                  : '${closingTime?.hour.toString().padLeft(2, '0')}:${closingTime?.minute.toString().padLeft(2, '0')}';
             });
           },
         ),

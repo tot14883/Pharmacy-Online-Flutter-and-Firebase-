@@ -33,12 +33,7 @@ class _ReviewStoreScreenState extends BaseConsumerState<ReviewStoreScreen> {
         .watch(storeControllerProvider.select((value) => value.reviewList))
         .value;
     //หาค่าเฉลี่ย review
-    final rating = reviewList?.fold(
-            0.0,
-            (previousValue, val) =>
-                (((val.rating ?? 0.0) + previousValue) / reviewList.length)) ??
-        0.0;
-    final countReview = reviewList?.length;
+
     final pharmacyInfoResponse = widget.args?.pharmacyInfoResponse;
 
     final pharmacyStoreInfo = ref.watch(
@@ -47,6 +42,11 @@ class _ReviewStoreScreenState extends BaseConsumerState<ReviewStoreScreen> {
 
     final nameStore =
         pharmacyInfoResponse?.nameStore ?? pharmacyStoreInfo?.nameStore;
+
+    final rating =
+        pharmacyInfoResponse?.ratingScore ?? pharmacyStoreInfo?.ratingScore;
+    final countReview =
+        pharmacyInfoResponse?.countReviewer ?? pharmacyStoreInfo?.countReviewer;
     return BaseScaffold(
       appBar: BaseAppBar(
         title: Text(
@@ -68,7 +68,7 @@ class _ReviewStoreScreenState extends BaseConsumerState<ReviewStoreScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      '(${pharmacyStoreInfo?.countReviewer})',
+                      '($countReview)',
                       style: AppStyle.txtBody,
                     ),
                     SizedBox(
@@ -83,14 +83,14 @@ class _ReviewStoreScreenState extends BaseConsumerState<ReviewStoreScreen> {
                 ),
                 RatingStartWidget(
                   isReadable: true,
-                  initialRating: pharmacyStoreInfo?.ratingScore ?? 0,
+                  initialRating: rating ?? 0,
                   onRatingUpdate: (val) {},
                 ),
                 SizedBox(
                   height: 8.h,
                 ),
                 Text(
-                  '${pharmacyStoreInfo?.ratingScore}',
+                  '${rating}',
                   style: AppStyle.txtBody,
                 ),
                 SizedBox(

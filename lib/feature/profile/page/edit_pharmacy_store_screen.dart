@@ -278,7 +278,7 @@ class _EditPharmacyStoreScreenState
                     isReadOnly: true,
                     isShowLabelField: true,
                     initialValue:
-                        '${openingTime?.hour}:${openingTime?.minute.toString().padLeft(2, '0')}',
+                        '${openingTime?.hour.toString().padLeft(2, '0')}:${openingTime?.minute.toString().padLeft(2, '0')}',
                     onTap: () async {
                       openingTime = await showTimePicker(
                         context: context,
@@ -306,7 +306,7 @@ class _EditPharmacyStoreScreenState
                     isShowLabelField: true,
                     isReadOnly: true,
                     initialValue:
-                        '${closingTime?.hour}:${closingTime?.minute.toString().padLeft(2, '0')}',
+                        '${closingTime?.hour.toString().padLeft(2, '0')}:${closingTime?.minute.toString().padLeft(2, '0')}',
                     onTap: () async {
                       openingTime = await showTimePicker(
                         context: context,

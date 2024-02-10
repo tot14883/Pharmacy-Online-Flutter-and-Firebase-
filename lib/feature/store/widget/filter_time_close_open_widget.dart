@@ -70,7 +70,7 @@ class _FilterTimeCloseOpenWidgetState extends State<FilterTimeCloseOpenWidget> {
 
               if (openingTime != null) {
                 widget.onUpdateOpen(
-                    '${openingTime.hour}:${openingTime.minute.toString().padLeft(2, '0')}');
+                    '${openingTime.hour.toString().padLeft(2, '0')}:${openingTime.minute.toString().padLeft(2, '0')}');
               }
             },
           ),
@@ -101,8 +101,8 @@ class _FilterTimeCloseOpenWidgetState extends State<FilterTimeCloseOpenWidget> {
               );
 
               if (closingTime != null) {
-                widget
-                    .onUpdateClose('${closingTime.hour}:${closingTime.minute}');
+                widget.onUpdateClose(
+                    '${closingTime.hour.toString().padLeft(2, '0')}:${closingTime.minute.toString().padLeft(2, '0')}');
               }
             },
           ),

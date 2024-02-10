@@ -144,15 +144,11 @@ class StoreDetailContent extends ConsumerWidget {
             )
             ?.uid !=
         null;
-    final reviewList = ref
-        .watch(storeControllerProvider.select((value) => value.reviewList))
-        .value;
+    final reviewList =
+        pharmacyInfoResponse?.countReviewer ?? pharmacyStoreInfo?.countReviewer;
 
-    final rating = reviewList?.fold(
-            0.0,
-            (previousValue, val) =>
-                (((val.rating ?? 0.0) + previousValue) / reviewList.length)) ??
-        0.0;
+    final rating =
+        pharmacyInfoResponse?.ratingScore ?? pharmacyStoreInfo?.ratingScore;
 
     final pharmacyId = pharmacyInfoResponse?.uid ?? pharmacyStoreInfo?.uid;
 
@@ -190,7 +186,8 @@ class StoreDetailContent extends ConsumerWidget {
                   style: AppStyle.txtBody,
                 ),
               ),
-              GestureDetector(  //รีวิว
+              GestureDetector(
+                //รีวิว
                 onTap: () {
                   Navigator.of(context).pushNamed(
                     ReviewStoreScreen.routeName,
@@ -201,7 +198,7 @@ class StoreDetailContent extends ConsumerWidget {
                 },
                 child: RatingStartWidget(
                   itemSize: 24,
-                  initialRating: rating,
+                  initialRating: rating ?? 0,
                   onRatingUpdate: (val) {},
                   isReadable: true,
                 ),

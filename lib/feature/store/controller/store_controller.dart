@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:map_location_picker/map_location_picker.dart';
@@ -822,35 +821,23 @@ class StoreController extends StateNotifier<StoreState> {
     final distance = state.searchDistance;
     final reviewScore = state.searchReviewScore;
     final countReviewer = state.searchCountReviewer;
-    final openingTime = state.searchOpeningTime;
-    final closingTime = state.searchClosingTime;
 
     if (pharmacyInfoList == null) return;
 
     List<PharmacyInfoResponse>? searchPharmacyInfoList;
 
-    bool hasQuery = false;
-    bool hasName = false;
-    bool hasDistance = false;
-    bool hasReviewScore = false;
-    bool hasCountReviewer = false;
-    bool hasOpeningTime = false;
-    bool hasClosingTime = false;
-    bool hasOpeningAndClosingTime = false;
-    TimeOfDay? timeClosingParsed;
-    TimeOfDay? timeOpeningParsed;
-    double myLatitude = state.myLatitude ?? 0.0;
-    double myLongtitude = state.myLongtitude ?? 0.0;
-
     searchPharmacyInfoList = pharmacyInfoList.where(
       (e) {
+        bool hasName = false;
+        bool hasDistance = false;
+        bool hasReviewScore = false;
+        bool hasCountReviewer = false;
+        double myLatitude = state.myLatitude ?? 0.0;
+        double myLongtitude = state.myLongtitude ?? 0.0;
+
         if (name != null && name.isNotEmpty) {
           final _name = e.nameStore!.toLowerCase();
           hasName = _name.contains(
-            name,
-          );
-
-          hasQuery = _name.contains(
             name,
           );
         }
@@ -864,80 +851,16 @@ class StoreController extends StateNotifier<StoreState> {
               ) /
               1000.0;
 
-          if (_distance <= distance) {
-            hasDistance = true;
-            hasQuery = true;
-          }
+          hasDistance = _distance <= distance;
         }
 
         if (reviewScore != null) {
           hasReviewScore = (e.ratingScore ?? 0) >= int.parse(reviewScore.value);
-          hasQuery = true;
         }
 
         if (countReviewer != null) {
           hasCountReviewer =
               (e.countReviewer ?? 0) >= int.parse(countReviewer.value);
-          hasQuery = true;
-        }
-
-        if (e.timeOpening != null && e.timeClosing != null) {
-          List<String> timeClosingParts = e.timeClosing!.split(':');
-          int closingHour = int.parse(timeClosingParts[0]);
-          int closingMinute = int.parse(timeClosingParts[1]);
-          List<String> timeOpeningParts = e.timeOpening!.split(':');
-          int openingHour = int.parse(timeOpeningParts[0]);
-          int openingMinute = int.parse(timeOpeningParts[1]);
-
-          timeClosingParsed =
-              TimeOfDay(hour: closingHour, minute: closingMinute);
-
-          timeOpeningParsed =
-              TimeOfDay(hour: openingHour, minute: openingMinute);
-        }
-
-        if (openingTime != null && closingTime != null) {
-          List<String> searchTimeClosingParts = closingTime.split(':');
-          int searchClosingHour = int.parse(searchTimeClosingParts[0]);
-          int searchClosingMinute = int.parse(searchTimeClosingParts[1]);
-          List<String> searchTimeOpeningParts = openingTime.split(':');
-          int searchOpeningHour = int.parse(searchTimeOpeningParts[0]);
-          int searchOpeningMinute = int.parse(searchTimeOpeningParts[1]);
-
-          final searchClosingTimeParsed =
-              TimeOfDay(hour: searchClosingHour, minute: searchClosingMinute);
-
-          final searchOpeningTimeParsed =
-              TimeOfDay(hour: searchOpeningHour, minute: searchOpeningMinute);
-
-          hasOpeningAndClosingTime =
-              (timeOpeningParsed!.hour >= searchOpeningTimeParsed.hour) &&
-                  (timeClosingParsed!.hour >= searchClosingTimeParsed.hour);
-          hasQuery = true;
-        } else {
-          if (openingTime != null) {
-            List<String> searchTimeOpeningParts = openingTime.split(':');
-            int searchOpeningHour = int.parse(searchTimeOpeningParts[0]);
-            int searchOpeningMinute = int.parse(searchTimeOpeningParts[1]);
-            final searchOpeningTimeParsed =
-                TimeOfDay(hour: searchOpeningHour, minute: searchOpeningMinute);
-
-            hasOpeningTime =
-                timeOpeningParsed!.hour >= searchOpeningTimeParsed.hour;
-            hasQuery = true;
-          }
-
-          if (closingTime != null) {
-            List<String> searchTimeClosingParts = closingTime.split(':');
-            int searchClosingHour = int.parse(searchTimeClosingParts[0]);
-            int searchClosingMinute = int.parse(searchTimeClosingParts[1]);
-            final searchClosingTimeParsed =
-                TimeOfDay(hour: searchClosingHour, minute: searchClosingMinute);
-
-            hasClosingTime =
-                timeClosingParsed!.hour >= searchClosingTimeParsed.hour;
-            hasQuery = true;
-          }
         }
 
         if (name != null && name.isNotEmpty && !hasName) {
@@ -952,22 +875,11 @@ class StoreController extends StateNotifier<StoreState> {
           state = state.copyWith(searchError: 'ค้นหาจำนวนคนรีวิวไม่เจอ');
         }
 
-        if ((openingTime != null || closingTime != null) &&
-            (!hasOpeningTime || !hasClosingTime)) {
-          state = state.copyWith(searchError: 'ด้วยเวลาเปิด-ปิดไม่เจอ');
-        }
-
-        if (openingTime != null &&
-            closingTime != null &&
-            !hasOpeningAndClosingTime) {
-          state = state.copyWith(searchError: 'ด้วยเวลาเปิด-ปิดไม่เจอ');
-        }
-
         if (distance != null && !hasDistance) {
           state = state.copyWith(searchError: 'ค้นหาด้วยระยะทางไม่เจอ');
         }
 
-        return hasQuery;
+        return hasName || hasDistance || hasReviewScore || hasCountReviewer;
       },
     ).toList();
 
