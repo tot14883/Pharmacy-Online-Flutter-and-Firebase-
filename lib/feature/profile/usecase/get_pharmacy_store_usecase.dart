@@ -74,7 +74,7 @@ class GetPharmacyUseCase extends UseCase<void, PharmacyStoreResponse> {
           licenseStore: data['licenseStore'],
           licenseStoreImg: data['licenseStoreImg'],
           countReviewer: data['countReviewer'],
-          ratingScore: data['ratingScore'],
+          ratingScore: data['ratingScore'] + 0.0,
           qrCodeImg: data['qrCodeImg'],
           storeImg: data['storeImg'],
           create_at: (data['create_at'] as Timestamp).toDate(),

@@ -118,8 +118,11 @@ class _ChatScreenState extends BaseConsumerState<ChatScreen> {
         actions: [
           GestureDetector(
             onTap: () {
+              ref.read(myCartControllerProvider.notifier).onClearCartId();
               //เมื่อคลิกที่ปุ่ม Cart
               if (widget.args.isPharmacy) {
+                ref.read(myCartControllerProvider.notifier).onGenerateCartId();
+
                 Navigator.of(context).pushNamed(
                   MyMedicineWarehouseScreen.routeName,
                   arguments: MyMedicineWarehouseArgs(

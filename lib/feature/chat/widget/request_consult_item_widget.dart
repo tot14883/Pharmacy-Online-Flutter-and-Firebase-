@@ -80,6 +80,10 @@ class _RequestConsultItemWidgetState
       profileControllerProvider.select((value) => value.userInfo),
     );
 
+    final pharmacyStore = ref.watch(
+      profileControllerProvider.select((value) => value.pharmacyStore),
+    );
+
     return Container(
       padding: const EdgeInsets.all(16).r,
       decoration: BoxDecoration(
@@ -134,7 +138,7 @@ class _RequestConsultItemWidgetState
                             await ref
                                 .read(homeControllerProvider.notifier)
                                 .onPostNotification(
-                                  '${userInfo?.fullName} ยืนยันคำร้องขอของคุณ',
+                                  '${pharmacyStore?.nameStore} ยืนยันคำร้องขอของคุณ',
                                   'approveChat',
                                   '${widget.chatWithPharmacyItem.uid}',
                                 );
@@ -167,7 +171,7 @@ class _RequestConsultItemWidgetState
                     ),
                     Expanded(
                       child: BaseButton(
-                         //ปุ่ม "ปฏิเสธ"
+                        //ปุ่ม "ปฏิเสธ"
                         onTap: () async {
                           //ปฏิเสธคำขอ
                           final result = await ref

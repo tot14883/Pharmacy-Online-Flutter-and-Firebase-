@@ -15,5 +15,6 @@ class MyCartState with _$MyCartState {
     @Default(AsyncValue.loading()) AsyncValue<CartResponse?> myCart,
     @Default(AsyncValue.loading()) AsyncValue<List<CartResponse>?> cartList,
     Map<String, int>? quantity,
+    String? generateCartId,
   }) = _MyCartState;
 }

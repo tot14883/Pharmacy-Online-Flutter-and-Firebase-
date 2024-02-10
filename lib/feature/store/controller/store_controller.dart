@@ -851,7 +851,7 @@ class StoreController extends StateNotifier<StoreState> {
               ) /
               1000.0;
 
-          hasDistance = _distance >= distance;
+          hasDistance = _distance <= distance;
         }
 
         if (reviewScore != null) {
@@ -908,6 +908,11 @@ class StoreController extends StateNotifier<StoreState> {
             countReviewer == null &&
             distance == null) {
           return hasReviewScore;
+        } else if ((name == null || name.isEmpty) &&
+            reviewScore != null &&
+            countReviewer != null &&
+            distance != null) {
+          return hasReviewScore && hasCountReviewer && hasDistance;
         } else if ((name == null || name.isEmpty) &&
             reviewScore != null &&
             countReviewer != null &&

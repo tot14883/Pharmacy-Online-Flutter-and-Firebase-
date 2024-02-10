@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pharmacy_online/core/application/usecase.dart';
 import 'package:pharmacy_online/core/firebase/database/cloud_store_provider.dart';
@@ -54,6 +55,9 @@ class AddToCartUsecase extends UseCase<CartRequest, bool> {
       final pharmacyId =
           baseSharedPreference.getString(BaseSharePreferenceKey.userId);
 
+      print(pharmacyId);
+      print(uid);
+
       //ใช้ในการตรวจสอบและอัปเดตหรือเพิ่มข้อมูลตามเงื่อนไข
       final getCart = await fireCloudStore
           .collection('cart')
@@ -64,8 +68,11 @@ class AddToCartUsecase extends UseCase<CartRequest, bool> {
           .then((value) => value.docs);
 
       final collectCart = fireCloudStore.collection('cart');
-      final cartId = _cartId ?? collectCart.doc().id;
+      final cartId = _cartId;
       Map<String, dynamic>? _dataGetCart;
+
+      List<QueryDocumentSnapshot<Map<String, dynamic>>> getMedicine;
+      CollectionReference<Map<String, dynamic>> collectCartMedicine;
 
       //การใช้ Random ในการสร้างหมายเลขสุ่ม
       final random = Random();
@@ -81,6 +88,19 @@ class AddToCartUsecase extends UseCase<CartRequest, bool> {
         };
 
         await collectCart.doc(_dataGetCart['id']).update(myData);
+
+        getMedicine = (await fireCloudStore
+            .collection('cart')
+            .doc(_dataGetCart['id'])
+            .collection("medicine")
+            .where('medicineId', isEqualTo: medicineId)
+            .get()
+            .then((value) => value.docs));
+
+        collectCartMedicine = fireCloudStore
+            .collection('cart')
+            .doc(_dataGetCart['id'])
+            .collection("medicine");
       } else {
         //เพิ่มข้อมูลตะกร้าใหม่
         final Map<String, dynamic> myData = {
@@ -96,18 +116,21 @@ class AddToCartUsecase extends UseCase<CartRequest, bool> {
         };
 
         await collectCart.doc(cartId).set(myData);
+
+        getMedicine = (await fireCloudStore
+            .collection('cart')
+            .doc(cartId)
+            .collection("medicine")
+            .where('medicineId', isEqualTo: medicineId)
+            .get()
+            .then((value) => value.docs));
+
+        collectCartMedicine = fireCloudStore
+            .collection('cart')
+            .doc(cartId)
+            .collection("medicine");
       }
 
-      final getMedicine = (await fireCloudStore
-          .collection('cart')
-          .doc(cartId)
-          .collection("medicine")
-          .where('medicineId', isEqualTo: medicineId)
-          .get()
-          .then((value) => value.docs));
-
-      final collectCartMedicine =
-          fireCloudStore.collection('cart').doc(cartId).collection("medicine");
       final cartMedicineId = collectCartMedicine.doc().id;
       //ตรวจสอบว่ามียาที่มีอยู่ในตะกร้าหรือไม่
       if (getMedicine.isNotEmpty) {

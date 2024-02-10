@@ -15,6 +15,7 @@ import 'package:pharmacy_online/feature/cart/usecase/update_to_cart_usecase.dart
 import 'package:pharmacy_online/feature/order/enum/order_status_enum.dart';
 import 'package:pharmacy_online/feature/profile/controller/profile_controller.dart';
 import 'package:pharmacy_online/utils/util/base_utils.dart';
+import 'package:uuid/uuid.dart';
 
 final myCartControllerProvider =
     StateNotifierProvider<MyCartController, MyCartState>(
@@ -110,15 +111,13 @@ class MyCartController extends StateNotifier<MyCartState> {
     String medicineMaterial,
   ) async {
     bool isSuccess = false;
-    final myCart = state.myCart.value;
-    final _uid = myCart?.uid;
-    final _storeId = myCart?.pharmacyId;
+    _loader.onLoad();
 
     final result = await _addToCartUsecase.execute(
       CartRequest(
-        id: myCart?.id,
-        storeId: _storeId ?? storeId,
-        uid: _uid ?? uid,
+        id: state.generateCartId,
+        storeId: storeId,
+        uid: uid,
         medicineId: medicineId,
         quantity: quantity,
         medicineImg: medicineImg,
@@ -131,8 +130,11 @@ class MyCartController extends StateNotifier<MyCartState> {
     );
 
     result.when(
-      (success) => isSuccess = success,
-      (error) => null,
+      (success) {
+        isSuccess = success;
+        _loader.onDismissLoad();
+      },
+      (error) => _loader.onDismissLoad(),
     );
 
     return isSuccess;
@@ -299,6 +301,21 @@ class MyCartController extends StateNotifier<MyCartState> {
       (error) {
         state = state.copyWith(cartList: const AsyncValue.data([]));
       },
+    );
+  }
+
+  void onGenerateCartId() {
+    const uuid = Uuid();
+
+    state = state.copyWith(generateCartId: uuid.v4());
+  }
+
+  void onClearCartId() {
+    const uuid = Uuid();
+
+    state = state.copyWith(
+      generateCartId: uuid.v4(),
+      myCart: const AsyncValue.data(null),
     );
   }
 }
