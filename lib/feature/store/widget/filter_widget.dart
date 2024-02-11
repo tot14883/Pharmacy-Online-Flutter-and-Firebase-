@@ -21,28 +21,36 @@ class FilterWidget extends ConsumerStatefulWidget {
 }
 
 class _FilterWidgetState extends BaseConsumerState<FilterWidget> {
+  // สร้าง controller สำหรับจัดการค่าของค้นหาชื่อร้าน
   TextEditingController nameController = TextEditingController();
 
   @override
   void dispose() {
     super.dispose();
+    // ทำลาย nameController เมื่อหน้านี้ปิด เพื่อไม่ให้เปลือง memomry
     nameController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    // ดึงค่า search distance ที่ได้ทำการค้นหาไปเพื่อทำเป็น initial value
     final distance = ref
         .watch(storeControllerProvider.select((value) => value.searchDistance));
+    // ดึงค่า search review score ที่ได้ทำการค้นหาไปเพื่อทำเป็น initial value
     final reviewScore = ref.watch(
         storeControllerProvider.select((value) => value.searchReviewScore));
+    // ดึงค่า search count reviewer ที่ได้ทำการค้นหาไปเพื่อทำเป็น initial value
     final countReviewer = ref.watch(
         storeControllerProvider.select((value) => value.searchCountReviewer));
+    // ดึงค่า search opening time ที่ได้ทำการค้นหาไปเพื่อทำเป็น initial value
     final opeingTime = ref.watch(
         storeControllerProvider.select((value) => value.searchOpeningTime));
+    // ดึงค่า search closing time ที่ได้ทำการค้นหาไปเพื่อทำเป็น initial value
     final closingTime = ref.watch(
         storeControllerProvider.select((value) => value.searchClosingTime));
 
     return Container(
+      // ทำการ re-render หน้านี้ทุกครั้งเมื่อมีการเปลี่ยนแปลงค่า
       key: ValueKey((distance ??
               reviewScore ??
               countReviewer ??
@@ -55,6 +63,7 @@ class _FilterWidgetState extends BaseConsumerState<FilterWidget> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
+          // input ค้นหาร้านยา
           BaseTextField(
             label: 'ค้นหาร้านยา',
             isShowLabelField: true,
@@ -69,9 +78,11 @@ class _FilterWidgetState extends BaseConsumerState<FilterWidget> {
             'ระยะทาง (กิโลเมตร)',
             style: AppStyle.txtBody2,
           ),
+          // Filter distance
           FilterDistanceWidget(
             initial: distance,
             onUpdate: (val) {
+              // ทุกครั้งที่ update value ให้ทำการเก็บค่าใน onSetSearchDistance
               ref
                   .read(storeControllerProvider.notifier)
                   .onSetSearchDistance(val);
@@ -80,6 +91,7 @@ class _FilterWidgetState extends BaseConsumerState<FilterWidget> {
           SizedBox(
             height: 8.h,
           ),
+          // BaseSwitchButton คล้ายหน้า sign up screen
           BaseSwitchButton(
             isSwitchButton: true,
             label: "คะแนนรีวิว (ขึ้นไป)",
@@ -130,6 +142,7 @@ class _FilterWidgetState extends BaseConsumerState<FilterWidget> {
           SizedBox(
             height: 8.h,
           ),
+          // BaseSwitchButton คล้ายหน้า sign up screen
           BaseSwitchButton(
             isSwitchButton: true,
             label: "จำนวนคนรีวิว (ขึ้นไป)​",
@@ -180,45 +193,28 @@ class _FilterWidgetState extends BaseConsumerState<FilterWidget> {
           SizedBox(
             height: 8.h,
           ),
-          // Text(
-          //   'เวลาเปิด-ปิด',
-          //   style: AppStyle.txtBody2,
-          // ),
-          // SizedBox(
-          //   height: 8.h,
-          // ),
-          // FilterTimeCloseOpenWidget(
-          //   initialOpen: opeingTime,
-          //   initialClose: closingTime,
-          //   onUpdateOpen: (open) {
-          //     ref
-          //         .read(storeControllerProvider.notifier)
-          //         .onSetSearchOpeningTime(open);
-          //   },
-          //   onUpdateClose: (close) {
-          //     ref
-          //         .read(storeControllerProvider.notifier)
-          //         .onSetSearchClosingTime(close);
-          //   },
-          // ),
-          // SizedBox(
-          //   height: 8.h,
-          // ),
+          // ปุุ่มค้นหา
           BaseButton(
             onTap: () async {
+              // เคลียร์ข้อมูลเพื่อร้านข้อมูลเก่าใน search ทิ้ง
               ref
                   .read(storeControllerProvider.notifier)
                   .onClearSelectedPharmacyStore();
+
+              // เริ่มการค้นหาข้อมูล
+              // nameController ไม่สามารถทำแบบการค้นหาอื่นๆได้ เนื่องจาก nameController จำเป็นต้องใช้ในหน้า Stateful เท่านั้นห
               ref
                   .read(storeControllerProvider.notifier)
                   .onSearchPharmacyStore(name: nameController.text);
 
+              // ดึงร้านค่าที่ค้นหาเจอ
               final searchPharmacyInfoList = ref.watch(
                 storeControllerProvider.select(
                   (value) => value.searchPharmacyInfoList,
                 ),
               );
 
+              // ตรวจสอบว่าค้นหาร้านค้าเจอ
               if (searchPharmacyInfoList != null &&
                   searchPharmacyInfoList.isNotEmpty) {
                 Navigator.of(context).pop();
@@ -226,6 +222,7 @@ class _FilterWidgetState extends BaseConsumerState<FilterWidget> {
                   SearchResultPharmacyStoreScreen.routeName,
                 );
               } else {
+                // ถ้าไม่เจอก็ทำ error message มา แสดง
                 final result = ref.read(
                   storeControllerProvider.select(
                     (value) => value.searchError,
@@ -246,6 +243,7 @@ class _FilterWidgetState extends BaseConsumerState<FilterWidget> {
           SizedBox(
             height: 8.h,
           ),
+          // ค้นหาทุกร้าน
           BaseButton(
             buttonType: ButtonType.secondary,
             onTap: () async {

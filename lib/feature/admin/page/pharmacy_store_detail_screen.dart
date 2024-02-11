@@ -65,12 +65,11 @@ class _PharmacyStoreDetaillScreenState
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // แสดงรูปร้าน
                 BaseImageView(
                   url: pharmacyStoreImg,
                   width: 350.w,
                   height: 350.h,
-                  fit: BoxFit.cover,
+                  fit: BoxFit.cover, //ลองเปลี่ยนที่ตรงนี้
                 ),
                 SizedBox(
                   height: 16.h,

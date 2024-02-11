@@ -805,12 +805,17 @@ class StoreController extends StateNotifier<StoreState> {
     state = state.copyWith(searchMedicineList: searchMedicineList);
   }
 
+  // ค้นหาร้านเภสัช
   void onSearchPharmacyStore({
+    // เช็ดว่าเป็นค้นหาทั้งหมดหรือไม่
     bool isAll = false,
+    // ค้นหาด้วยชื่อ
     String? name,
   }) async {
+    // ทำการดึงข้อมูล pharmacy ทั้งหมดในระบบมาก่อย
     final pharmacyInfoList = state.pharmacyInfoList.value;
 
+    // ถ้าเป็นการค้นหาทั้งหมด และทำไปเก็บใน searchPharmacyInforList และไปที่หน้า search result
     if (isAll) {
       state = state.copyWith(
         searchPharmacyInfoList: pharmacyInfoList,
@@ -818,16 +823,20 @@ class StoreController extends StateNotifier<StoreState> {
       return;
     }
 
+    // ดึงข้อมูลค้นหาของ field อื่นท่
     final distance = state.searchDistance;
     final reviewScore = state.searchReviewScore;
     final countReviewer = state.searchCountReviewer;
 
+    // ถ้า pharmachInfoList เป็น null ให้หยุดทำงาน
     if (pharmacyInfoList == null) return;
 
     List<PharmacyInfoResponse>? searchPharmacyInfoList;
 
+    // เริ่ม filter
     searchPharmacyInfoList = pharmacyInfoList.where(
       (e) {
+        // ประกาศตัวแปรเพื่อใช้เช็ดว่าค้นหาเจอหรือไม่
         bool hasName = false;
         bool hasDistance = false;
         bool hasReviewScore = false;
@@ -835,6 +844,9 @@ class StoreController extends StateNotifier<StoreState> {
         double myLatitude = state.myLatitude ?? 0.0;
         double myLongtitude = state.myLongtitude ?? 0.0;
 
+        // ถ้าชื่อที่ต้องการค้นหาไม่เป็น null หรือว่างให้เริ่มเช็ด
+        // ว่าชื่อที่ filter มีชื่อคล้ายกับร้านในในระบบบ้าง
+        // ถ้ามีการให้ hasName เป็น true
         if (name != null && name.isNotEmpty) {
           final _name = e.nameStore!.toLowerCase();
           hasName = _name.contains(
@@ -842,6 +854,9 @@ class StoreController extends StateNotifier<StoreState> {
           );
         }
 
+        // ถ้าระยะที่ต้องการค้นหาไม่เป็น null
+        // เช็ดว่าระยะทางที่ filter มีระยะทางตามเงื่อนไข
+        // ถ้ามีการให้ hasDistance เป็น true
         if (distance != null) {
           double _distance = Geolocator.distanceBetween(
                 myLatitude,
@@ -854,31 +869,42 @@ class StoreController extends StateNotifier<StoreState> {
           hasDistance = _distance <= distance;
         }
 
+        // ถ้าคะแนนรีวิวที่ต้องการค้นหาไม่เป็น null
+        // เช็ดว่าคะแนนรีวิวที่ filter มีคะแนนรีวิวตามเงื่อนไข
+        // ถ้ามีการให้ hasReviewScore เป็น true
         if (reviewScore != null) {
           hasReviewScore = (e.ratingScore ?? 0) >= int.parse(reviewScore.value);
         }
 
+        // ถ้าคนรีวิวที่ต้องการค้นหาไม่เป็น null
+        // เช็ดว่าคนรีวิวที่ filter มีคนรีวิวตามเงื่อนไข
+        // ถ้ามีการให้ hasReviewScore เป็น true
         if (countReviewer != null) {
           hasCountReviewer =
               (e.countReviewer ?? 0) >= int.parse(countReviewer.value);
         }
 
+        // ถ้าชื่อที่ต้องการค้นหาไม่เป็น null หรือว่าง และ hasName เป็น false ให้ error message เป็นตามนี้
         if (name != null && name.isNotEmpty && !hasName) {
           state = state.copyWith(searchError: 'ค้นหาด้วยชื่อไม่เจอ');
         }
 
+        // ถ้าคะแนนที่ต้องการค้นหาไม่เป็น null และ hasReviewScore เป็น false ให้ error message เป็นตามนี้
         if (reviewScore != null && !hasReviewScore) {
           state = state.copyWith(searchError: 'ค้นหาด้วยดาวไม่เจอ');
         }
 
+        // ถ้าคนรีวิวที่ต้องการค้นหาไม่เป็น null และ hasCountReviewer เป็น false ให้ error message เป็นตามนี้
         if (countReviewer != null && !hasCountReviewer) {
           state = state.copyWith(searchError: 'ค้นหาจำนวนคนรีวิวไม่เจอ');
         }
 
+        // ถ้าระยะทางที่ต้องการค้นหาไม่เป็น null และ hasDistance เป็น false ให้ error message เป็นตามนี้
         if (distance != null && !hasDistance) {
           state = state.copyWith(searchError: 'ค้นหาด้วยระยะทางไม่เจอ');
         }
 
+        // เงื่อนกรณี filter พร้อมกันหลายแบบ
         if (name != null &&
             name.isNotEmpty &&
             reviewScore == null &&
@@ -940,6 +966,7 @@ class StoreController extends StateNotifier<StoreState> {
           return hasDistance;
         }
 
+        // default
         return hasName && hasDistance && hasReviewScore && hasCountReviewer;
       },
     ).toList();

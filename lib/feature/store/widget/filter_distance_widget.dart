@@ -8,6 +8,7 @@ class FilterDistanceWidget extends StatefulWidget {
   final Function(int distance) onUpdate;
   final int? initial;
 
+  // พารามิเตอร์
   const FilterDistanceWidget({
     super.key,
     this.maximum = 50,
@@ -20,11 +21,13 @@ class FilterDistanceWidget extends StatefulWidget {
 }
 
 class _FilterDistanceWidgetState extends State<FilterDistanceWidget> {
+  // ประกาศ initial _distance
   int _distance = 0;
 
   @override
   void initState() {
     super.initState();
+    // ประกาศ initial จาก parameter ของ FilterDistanceWidget
     final initial = widget.initial;
     if (initial != null) {
       _distance = initial;
@@ -37,6 +40,7 @@ class _FilterDistanceWidgetState extends State<FilterDistanceWidget> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
+        // ปุ่มลบ
         GestureDetector(
           onTap: () {
             if (_distance > 1) {
@@ -59,6 +63,7 @@ class _FilterDistanceWidgetState extends State<FilterDistanceWidget> {
         SizedBox(
           width: 8.w,
         ),
+        // ปุ่มเพิ่ม
         GestureDetector(
           onTap: () {
             if (_distance < widget.maximum) {
