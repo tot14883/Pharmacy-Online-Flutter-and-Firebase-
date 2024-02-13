@@ -40,14 +40,14 @@ class CommentHeaderWidget extends ConsumerWidget {
         ],
         if (isShowRating) ...[
           SizedBox(
-            width: 4.w,
+            width: 4.w, //คะแนนดาว
           ),
           Text(
             '${reviewItem?.rating}',
             style: AppStyle.txtCaption.copyWith(color: AppColor.themeGrayLight),
           ),
           SizedBox(
-            width: 4.w,
+            width: 4.w, //ดาวในรีวิว
           ),
           Expanded(
             child: RatingStartWidget(

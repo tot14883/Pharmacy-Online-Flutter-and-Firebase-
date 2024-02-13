@@ -96,7 +96,7 @@ class _DrugDetailScreenState extends BaseConsumerState<DrugDetailScreen> {
                   url: image,
                   fit: BoxFit.cover,
                   width: 250.w,
-                  height: 250.h,
+                  //height: 250.h,
                 ),
                 SizedBox(
                   height: 16.h,

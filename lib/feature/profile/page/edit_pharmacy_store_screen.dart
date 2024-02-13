@@ -135,7 +135,7 @@ class _EditPharmacyStoreScreenState
                       url: storeFile != null ? null : pharmacyStoreImg,
                       file: storeFile != null ? File(storeFile!.path) : null,
                       width: 350.w,
-                      height: 350.h,
+                      //height: 350.h,
                       fit: BoxFit.cover,
                     ),
                     // Callback เมื่อมีการอัปโหลดรูป
@@ -360,8 +360,8 @@ class _EditPharmacyStoreScreenState
                   BaseImageView(
                     url: licenseFile != null ? null : licensePharmacyStore,
                     file: licenseFile != null ? File(licenseFile!.path) : null,
-                    width: 250.w,
-                    height: 250.h,
+                    width: 300.w,
+                    //height: 250.h,
                     fit: BoxFit.cover,
                   ),
                   if (isRequiredStore) ...[

@@ -117,7 +117,7 @@ class _UploadBankTransferScreenState
                               child: BaseImageView(
                                 url: '$qrCode',
                                 width: 250.w,
-                                height: 250.h,
+                                //height: 250.h,
                                 fit: BoxFit.cover,
                               ),
                             ),
@@ -269,7 +269,7 @@ class _UploadBankTransferScreenState
                         BaseImageView(
                           file: File(evidenceImg!.path),
                           width: 150.w,
-                          height: 150.h,
+                          //height: 150.h,
                           fit: BoxFit.cover,
                         ),
                       ],

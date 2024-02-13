@@ -64,7 +64,7 @@ class _UploadTransportationScreenState
                       ? BaseImageView(
                           url: deliverySlip,
                           width: 350.w,
-                          height: 350.h,
+                          //height: 350.h,
                           fit: BoxFit.cover,
                         )
                       : Assets.icons.icAddImg.svg(),

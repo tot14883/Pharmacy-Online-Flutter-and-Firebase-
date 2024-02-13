@@ -33,7 +33,7 @@ class ReviewItemWidget extends ConsumerWidget {
             fit: BoxFit.cover,
           ),
           SizedBox(
-            width: 8.w,
+            width: 20.w, //ช่องว่างตรงรูปกับข้อความ
           ),
           Expanded(
             child: Column(
@@ -44,7 +44,7 @@ class ReviewItemWidget extends ConsumerWidget {
                   reviewItem: reviewItem,
                 ),
                 SizedBox(
-                  height: 8.h,
+                  height: 1.h, //ช่องว่างระหว่างชื่อกับข้อความรีวิว
                 ),
                 Text(
                   '${reviewItem.message}',
@@ -52,7 +52,7 @@ class ReviewItemWidget extends ConsumerWidget {
                       .copyWith(color: AppColor.themeGrayLight),
                 ),
                 SizedBox(
-                  height: 8.h,
+                  height: 8.h, //ข้อความรีวิวกับข้อความ thankyou
                 ),
                 GestureDetector(
                   onTap: () async {

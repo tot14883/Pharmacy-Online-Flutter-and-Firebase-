@@ -56,7 +56,7 @@ class _EvidenceTransportationScreenState
                 BaseImageView(
                   url: '${orderDetail?.deliverySlip}',
                   width: 350.w,
-                  height: 350.h,
+                  //height: 350.h,
                   fit: BoxFit.cover,
                 ),
                 SizedBox(

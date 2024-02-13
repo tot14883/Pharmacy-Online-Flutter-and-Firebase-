@@ -98,7 +98,7 @@ class _EditMedicineWarehouseScreenState
                           ? File(medicineFIle!.path)
                           : null,
                       width: 250.w,
-                      height: 250.h,
+                      //height: 250.h,
                       fit: BoxFit.cover,
                     ),
                     onUpload: (val) {

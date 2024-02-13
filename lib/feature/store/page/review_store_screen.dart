@@ -87,14 +87,14 @@ class _ReviewStoreScreenState extends BaseConsumerState<ReviewStoreScreen> {
                   onRatingUpdate: (val) {},
                 ),
                 SizedBox(
-                  height: 8.h,
+                  height: 8.h, //ดาวกับคะแนนเฉลี่ย
                 ),
                 Text(
                   '${rating}',
                   style: AppStyle.txtBody,
                 ),
                 SizedBox(
-                  height: 24.h,
+                  height: 24.h, //คะแนนรีวิวกับคอมเม้นรีวิว
                 ),
                 const BaseDivider(),
                 if (reviewList != null) ...[

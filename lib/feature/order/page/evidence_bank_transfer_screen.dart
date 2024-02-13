@@ -46,8 +46,8 @@ class EvidenceBankTransferScreen extends ConsumerWidget {
                 // แสดงรูปภาพสลิปการโอนเงิน
                 BaseImageView(
                   url: '$bankTransferSlip',
-                  width: 300,
-                  height: 300,
+                  width: 350,
+                  //height: 300,
                   fit: BoxFit.cover,
                 ),
                 SizedBox(

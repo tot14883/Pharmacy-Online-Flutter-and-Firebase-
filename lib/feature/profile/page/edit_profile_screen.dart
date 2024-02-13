@@ -286,9 +286,10 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                       url: licenseFile != null ? null : licensePharmacyImg,
                       file:
                           licenseFile != null ? File(licenseFile!.path) : null,
-                      width: 250.w,
-                      height: 250.h,
+                      width: 300.w,
+                      //height: 250.h,
                       fit: BoxFit.cover,
+                      alignment: Alignment.center,
                     ),
                     if (isRequiredLicensePharmacy) ...[
                       SizedBox(

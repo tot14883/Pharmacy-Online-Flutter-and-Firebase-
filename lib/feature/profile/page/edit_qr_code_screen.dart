@@ -76,7 +76,7 @@ class _EditQRCodeScreenState extends BaseConsumerState<EditQRCodeScreen> {
                   file: qrCodeFile != null ? File(qrCodeFile!.path) : null,
                   width: 350.w,
                   height: 350.h,
-                  fit: BoxFit.cover,
+                  //fit: BoxFit.cover,
                 ),
               ),
               SizedBox(

@@ -102,7 +102,7 @@ class _StoreDetailScreenState extends BaseConsumerState<StoreDetailScreen> {
               BaseImageView(
                 url: pharmacyStoreImg,
                 width: MediaQuery.of(context).size.width,
-                height: 333.h,
+                //height: 333.h,
                 fit: BoxFit.cover,
               ),
               StoreDetailContent(
@@ -238,9 +238,10 @@ class StoreDetailContent extends ConsumerWidget {
           ),
           BaseImageView(
             url: licensePharmacyImg,
-            width: 250.w,
-            height: 250.h,
+            width: 300.w,
+            //height: 250.h,
             fit: BoxFit.cover,
+            alignment: Alignment.center,
           ),
           SizedBox(
             height: 48.h,
