@@ -182,7 +182,7 @@ class _ChatScreenState extends BaseConsumerState<ChatScreen> {
                           width: 8.w,
                         ),
                         Text(
-                          isPharmacy ? '$fullName' : '$nameStore',
+                          isPharmacy ? '$fullName' : 'ร้าน $nameStore',
                           style: AppStyle.txtCaption,
                         ),
                       ],
@@ -271,8 +271,8 @@ class _ChatScreenState extends BaseConsumerState<ChatScreen> {
                       Expanded(
                         child: BaseTextField(
                           controller: chatController,
-                          label: 'Message',
-                          isShowLabelField: true,
+                          // label: 'Message',
+                          // isShowLabelField: true,
                         ),
                       ),
                       SizedBox(

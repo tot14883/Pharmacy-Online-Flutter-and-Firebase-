@@ -102,22 +102,29 @@ class _DrugDetailScreenState extends BaseConsumerState<DrugDetailScreen> {
                   height: 16.h,
                 ),
                 Text(
-                  '$name',
+                  'ชื่อยา $name',
                   style: AppStyle.txtHeader3,
                 ),
                 SizedBox(
                   height: 16.h,
                 ),
                 Text(
-                  '$size',
+                  'ขนาด $size',
                   style: AppStyle.txtBody,
                 ),
                 SizedBox(
                   height: 16.h,
                 ),
                 Text(
-                  '$material',
+                  'ส่วนประกอบ',
                   style: AppStyle.txtBody,
+                ),
+                SizedBox(
+                  height: 8.h,
+                ),
+                Text(
+                  '     $material',
+                  style: AppStyle.txtCaption,
                 ),
                 // SizedBox(
                 //   height: 8.h,
@@ -146,7 +153,7 @@ class _DrugDetailScreenState extends BaseConsumerState<DrugDetailScreen> {
                     ],
                     // ... แสดงราคารวม ...
                     Text(
-                      '${price * quantity} บาท',
+                      'ราคา ${price * quantity} บาท',
                       style: AppStyle.txtBody,
                     ),
                   ],

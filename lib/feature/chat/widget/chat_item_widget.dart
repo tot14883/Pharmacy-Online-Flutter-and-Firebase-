@@ -33,6 +33,7 @@ class ChatItemWidget extends ConsumerWidget {
     final createAt = messageItem.createAt;
     final updateAt = messageItem.updateAt;
     String? dateTime;
+    String? dateTimeday; //เพิ่มมาเอง
 
     //แปลงรูปแบบวันที่และเวลา
     if (createAt != null || updateAt != null) {
@@ -42,7 +43,12 @@ class ChatItemWidget extends ConsumerWidget {
 
       dateTime = ref
           .read(baseDateFormatterProvider)
-          .formatDateWithFreeStyleFormat('dd/MM/yyyy HH:mm', convertDate);
+          //  .formatDateWithFreeStyleFormat('dd/MM/yyyy HH:mm', convertDate);
+          .formatDateWithFreeStyleFormat('HH:mm', convertDate);
+
+      dateTimeday = ref
+          .read(baseDateFormatterProvider)
+          .formatDateWithFreeStyleFormat('dd/MM/yyyy', convertDate);
     }
     //สร้าง Widget สำหรับแสดงข้อความ
     return SizedBox(
@@ -53,11 +59,21 @@ class ChatItemWidget extends ConsumerWidget {
         mainAxisAlignment:
             isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
         children: [
+          //ส่วนวันที่
+          if ((messageItem.message != null &&
+                  messageItem.message!.isNotEmpty) ||
+              (messageItem.chatImg != null &&
+                  messageItem.chatImg!.isNotEmpty)) ...[
+            Text(
+              '$dateTimeday',
+              style: AppStyle.txtCaption,
+            ),
+          ],
           if (messageItem.message != null &&
               messageItem.message!.isNotEmpty) ...[
             Container(
               margin: EdgeInsets.only(
-                left: isMe ? 48.w : 0,
+                left: isMe ? 48.w : 0, //ค่าเก่า 48
                 right: isMe ? 0 : 48.w,
               ),
               child: Row(
@@ -73,7 +89,7 @@ class ChatItemWidget extends ConsumerWidget {
                       style: AppStyle.txtCaption,
                     ),
                     SizedBox(
-                      width: 8.w,
+                      width: 8.w, //กล่องข้อความคนส่ง
                     ),
                   ],
                   Expanded(
@@ -101,7 +117,7 @@ class ChatItemWidget extends ConsumerWidget {
                   if (!isMe) ...[
                     //แสดงเวลาถ้าข้อความเป็นของผู้ใช้ท่านอื่น
                     SizedBox(
-                      width: 8.w,
+                      width: 8.w, //กล่องข้อความคนรับ
                     ),
                     Text(
                       '$dateTime',
@@ -114,7 +130,7 @@ class ChatItemWidget extends ConsumerWidget {
           ],
           if (messageItem.chatImg != null &&
               messageItem.chatImg!.isNotEmpty) ...[
-              //Widget สำหรับแสดงรูปภาพ
+            //Widget สำหรับแสดงรูปภาพ
             SizedBox(
               height: 4.h,
             ),
@@ -154,8 +170,8 @@ class ChatItemWidget extends ConsumerWidget {
                     ),
                     child: BaseImageView(
                       url: messageItem.chatImg,
-                      width: 150.w,
-                      height: 150.h,
+                      width: 140.w,
+                      //height: 150.h,
                       fit: BoxFit.cover,
                     ),
                   ),
