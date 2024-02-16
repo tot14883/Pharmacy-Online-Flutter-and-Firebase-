@@ -76,7 +76,7 @@ class ReviewItemWidget extends ConsumerWidget {
                         width: 8.w,
                       ),
                       Text(
-                        'Thank you for your feedback',
+                        'ขอบคุณสำหรับการรีวิว',
                         style: AppStyle.txtCaption
                             .copyWith(color: AppColor.themeGrayLight),
                       ),

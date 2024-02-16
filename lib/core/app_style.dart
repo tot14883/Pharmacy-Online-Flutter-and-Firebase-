@@ -30,6 +30,14 @@ class AppStyle {
     height: 1.4.h,
   );
 
+  static TextStyle txtHeader3light = TextStyle(
+    fontFamily: FontFamily.inter,
+    color: AppColor.themeTextColor,
+    fontSize: 20.sp,
+    fontWeight: FontWeight.w500,
+    height: 1.4.h,
+  );
+
   static TextStyle txtBody = TextStyle(
     fontFamily: FontFamily.inter,
     color: AppColor.themeTextColor,
@@ -38,11 +46,27 @@ class AppStyle {
     height: 1.5.h,
   );
 
+  static TextStyle txtBodylight = TextStyle(
+    fontFamily: FontFamily.inter,
+    color: AppColor.themeTextColor,
+    fontSize: 16.sp,
+    fontWeight: FontWeight.w500,
+    height: 1.5.h,
+  );
+
   static TextStyle txtBody2 = TextStyle(
     fontFamily: FontFamily.inter,
     color: AppColor.themeTextColor,
     fontSize: 14.sp,
     fontWeight: FontWeight.w400,
+    height: 1.5.h,
+  );
+
+  static TextStyle txtBody2bold = TextStyle(
+    fontFamily: FontFamily.inter,
+    color: AppColor.themeTextColor,
+    fontSize: 14.sp,
+    fontWeight: FontWeight.w600,
     height: 1.5.h,
   );
 

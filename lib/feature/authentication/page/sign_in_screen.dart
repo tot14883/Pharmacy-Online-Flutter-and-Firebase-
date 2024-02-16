@@ -66,16 +66,16 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                 children: [
                   BaseTextField(
                     fieldKey: FieldSignIn.email,
-                    label: 'Email Address',
+                    label: 'อีเมล',
                     isShowLabelField: true,
                     validator: Validators.combine(
                       [
                         Validators.withMessage(
-                          "Required",
+                          "กรุณากรอกอีเมล",
                           Validators.isEmpty,
                         ),
                         Validators.withMessage(
-                          "Email is incorrect format",
+                          "กรุณากรอกอีเมลให้ถูกต้อง",
                           Validators.isValidEmail,
                         ),
                       ],
@@ -86,7 +86,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                   ),
                   BaseTextField(
                     fieldKey: FieldSignIn.password,
-                    label: 'Password',
+                    label: 'รหัสผ่าน',
                     controller: passwordController,
                     isShowLabelField: true,
                     prefixIcon: Assets.icons.icLock.svg(),
@@ -104,7 +104,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                     validator: Validators.combine(
                       [
                         Validators.withMessage(
-                          "Required",
+                          "กรุณากรอกรหัสผ่าน",
                           Validators.isEmpty,
                         ),
                       ],
@@ -168,7 +168,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                           context: context,
                           builder: (_) {
                             return BaseDialog(
-                              message: 'รหัสผ่านไม่ถูกต้อง',
+                              message: 'อีเมลหรือรหัสผ่านไม่ถูกต้อง',
                             );
                           },
                         );

@@ -59,17 +59,17 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                   // BaseTextField สำหรับป้อนที่อยู่อีเมล
                   BaseTextField(
                     fieldKey: FieldForgotPassword.email,
-                    label: 'Email Address',
+                    label: 'อีเมล',
                     controller: emailController,
                     isShowLabelField: true,
                     validator: Validators.combine(
                       [
                         Validators.withMessage(
-                          "Required",
+                          "กรุณากรอกอีเมล",
                           Validators.isEmpty,
                         ),
                         Validators.withMessage(
-                          "Email is incorrect format",
+                          "กรุณากรอกอีเมลให้ถูกต้อง",
                           Validators.isValidEmail,
                         ),
                       ],
@@ -107,7 +107,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                               },
                             );
                           }
-                           // ล้างข้อมูลใน emailController หลังจากทำการ submit ฟอร์ม
+                          // ล้างข้อมูลใน emailController หลังจากทำการ submit ฟอร์ม
                           emailController.clear();
                         },
                       );

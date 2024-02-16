@@ -74,21 +74,22 @@ class _SignUpStep1WidgetState extends ConsumerState<SignUpStep1Widget> {
               initialValue: email,
               fieldKey: FieldSignUp.email,
               prefixIcon: Assets.icons.icEmail.svg(),
-              label: "Enter email",
+              label: "อีเมล",
               isShowLabelField: true,
               validator: Validators.combine(
                 [
                   Validators.withMessage(
-                    "Required",
+                    "กรุณากรอกอีเมล",
                     Validators.isEmpty,
                   ),
                   Validators.withMessage(
-                    "Email is incorrect format",
+                    "กรุณากรอกอีเมลให้ถูกต้อง",
                     Validators.isValidEmail,
                   ),
                 ],
               ),
-              errorOrWarningText: isEmailAlready ? 'Email has already' : null,
+              errorOrWarningText:
+                  isEmailAlready ? 'มีบัญชีที่ใช้อีเมลนี้แล้ว' : null,
             ),
             SizedBox(
               height: 16.h,
@@ -109,11 +110,11 @@ class _SignUpStep1WidgetState extends ConsumerState<SignUpStep1Widget> {
                     : Assets.icons.icEyeSlash.svg(),
               ),
               isObscureText: !isHidePassword,
-              label: "Password",
+              label: "รหัสผ่าน",
               validator: Validators.combine(
                 [
                   Validators.withMessage(
-                    "Required",
+                    "กรุณากรอกรหัสผ่าน",
                     Validators.isEmpty,
                   ),
                 ],
@@ -138,17 +139,16 @@ class _SignUpStep1WidgetState extends ConsumerState<SignUpStep1Widget> {
               ),
               controller: confirmPasswordController,
               isObscureText: !isHidePasswordConfirm,
-              label: "Confirm Password",
+              label: "ยืนยันรหัสผ่าน",
               validator: Validators.combine(
                 [
                   Validators.withMessage(
-                    "Required",
+                    "กรุณากรอกยืนยันรหัสผ่าน",
                     Validators.isEmpty,
                   ),
                 ],
               ),
-              errorOrWarningText:
-                  !isPasswordMatch ? 'Password Not Match' : null,
+              errorOrWarningText: !isPasswordMatch ? 'รหัสผ่านไม่ตรงกัน' : null,
             ),
             SizedBox(
               height: 16.h,
@@ -156,7 +156,7 @@ class _SignUpStep1WidgetState extends ConsumerState<SignUpStep1Widget> {
             BaseSwitchButton(
               fieldKey: FieldSignUp.role,
               isSwitchButton: true,
-              label: "Role",
+              label: "กรุณาเลือก",
               minWidth: 100.w,
               contentPadding: const EdgeInsets.symmetric(
                 vertical: 8,
@@ -166,19 +166,19 @@ class _SignUpStep1WidgetState extends ConsumerState<SignUpStep1Widget> {
                     const SwitchButtonItem(
                       id: 1,
                       value: 'user',
-                      content: "user",
+                      content: "ลูกค้า",
                     ),
               ],
               listItem: const [
                 SwitchButtonItem(
                   id: 1,
                   value: 'user',
-                  content: "user",
+                  content: "ลูกค้า",
                 ),
                 SwitchButtonItem(
                   id: 2,
                   value: 'pharmacy',
-                  content: "pharmacy",
+                  content: "ร้านขายยา",
                 ),
               ],
             ),

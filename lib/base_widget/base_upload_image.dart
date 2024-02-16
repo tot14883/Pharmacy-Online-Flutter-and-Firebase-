@@ -68,7 +68,8 @@ class _BaseUploadImageState extends State<BaseUploadImage> {
                   ),
                   Expanded(
                     child: Text(
-                      path.isNotEmpty ? path : 'No file choosen',
+                      //path.isNotEmpty ? path : 'No file choosen',
+                      path.isNotEmpty ? path : 'ยังไม่ได้เลือกไฟล์',
                       overflow: TextOverflow.ellipsis,
                       style: AppStyle.txtBody2.copyWith(
                         color: AppColor.themeGrayLight,
@@ -77,15 +78,15 @@ class _BaseUploadImageState extends State<BaseUploadImage> {
                   ),
                 ],
               ),
-              const SizedBox(
-                height: 4,
-              ),
-              Text(
-                '(ไฟล์ .jpg,gif,png ไม่เกิน 2mb)',
-                style: AppStyle.txtBody2.copyWith(
-                  color: AppColor.themeGrayLight,
-                ),
-              ),
+              // const SizedBox(
+              //   height: 4,
+              // ),
+              // Text(
+              //   '(ไฟล์ .jpg,gif,png ไม่เกิน 2mb)',
+              //   style: AppStyle.txtBody2.copyWith(
+              //     color: AppColor.themeGrayLight,
+              //   ),
+              // ),
             ],
           ),
         ),
@@ -151,14 +152,14 @@ class ChooseFileWidget extends ConsumerWidget {
         }
       },
       child: Container(
-        width: 100,
+        width: 80,
         padding: const EdgeInsets.symmetric(vertical: 8),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
           color: AppColor.themePrimaryColor,
         ),
         child: Text(
-          'Choose',
+          'เลือก',
           textAlign: TextAlign.center,
           style: AppStyle.txtBody.copyWith(
             color: Colors.white,

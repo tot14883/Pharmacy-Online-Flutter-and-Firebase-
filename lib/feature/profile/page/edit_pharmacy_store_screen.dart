@@ -166,7 +166,7 @@ class _EditPharmacyStoreScreenState
                     validator: Validators.combine(
                       [
                         Validators.withMessage(
-                          "Required",
+                          "กรุณากรอกข้อมูล",
                           Validators.isEmpty,
                         ),
                       ],
@@ -242,7 +242,7 @@ class _EditPharmacyStoreScreenState
                     validator: Validators.combine(
                       [
                         Validators.withMessage(
-                          "Required",
+                          "กรุณากรอกข้อมูล",
                           Validators.isEmpty,
                         ),
                       ],
@@ -261,7 +261,7 @@ class _EditPharmacyStoreScreenState
                     validator: Validators.combine(
                       [
                         Validators.withMessage(
-                          "Required",
+                          "กรุณากรอกข้อมูล",
                           Validators.isEmpty,
                         ),
                       ],
@@ -335,7 +335,7 @@ class _EditPharmacyStoreScreenState
                     validator: Validators.combine(
                       [
                         Validators.withMessage(
-                          "Required",
+                          "กรุณากรอกข้อมูล",
                           Validators.isEmpty,
                         ),
                       ],
@@ -346,7 +346,7 @@ class _EditPharmacyStoreScreenState
                   ),
                   // Widget สำหรับอัปโหลดรูปใบอนุญาตร้าน
                   BaseUploadImage(
-                    label: 'รูปใบอนุญาต',
+                    label: 'รูปใบอนุญาตร้าน',
                     onUpload: (val) {
                       setState(() {
                         licenseFile = val;

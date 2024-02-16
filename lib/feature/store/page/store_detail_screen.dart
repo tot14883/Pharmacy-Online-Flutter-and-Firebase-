@@ -172,6 +172,15 @@ class StoreDetailContent extends ConsumerWidget {
     final licensePharmacyImg = pharmacyInfoResponse?.licensePharmacyImg ??
         pharmacyStoreInfo?.licensePharmacyImg;
 
+//เพิ่มใหม่
+    final phoneStore =
+        pharmacyInfoResponse?.phoneStore ?? pharmacyStoreInfo?.phoneStore;
+    final profileImg = pharmacyInfoResponse?.profileImg ?? userInfo?.profileImg;
+    final licenseStore =
+        pharmacyInfoResponse?.licenseStore ?? pharmacyStoreInfo?.licenseStore;
+    final licenseStoreImg = pharmacyInfoResponse?.licenseStoreImg ??
+        pharmacyStoreInfo?.licenseStoreImg;
+
     return Padding(
       padding: const EdgeInsets.all(16).r,
       child: Column(
@@ -183,7 +192,7 @@ class StoreDetailContent extends ConsumerWidget {
               Expanded(
                 child: Text(
                   'ร้าน $nameStore',
-                  style: AppStyle.txtBody,
+                  style: AppStyle.txtHeader3,
                 ),
               ),
               GestureDetector(
@@ -208,36 +217,100 @@ class StoreDetailContent extends ConsumerWidget {
           SizedBox(
             height: 16.h,
           ),
+          Text(
+            "ที่อยู่",
+            style: AppStyle.txtBody,
+          ),
           SizedBox(
-            width: MediaQuery.of(context).size.width * 0.4,
+            //width: MediaQuery.of(context).size.width * 0.4,
+            width: MediaQuery.of(context).size.width,
             child: Text(
               '$addressStore',
-              style: AppStyle.txtBody,
+              style: AppStyle.txtBody2,
             ),
           ),
           SizedBox(
             height: 16.h,
           ),
-          Text(
-            "เวลาเปิดทำการ $timeOpening น. - $timeClosing น. ",
-            style: AppStyle.txtBody,
+          Row(
+            children: [
+              Text(
+                'เวลาเปิดทำการ ',
+                style: AppStyle.txtBody2bold,
+              ),
+              Text(
+                '  $timeOpening น. - $timeClosing น. ',
+                style: AppStyle.txtBody2,
+              ),
+            ],
           ),
-          // Text(
-          //   "",
-          //   style: AppStyle.txtBody,
-          // ),
+          SizedBox(
+            height: 16.h,
+          ),
+          Row(
+            children: [
+              Text(
+                'เบอร์โทรศัพท์ร้าน',
+                style: AppStyle.txtBody2bold,
+              ),
+              Text(
+                '  $phoneStore',
+                style: AppStyle.txtBody2,
+              ),
+            ],
+          ),
           SizedBox(
             height: 16.h,
           ),
           Text(
-            "$fullname เลขที่ใบอนุญาต $licensePharmacy",
-            style: AppStyle.txtBody,
+            'เภสัชกรประจำร้าน',
+            style: AppStyle.txtBody2bold,
+          ),
+          Text(
+            '$fullname เลขที่ใบอนุญาต $licensePharmacy',
+            style: AppStyle.txtBody2,
           ),
           SizedBox(
             height: 16.h,
           ),
           BaseImageView(
+            url: profileImg,
+            width: 250.w,
+            height: 250.h,
+            fit: BoxFit.cover,
+            alignment: Alignment.center,
+          ),
+          SizedBox(
+            height: 8.h,
+          ),
+          BaseImageView(
             url: licensePharmacyImg,
+            width: 300.w,
+            //height: 250.h,
+            fit: BoxFit.cover,
+            alignment: Alignment.center,
+          ),
+          //ร้าน
+          SizedBox(
+            height: 16.h,
+          ),
+          Row(
+            children: [
+              Text(
+                'เลขที่ใบอนุญาตร้าน',
+                style: AppStyle.txtBody2bold,
+              ),
+              Text(
+                ' $licenseStore',
+                style: AppStyle.txtBody2,
+              ),
+            ],
+          ),
+          SizedBox(
+            height: 16.h,
+          ),
+          BaseImageView(
+            url: licenseStoreImg,
             width: 300.w,
             //height: 250.h,
             fit: BoxFit.cover,

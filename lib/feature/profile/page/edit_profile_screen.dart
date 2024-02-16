@@ -139,7 +139,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                   BaseTextField(
                     fieldKey: FieldUserInfo.name,
                     initialValue: fullname,
-                    label: "ชื่อนาม-สกุล",
+                    label: "ชื่อ-นามสกุล",
                     isShowLabelField: true,
                     validator: Validators.combine(
                       [
@@ -270,7 +270,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                     ),
                     // Widget สำหรับอัปโหลดรูปใบอนุญาต
                     BaseUploadImage(
-                      label: 'รูปใบอนุญาต',
+                      label: 'รูปใบอนุญาตเภสัชกร',
                       // Callback เมื่อมีการอัปโหลดรูป
                       onUpload: (val) {
                         setState(() {

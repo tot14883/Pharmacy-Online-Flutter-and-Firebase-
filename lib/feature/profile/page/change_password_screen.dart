@@ -75,7 +75,7 @@ class _ChangePasswordScreenState
                 // Textfield สำหรับรหัสผ่านปัจจุบัน
                 BaseTextField(
                   fieldKey: FieldChangePassword.currentPassword,
-                  label: 'Password ปัจจุบัน',
+                  label: 'รหัสผ่านปัจจุบัน',
                   controller: currentPassword,
                   isShowLabelField: true,
                   prefixIcon: Assets.icons.icLock.svg(),
@@ -93,7 +93,7 @@ class _ChangePasswordScreenState
                   validator: Validators.combine(
                     [
                       Validators.withMessage(
-                        "Required",
+                        "กรุณากรอกข้อมูล",
                         Validators.isEmpty,
                       ),
                     ],
@@ -105,7 +105,7 @@ class _ChangePasswordScreenState
                 // Textfield สำหรับรหัสผ่านใหม่
                 BaseTextField(
                   fieldKey: FieldChangePassword.newPassword,
-                  label: 'Password ใหม่',
+                  label: 'รหัสผ่านใหม่',
                   controller: newPassword,
                   isShowLabelField: true,
                   prefixIcon: Assets.icons.icLock.svg(),
@@ -123,7 +123,7 @@ class _ChangePasswordScreenState
                   validator: Validators.combine(
                     [
                       Validators.withMessage(
-                        "Required",
+                        "กรุณากรอกข้อมูล",
                         Validators.isEmpty,
                       ),
                     ],
@@ -134,7 +134,7 @@ class _ChangePasswordScreenState
                 ),
                 // Textfield สำหรับยืนยันรหัสผ่านใหม่
                 BaseTextField(
-                  label: 'Confirm Password',
+                  label: 'ยืนยันรหัสผ่านใหม่',
                   controller: confirmPassword,
                   prefixIcon: Assets.icons.icLock.svg(),
                   suffixIcon: GestureDetector(
@@ -152,7 +152,7 @@ class _ChangePasswordScreenState
                   validator: Validators.combine(
                     [
                       Validators.withMessage(
-                        "Required",
+                        "กรุณากรอกข้อมูล",
                         Validators.isEmpty,
                       ),
                     ],
@@ -173,7 +173,7 @@ class _ChangePasswordScreenState
                             context: context,
                             builder: (_) {
                               return BaseDialog(
-                                message: 'รหัสผ่านไม่ตรงกันอันเก่า',
+                                message: 'รหัสผ่านปัจุบันไม่ถูกต้อง',
                               );
                             },
                           );
@@ -186,7 +186,7 @@ class _ChangePasswordScreenState
                             context: context,
                             builder: (_) {
                               return BaseDialog(
-                                message: 'รหัสผ่านไม่ตรงกัน',
+                                message: 'รหัสผ่านใหม่ไม่ตรงกัน',
                               );
                             },
                           );
@@ -234,7 +234,7 @@ class _ChangePasswordScreenState
                             builder: (_) {
                               return BaseDialog(
                                 message:
-                                    'ไม่สามารถเปลี่ยนรหัสผ่านได้ เนื่องจากรหัสไม่ถูกต้อง',
+                                    'ไม่สามารถเปลี่ยนรหัสผ่านได้ เนื่องจากรหัสผ่านไม่ถูกต้อง',
                               );
                             },
                           );

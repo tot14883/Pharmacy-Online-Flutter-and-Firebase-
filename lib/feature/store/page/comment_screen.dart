@@ -59,7 +59,7 @@ class _CommentScreenState extends BaseConsumerState<CommentScreen> {
     return BaseScaffold(
       appBar: BaseAppBar(
         title: Text(
-          'Comments',
+          'ตอบกลับรีวิว',
           style: AppStyle.txtHeader3,
         ),
         bgColor: AppColor.themeWhiteColor,
