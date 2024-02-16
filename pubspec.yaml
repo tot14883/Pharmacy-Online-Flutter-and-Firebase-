@@ -96,6 +96,8 @@ dependencies:
   # https://pub.dev/packages/image_gallery_saver
   image_gallery_saver: "^2.0.3"
 
+  intl: ^0.18.1 #formatdatetime
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

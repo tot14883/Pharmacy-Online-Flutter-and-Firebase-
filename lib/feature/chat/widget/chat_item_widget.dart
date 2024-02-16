@@ -7,6 +7,7 @@ import 'package:pharmacy_online/core/app_style.dart';
 import 'package:pharmacy_online/core/local/base_shared_preference.dart';
 import 'package:pharmacy_online/feature/store/model/response/chat_with_pharmacy_response.dart';
 import 'package:pharmacy_online/utils/util/date_format.dart';
+import 'package:intl/intl.dart';
 
 class ChatItemWidget extends ConsumerWidget {
   final ChatWithPharmacyResponse messageItem;
@@ -33,7 +34,11 @@ class ChatItemWidget extends ConsumerWidget {
     final createAt = messageItem.createAt;
     final updateAt = messageItem.updateAt;
     String? dateTime;
-    String? dateTimeday; //เพิ่มมาเอง
+    String? dateDay; //เพิ่มมาเอง
+
+    DateTime? now;
+    now = DateTime.now();
+    String toDay = DateFormat('dd/MM/yyyy').format(now);
 
     //แปลงรูปแบบวันที่และเวลา
     if (createAt != null || updateAt != null) {
@@ -46,7 +51,7 @@ class ChatItemWidget extends ConsumerWidget {
           //  .formatDateWithFreeStyleFormat('dd/MM/yyyy HH:mm', convertDate);
           .formatDateWithFreeStyleFormat('HH:mm', convertDate);
 
-      dateTimeday = ref
+      dateDay = ref
           .read(baseDateFormatterProvider)
           .formatDateWithFreeStyleFormat('dd/MM/yyyy', convertDate);
     }
@@ -65,10 +70,30 @@ class ChatItemWidget extends ConsumerWidget {
               (messageItem.chatImg != null &&
                   messageItem.chatImg!.isNotEmpty)) ...[
             Text(
-              '$dateTimeday',
+              '$dateDay',
               style: AppStyle.txtCaption,
             ),
           ],
+          //******************************************
+          //เพิ่มมาเอง จะลองทำกรุ๊ป
+          // if (messageItem.message != null &&
+          //     messageItem.message!.isNotEmpty) ...[
+          //   // ตรวจสอบว่าวันที่ของข้อความเปลี่ยนแปลงหรือไม่
+          //   // if (dateDay) ...[
+          //   Container(
+          //     padding: const EdgeInsets.all(16).r,
+          //     child: Text(
+          //       '$dateDay $toDay',
+          //       style: AppStyle.txtCaption,
+          //       textAlign: TextAlign.center,
+          //     ),
+          //   ),
+          //   // ],
+          // ],
+
+          // ส่วนของการแสดงข้อความ
+          //จบโค้ดเพิ่มมาเอง
+
           if (messageItem.message != null &&
               messageItem.message!.isNotEmpty) ...[
             Container(
@@ -92,7 +117,9 @@ class ChatItemWidget extends ConsumerWidget {
                       width: 8.w, //กล่องข้อความคนส่ง
                     ),
                   ],
-                  Expanded(
+                  // Expanded(
+                  IntrinsicWidth(
+                    //เพิ่มเอง
                     child: Container(
                       //กล่องสำหรับแสดงข้อความ
                       padding: const EdgeInsets.all(16).r,
@@ -107,10 +134,19 @@ class ChatItemWidget extends ConsumerWidget {
                             ? AppColor.themePrimaryColor
                             : AppColor.themeWhiteColor,
                       ),
+                      //เพิ่มเอง
+                      constraints: BoxConstraints(
+                        maxWidth: MediaQuery.of(context).size.width -
+                            108.w, // ลองเปลี่ยนตามความต้องการ
+                      ),
                       child: Text(
                         '${messageItem.message}',
                         style: AppStyle.txtCaption,
-                        textAlign: isMe ? TextAlign.end : TextAlign.start,
+                        textAlign: isMe ? TextAlign.start : TextAlign.start,
+                        //เพิ่มมา
+                        // softWrap: true, // ให้ข้อความขึ้นบรรทัดใหม่
+                        // overflow: TextOverflow.clip,
+                        //// หรือใช้ TextOverflow.ellipsis หรือ TextOverflow.fade ตามที่ต้องการ
                       ),
                     ),
                   ),
