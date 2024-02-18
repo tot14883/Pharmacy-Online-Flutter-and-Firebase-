@@ -82,6 +82,9 @@ class CommentHeaderWidget extends ConsumerWidget {
                   await ref
                       .read(storeControllerProvider.notifier)
                       .onGetReview('${reviewItem?.pharmacyId}');
+                  await ref
+                      .read(profileControllerProvider.notifier)
+                      .onGetPharmacyStore();
                 } else {
                   await ref
                       .read(storeControllerProvider.notifier)
@@ -90,6 +93,9 @@ class CommentHeaderWidget extends ConsumerWidget {
                   await ref
                       .read(storeControllerProvider.notifier)
                       .onGetComment('${reviewItem?.id}');
+                  await ref
+                      .read(profileControllerProvider.notifier)
+                      .onGetPharmacyStore();
                 }
 
                 await ref
