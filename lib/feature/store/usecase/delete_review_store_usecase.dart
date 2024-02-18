@@ -58,9 +58,6 @@ class DeleteReviewStoreUsecase extends UseCase<CommentRequest, bool> {
             .delete();
       }
 
-      //คำสั่งลบการรีวิว
-      await collectReview.doc(reviewId).delete();
-
       final collectPharmacyStore = fireCloudStore.collection('pharmacyStore');
 
       final getCollectPharmacyStore = await fireCloudStore
@@ -69,7 +66,8 @@ class DeleteReviewStoreUsecase extends UseCase<CommentRequest, bool> {
           .get()
           .then((value) => value);
 
-      final _dataPharmacy = getCollectPharmacyStore as Map<String, dynamic>;
+      final _dataPharmacy =
+          getCollectPharmacyStore.data() as Map<String, dynamic>;
 
       final getReviewScore = await collectReview
           .where('pharmacyId', isEqualTo: pharmacyId)
@@ -90,12 +88,15 @@ class DeleteReviewStoreUsecase extends UseCase<CommentRequest, bool> {
       final countReviewer = _dataPharmacy['countReviewer'] - 1;
 
       Map<String, dynamic> myPharmacyStore = {
-        "ratingScore": avgRatingScore,
+        "ratingScore": countReviewer == 0 ? 0 : avgRatingScore,
         "countReviewer": countReviewer,
         "update_at": DateTime.now(),
       };
 
       await collectPharmacyStore.doc(pharmacyId).update(myPharmacyStore);
+
+      //คำสั่งลบการรีวิว
+      await collectReview.doc(reviewId).delete();
 
       return true;
     } catch (e) {

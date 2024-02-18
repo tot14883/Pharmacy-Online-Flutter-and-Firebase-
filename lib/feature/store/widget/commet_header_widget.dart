@@ -91,6 +91,10 @@ class CommentHeaderWidget extends ConsumerWidget {
                       .read(storeControllerProvider.notifier)
                       .onGetComment('${reviewItem?.id}');
                 }
+
+                await ref
+                    .read(profileControllerProvider.notifier)
+                    .onGetPharmacyStore();
               }
             },
           ),

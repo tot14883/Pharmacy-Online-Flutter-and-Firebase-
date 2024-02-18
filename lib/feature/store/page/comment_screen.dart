@@ -7,6 +7,7 @@ import 'package:pharmacy_online/base_widget/base_scaffold.dart';
 import 'package:pharmacy_online/base_widget/base_text_field.dart';
 import 'package:pharmacy_online/core/app_color.dart';
 import 'package:pharmacy_online/core/app_style.dart';
+import 'package:pharmacy_online/core/local/base_shared_preference.dart';
 import 'package:pharmacy_online/core/widget/base_consumer_state.dart';
 import 'package:pharmacy_online/feature/store/controller/store_controller.dart';
 import 'package:pharmacy_online/feature/store/model/response/reviews_response.dart';
@@ -102,6 +103,10 @@ class _CommentScreenState extends BaseConsumerState<CommentScreen> {
                       BaseButton(
                         width: 60.w,
                         onTap: () async {
+                          final uid = ref
+                              .read(baseSharePreferenceProvider)
+                              .getString(BaseSharePreferenceKey.userId);
+
                           if (messageController.text.isEmpty) {
                             return; // ถ้าข้อความว่าง ให้ยกเลิก
                           }
@@ -112,7 +117,7 @@ class _CommentScreenState extends BaseConsumerState<CommentScreen> {
                               .onAddComment(
                                 '${reviewItem.id}',
                                 '${reviewItem.pharmacyId}',
-                                '${reviewItem.uid}',
+                                '$uid',
                                 messageController.text,
                               );
 
