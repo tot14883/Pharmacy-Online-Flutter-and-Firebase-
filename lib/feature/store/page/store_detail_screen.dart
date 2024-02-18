@@ -148,11 +148,17 @@ class StoreDetailContent extends ConsumerWidget {
             )
             ?.uid !=
         null;
+
+    final pharmacyDetail = ref
+        .watch(storeControllerProvider.select((value) => value.pharmacyDetail))
+        .value;
+
     final reviewList =
         pharmacyInfoResponse?.countReviewer ?? pharmacyStoreInfo?.countReviewer;
 
-    final rating =
-        pharmacyInfoResponse?.ratingScore ?? pharmacyStoreInfo?.ratingScore;
+    final rating = pharmacyDetail?.ratingScore ??
+        pharmacyInfoResponse?.ratingScore ??
+        pharmacyStoreInfo?.ratingScore;
 
     final pharmacyId = pharmacyInfoResponse?.uid ?? pharmacyStoreInfo?.uid;
 
