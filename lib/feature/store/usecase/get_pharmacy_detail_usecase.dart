@@ -28,7 +28,7 @@ class GetPharmacyDetailUsecase extends UseCase<String, PharmacyInfoResponse> {
     String request,
   ) async {
     try {
-      //ในกระบวนการดึงข้อมูล, ใช้ `fireCloudStore.collection('user').doc(request).get()` 
+      //ในกระบวนการดึงข้อมูล, ใช้ `fireCloudStore.collection('user').doc(request).get()`
       //เพื่อดึงข้อมูลผู้ใช้ (ซึ่งเป็นข้อมูลของเจ้าของร้าน)
       final collectUser = await fireCloudStore
           .collection('user')
@@ -71,8 +71,11 @@ class GetPharmacyDetailUsecase extends UseCase<String, PharmacyInfoResponse> {
         longtitude: _pharmacy['longtitude'],
         latitude: _pharmacy['latitude'],
         qrCode: _pharmacy['qrCodeImg'],
+        ratingScore: _pharmacy['ratingScore'] + 0.0,
+        countReviewer: _pharmacy['countReviewer'],
       );
     } catch (e) {
+      print(e);
       return const PharmacyInfoResponse();
     }
   }

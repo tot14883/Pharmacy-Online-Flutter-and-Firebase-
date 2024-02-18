@@ -54,6 +54,7 @@ class _StoreDetailScreenState extends BaseConsumerState<StoreDetailScreen> {
       final userInfo = ref.watch(
         profileControllerProvider.select((value) => value.userInfo),
       );
+
       await ref
           .read(storeControllerProvider.notifier)
           .onGetReview('${pharmacyStoreInfo?.uid ?? userInfo?.uid}');
@@ -67,6 +68,9 @@ class _StoreDetailScreenState extends BaseConsumerState<StoreDetailScreen> {
           .read(storeControllerProvider.notifier)
           .onCheckRequestChatWaiting(
             '${pharmacyStoreInfo?.uid ?? userInfo?.uid}',
+          );
+      await ref.read(storeControllerProvider.notifier).onGetPharmacyDetail(
+            '${pharmacyStoreInfo?.uid}',
           );
     });
     super.initState();

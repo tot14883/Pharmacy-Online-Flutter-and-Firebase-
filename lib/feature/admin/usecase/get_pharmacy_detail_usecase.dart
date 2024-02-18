@@ -102,6 +102,8 @@ class GetPharmacyDetailUsecase
             licenseStore: _pharmacy['licenseStore'],
             licenseStoreImg: _pharmacy['licenseStoreImg'],
             status: _pharmacy['status'],
+            ratingScore: _pharmacy['ratingScore'] + 0.0,
+            countReviewer: _pharmacy['countReviewer'],
           ),
         );
       }

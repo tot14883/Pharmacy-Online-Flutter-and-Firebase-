@@ -32,6 +32,11 @@ class _ReviewStoreScreenState extends BaseConsumerState<ReviewStoreScreen> {
     final reviewList = ref
         .watch(storeControllerProvider.select((value) => value.reviewList))
         .value;
+
+    final pharmacyDetail = ref
+        .watch(storeControllerProvider.select((value) => value.pharmacyDetail))
+        .value;
+
     //หาค่าเฉลี่ย review
 
     final pharmacyInfoResponse = widget.args?.pharmacyInfoResponse;
@@ -40,13 +45,20 @@ class _ReviewStoreScreenState extends BaseConsumerState<ReviewStoreScreen> {
       profileControllerProvider.select((value) => value.pharmacyStore),
     );
 
-    final nameStore =
-        pharmacyInfoResponse?.nameStore ?? pharmacyStoreInfo?.nameStore;
+    final nameStore = pharmacyDetail?.nameStore ??
+        pharmacyInfoResponse?.nameStore ??
+        pharmacyStoreInfo?.nameStore;
 
-    final rating =
-        pharmacyInfoResponse?.ratingScore ?? pharmacyStoreInfo?.ratingScore;
-    final countReview =
-        pharmacyInfoResponse?.countReviewer ?? pharmacyStoreInfo?.countReviewer;
+    final rating = pharmacyDetail?.ratingScore ??
+        pharmacyInfoResponse?.ratingScore ??
+        pharmacyStoreInfo?.ratingScore;
+    final countReview = pharmacyDetail?.countReviewer ??
+        pharmacyInfoResponse?.countReviewer ??
+        pharmacyStoreInfo?.countReviewer;
+
+    print(rating);
+    print(countReview);
+
     return BaseScaffold(
       appBar: BaseAppBar(
         title: Text(

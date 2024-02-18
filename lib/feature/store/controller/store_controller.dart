@@ -449,17 +449,30 @@ class StoreController extends StateNotifier<StoreState> {
   }
 
 // เมธอดสำหรับดึงข้อมูลรายละเอียดร้านขายยา
-  Future<void> onGetPharmacyDetail(String pharmacyId) async {
+  Future<void> onGetPharmacyDetail(
+    String pharmacyId, {
+    bool isLoading = false,
+  }) async {
+    if (isLoading) {
+      _loader.onLoad();
+    }
+
     final result = await _getPharmacyDetailUsecase.execute(pharmacyId);
 
     // จัดการผลลัพธ์ของ usecase
-    result.when(
-      (success) =>
-          state = state.copyWith(pharmacyDetail: AsyncValue.data(success)),
-      (error) => state = state.copyWith(
+    result.when((success) {
+      if (isLoading) {
+        _loader.onDismissLoad();
+      }
+      state = state.copyWith(pharmacyDetail: AsyncValue.data(success));
+    }, (error) {
+      if (isLoading) {
+        _loader.onDismissLoad();
+      }
+      state = state.copyWith(
         pharmacyDetail: const AsyncValue.data(null),
-      ),
-    );
+      );
+    });
   }
 
 // เมธอดสำหรับดึงข้อมูลรีวิวของร้านขายยา
