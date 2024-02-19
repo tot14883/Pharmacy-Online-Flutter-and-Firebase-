@@ -96,10 +96,14 @@ class _ProfileScreenState extends BaseConsumerState<ProfileScreen> {
                   if (isPharmacy) ...[
                     const BaseDivider(),
                     ProfileMenuWidget(
-                      onTap: () {
+                      onTap: () async {
                         ref
                             .read(profileControllerProvider.notifier)
                             .clearForm();
+
+                        await ref
+                            .read(profileControllerProvider.notifier)
+                            .onGetPharmacyStore();
 
                         Navigator.of(context).pushNamed(
                           StoreDetailScreen.routeName,

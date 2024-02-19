@@ -69,6 +69,9 @@ class DeleteReviewStoreUsecase extends UseCase<CommentRequest, bool> {
       final _dataPharmacy =
           getCollectPharmacyStore.data() as Map<String, dynamic>;
 
+      //คำสั่งลบการรีวิว
+      await collectReview.doc(reviewId).delete();
+
       final getReviewScore = await collectReview
           .where('pharmacyId', isEqualTo: pharmacyId)
           .get()
@@ -94,9 +97,6 @@ class DeleteReviewStoreUsecase extends UseCase<CommentRequest, bool> {
       };
 
       await collectPharmacyStore.doc(pharmacyId).update(myPharmacyStore);
-
-      //คำสั่งลบการรีวิว
-      await collectReview.doc(reviewId).delete();
 
       return true;
     } catch (e) {
