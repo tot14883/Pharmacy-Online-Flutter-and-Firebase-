@@ -280,30 +280,33 @@ class _ChatScreenState extends BaseConsumerState<ChatScreen> {
                       ),
                       GestureDetector(
                         onTap: () async {
-                          //ส่งข้อความ
-                          final id = widget.args.chatWithPharmacyItem.id;
-                          ref
-                              .read(chatControllerProvider.notifier)
-                              .onPushMessageChatUsecase(
-                                '$id',
-                                chatController.text,
-                                chatImgfile,
-                              );
-                          //การแจ้งเตือนส่งข้อความ
-                          if (isNotification) {
-                            await ref
-                                .read(homeControllerProvider.notifier)
-                                .onPostNotification(
-                                  '${userInfo?.fullName} ได้ส่งข้อความหาคุณ',
-                                  'approveChat',
-                                  '$pharmacyId',
+                          // เพิ่มเงื่อนไขตรวจสอบว่า BaseTextField ว่างเปล่าหรือไม่
+                          if (chatController.text.isNotEmpty) {
+                            //ส่งข้อความ
+                            final id = widget.args.chatWithPharmacyItem.id;
+                            ref
+                                .read(chatControllerProvider.notifier)
+                                .onPushMessageChatUsecase(
+                                  '$id',
+                                  chatController.text,
+                                  chatImgfile,
                                 );
+                            //การแจ้งเตือนส่งข้อความ
+                            if (isNotification) {
+                              await ref
+                                  .read(homeControllerProvider.notifier)
+                                  .onPostNotification(
+                                    '${userInfo?.fullName} ได้ส่งข้อความหาคุณ',
+                                    'approveChat',
+                                    '$pharmacyId',
+                                  );
 
-                            setState(() {
-                              isNotification = false;
-                            });
+                              setState(() {
+                                isNotification = false;
+                              });
+                            }
+                            chatController.clear();
                           }
-                          chatController.clear();
                         },
                         child: Assets.icons.icSend.svg(),
                       )

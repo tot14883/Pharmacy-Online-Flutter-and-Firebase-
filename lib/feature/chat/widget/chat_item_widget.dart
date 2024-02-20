@@ -36,6 +36,7 @@ class ChatItemWidget extends ConsumerWidget {
     String? dateTime;
     String? dateDay; //เพิ่มมาเอง
 
+    //วันนี้
     DateTime? now;
     now = DateTime.now();
     String toDay = DateFormat('dd/MM/yyyy').format(now);
@@ -55,6 +56,7 @@ class ChatItemWidget extends ConsumerWidget {
           .read(baseDateFormatterProvider)
           .formatDateWithFreeStyleFormat('dd/MM/yyyy', convertDate);
     }
+
     //สร้าง Widget สำหรับแสดงข้อความ
     return SizedBox(
       width: MediaQuery.of(context).size.width,
@@ -69,31 +71,23 @@ class ChatItemWidget extends ConsumerWidget {
                   messageItem.message!.isNotEmpty) ||
               (messageItem.chatImg != null &&
                   messageItem.chatImg!.isNotEmpty)) ...[
+            //อยู่บนแชท
             Text(
               '$dateDay',
               style: AppStyle.txtCaption,
             ),
+            //อยู่กลางจอ
+            //   Row(
+            //     mainAxisAlignment: MainAxisAlignment.center,
+            //     children: [
+            //       Text(
+            //         '$dateDay',
+            //         style: AppStyle.txtCaption,
+            //       ),
+            //     ],
+            //   ),
           ],
           //******************************************
-          //เพิ่มมาเอง จะลองทำกรุ๊ป
-          // if (messageItem.message != null &&
-          //     messageItem.message!.isNotEmpty) ...[
-          //   // ตรวจสอบว่าวันที่ของข้อความเปลี่ยนแปลงหรือไม่
-          //   // if (dateDay) ...[
-          //   Container(
-          //     padding: const EdgeInsets.all(16).r,
-          //     child: Text(
-          //       '$dateDay $toDay',
-          //       style: AppStyle.txtCaption,
-          //       textAlign: TextAlign.center,
-          //     ),
-          //   ),
-          //   // ],
-          // ],
-
-          // ส่วนของการแสดงข้อความ
-          //จบโค้ดเพิ่มมาเอง
-
           if (messageItem.message != null &&
               messageItem.message!.isNotEmpty) ...[
             Container(
@@ -164,6 +158,7 @@ class ChatItemWidget extends ConsumerWidget {
               ),
             ),
           ],
+
           if (messageItem.chatImg != null &&
               messageItem.chatImg!.isNotEmpty) ...[
             //Widget สำหรับแสดงรูปภาพ
