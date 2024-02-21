@@ -82,7 +82,7 @@ class _SignUpPharmacyStoreWidgetState
             height: 8.h,
           ),
           Text(
-            'กรุณาเลือกภาพ',
+            'กรุณาเลือกรูปร้านขายยา',
             style: AppStyle.txtError,
           ),
         ],
@@ -96,7 +96,7 @@ class _SignUpPharmacyStoreWidgetState
           validator: Validators.combine(
             [
               Validators.withMessage(
-                "Required",
+                "กรุณากรอกชื่อร้าน",
                 Validators.isEmpty,
               ),
             ],
@@ -163,7 +163,7 @@ class _SignUpPharmacyStoreWidgetState
           validator: Validators.combine(
             [
               Validators.withMessage(
-                "Required",
+                "กรุณาเลือกตำแหน่งที่อยู่ร้าน",
                 Validators.isEmpty,
               ),
             ],
@@ -180,7 +180,7 @@ class _SignUpPharmacyStoreWidgetState
           validator: Validators.combine(
             [
               Validators.withMessage(
-                "Required",
+                "กรุณากรอกเบอร์โทรศัพท์ร้าน",
                 Validators.isEmpty,
               ),
             ],
@@ -254,7 +254,7 @@ class _SignUpPharmacyStoreWidgetState
           validator: Validators.combine(
             [
               Validators.withMessage(
-                "Required",
+                "กรุณากรอกเลขที่ใบอนุญาตร้าน",
                 Validators.isEmpty,
               ),
             ],
@@ -278,7 +278,7 @@ class _SignUpPharmacyStoreWidgetState
           BaseImageView(
             file: File(licenseStoreFile!.path),
             width: 250.w,
-            height: 250.h,
+            //height: 250.h,
             fit: BoxFit.cover,
           ),
         ],
@@ -287,7 +287,7 @@ class _SignUpPharmacyStoreWidgetState
             height: 8.h,
           ),
           Text(
-            'กรุณาเลือกภาพ',
+            'กรุณาเลือกรูปใบอนุญาตร้าน',
             style: AppStyle.txtError,
           ),
         ],
@@ -309,7 +309,7 @@ class _SignUpPharmacyStoreWidgetState
           BaseImageView(
             file: File(qrcodeFile!.path),
             width: 250.w,
-            height: 250.h,
+            //height: 250.h,
             fit: BoxFit.cover,
           ),
         ],
@@ -318,7 +318,7 @@ class _SignUpPharmacyStoreWidgetState
             height: 8.h,
           ),
           Text(
-            'กรุณาเลือกภาพ',
+            'กรุณาเลือกรูป Qrcode รับเงิน',
             style: AppStyle.txtError,
           ),
         ],

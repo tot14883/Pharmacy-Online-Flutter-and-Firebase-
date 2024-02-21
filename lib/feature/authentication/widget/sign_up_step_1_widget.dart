@@ -89,7 +89,7 @@ class _SignUpStep1WidgetState extends ConsumerState<SignUpStep1Widget> {
                 ],
               ),
               errorOrWarningText:
-                  isEmailAlready ? 'มีบัญชีที่ใช้อีเมลนี้แล้ว' : null,
+                  isEmailAlready ? 'อีเมลนี้เป็นสมาชิกแล้ว' : null,
             ),
             SizedBox(
               height: 16.h,

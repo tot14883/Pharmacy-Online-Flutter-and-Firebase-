@@ -83,7 +83,7 @@ class _SignUpStep2WidgetState extends ConsumerState<SignUpStep2Widget> {
                 height: 8.h,
               ),
               Text(
-                'กรุณาเลือกภาพ',
+                'กรุณาเลือกภาพโปรไฟล์',
                 style: AppStyle.txtError,
               ),
               SizedBox(
@@ -100,7 +100,7 @@ class _SignUpStep2WidgetState extends ConsumerState<SignUpStep2Widget> {
               validator: Validators.combine(
                 [
                   Validators.withMessage(
-                    "Required",
+                    "กรุณากรอกชื่อ-นามสกุล ",
                     Validators.isEmpty,
                   ),
                 ],
@@ -117,7 +117,7 @@ class _SignUpStep2WidgetState extends ConsumerState<SignUpStep2Widget> {
               validator: Validators.combine(
                 [
                   Validators.withMessage(
-                    "Required",
+                    "กรุณากรอกเบอร์โทรศัพท์",
                     Validators.isEmpty,
                   ),
                 ],
@@ -187,7 +187,7 @@ class _SignUpStep2WidgetState extends ConsumerState<SignUpStep2Widget> {
                 validator: Validators.combine(
                   [
                     Validators.withMessage(
-                      "Required",
+                      "กรุณาเลือกตำแหน่งที่อยู่",
                       Validators.isEmpty,
                     ),
                   ],
@@ -205,7 +205,7 @@ class _SignUpStep2WidgetState extends ConsumerState<SignUpStep2Widget> {
                 validator: Validators.combine(
                   [
                     Validators.withMessage(
-                      "Required",
+                      "กรุณากรอกเลขที่ใบอนุญาตเภสัชกร",
                       Validators.isEmpty,
                     ),
                   ],
@@ -229,7 +229,7 @@ class _SignUpStep2WidgetState extends ConsumerState<SignUpStep2Widget> {
                 BaseImageView(
                   file: File(licenseFile!.path),
                   width: 250.w,
-                  height: 250.h,
+                  // height: 250.h,
                   fit: BoxFit.cover,
                 ),
               ],
@@ -238,7 +238,7 @@ class _SignUpStep2WidgetState extends ConsumerState<SignUpStep2Widget> {
                   height: 8.h,
                 ),
                 Text(
-                  'กรุณาเลือกภาพ',
+                  'กรุณาเลือกภาพใบอนุญาตเภสัชกร',
                   style: AppStyle.txtError,
                 ),
                 SizedBox(
