@@ -264,7 +264,7 @@ class _SignUpPharmacyStoreWidgetState
           height: 16.h,
         ),
         BaseUploadImage(
-          label: 'รูปใบอนุญาต',
+          label: 'รูปใบอนุญาตร้าน',
           onUpload: (val) {
             setState(() {
               licenseStoreFile = val;

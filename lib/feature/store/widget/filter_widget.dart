@@ -230,7 +230,7 @@ class _FilterWidgetState extends BaseConsumerState<FilterWidget> {
                 );
 
                 Fluttertoast.showToast(
-                  msg: result ?? "ไม่พบเจอร้านเภสัช",
+                  msg: result ?? "ค้นหาร้านไม่เจอ",
                   toastLength: Toast.LENGTH_SHORT,
                   gravity: ToastGravity.BOTTOM,
                 );
@@ -274,7 +274,7 @@ class _FilterWidgetState extends BaseConsumerState<FilterWidget> {
                 );
 
                 Fluttertoast.showToast(
-                  msg: result ?? "ไม่พบเจอร้านเภสัช",
+                  msg: result ?? "ค้นหาร้านไม่เจอ",
                   toastLength: Toast.LENGTH_SHORT,
                   gravity: ToastGravity.BOTTOM,
                 );

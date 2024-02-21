@@ -215,7 +215,7 @@ class _SignUpStep2WidgetState extends ConsumerState<SignUpStep2Widget> {
                 height: 16.h,
               ),
               BaseUploadImage(
-                label: 'รูปใบอนุญาต',
+                label: 'รูปใบอนุญาตเภสัชกร',
                 onUpload: (val) {
                   setState(() {
                     licenseFile = val;
