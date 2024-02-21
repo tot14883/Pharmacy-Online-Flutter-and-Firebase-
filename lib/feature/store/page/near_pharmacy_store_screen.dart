@@ -127,7 +127,7 @@ class _NearPharmacyStoreScreenState
         markerId: MarkerId('${pharmacyItem.uid}'),
         infoWindow: InfoWindow(
           title: '${pharmacyItem.nameStore}',
-          snippet: 'Click to See Pharmacy Store',
+          snippet: 'กดเพื่อดูรายละเอียดร้าน',
           onTap: () {
             navigateToPharmacyStore(pharmacyItem);
           },
@@ -173,7 +173,7 @@ class _NearPharmacyStoreScreenState
       appBar: BaseAppBar(
         bgColor: AppColor.themeWhiteColor,
         title: Text(
-          'ค้นหาร้านขายยาใกล้คุณ',
+          'ค้นหาร้านขายยา',
           style: AppStyle.txtHeader3,
         ),
       ),

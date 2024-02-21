@@ -67,9 +67,9 @@ class _PharmacyStoreDetaillScreenState
               children: [
                 BaseImageView(
                   url: pharmacyStoreImg,
-                  width: 350.w,
-                  height: 350.h,
-                  fit: BoxFit.cover, //ลองเปลี่ยนที่ตรงนี้
+                  width: 300.w,
+                  //height: 350.h,
+                  fit: BoxFit.cover,
                 ),
                 SizedBox(
                   height: 16.h,
@@ -137,11 +137,15 @@ class _PharmacyStoreDetaillScreenState
                 SizedBox(
                   height: 16.h,
                 ),
+                Text(
+                  'รูปใบอนุญาตร้าน',
+                  style: AppStyle.txtBody2,
+                ),
                 // แสดงรูปใบอนุญาตร้าน
                 BaseImageView(
                   url: licensePharmacyStore,
-                  width: 250.w,
-                  height: 250.h,
+                  width: 300.w,
+                  //height: 250.h,
                   fit: BoxFit.cover,
                 ),
                 SizedBox(

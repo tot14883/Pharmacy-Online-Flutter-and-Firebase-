@@ -69,7 +69,7 @@ class _UserDetailScreenState extends ConsumerState<UserDetailScreen> {
                   isReadOnly: true,
                   isShowLabelField: true,
                   initialValue: fullname,
-                  label: "ชื่อนาม-สกุล",
+                  label: "ชื่อ-นามสกุล",
                 ),
                 SizedBox(
                   height: 16.h,
@@ -96,11 +96,15 @@ class _UserDetailScreenState extends ConsumerState<UserDetailScreen> {
                 SizedBox(
                   height: 16.h,
                 ),
+                Text(
+                  'รูปใบอนุญาตเภสัชกร',
+                  style: AppStyle.txtBody2,
+                ),
                 // แสดงรูปใบอนุญาตเภสัชกร
                 BaseImageView(
                   url: licensePharmacyImg,
-                  width: 250.w,
-                  height: 250.h,
+                  width: 350.w,
+                  //height: 250.h,
                   fit: BoxFit.cover,
                 ),
                 SizedBox(
