@@ -12,6 +12,7 @@ import 'package:pharmacy_online/core/widget/base_consumer_state.dart';
 import 'package:pharmacy_online/feature/store/controller/store_controller.dart';
 import 'package:pharmacy_online/feature/store/page/search_result_pharmacy_store_screen.dart';
 import 'package:pharmacy_online/feature/store/widget/filter_distance_widget.dart';
+import 'package:pharmacy_online/feature/store/widget/filter_reviewer_widget.dart';
 
 class FilterWidget extends ConsumerStatefulWidget {
   const FilterWidget({super.key});
@@ -142,49 +143,18 @@ class _FilterWidgetState extends BaseConsumerState<FilterWidget> {
           SizedBox(
             height: 8.h,
           ),
-          // BaseSwitchButton คล้ายหน้า sign up screen
-          BaseSwitchButton(
-            isSwitchButton: true,
-            label: "จำนวนคนรีวิว (ขึ้นไป)​",
-            minWidth: 100.w,
-            contentPadding: const EdgeInsets.symmetric(
-              vertical: 8,
-            ).w,
-            initialValue: [
-              SwitchButtonItem(
-                id: countReviewer?.id ?? 0,
-                value: '${countReviewer?.value}',
-                content: '${countReviewer?.content}',
-              ),
-            ],
-            listItem: const [
-              SwitchButtonItem(
-                id: 1,
-                value: '10',
-                content: "10 คน",
-              ),
-              SwitchButtonItem(
-                id: 2,
-                value: '20',
-                content: "20 คน",
-              ),
-              SwitchButtonItem(
-                id: 3,
-                value: '30',
-                content: "30 คน",
-              ),
-              SwitchButtonItem(
-                id: 4,
-                value: '40',
-                content: "40 คน",
-              ),
-              SwitchButtonItem(
-                id: 5,
-                value: '50',
-                content: "50 คน",
-              ),
-            ],
-            onChange: (val) {
+          Text(
+            'จำนวนคนรีวิว',
+            style: AppStyle.txtBody2,
+          ),
+          SizedBox(
+            height: 4.h,
+          ),
+          // Filter reviewer
+          FilterReviewerWidget(
+            initial: countReviewer,
+            onUpdate: (val) {
+              // ทุกครั้งที่ update value ให้ทำการเก็บค่าใน onSetSearchCountReviewer
               ref
                   .read(storeControllerProvider.notifier)
                   .onSetSearchCountReviewer(val);
@@ -287,8 +257,52 @@ class _FilterWidgetState extends BaseConsumerState<FilterWidget> {
           SizedBox(
             height: 8.h,
           ),
+          // ค้นหาทุกร้าน
           BaseButton(
             buttonType: ButtonType.tertiary,
+            onTap: () async {
+              ref
+                  .read(storeControllerProvider.notifier)
+                  .onClearSelectedPharmacyStore();
+              ref
+                  .read(storeControllerProvider.notifier)
+                  .onSearchPharmacyStore(isOpen: true);
+
+              final searchPharmacyInfoList = ref.watch(
+                storeControllerProvider.select(
+                  (value) => value.searchPharmacyInfoList,
+                ),
+              );
+
+              if (searchPharmacyInfoList != null &&
+                  searchPharmacyInfoList.isNotEmpty) {
+                Navigator.of(context).pop();
+                Navigator.of(context).pushNamed(
+                  SearchResultPharmacyStoreScreen.routeName,
+                );
+              } else {
+                final result = ref.read(
+                  storeControllerProvider.select(
+                    (value) => value.searchError,
+                  ),
+                );
+
+                Fluttertoast.showToast(
+                  msg: result ?? "ไม่พบเจอร้านเภสัช",
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.BOTTOM,
+                );
+
+                ref.read(storeControllerProvider.notifier).onClearError();
+              }
+            },
+            text: 'ค้นหาร้านที่เปิดอยู่',
+          ),
+          SizedBox(
+            height: 8.h,
+          ),
+          BaseButton(
+            buttonType: ButtonType.danger,
             onTap: () async {
               ref.read(storeControllerProvider.notifier).onClearSearch();
             },

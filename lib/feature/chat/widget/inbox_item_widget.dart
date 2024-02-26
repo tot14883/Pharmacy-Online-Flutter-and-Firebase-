@@ -153,12 +153,20 @@ class InboxItemWidget extends ConsumerWidget {
     final isHour = currentDate.difference(itemDate).inHours >= 1;
     final isDay = currentDate.difference(itemDate).inDays == 1;
     final isDate = currentDate.difference(itemDate).inDays >= 2;
+    final isMoth = currentDate.difference(itemDate).inDays >= 29;
+
+    if (isMoth) {
+      final date =
+          ref.read(baseDateFormatterProvider).formatDateWithFreeStyleFormat(
+                'yyyy-MMM-dd',
+                itemDate,
+              );
+
+      return date;
+    }
 
     if (isDate) {
-      return ref.read(baseDateFormatterProvider).formatDateWithFreeStyleFormat(
-            'DD',
-            itemDate,
-          );
+      return '${currentDate.difference(itemDate).inDays} วันที่แล้ว';
     }
 
     if (isDay) {

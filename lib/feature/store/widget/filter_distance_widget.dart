@@ -11,7 +11,7 @@ class FilterDistanceWidget extends StatefulWidget {
   // พารามิเตอร์
   const FilterDistanceWidget({
     super.key,
-    this.maximum = 50,
+    this.maximum = 1000,
     required this.onUpdate,
     this.initial,
   });
@@ -22,7 +22,7 @@ class FilterDistanceWidget extends StatefulWidget {
 
 class _FilterDistanceWidgetState extends State<FilterDistanceWidget> {
   // ประกาศ initial _distance
-  int _distance = 0;
+  int? _distance;
 
   @override
   void initState() {
@@ -43,12 +43,16 @@ class _FilterDistanceWidgetState extends State<FilterDistanceWidget> {
         // ปุ่มลบ
         GestureDetector(
           onTap: () {
-            if (_distance > 1) {
+            _distance ??= 0;
+
+            if (_distance == null) return;
+
+            if ((_distance ?? 0) >= 1) {
               setState(() {
-                _distance -= 1;
+                _distance = (_distance ?? 0) - 1;
               });
 
-              widget.onUpdate(_distance);
+              widget.onUpdate(_distance ?? 0);
             }
           },
           child: Assets.icons.icMinus.svg(
@@ -59,19 +63,26 @@ class _FilterDistanceWidgetState extends State<FilterDistanceWidget> {
         SizedBox(
           width: 8.w,
         ),
-        Text('$_distance', style: AppStyle.txtBody),
+        Text(
+          _distance == null || _distance == 0 ? '-' : '$_distance',
+          style: AppStyle.txtBody,
+        ),
         SizedBox(
           width: 8.w,
         ),
         // ปุ่มเพิ่ม
         GestureDetector(
           onTap: () {
-            if (_distance < widget.maximum) {
+            _distance ??= 0;
+
+            if (_distance == null) return;
+
+            if ((_distance ?? 0) < widget.maximum) {
               setState(() {
-                _distance += 1;
+                _distance = (_distance ?? 0) + 1;
               });
 
-              widget.onUpdate(_distance);
+              widget.onUpdate(_distance ?? 0);
             }
           },
           child: Assets.icons.icAddCart.svg(

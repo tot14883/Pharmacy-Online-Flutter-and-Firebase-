@@ -166,4 +166,20 @@ class BaseDateFormatter {
     return DateTime(splitDate[2].pareInt /*ปี*/, splitDate[1].pareInt /*เดือน*/,
         splitDate[0].pareInt /*วัน*/);
   }
+
+  DateTime convertTimeStringToDateTime(String timeString) {
+    // Create a DateTime object for today with the given time
+    DateTime now = DateTime.now();
+
+    // Format the date and time string
+    String formattedDateTimeString =
+        '${now.year}-${now.month}-${now.day}T${timeString}Z';
+
+    // Define the date format
+    final DateFormat dateFormat = DateFormat('yyyy-MM-ddTHH:mmZ');
+
+    // Parse the formatted string into a DateTime object using the specified format
+    DateTime dateTime = dateFormat.parse(formattedDateTimeString);
+    return dateTime;
+  }
 }

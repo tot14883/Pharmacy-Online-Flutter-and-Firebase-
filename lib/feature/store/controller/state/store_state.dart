@@ -37,7 +37,7 @@ class StoreState with _$StoreState {
     List<PharmacyInfoResponse>? searchPharmacyInfoList,
     int? searchDistance,
     SwitchButtonItem<dynamic>? searchReviewScore,
-    SwitchButtonItem<dynamic>? searchCountReviewer,
+    int? searchCountReviewer,
     String? searchOpeningTime,
     String? searchClosingTime,
     PharmacyInfoResponse? selectPharmacyInfoResponse,

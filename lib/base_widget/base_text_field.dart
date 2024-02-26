@@ -56,6 +56,9 @@ class BaseTextField extends StatefulWidget {
   final Color? readOnlyColor;
   final Color? textColor;
 
+  final double? width;
+  final String? counterText;
+
   const BaseTextField({
     super.key,
     this.fieldKey,
@@ -96,6 +99,8 @@ class BaseTextField extends StatefulWidget {
     this.textAlign = TextAlign.start,
     this.readOnlyColor,
     this.textColor,
+    this.width,
+    this.counterText,
   });
 
   @override
@@ -189,71 +194,79 @@ class _BaseTextFieldState extends State<BaseTextField>
                     isShowLabel = !value;
                   });
                 },
-                child: TextFormField(
-                  style: TextStyle(
-                    color: widget.textColor ?? AppColor.themeTextColor,
-                  ),
-                  textAlign: widget.textAlign,
-                  restorationId: widget.restorationId,
-                  readOnly: widget.isReadOnly,
-                  onFieldSubmitted: widget.onFieldSubmitted,
-                  maxLength: widget.maxLength,
-                  onTap: widget.onTap,
-                  keyboardType: widget.textInputType,
-                  expands: widget.isExpands,
-                  controller: widget.controller,
-                  autovalidateMode: widget.autovalidateMode,
-                  enabled: widget.isEnabled,
-                  validator: widget.validator,
-                  initialValue: widget.initialValue,
-                  maxLines: widget.isObscureText ? 1 : widget.maxLines,
-                  onSaved: widget.onSave,
-                  onEditingComplete: widget.onEditingComplete,
-                  decoration: InputDecoration(
-                    hintText: widget.placeholder,
-                    suffixIconConstraints: widget.suffixIconSize,
-                    fillColor: widget.isReadOnly
-                        ? widget.readOnlyColor ?? AppColor.themeGrayLight
-                        : Colors.white,
-                    filled: true,
-                    prefixIcon: widget.prefixIcon,
-                    suffixIcon: widget.suffixIcon,
+                child: SizedBox(
+                  width: widget.width,
+                  child: TextFormField(
+                    style: TextStyle(
+                      color: widget.textColor ?? AppColor.themeTextColor,
+                    ),
+                    textAlign: widget.textAlign,
+                    restorationId: widget.restorationId,
+                    readOnly: widget.isReadOnly,
+                    onFieldSubmitted: widget.onFieldSubmitted,
+                    maxLength: widget.maxLength,
+                    onTap: widget.onTap,
+                    keyboardType: widget.textInputType,
+                    expands: widget.isExpands,
+                    controller: widget.controller,
+                    autovalidateMode: widget.autovalidateMode,
                     enabled: widget.isEnabled,
-                    contentPadding:
-                        widget.contentPadding ?? const EdgeInsets.all(8).w,
-                    isDense: widget.isDense,
-                    label: textLabel != null && isShowLabel && !isShowLabelField
-                        ? Text(
-                            textLabel,
-                            style: AppStyle.txtBody,
-                          )
-                        : null,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8.0).w,
-                      borderSide: BorderSide(
-                        color: widget.borderColor ?? AppColor.themePrimaryColor,
-                        width: (widget.borderWidth ?? 1.0).w,
+                    validator: widget.validator,
+                    initialValue: widget.initialValue,
+                    maxLines: widget.isObscureText ? 1 : widget.maxLines,
+                    onSaved: widget.onSave,
+                    onEditingComplete: widget.onEditingComplete,
+                    decoration: InputDecoration(
+                      counterText: widget.counterText,
+                      hintText: widget.placeholder,
+                      suffixIconConstraints: widget.suffixIconSize,
+                      fillColor: widget.isReadOnly
+                          ? widget.readOnlyColor ?? AppColor.themeGrayLight
+                          : Colors.white,
+                      filled: true,
+                      prefixIcon: widget.prefixIcon,
+                      suffixIcon: widget.suffixIcon,
+                      enabled: widget.isEnabled,
+                      contentPadding:
+                          widget.contentPadding ?? const EdgeInsets.all(8).w,
+                      isDense: widget.isDense,
+                      label:
+                          textLabel != null && isShowLabel && !isShowLabelField
+                              ? Text(
+                                  textLabel,
+                                  style: AppStyle.txtBody,
+                                )
+                              : null,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8.0).w,
+                        borderSide: BorderSide(
+                          color:
+                              widget.borderColor ?? AppColor.themePrimaryColor,
+                          width: (widget.borderWidth ?? 1.0).w,
+                        ),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8).w,
+                        borderSide: BorderSide(
+                          color:
+                              widget.borderColor ?? AppColor.themePrimaryColor,
+                          width: (widget.borderWidth ?? 1.0).w,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8).w,
+                        borderSide: BorderSide(
+                          color:
+                              widget.borderColor ?? AppColor.themePrimaryColor,
+                          width: (widget.borderWidth ?? 1.0).w,
+                        ),
                       ),
                     ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8).w,
-                      borderSide: BorderSide(
-                        color: widget.borderColor ?? AppColor.themePrimaryColor,
-                        width: (widget.borderWidth ?? 1.0).w,
-                      ),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8).w,
-                      borderSide: BorderSide(
-                        color: widget.borderColor ?? AppColor.themePrimaryColor,
-                        width: (widget.borderWidth ?? 1.0).w,
-                      ),
-                    ),
+                    onChanged: didChange,
+                    obscureText: widget.isObscureText,
+                    autofocus: widget.isAutoFocus,
+                    autocorrect: widget.isAutocorrect,
                   ),
-                  onChanged: didChange,
-                  obscureText: widget.isObscureText,
-                  autofocus: widget.isAutoFocus,
-                  autocorrect: widget.isAutocorrect,
                 ),
               ),
             ),

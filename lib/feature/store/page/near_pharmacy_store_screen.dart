@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -14,6 +15,7 @@ import 'package:pharmacy_online/feature/store/controller/store_controller.dart';
 import 'package:pharmacy_online/feature/store/page/store_detail_screen.dart';
 import 'package:pharmacy_online/feature/store/widget/filter_widget.dart';
 import 'package:pharmacy_online/generated/assets.gen.dart';
+import 'package:pharmacy_online/utils/util/date_format.dart';
 
 class NearPharmacyStoreScreen extends ConsumerStatefulWidget {
   static const routeName = 'NearPharmacyStoreScreen';
@@ -74,12 +76,47 @@ class _NearPharmacyStoreScreenState
     double minDistance = double.infinity;
     Marker? nearest;
 
-    for (Marker marker in markList) {
+    final _markList = markList
+        .map((e) {
+          final hasPharmacyStore = pharmacyInfoList.where((val) {
+            final currentTime = DateTime.now();
+            final timeClosing =
+                ref.read(baseDateFormatterProvider).convertTimeStringToDateTime(
+                      val.timeClosing ??
+                          '${currentTime.hour}:${currentTime.minute}',
+                    );
+            final timeOpening =
+                ref.read(baseDateFormatterProvider).convertTimeStringToDateTime(
+                      val.timeOpening ??
+                          '${currentTime.hour}:${currentTime.minute}',
+                    );
+            return MarkerId('${val.uid}') == e.markerId &&
+                currentTime.isAfter(timeOpening) &&
+                currentTime.isBefore(timeClosing);
+          }).toList();
+
+          if (hasPharmacyStore.isNotEmpty) {
+            return e;
+          }
+        })
+        .where((val) => val != null)
+        .toSet();
+
+    if (_markList.isEmpty) {
+      Fluttertoast.showToast(
+        msg: "ไม่มีร้านที่เปิดทำการในขณะนี้",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+      );
+      return;
+    }
+
+    for (final marker in _markList) {
       double distance = Geolocator.distanceBetween(
         myLatitude,
         myLongtitude,
-        marker.position.latitude,
-        marker.position.longitude,
+        marker?.position.latitude ?? 0,
+        marker?.position.longitude ?? 0,
       );
 
       if (distance < minDistance) {

@@ -37,6 +37,7 @@ import 'package:pharmacy_online/feature/store/usecase/get_request_chat_with_phar
 import 'package:pharmacy_online/feature/store/usecase/get_review_store_usecase.dart';
 import 'package:pharmacy_online/feature/store/usecase/request_chat_with_pharmacy_usecase.dart';
 import 'package:pharmacy_online/utils/util/base_utils.dart';
+import 'package:pharmacy_online/utils/util/date_format.dart';
 
 //riverpod ดึงข้อมูลจาก usecase มาใช้
 final storeControllerProvider =
@@ -822,6 +823,7 @@ class StoreController extends StateNotifier<StoreState> {
   void onSearchPharmacyStore({
     // เช็ดว่าเป็นค้นหาทั้งหมดหรือไม่
     bool isAll = false,
+    bool isOpen = false,
     // ค้นหาด้วยชื่อ
     String? name,
   }) async {
@@ -844,10 +846,30 @@ class StoreController extends StateNotifier<StoreState> {
     // ถ้า pharmachInfoList เป็น null ให้หยุดทำงาน
     if (pharmacyInfoList == null) return;
 
+    final _pharmacyInfoList = pharmacyInfoList.where((val) {
+      final currentTime = DateTime.now();
+      final timeClosing =
+          _ref.read(baseDateFormatterProvider).convertTimeStringToDateTime(
+                val.timeClosing ?? '${currentTime.hour}:${currentTime.minute}',
+              );
+      final timeOpening =
+          _ref.read(baseDateFormatterProvider).convertTimeStringToDateTime(
+                val.timeOpening ?? '${currentTime.hour}:${currentTime.minute}',
+              );
+      return currentTime.isAfter(timeOpening) &&
+          currentTime.isBefore(timeClosing);
+    }).toList();
+
+    if (_pharmacyInfoList.isEmpty) {
+      state = state.copyWith(searchError: 'ไม่มีร้านที่เปิดทำการในขณะนี้');
+      return;
+    }
+
     List<PharmacyInfoResponse>? searchPharmacyInfoList;
 
     // เริ่ม filter
-    searchPharmacyInfoList = pharmacyInfoList.where(
+    searchPharmacyInfoList =
+        (isOpen ? _pharmacyInfoList : pharmacyInfoList).where(
       (e) {
         // ประกาศตัวแปรเพื่อใช้เช็ดว่าค้นหาเจอหรือไม่
         bool hasName = false;
@@ -870,7 +892,7 @@ class StoreController extends StateNotifier<StoreState> {
         // ถ้าระยะที่ต้องการค้นหาไม่เป็น null
         // เช็ดว่าระยะทางที่ filter มีระยะทางตามเงื่อนไข
         // ถ้ามีการให้ hasDistance เป็น true
-        if (distance != null) {
+        if (distance != null && distance > 0) {
           double _distance = Geolocator.distanceBetween(
                 myLatitude,
                 myLongtitude,
@@ -893,8 +915,7 @@ class StoreController extends StateNotifier<StoreState> {
         // เช็ดว่าคนรีวิวที่ filter มีคนรีวิวตามเงื่อนไข
         // ถ้ามีการให้ hasReviewScore เป็น true
         if (countReviewer != null) {
-          hasCountReviewer =
-              (e.countReviewer ?? 0) >= int.parse(countReviewer.value);
+          hasCountReviewer = (e.countReviewer ?? 0) >= countReviewer;
         }
 
         // ถ้าชื่อที่ต้องการค้นหาไม่เป็น null หรือว่าง และ hasName เป็น false ให้ error message เป็นตามนี้
@@ -980,7 +1001,8 @@ class StoreController extends StateNotifier<StoreState> {
         }
 
         // default
-        return hasName && hasDistance && hasReviewScore && hasCountReviewer;
+        return hasName && hasDistance && hasReviewScore && hasCountReviewer ||
+            isOpen;
       },
     ).toList();
 
@@ -1006,7 +1028,7 @@ class StoreController extends StateNotifier<StoreState> {
   }
 
   void onSetSearchCountReviewer(
-    SwitchButtonItem<dynamic>? countReviewer,
+    int? countReviewer,
   ) async {
     state = state.copyWith(
       searchCountReviewer: countReviewer,
