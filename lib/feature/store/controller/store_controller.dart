@@ -826,6 +826,8 @@ class StoreController extends StateNotifier<StoreState> {
     // ค้นหาด้วยชื่อ
     String? name,
   }) async {
+    state = state.copyWith(searchError: '');
+
     // ทำการดึงข้อมูล pharmacy ทั้งหมดในระบบมาก่อย
     final pharmacyInfoList = state.pharmacyInfoList.value;
 
@@ -842,8 +844,6 @@ class StoreController extends StateNotifier<StoreState> {
     final reviewScore = state.searchReviewScore;
     final countReviewer = state.searchCountReviewer;
     final openPharmacy = state.searchTimeOpen;
-
-    print(openPharmacy);
 
     // ถ้า pharmachInfoList เป็น null ให้หยุดทำงาน
     if (pharmacyInfoList == null) return;
@@ -942,7 +942,7 @@ class StoreController extends StateNotifier<StoreState> {
         }
 
         // ถ้าระยะทางที่ต้องการค้นหาไม่เป็น null และ hasDistance เป็น false ให้ error message เป็นตามนี้
-        if (distance != null && !hasDistance) {
+        if ((distance != null && distance > 0) && !hasDistance) {
           state = state.copyWith(searchError: 'ค้นหาด้วยระยะทางไม่เจอ');
         }
 
@@ -951,60 +951,60 @@ class StoreController extends StateNotifier<StoreState> {
             name.isNotEmpty &&
             reviewScore == null &&
             countReviewer == null &&
-            distance == null) {
+            (distance == null || distance == 0)) {
           return hasName;
         } else if (name != null &&
             name.isNotEmpty &&
             reviewScore != null &&
             countReviewer == null &&
-            distance == null) {
+            (distance == null || distance == 0)) {
           return hasName && hasReviewScore;
         } else if (name != null &&
             name.isNotEmpty &&
             reviewScore == null &&
             countReviewer != null &&
-            distance == null) {
+            (distance == null || distance == 0)) {
           return hasName && hasCountReviewer;
         } else if (name != null &&
             name.isNotEmpty &&
             reviewScore == null &&
             countReviewer == null &&
-            distance != null) {
+            (distance != null && distance > 0)) {
           return hasName && hasDistance;
         } else if ((name == null || name.isEmpty) &&
             reviewScore != null &&
             countReviewer == null &&
-            distance == null) {
+            (distance == null || distance == 0)) {
           return hasReviewScore;
         } else if ((name == null || name.isEmpty) &&
             reviewScore != null &&
             countReviewer != null &&
-            distance != null) {
+            (distance != null && distance > 0)) {
           return hasReviewScore && hasCountReviewer && hasDistance;
         } else if ((name == null || name.isEmpty) &&
             reviewScore != null &&
             countReviewer != null &&
-            distance == null) {
+            (distance == null || distance == 0)) {
           return hasReviewScore && hasCountReviewer;
         } else if ((name == null || name.isEmpty) &&
             reviewScore != null &&
             countReviewer == null &&
-            distance != null) {
+            (distance != null && distance > 0)) {
           return hasReviewScore && hasDistance;
         } else if ((name == null || name.isEmpty) &&
             reviewScore == null &&
             countReviewer != null &&
-            distance == null) {
+            (distance == null || distance == 0)) {
           return hasCountReviewer;
         } else if ((name == null || name.isEmpty) &&
             reviewScore == null &&
             countReviewer != null &&
-            distance != null) {
+            (distance != null && distance > 0)) {
           return hasCountReviewer && hasDistance;
         } else if ((name == null || name.isEmpty) &&
             reviewScore == null &&
             countReviewer == null &&
-            distance != null) {
+            (distance != null && distance > 0)) {
           return hasDistance;
         }
 

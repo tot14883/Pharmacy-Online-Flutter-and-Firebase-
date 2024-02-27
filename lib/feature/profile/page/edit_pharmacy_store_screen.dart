@@ -308,7 +308,7 @@ class _EditPharmacyStoreScreenState
                     initialValue:
                         '${closingTime?.hour.toString().padLeft(2, '0')}:${closingTime?.minute.toString().padLeft(2, '0')}',
                     onTap: () async {
-                      openingTime = await showTimePicker(
+                      closingTime = await showTimePicker(
                         context: context,
                         initialTime: closingTime!,
                         builder: (BuildContext context, Widget? child) {

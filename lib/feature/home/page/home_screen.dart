@@ -22,6 +22,7 @@ import 'package:pharmacy_online/feature/store/page/my_medicine_warehouse_screen.
 import 'package:pharmacy_online/feature/store/page/near_pharmacy_store_screen.dart';
 import 'package:pharmacy_online/feature/store/page/store_detail_screen.dart';
 import 'package:pharmacy_online/generated/assets.gen.dart';
+import 'package:pharmacy_online/utils/util/date_format.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   static const routeName = 'HomeScreen';
@@ -75,7 +76,21 @@ class _HomeScreenState extends BaseConsumerState<HomeScreen> {
     double minDistance = double.infinity;
     PharmacyInfoResponse? pharmacyNearest;
 
-    for (final pharmacyItem in pharmacyInfoList) {
+    final _pharmacyInfoList = pharmacyInfoList.where((val) {
+      final currentTime = DateTime.now();
+      final timeClosing =
+          ref.read(baseDateFormatterProvider).convertTimeStringToDateTime(
+                val.timeClosing ?? '${currentTime.hour}:${currentTime.minute}',
+              );
+      final timeOpening =
+          ref.read(baseDateFormatterProvider).convertTimeStringToDateTime(
+                val.timeOpening ?? '${currentTime.hour}:${currentTime.minute}',
+              );
+      return currentTime.isAfter(timeOpening) &&
+          currentTime.isBefore(timeClosing);
+    }).toList();
+
+    for (final pharmacyItem in _pharmacyInfoList) {
       double distance = Geolocator.distanceBetween(
         myLatitude,
         myLongtitude,

@@ -135,6 +135,7 @@ class _NearPharmacyStoreScreenState
         nearest = marker;
       }
     }
+
     if (opennow) {
       nearestMarker = nearest;
       nearestDistance = minDistance;
