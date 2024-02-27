@@ -50,6 +50,11 @@ class _FilterWidgetState extends BaseConsumerState<FilterWidget> {
     final closingTime = ref.watch(
         storeControllerProvider.select((value) => value.searchClosingTime));
 
+    final searchTimeOpen = ref
+        .watch(storeControllerProvider.select((value) => value.searchTimeOpen));
+
+    print(searchTimeOpen);
+
     return Container(
       // ทำการ re-render หน้านี้ทุกครั้งเมื่อมีการเปลี่ยนแปลงค่า
       key: ValueKey((distance ??
@@ -87,6 +92,34 @@ class _FilterWidgetState extends BaseConsumerState<FilterWidget> {
               ref
                   .read(storeControllerProvider.notifier)
                   .onSetSearchDistance(val);
+            },
+          ),
+          SizedBox(
+            height: 8.h,
+          ),
+          // BaseSwitchButton คล้ายหน้า sign up screen
+          BaseSwitchButton(
+            key: UniqueKey(),
+            label: "",
+            minWidth: 100.w,
+            initialValue: [
+              SwitchButtonItem(
+                id: searchTimeOpen ? 1 : 0,
+                value: searchTimeOpen ? '1' : '',
+                content: searchTimeOpen ? "เปิดทำการ" : '',
+              ),
+            ],
+            listItem: const [
+              SwitchButtonItem(
+                id: 1,
+                value: '1',
+                content: "เปิดทำการ",
+              ),
+            ],
+            onChangeBool: (val) {
+              ref
+                  .read(storeControllerProvider.notifier)
+                  .onSetSearchOpenPharmarcy(val);
             },
           ),
           SizedBox(
@@ -253,50 +286,6 @@ class _FilterWidgetState extends BaseConsumerState<FilterWidget> {
               }
             },
             text: 'ค้นหาทุกร้าน',
-          ),
-          SizedBox(
-            height: 8.h,
-          ),
-          // ค้นหาทุกร้าน
-          BaseButton(
-            buttonType: ButtonType.tertiary,
-            onTap: () async {
-              ref
-                  .read(storeControllerProvider.notifier)
-                  .onClearSelectedPharmacyStore();
-              ref
-                  .read(storeControllerProvider.notifier)
-                  .onSearchPharmacyStore(isOpen: true);
-
-              final searchPharmacyInfoList = ref.watch(
-                storeControllerProvider.select(
-                  (value) => value.searchPharmacyInfoList,
-                ),
-              );
-
-              if (searchPharmacyInfoList != null &&
-                  searchPharmacyInfoList.isNotEmpty) {
-                Navigator.of(context).pop();
-                Navigator.of(context).pushNamed(
-                  SearchResultPharmacyStoreScreen.routeName,
-                );
-              } else {
-                final result = ref.read(
-                  storeControllerProvider.select(
-                    (value) => value.searchError,
-                  ),
-                );
-
-                Fluttertoast.showToast(
-                  msg: result ?? "ไม่พบเจอร้านเภสัช",
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.BOTTOM,
-                );
-
-                ref.read(storeControllerProvider.notifier).onClearError();
-              }
-            },
-            text: 'ค้นหาร้านที่เปิดอยู่',
           ),
           SizedBox(
             height: 8.h,

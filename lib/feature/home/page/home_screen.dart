@@ -58,6 +58,7 @@ class _HomeScreenState extends BaseConsumerState<HomeScreen> {
     timer = timer =
         Timer.periodic(const Duration(milliseconds: 200), (timer) async {
       await ref.read(homeControllerProvider.notifier).onGetNotification();
+      await ref.read(storeControllerProvider.notifier).getPharmacyInfo();
     });
   }
 
@@ -140,7 +141,8 @@ class _HomeScreenState extends BaseConsumerState<HomeScreen> {
                     spacing: 16.0,
                     runSpacing: 16.0,
                     children: [
-                      if (!isPharmacy) ...[ //ส่วนของ user
+                      if (!isPharmacy) ...[
+                        //ส่วนของ user
                         MenuButtonWidget(
                           onTap: () {
                             findNearestMarker(
@@ -163,11 +165,10 @@ class _HomeScreenState extends BaseConsumerState<HomeScreen> {
                           imgWidget: Assets.icons.icLocationPin.svg(),
                           label: 'ค้นหาร้านยา',
                         ),
-                        if (hasUserInfo) ...[
-                          
-                        ],
+                        if (hasUserInfo) ...[],
                       ],
-                      if (isPharmacy) ...[  //ส่วนของ isPharmacy
+                      if (isPharmacy) ...[
+                        //ส่วนของ isPharmacy
                         MenuButtonWidget(
                           onTap: () async {
                             await ref
@@ -200,7 +201,6 @@ class _HomeScreenState extends BaseConsumerState<HomeScreen> {
                           imgWidget: Assets.imgs.imgShop.image(),
                           label: 'คลังยา',
                         ),
-                        
                       ],
                     ],
                   ),
@@ -213,4 +213,3 @@ class _HomeScreenState extends BaseConsumerState<HomeScreen> {
     );
   }
 }
-

@@ -823,7 +823,6 @@ class StoreController extends StateNotifier<StoreState> {
   void onSearchPharmacyStore({
     // เช็ดว่าเป็นค้นหาทั้งหมดหรือไม่
     bool isAll = false,
-    bool isOpen = false,
     // ค้นหาด้วยชื่อ
     String? name,
   }) async {
@@ -842,34 +841,43 @@ class StoreController extends StateNotifier<StoreState> {
     final distance = state.searchDistance;
     final reviewScore = state.searchReviewScore;
     final countReviewer = state.searchCountReviewer;
+    final openPharmacy = state.searchTimeOpen;
+
+    print(openPharmacy);
 
     // ถ้า pharmachInfoList เป็น null ให้หยุดทำงาน
     if (pharmacyInfoList == null) return;
 
-    final _pharmacyInfoList = pharmacyInfoList.where((val) {
-      final currentTime = DateTime.now();
-      final timeClosing =
-          _ref.read(baseDateFormatterProvider).convertTimeStringToDateTime(
-                val.timeClosing ?? '${currentTime.hour}:${currentTime.minute}',
-              );
-      final timeOpening =
-          _ref.read(baseDateFormatterProvider).convertTimeStringToDateTime(
-                val.timeOpening ?? '${currentTime.hour}:${currentTime.minute}',
-              );
-      return currentTime.isAfter(timeOpening) &&
-          currentTime.isBefore(timeClosing);
-    }).toList();
+    List<PharmacyInfoResponse> _pharmacyInfoList = [];
 
-    if (_pharmacyInfoList.isEmpty) {
-      state = state.copyWith(searchError: 'ไม่มีร้านที่เปิดทำการในขณะนี้');
-      return;
+    if (openPharmacy) {
+      _pharmacyInfoList = pharmacyInfoList.where((val) {
+        final currentTime = DateTime.now();
+        final timeClosing = _ref
+            .read(baseDateFormatterProvider)
+            .convertTimeStringToDateTime(
+              val.timeClosing ?? '${currentTime.hour}:${currentTime.minute}',
+            );
+        final timeOpening = _ref
+            .read(baseDateFormatterProvider)
+            .convertTimeStringToDateTime(
+              val.timeOpening ?? '${currentTime.hour}:${currentTime.minute}',
+            );
+        return currentTime.isAfter(timeOpening) &&
+            currentTime.isBefore(timeClosing);
+      }).toList();
+
+      if (_pharmacyInfoList.isEmpty) {
+        state = state.copyWith(searchError: 'ไม่มีร้านที่เปิดทำการในขณะนี้');
+        return;
+      }
     }
 
     List<PharmacyInfoResponse>? searchPharmacyInfoList;
 
     // เริ่ม filter
     searchPharmacyInfoList =
-        (isOpen ? _pharmacyInfoList : pharmacyInfoList).where(
+        (!openPharmacy ? pharmacyInfoList : _pharmacyInfoList).where(
       (e) {
         // ประกาศตัวแปรเพื่อใช้เช็ดว่าค้นหาเจอหรือไม่
         bool hasName = false;
@@ -1000,9 +1008,12 @@ class StoreController extends StateNotifier<StoreState> {
           return hasDistance;
         }
 
+        if (!hasName && !hasDistance && !hasReviewScore && !hasCountReviewer) {
+          return openPharmacy;
+        }
+
         // default
-        return hasName && hasDistance && hasReviewScore && hasCountReviewer ||
-            isOpen;
+        return hasName && hasDistance && hasReviewScore && hasCountReviewer;
       },
     ).toList();
 
@@ -1043,6 +1054,14 @@ class StoreController extends StateNotifier<StoreState> {
     );
   }
 
+  void onSetSearchOpenPharmarcy(
+    bool timeOpen,
+  ) async {
+    state = state.copyWith(
+      searchTimeOpen: timeOpen,
+    );
+  }
+
   void onSetSearchClosingTime(
     String? closingTime,
   ) async {
@@ -1058,6 +1077,7 @@ class StoreController extends StateNotifier<StoreState> {
       searchCountReviewer: null,
       searchOpeningTime: null,
       searchClosingTime: null,
+      searchTimeOpen: false,
     );
   }
 

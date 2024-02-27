@@ -36,6 +36,7 @@ class _NearPharmacyStoreScreenState
   double? nearestDistance;
   double myLatitude = 0.0;
   double myLongtitude = 0.0;
+  Timer? timer;
 
   @override
   void initState() {
@@ -62,8 +63,18 @@ class _NearPharmacyStoreScreenState
           ),
         ),
       );
+
+      timer = Timer.periodic(const Duration(milliseconds: 2000), (timer) async {
+        await ref.read(storeControllerProvider.notifier).getPharmacyInfo();
+      });
     });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    timer?.cancel();
+    super.dispose();
   }
 
   // ฟังก์ชันสำหรับคำนวณ Marker ที่ใกล้ที่สุด

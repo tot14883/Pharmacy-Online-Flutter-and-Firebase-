@@ -9,6 +9,7 @@ class BaseSwitchButton extends StatefulWidget {
   final String label;
   final FormFieldValidator<String?>? validator;
   final ValueChanged<SwitchButtonItem>? onChange;
+  final ValueChanged<bool>? onChangeBool;
   final List<SwitchButtonItem>? initialValue;
   final bool? error;
   final Object? fieldKey;
@@ -26,6 +27,7 @@ class BaseSwitchButton extends StatefulWidget {
     required this.listItem,
     required this.label,
     this.validator,
+    this.onChangeBool,
     this.onChange,
     this.initialValue,
     this.error,
@@ -92,13 +94,15 @@ class _BaseSwitchButtonState extends State<BaseSwitchButton>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          textContent,
-          style: AppStyle.txtBody2,
-        ),
-        SizedBox(
-          height: 4.0.h,
-        ),
+        if (textContent.isNotEmpty) ...[
+          Text(
+            textContent,
+            style: AppStyle.txtBody2,
+          ),
+          SizedBox(
+            height: 4.0.h,
+          ),
+        ],
         StatefulBuilder(
           builder: (context, setState) {
             return Wrap(
@@ -135,15 +139,19 @@ class _BaseSwitchButtonState extends State<BaseSwitchButton>
                         );
                       }
 
-                      if (widget.onChange != null) {
-                        widget.onChange!(val);
+                      if (widget.onChangeBool != null) {
+                        widget.onChangeBool!(isSelected[index]);
                       } else {
-                        didChange(
-                          val,
-                          isSwitchButton
-                              ? isSelected[index]
-                              : !isSelected[index],
-                        );
+                        if (widget.onChange != null) {
+                          widget.onChange!(val);
+                        } else {
+                          didChange(
+                            val,
+                            isSwitchButton
+                                ? isSelected[index]
+                                : !isSelected[index],
+                          );
+                        }
                       }
                     },
                     child: Container(
