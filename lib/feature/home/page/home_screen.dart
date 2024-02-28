@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:map_location_picker/map_location_picker.dart';
 import 'package:pharmacy_online/base_widget/async_value_widget.dart';
 import 'package:pharmacy_online/base_widget/base_scaffold.dart';
@@ -113,6 +114,12 @@ class _HomeScreenState extends BaseConsumerState<HomeScreen> {
         StoreDetailScreen.routeName,
         arguments:
             StoreDetailArgs(pharmacyInfoResponse: nearPharmacyStore.first),
+      );
+    } else {
+      Fluttertoast.showToast(
+        msg: "ไม่มีร้านที่เปิดทำการในขณะนี้",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
       );
     }
   }

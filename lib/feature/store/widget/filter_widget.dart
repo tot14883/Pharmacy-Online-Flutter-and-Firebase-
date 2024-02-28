@@ -59,7 +59,8 @@ class _FilterWidgetState extends BaseConsumerState<FilterWidget> {
               reviewScore ??
               countReviewer ??
               opeingTime ??
-              closingTime)
+              closingTime ??
+              searchTimeOpen)
           .hashCode),
       color: AppColor.themeWhiteColor,
       padding: EdgeInsets.all(16.r),
@@ -169,7 +170,6 @@ class _FilterWidgetState extends BaseConsumerState<FilterWidget> {
           ),
           // BaseSwitchButton คล้ายหน้า sign up screen
           BaseSwitchButton(
-            key: UniqueKey(),
             label: "สถานะร้านขายยา ",
             minWidth: 100.w,
             initialValue: [

@@ -1078,6 +1078,7 @@ class StoreController extends StateNotifier<StoreState> {
       searchOpeningTime: null,
       searchClosingTime: null,
       searchTimeOpen: false,
+      searchPharmacyInfoList: null,
     );
   }
 

@@ -88,6 +88,8 @@ class _FilterReviewerWidgetState extends State<FilterReviewerWidget> {
             setState(() {
               _reviewer = int.parse(val);
             });
+
+            widget.onUpdate(_reviewer ?? 0);
           },
         ),
 
