@@ -826,7 +826,7 @@ class StoreController extends StateNotifier<StoreState> {
     // ค้นหาด้วยชื่อ
     String? name,
   }) async {
-    state = state.copyWith(searchError: '');
+    state = state.copyWith(searchError: '', searchPharmacyInfoList: null);
 
     // ทำการดึงข้อมูล pharmacy ทั้งหมดในระบบมาก่อย
     final pharmacyInfoList = state.pharmacyInfoList.value;
