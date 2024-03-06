@@ -176,7 +176,7 @@ class _NearPharmacyStoreScreenState
         markerId: MarkerId('${pharmacyItem.uid}'),
         infoWindow: InfoWindow(
           title: '${pharmacyItem.nameStore}',
-          snippet: 'Click to See Pharmacy Store',
+          snippet: 'กดเพื่อดูรายละเอียดร้านขายยา',
           onTap: () {
             navigateToPharmacyStore(pharmacyItem);
           },

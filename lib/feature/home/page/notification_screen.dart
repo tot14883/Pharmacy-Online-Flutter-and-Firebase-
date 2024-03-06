@@ -23,7 +23,7 @@ class NotificationScreen extends ConsumerWidget {
     return BaseScaffold(
       appBar: BaseAppBar(
         title: Text(
-          'Notifications',
+          'แจ้งเตือน',
           style: AppStyle.txtHeader3,
         ),
         elevation: 0.0,
@@ -31,7 +31,8 @@ class NotificationScreen extends ConsumerWidget {
       ),
       bgColor: AppColor.themLineColor,
       bodyBuilder: (context, constrined) {
-        return AsyncValueWidget(  //เรียกใช้ widget 
+        return AsyncValueWidget(
+          //เรียกใช้ widget
           value: notificationList,
           data: (_notificationList) {
             if (_notificationList == null) {

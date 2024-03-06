@@ -65,15 +65,15 @@ class PharmacyStoreItemWidget extends ConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Text(
-                  '${pharmacyItem.nameStore}',
+                  'ร้าน ${pharmacyItem.nameStore}',
                   style: AppStyle.txtBody2,
                 ),
                 Text(
-                  'คะแนนรีวิว ${pharmacyItem.ratingScore}',
+                  'คะแนนรีวิว ${pharmacyItem.ratingScore} คะแนน',
                   style: AppStyle.txtBody2,
                 ),
                 Text(
-                  'จำนวนคนรีวิว ${pharmacyItem.countReviewer}',
+                  'จำนวนคนรีวิว ${pharmacyItem.countReviewer} คน',
                   style: AppStyle.txtBody2,
                 ),
                 Text(
@@ -81,7 +81,7 @@ class PharmacyStoreItemWidget extends ConsumerWidget {
                   style: AppStyle.txtBody2,
                 ),
                 Text(
-                  'เวลาเปิด-ปิด ${pharmacyItem.timeOpening}-${pharmacyItem.timeClosing} น.',
+                  'เวลาทำการ ${pharmacyItem.timeOpening} น. - ${pharmacyItem.timeClosing} น.',
                   style: AppStyle.txtBody2,
                 ),
               ],
