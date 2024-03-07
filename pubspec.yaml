@@ -107,6 +107,7 @@ dev_dependencies:
     sdk: flutter
 
 
+
 flutter_icons:
   android: true
   image_path: "assets/imgs/img_icon_app.png"
