@@ -255,6 +255,10 @@ class $AssetsImgsGen {
   AssetGenImage get imgBannerLabel =>
       const AssetGenImage('assets/imgs/img_banner_label.png');
 
+  /// File path: assets/imgs/img_icon_app.png
+  AssetGenImage get imgIconApp =>
+      const AssetGenImage('assets/imgs/img_icon_app.png');
+
   /// File path: assets/imgs/img_logo_home.png
   AssetGenImage get imgLogoHome =>
       const AssetGenImage('assets/imgs/img_logo_home.png');
@@ -278,6 +282,7 @@ class $AssetsImgsGen {
   List<AssetGenImage> get values => [
         imgBanner,
         imgBannerLabel,
+        imgIconApp,
         imgLogoHome,
         imgPharmacyStore,
         imgQrcode,
