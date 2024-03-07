@@ -291,14 +291,14 @@ class _NearPharmacyStoreScreenState
               );
             },
             label: Text(
-              "ค้นหาร้านที่ใกล้ที่สุด",
+              "ร้านที่เปิดทำการที่ใกล้ที่สุด",
               style: AppStyle.txtBody2,
             ),
             icon: const Icon(Icons.place),
           ),
-          if (nearestMarker != null && nearestDistance != null) ...[
-            Text("Marker ที่ใกล้ที่สุด: ${nearestMarker!.infoWindow.title}"),
-          ],
+          // if (nearestMarker != null && nearestDistance != null) ...[
+          //   Text("Marker ที่ใกล้ที่สุด: ${nearestMarker!.infoWindow.title}"),
+          // ],
           if (nearestMarker != null && nearestDistance != null) ...[
             Text("ระยะทาง: ${nearestDistance!.toStringAsFixed(2)} เมตร"),
           ],

@@ -149,7 +149,7 @@ class _FilterWidgetState extends BaseConsumerState<FilterWidget> {
             height: 8.h,
           ),
           Text(
-            'จำนวนคนรีวิว',
+            'จำนวนคนรีวิว (ขึ้นไป)',
             style: AppStyle.txtBody2,
           ),
           SizedBox(
