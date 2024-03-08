@@ -134,18 +134,18 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                   BaseButton(
                     //ปุ่ม login
                     onTap: () async {
-                      if (passwordController.text.length < 6) {
-                        showDialog(
-                          context: context,
-                          builder: (_) {
-                            return BaseDialog(
-                              message:
-                                  'รหัสผ่านต้องมากกว่าหรือเท่ากับ 6 ตัวอักษร',
-                            );
-                          },
-                        );
-                        return;
-                      }
+                      // if (passwordController.text.length < 6) {
+                      //   showDialog(
+                      //     context: context,
+                      //     builder: (_) {
+                      //       return BaseDialog(
+                      //         message:
+                      //             'รหัสผ่านต้องมากกว่าหรือเท่ากับ 6 ตัวอักษร',
+                      //       );
+                      //     },
+                      //   );
+                      //   return;
+                      // }
 
                       final result = await ref
                           .read(authenticationControllerProvider.notifier)
@@ -188,7 +188,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                         SignUpScreen.routeName,
                       );
                     },
-                    label1: 'ยังไม่มีบัญชี',
+                    label1: 'ยังไม่มีบัญชี?',
                     label2: 'สมัครสมาชิก',
                   ),
                 ],

@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pharmacy_online/base_widget/base_button.dart';
-import 'package:pharmacy_online/base_widget/base_dialog.dart';
+//import 'package:pharmacy_online/base_widget/base_dialog.dart';
 import 'package:pharmacy_online/base_widget/base_switch_button.dart';
 import 'package:pharmacy_online/base_widget/base_text_field.dart';
 import 'package:pharmacy_online/feature/authentication/controller/authentication_controller.dart';
@@ -117,6 +117,10 @@ class _SignUpStep1WidgetState extends ConsumerState<SignUpStep1Widget> {
                     "กรุณากรอกรหัสผ่าน",
                     Validators.isEmpty,
                   ),
+                  Validators.withMessage(
+                    "รหัสผ่านต้องมากกว่าหรือเท่ากับ 6 ตัวอักษร",
+                    Validators.isValidPasswordMinLength,
+                  ),
                 ],
               ),
             ),
@@ -195,18 +199,18 @@ class _SignUpStep1WidgetState extends ConsumerState<SignUpStep1Widget> {
                   isEmailAlready = result;
                 });
 
-                if (passwordController.text.length < 6) {
-                  showDialog(
-                    context: context,
-                    builder: (_) {
-                      return BaseDialog(
-                        message: 'รหัสผ่านต้องมากกว่าหรือเท่ากับ 6 ตัวอักษร',
-                      );
-                    },
-                  );
+                // if (passwordController.text.length < 6) {
+                //   showDialog(
+                //     context: context,
+                //     builder: (_) {
+                //       return BaseDialog(
+                //         message: 'รหัสผ่านต้องมากกว่าหรือเท่ากับ 6 ตัวอักษร',
+                //       );
+                //     },
+                //   );
 
-                  return;
-                }
+                //   return;
+                // }
 
                 if (confirmPasswordController.text != passwordController.text) {
                   setState(() {

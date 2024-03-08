@@ -16,6 +16,7 @@ abstract class MedicineResponse with _$MedicineResponse {
     int? quantity,
     String? howToUse,
     String? cartMedicineId,
+    String? purePrice,
     String? size,
     String? material,
   }) = _MedicineResponse;

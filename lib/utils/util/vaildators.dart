@@ -118,9 +118,9 @@ class Validators {
     return hasEmailAlready ? ValidateFailResult.invalidEmailHasAlready : null;
   }
 
-// isValidPasswordMinLength(): ตรวจสอบว่ารหัสผ่านมีความยาวอย่างน้อย 8 ตัวอักษรหรือไม่
+// isValidPasswordMinLength(): ตรวจสอบว่ารหัสผ่านมีความยาวอย่างน้อย 6 ตัวอักษรหรือไม่
   static ValidateFailResult? isValidPasswordMinLength(String? value) {
-    if (value!.length < 8) {
+    if (value!.length < 6) {
       return ValidateFailResult.isNotEmpty;
     }
     return null;

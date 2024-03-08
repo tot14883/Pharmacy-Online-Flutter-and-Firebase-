@@ -144,7 +144,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                     validator: Validators.combine(
                       [
                         Validators.withMessage(
-                          "Required",
+                          "กรุณากรอกชื่อ-นามสกุล",
                           Validators.isEmpty,
                         ),
                       ],
@@ -163,7 +163,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                     validator: Validators.combine(
                       [
                         Validators.withMessage(
-                          "Required",
+                          "กรุณากรอกเบอร์โทรศัพท์",
                           Validators.isEmpty,
                         ),
                       ],
@@ -239,7 +239,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                       validator: Validators.combine(
                         [
                           Validators.withMessage(
-                            "Required",
+                            "กรุณาเลือกตำแหน่งที่อยู่",
                             Validators.isEmpty,
                           ),
                         ],
@@ -259,7 +259,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                       validator: Validators.combine(
                         [
                           Validators.withMessage(
-                            "Required",
+                            "กรุณากรอกเลขที่ใบอนุญาตเภสัชกร",
                             Validators.isEmpty,
                           ),
                         ],

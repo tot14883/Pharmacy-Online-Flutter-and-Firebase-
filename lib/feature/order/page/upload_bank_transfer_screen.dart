@@ -70,6 +70,7 @@ class _UploadBankTransferScreenState
     final cartId = orderDetail.value?.cartId;
     final id = orderDetail.value?.id;
     final fullName = orderDetail.value?.myCart?.fullName;
+    final nameStore = orderDetail.value?.myCart?.nameStore;
 
     return AsyncValueWidget(
       value: pharmacyDetail,
@@ -225,7 +226,7 @@ class _UploadBankTransferScreenState
                         validator: Validators.combine(
                           [
                             Validators.withMessage(
-                              "Required",
+                              "กรุณาระบุวันที่ชำระ",
                               Validators.isEmpty,
                             ),
                           ],
@@ -243,7 +244,7 @@ class _UploadBankTransferScreenState
                         validator: Validators.combine(
                           [
                             Validators.withMessage(
-                              "Required",
+                              "กรุณากรอกจำนวนเงิน",
                               Validators.isEmpty,
                             ),
                           ],
@@ -293,7 +294,7 @@ class _UploadBankTransferScreenState
 
                               if (evidenceImg == null) {
                                 Fluttertoast.showToast(
-                                  msg: "กรุณาอัพโหลดสลิป",
+                                  msg: "กรุณาอัปโหลดสลิป",
                                   toastLength: Toast.LENGTH_SHORT,
                                   gravity: ToastGravity.BOTTOM,
                                 );
@@ -324,7 +325,7 @@ class _UploadBankTransferScreenState
                                 await ref
                                     .read(homeControllerProvider.notifier)
                                     .onPostNotification(
-                                      'ทำการชำระเงินแล้ว รอเภสัชทำการจัดส่ง',
+                                      'ทำการชำระเงินแล้ว รอ $nameStore ทำการจัดส่ง',
                                       OrderStatus.waitingPayment.name,
                                       '$uid',
                                     );
@@ -341,7 +342,7 @@ class _UploadBankTransferScreenState
 
                                 //Toast แสดงข้อความ "อัพโหลดสลิปสำเร็จ" บนหน้าจอเป็นเวลาสั้นๆ โดย Toast จะแสดงอยู่ด้านล่างหน้าจอ
                                 Fluttertoast.showToast(
-                                  msg: "อัพโหลดสลิปสำเร็จ",
+                                  msg: "อัปโหลดสลิปสำเร็จ",
                                   toastLength: Toast.LENGTH_SHORT,
                                   gravity: ToastGravity.BOTTOM,
                                 );
@@ -351,7 +352,7 @@ class _UploadBankTransferScreenState
                               } else {
                                 // แสดง Toast แจ้งเตือนหากอัพโหลดไม่สำเร็จ
                                 Fluttertoast.showToast(
-                                  msg: "อัพโหลดสลิปไม่สำเร็จ",
+                                  msg: "อัปโหลดสลิปไม่สำเร็จ",
                                   toastLength: Toast.LENGTH_SHORT,
                                   gravity: ToastGravity.BOTTOM,
                                 );

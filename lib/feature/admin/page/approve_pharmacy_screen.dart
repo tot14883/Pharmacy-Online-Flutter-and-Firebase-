@@ -49,7 +49,7 @@ class _ApprovePharmacyScreenState extends ConsumerState<ApprovePharmacyScreen> {
         hideBackButton: true,
         bgColor: AppColor.themeWhiteColor,
         title: Text(
-          'คำขออนุมัติ',
+          'คำขออนุมัติร้านขายยา',
           style: AppStyle.txtHeader3,
         ),
       ),

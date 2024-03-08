@@ -45,6 +45,7 @@ class MedicineItemWidget extends StatelessWidget {
               medicineImg: imgUrl,
               name: name,
               price: double.parse(purePrice),
+              purePrice: purePrice,
               quantity: int.parse(quantityParsed[1]),
               size: size,
               material: material,
@@ -75,13 +76,17 @@ class MedicineItemWidget extends StatelessWidget {
               children: [
                 // ชื่อยา
                 Text(
-                  name,
+                  'ชื่อ $name',
                   style: AppStyle.txtBody,
                 ),
                 Text(
-                  size,
-                  style: AppStyle.txtBody,
+                  'ขนาด $size',
+                  style: AppStyle.txtBody2,
                 ),
+                // Text(
+                //   'ราคา $purePrice บาท',
+                //   style: AppStyle.txtBody2,
+                // ),
                 if (!isOrder) ...[
                   Text(
                     material,
@@ -97,19 +102,42 @@ class MedicineItemWidget extends StatelessWidget {
                     ),
                   ),
                 ],
+                // Row(
+                //   crossAxisAlignment: CrossAxisAlignment.start, // ชิดบน
+                //   mainAxisAlignment: MainAxisAlignment.start, // ชิดซ้าย
+                //   children: [
+                //     Expanded(
+                //       child: Text(
+                //         '$quantity * $purePrice',
+                //         style: AppStyle.txtBody2,
+                //       ),
+                //     ),
+                //     Expanded(
+                //       child: Text(
+                //         price,
+                //         style: AppStyle.txtBody,
+                //         textAlign: TextAlign.end,
+                //       ),
+                //     ),
+                //   ],
+                // ),
+                Text(
+                  '$quantity * $purePrice',
+                  style: AppStyle.txtBody2,
+                ),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start, // ชิดบน
                   mainAxisAlignment: MainAxisAlignment.start, // ชิดซ้าย
                   children: [
                     Expanded(
                       child: Text(
-                        quantity,
-                        style: AppStyle.txtBody,
+                        'ราคารวม',
+                        style: AppStyle.txtBody2,
                       ),
                     ),
                     Expanded(
                       child: Text(
-                        price,
+                        '$price บาท',
                         style: AppStyle.txtBody,
                         textAlign: TextAlign.end,
                       ),

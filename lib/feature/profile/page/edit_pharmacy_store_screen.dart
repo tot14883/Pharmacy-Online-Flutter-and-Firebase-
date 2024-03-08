@@ -410,8 +410,8 @@ class _EditPharmacyStoreScreenState
                         await ref
                             .read(homeControllerProvider.notifier)
                             .onPostNotification(
-                              'เนื่องจากคุณแก้ไขข้อมูลร้านต้องรอแอดมินอนุมัติใหม่อีกครั้ง',
-                              OrderStatus.completed.name,
+                              'เนื่องจากคุณแก้ไขข้อมูลร้านขายยา\nต้องรอแอดมินอนุมัติใหม่อีกครั้ง',
+                              OrderStatus.waitingPayment.name,
                               '$uid',
                             );
 

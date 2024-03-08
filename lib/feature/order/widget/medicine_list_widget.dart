@@ -47,12 +47,12 @@ class MedicineListWidget extends ConsumerWidget {
                 );
               },
               child: MedicineItemWidget(
-                // แสดงข้อมูลยา เช่น รูปภาพ ชื่อ จำนวน ราคา
+                // แสดงข้อมูลยา รูปภาพ ชื่อ จำนวน ราคา
                 imgUrl: '${medicineItem.medicineImg}',
                 name: '${medicineItem.name}',
                 quantity: 'จำนวน ${medicineItem.quantity}',
                 price:
-                    '${(medicineItem.price ?? 0.0) * (medicineItem.quantity ?? 1)} บาท',
+                    '${(medicineItem.price ?? 0.0) * (medicineItem.quantity ?? 1)}',
                 size: '${medicineItem.size}',
                 material: '${medicineItem.material}',
                 purePrice: '${medicineItem.price ?? 0.0}',
@@ -72,7 +72,7 @@ class MedicineListWidget extends ConsumerWidget {
                   // ตรวจสอบข้อมูลกรอก
                   [
                     Validators.withMessage(
-                      "Required",
+                      "กรุณากรอกวิธีการใช้ยาหรือคำแนะนำ",
                       Validators.isEmpty,
                     ),
                   ],

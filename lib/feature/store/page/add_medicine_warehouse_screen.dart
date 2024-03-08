@@ -90,7 +90,7 @@ class _AddMedicineWarehouseScreenState
                     validator: Validators.combine(
                       [
                         Validators.withMessage(
-                          "Required",
+                          "กรุณากรอกชื่อยา",
                           Validators.isEmpty,
                         ),
                       ],
@@ -125,7 +125,7 @@ class _AddMedicineWarehouseScreenState
                       validator: Validators.combine(
                         [
                           Validators.withMessage(
-                            "Required",
+                            "กรุณากรอกราคายา",
                             Validators.isEmpty,
                           ),
                         ],
@@ -139,7 +139,7 @@ class _AddMedicineWarehouseScreenState
                     validator: Validators.combine(
                       [
                         Validators.withMessage(
-                          "Required",
+                          "กรุณากรอกขนาดยา",
                           Validators.isEmpty,
                         ),
                       ],
@@ -155,7 +155,7 @@ class _AddMedicineWarehouseScreenState
                     validator: Validators.combine(
                       [
                         Validators.withMessage(
-                          "Required",
+                          "กรุณากรอกส่วนประกอบยา",
                           Validators.isEmpty,
                         ),
                       ],

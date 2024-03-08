@@ -96,7 +96,7 @@ class _SignUpPharmacyStoreWidgetState
           validator: Validators.combine(
             [
               Validators.withMessage(
-                "Required",
+                "กรุณากรอกชื่อร้าน",
                 Validators.isEmpty,
               ),
             ],
@@ -163,7 +163,7 @@ class _SignUpPharmacyStoreWidgetState
           validator: Validators.combine(
             [
               Validators.withMessage(
-                "Required",
+                "กรุณาระบุที่อยู่",
                 Validators.isEmpty,
               ),
             ],
@@ -180,7 +180,7 @@ class _SignUpPharmacyStoreWidgetState
           validator: Validators.combine(
             [
               Validators.withMessage(
-                "Required",
+                "กรุณากรอกเบอร์โทรศัพท์",
                 Validators.isEmpty,
               ),
             ],
@@ -249,12 +249,12 @@ class _SignUpPharmacyStoreWidgetState
         ),
         BaseTextField(
           fieldKey: FieldSignUp.licensePharmacyStore,
-          label: "เลขที่ใบอนุญาตร้าน",
+          label: "เลขที่ใบอนุญาตร้านขายยา",
           isShowLabelField: true,
           validator: Validators.combine(
             [
               Validators.withMessage(
-                "Required",
+                "กรุณากรอกเลขที่ใบอนุญาตร้าน",
                 Validators.isEmpty,
               ),
             ],
@@ -264,7 +264,7 @@ class _SignUpPharmacyStoreWidgetState
           height: 16.h,
         ),
         BaseUploadImage(
-          label: 'รูปใบอนุญาต',
+          label: 'รูปใบอนุญาตร้านขายยา',
           onUpload: (val) {
             setState(() {
               licenseStoreFile = val;
@@ -349,7 +349,7 @@ class _SignUpPharmacyStoreWidgetState
 
                   if (openingTime == null || closingTime == null) {
                     Fluttertoast.showToast(
-                      msg: "กรุณาระบุเวลาเปิดและปิด",
+                      msg: "กรุณาระบุเวลาเปิดและปิดร้าน",
                       toastLength: Toast.LENGTH_SHORT,
                       gravity: ToastGravity.BOTTOM,
                     );

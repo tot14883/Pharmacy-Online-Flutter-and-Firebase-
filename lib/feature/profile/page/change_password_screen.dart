@@ -93,7 +93,7 @@ class _ChangePasswordScreenState
                   validator: Validators.combine(
                     [
                       Validators.withMessage(
-                        "กรุณากรอกข้อมูล",
+                        "กรุณากรอกรหัสผ่านปัจจุบัน",
                         Validators.isEmpty,
                       ),
                     ],
@@ -123,7 +123,7 @@ class _ChangePasswordScreenState
                   validator: Validators.combine(
                     [
                       Validators.withMessage(
-                        "กรุณากรอกข้อมูล",
+                        "กรุณากรอกรหัสผ่านใหม่",
                         Validators.isEmpty,
                       ),
                     ],
@@ -152,7 +152,7 @@ class _ChangePasswordScreenState
                   validator: Validators.combine(
                     [
                       Validators.withMessage(
-                        "กรุณากรอกข้อมูล",
+                        "กรุณากรอกรหัสผ่านใหม่อีกครั้ง",
                         Validators.isEmpty,
                       ),
                     ],
@@ -173,7 +173,7 @@ class _ChangePasswordScreenState
                             context: context,
                             builder: (_) {
                               return BaseDialog(
-                                message: 'รหัสผ่านปัจุบันไม่ถูกต้อง',
+                                message: 'รหัสผ่านปัจจุบันไม่ถูกต้อง',
                               );
                             },
                           );
@@ -234,7 +234,7 @@ class _ChangePasswordScreenState
                             builder: (_) {
                               return BaseDialog(
                                 message:
-                                    'ไม่สามารถเปลี่ยนรหัสผ่านได้ เนื่องจากรหัสผ่านไม่ถูกต้อง',
+                                    'ไม่สามารถเปลี่ยนรหัสผ่านได้\nรหัสผ่านต้องมากกว่าหรือเท่ากับ 6 ตัวอักษร',
                               );
                             },
                           );

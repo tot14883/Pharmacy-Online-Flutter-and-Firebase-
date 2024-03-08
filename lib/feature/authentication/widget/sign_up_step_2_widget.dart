@@ -100,7 +100,7 @@ class _SignUpStep2WidgetState extends ConsumerState<SignUpStep2Widget> {
               validator: Validators.combine(
                 [
                   Validators.withMessage(
-                    "Required",
+                    "กรุณากรอกชื่อ-นามสกุล",
                     Validators.isEmpty,
                   ),
                 ],
@@ -117,7 +117,7 @@ class _SignUpStep2WidgetState extends ConsumerState<SignUpStep2Widget> {
               validator: Validators.combine(
                 [
                   Validators.withMessage(
-                    "Required",
+                    "กรุณากรอกเบอร์โทรศัพท์",
                     Validators.isEmpty,
                   ),
                 ],
@@ -187,7 +187,7 @@ class _SignUpStep2WidgetState extends ConsumerState<SignUpStep2Widget> {
                 validator: Validators.combine(
                   [
                     Validators.withMessage(
-                      "Required",
+                      "กรุณาเลือกตำแหน่งที่อยู่",
                       Validators.isEmpty,
                     ),
                   ],
@@ -205,7 +205,7 @@ class _SignUpStep2WidgetState extends ConsumerState<SignUpStep2Widget> {
                 validator: Validators.combine(
                   [
                     Validators.withMessage(
-                      "Required",
+                      "กรุณากรอกเลขที่ใบอนุญาตเภสัชกร",
                       Validators.isEmpty,
                     ),
                   ],
@@ -215,7 +215,7 @@ class _SignUpStep2WidgetState extends ConsumerState<SignUpStep2Widget> {
                 height: 16.h,
               ),
               BaseUploadImage(
-                label: 'รูปใบอนุญาต',
+                label: 'รูปใบอนุญาตเภสัชกร',
                 onUpload: (val) {
                   setState(() {
                     licenseFile = val;
@@ -228,8 +228,8 @@ class _SignUpStep2WidgetState extends ConsumerState<SignUpStep2Widget> {
               if (licenseFile != null) ...[
                 BaseImageView(
                   file: File(licenseFile!.path),
-                  width: 250.w,
-                  height: 250.h,
+                  width: 300.w,
+                  //height: 250.h,
                   fit: BoxFit.cover,
                 ),
               ],

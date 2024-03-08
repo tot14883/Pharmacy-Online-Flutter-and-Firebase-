@@ -68,8 +68,8 @@ class _PharmacyStoreDetaillScreenState
                 BaseImageView(
                   url: pharmacyStoreImg,
                   width: 350.w,
-                  height: 350.h,
-                  fit: BoxFit.cover, //ลองเปลี่ยนที่ตรงนี้
+                  //height: 350.h,
+                  fit: BoxFit.cover,
                 ),
                 SizedBox(
                   height: 16.h,
@@ -137,11 +137,18 @@ class _PharmacyStoreDetaillScreenState
                 SizedBox(
                   height: 16.h,
                 ),
+                Text(
+                  'รูปใบอนุญาตร้านขายยา',
+                  style: AppStyle.txtBody2,
+                ),
+                SizedBox(
+                  height: 16.h,
+                ),
                 // แสดงรูปใบอนุญาตร้าน
                 BaseImageView(
                   url: licensePharmacyStore,
-                  width: 250.w,
-                  height: 250.h,
+                  width: 300.w,
+                  //height: 250.h,
                   fit: BoxFit.cover,
                 ),
                 SizedBox(
@@ -155,7 +162,7 @@ class _PharmacyStoreDetaillScreenState
                       arguments: PharmacyArgs(pharmacyItem: pharmacyStoreInfo),
                     );
                   },
-                  text: 'ดูข้อมูลเภสัชกรประจำร้าน',
+                  text: 'ดูข้อมูลเภสัชกร',
                 ),
               ],
             ),

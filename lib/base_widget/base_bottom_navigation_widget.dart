@@ -54,7 +54,7 @@ class _BottomNavigationWidgetState
             width: 24.w,
             height: 24.h,
           ),
-          label: "Home",
+          label: "หน้าหลัก",
         ),
         // Bottom Navigation Bar Item สำหรับหน้า Orders
         BottomNavigationBarItem(
@@ -67,7 +67,7 @@ class _BottomNavigationWidgetState
             width: 24.w,
             height: 24.h,
           ),
-          label: "Orders",
+          label: "คำสั่งซื้อ",
         ),
         // Bottom Navigation Bar Item สำหรับหน้า Chat
         BottomNavigationBarItem(
@@ -80,7 +80,7 @@ class _BottomNavigationWidgetState
             width: 24.w,
             height: 24.h,
           ),
-          label: "Chat",
+          label: "แชท",
         ),
         // Bottom Navigation Bar Item สำหรับหน้า Profile
         BottomNavigationBarItem(
@@ -93,7 +93,7 @@ class _BottomNavigationWidgetState
             width: 24.w,
             height: 24.h,
           ),
-          label: "Profile",
+          label: "บัญชี",
         ),
       ],
       onTap: (value) {

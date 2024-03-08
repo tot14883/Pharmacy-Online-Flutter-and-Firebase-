@@ -28,7 +28,7 @@ class EvidenceBankTransferScreen extends ConsumerWidget {
       appBar: BaseAppBar(
         bgColor: AppColor.themeWhiteColor,
         title: Text(
-          'แจ้งโอนการชำระเงิน',
+          'การชำระเงิน',
           style: AppStyle.txtHeader3,
         ),
         elevation: 0,
@@ -54,21 +54,21 @@ class EvidenceBankTransferScreen extends ConsumerWidget {
                   height: 16.h,
                 ),
                 Text(
-                  'หลักฐานแจ้งโอนการชำระเงิน',
+                  'หลักฐานแจ้งการชำระเงิน',
                   style: AppStyle.txtHeader3,
                 ),
                 SizedBox(
                   height: 16.h,
                 ),
                 Text(
-                  'วันที่ชำระ $bankTransferDate',
+                  'วันที่โอน $bankTransferDate น.',
                   style: AppStyle.txtBody2,
                 ),
                 SizedBox(
                   height: 16.h,
                 ),
                 Text(
-                  'ราคา $bankTotalPriceSlip บาท',
+                  'จำนวนเงิน $bankTotalPriceSlip บาท',
                   style: AppStyle.txtBody2,
                 ),
               ],

@@ -72,7 +72,7 @@ class _OrderItemWidgetState extends BaseConsumerState<OrderItemWidget> {
         if (result) {
           // แจ้งโนติถึงผู้ใช้
           await ref.read(homeControllerProvider.notifier).onPostNotification(
-                'คำสั่งซื้อถูกยกเลิก เนื่องจากเกินระยะเวลาที่กำหนด',
+                'คำสั่งซื้อถูกยกเลิกเนื่องจากไม่ได้ชำระเงินในระยะเวลาที่กำหนด',
                 'cancelChat',
                 '$uid',
               );
@@ -227,14 +227,23 @@ class _OrderItemWidgetState extends BaseConsumerState<OrderItemWidget> {
             ),
             Expanded(
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.start, //ชิดซ้าย
-                crossAxisAlignment: CrossAxisAlignment.start, //ชิดบน
+                mainAxisAlignment: MainAxisAlignment.start, //ชิดบน
+                crossAxisAlignment: CrossAxisAlignment.start, //ชิดซ้าย
                 children: [
-                  Text(
-                    '$billName',
-                    style:
-                        AppStyle.txtBody2.copyWith(fontWeight: FontWeight.w700),
-                  ),
+                  if (!isPharmacy) ...[
+                    Text(
+                      'ร้าน $billName',
+                      style: AppStyle.txtBody2
+                          .copyWith(fontWeight: FontWeight.w700),
+                    ),
+                  ],
+                  if (isPharmacy) ...[
+                    Text(
+                      '$billName',
+                      style: AppStyle.txtBody2
+                          .copyWith(fontWeight: FontWeight.w700),
+                    ),
+                  ],
                   SizedBox(
                     height: 4.h,
                   ),

@@ -14,6 +14,8 @@ import 'package:pharmacy_online/feature/profile/controller/profile_controller.da
 import 'package:pharmacy_online/feature/store/model/response/chat_with_pharmacy_response.dart';
 import 'package:pharmacy_online/feature/store/model/response/medicine_response.dart';
 import 'package:pharmacy_online/feature/store/widget/quantity_widget.dart';
+import 'package:pharmacy_online/core/local/base_shared_preference.dart';
+import 'package:pharmacy_online/feature/authentication/enum/authentication_type_enum.dart';
 
 // คลาส DrugDetailArgs ใช้สำหรับส่งข้อมูลยาไปยังหน้าจอ DrugDetailScreen
 class DrugDetailArgs {
@@ -60,6 +62,12 @@ class _DrugDetailScreenState extends BaseConsumerState<DrugDetailScreen> {
         .select((value) => value.pharmacyStore)); // อ่านข้อมูลร้านขายยา
     final size = args.medicineItem.size;
     final material = args.medicineItem.material;
+
+    // ตรวจสอบว่าผู้ใช้เป็นแอดมินหรือไม่
+    final isAdmin = ref
+            .read(baseSharePreferenceProvider)
+            .getString(BaseSharePreferenceKey.role) ==
+        AuthenticationType.admin.name;
 
     return BaseScaffold(
       appBar: BaseAppBar(
@@ -113,7 +121,6 @@ class _DrugDetailScreenState extends BaseConsumerState<DrugDetailScreen> {
                     ),
                   ],
                 ),
-
                 SizedBox(
                   height: 16.h,
                 ),
@@ -132,26 +139,27 @@ class _DrugDetailScreenState extends BaseConsumerState<DrugDetailScreen> {
                 SizedBox(
                   height: 16.h,
                 ),
-                Row(
-                  children: [
-                    Text(
-                      'ราคา ',
-                      style: AppStyle.txtBody,
-                    ),
-                    Text(
-                      '$price',
-                      style: AppStyle.txtBodylight,
-                    ),
-                    Text(
-                      ' บาท',
-                      style: AppStyle.txtBody,
-                    ),
-                  ],
-                ),
-
-                SizedBox(
-                  height: 16.h,
-                ),
+                if (!isAdmin) ...[
+                  Row(
+                    children: [
+                      Text(
+                        'ราคา ',
+                        style: AppStyle.txtBody,
+                      ),
+                      Text(
+                        '$price',
+                        style: AppStyle.txtBodylight,
+                      ),
+                      Text(
+                        ' บาท',
+                        style: AppStyle.txtBody,
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 16.h,
+                  ),
+                ],
                 Text(
                   'ส่วนประกอบ',
                   style: AppStyle.txtBody,

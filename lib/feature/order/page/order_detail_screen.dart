@@ -115,7 +115,7 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
         if (result) {
           // สร้างการแจ้งเตือนโดยเรียกใช้ onPostNotification จาก HomeControllerProvider
           await ref.read(homeControllerProvider.notifier).onPostNotification(
-                'คำสั่งซื้อถูกยกเลิก เนื่องจากเกินระยะเวลาที่กำหนด',
+                'คำสั่งซื้อถูกยกเลิกเนื่องจากไม่ได้ชำระเงินในระยะเวลาที่กำหนด',
                 'cancelChat',
                 '$uid',
               );
@@ -326,20 +326,28 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
                           ),
                           RowContentWidget(
                             header: 'เวลา:',
-                            content: createAtTime,
+                            content: '$createAtTime น.',
                           ),
                           SizedBox(
                             height: 4.h,
                           ),
                           RowContentWidget(
                             header: 'ราคารวมทั้งหมด:',
-                            content: '$summaryPrice',
+                            content: '$summaryPrice บาท',
                           ),
                         ],
                       ),
                     ),
                     SizedBox(
                       height: 16.h,
+                    ),
+                    // ส่วนที่แสดงรายละเอียดสินค้า
+                    Text(
+                      'ข้อมูลในการจัดส่ง',
+                      style: AppStyle.txtHeader3,
+                    ),
+                    SizedBox(
+                      height: 8.h,
                     ),
                     // ส่วนที่แสดงข้อมูลที่อยู่จัดส่ง
                     CardContentWidget(
@@ -372,7 +380,7 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
                     ),
                     // ส่วนที่แสดงรายละเอียดสินค้า
                     Text(
-                      'รายละเอียดสินค้า',
+                      'รายละเอียดยา',
                       style: AppStyle.txtHeader3,
                     ),
                     SizedBox(
@@ -403,7 +411,7 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
                                 .copyWith(color: AppColor.themePrimaryColor),
                           ),
                           Text(
-                            '    $diagnose',
+                            '• $diagnose',
                             style: AppStyle.txtBody,
                           ),
                           SizedBox(
@@ -415,20 +423,20 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
                                 .copyWith(color: AppColor.themePrimaryColor),
                           ),
                           Text(
-                            '    $moreDetail',
+                            '• $moreDetail',
                             style: AppStyle.txtBody,
                           ),
                           SizedBox(
                             height: 8.h,
                           ),
                           Text(
-                            'รายละเอียดยา',
+                            'วิธีการใช้ยา',
                             style: AppStyle.txtBody
                                 .copyWith(color: AppColor.themePrimaryColor),
                           ),
                           const RowContentWidget(
                             isBold: true,
-                            header: 'ชื่อยา',
+                            header: '     ชื่อยา',
                             content: 'วิธีการใช้/คำแนะนำ',
                           ),
                           if (medicineList == null) ...[
@@ -438,7 +446,7 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
                               // ส่วนที่แสดงรายละเอียดของแต่ละรายการยา
                               RowContentWidget(
                                 isBold: true,
-                                header: '${medicineItem.name}',
+                                header: ' ${medicineItem.name}',
                                 content: medicineItem.howToUse ?? 'ไม่ระบุ',
                               ),
                             ],
@@ -451,7 +459,7 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
                     ),
                     // ส่วนที่แสดงสถานะและข้อมูลการติดตามสินค้า
                     Text(
-                      'ติดตามสินค้า',
+                      'ติดตามคำสั่งซื้อ',
                       style: AppStyle.txtHeader3,
                     ),
                     SizedBox(
@@ -509,13 +517,13 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
                         );
                       },
                       number: '2',
-                      title: 'รอดำเนินการ',
+                      title: 'ดำเนินการตรวจสอบ',
                       content:
                           _orderDetail?.status == OrderStatus.waitingPayment &&
                                   bankTransferSlip != null
                               ? (isPharmacy
                                   ? 'กรุณาตรวจสอบการชำระเงิน'
-                                  : 'เภสัชกำลังตรวจสอบการชำระเงิน')
+                                  : 'เภสัชกรกำลังตรวจสอบการชำระเงิน')
                               : null,
                       contentHeight: _orderDetail?.status !=
                                   OrderStatus.waitingConfirmOrder &&
@@ -556,7 +564,7 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
                         await ref
                             .read(homeControllerProvider.notifier)
                             .onPostNotification(
-                              '$nameStore ยืนยันการชำระเงินแล้ว กำลังทำการจัดส่ง',
+                              'ร้าน $nameStore ยืนยันการชำระเงินแล้ว กำลังทำการจัดส่ง',
                               OrderStatus.waitingDelivery.name,
                               '$uid',
                             );
@@ -571,13 +579,13 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
                           : '',
                     ),
                     TrackingContentWidget(
-// ตรวจสอบสถานะคำสั่งซื้อ
+                      // ตรวจสอบสถานะคำสั่งซื้อ
                       isSuccess:
                           _orderDetail?.status == OrderStatus.delivering ||
                               _orderDetail?.status == OrderStatus.completed,
-// บรรทัดนี้ตรวจสอบสถานะคำสั่งซื้อ หากเป็น "กำลังจัดส่ง" หรือ "เสร็จสิ้น" จะแสดงผลลัพธ์แบบสำเร็จ
+                      // บรรทัดนี้ตรวจสอบสถานะคำสั่งซื้อ หากเป็น "กำลังจัดส่ง" หรือ "เสร็จสิ้น" จะแสดงผลลัพธ์แบบสำเร็จ
 
-// ตรวจสอบว่าควรแสดงปุ่มหรือไม่
+                      // ตรวจสอบว่าควรแสดงปุ่มหรือไม่
                       hasBtn:
                           _orderDetail?.status == OrderStatus.waitingDelivery ||
                               _orderDetail?.status == OrderStatus.delivering ||
@@ -602,13 +610,13 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
                             .pushNamed(EvidenceTransportationScreen.routeName);
                       },
                       number: '3',
-                      title: 'กำลังจัดส่งสินค้า',
+                      title: 'ดำเนินการจัดส่ง',
                       contentHeight:
                           _orderDetail?.status == OrderStatus.completed
                               ? 50.h
                               : null,
                       content: _orderDetail?.status == OrderStatus.delivering
-                          ? 'เภสัชกำลังเตรียมจัดส่งสินค้า'
+                          ? 'เภสัชกรกำลังเตรียมจัดส่งสินค้า'
                           : (_orderDetail?.status ==
                                       OrderStatus.waitingDelivery &&
                                   isPharmacy
@@ -620,7 +628,7 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
                               _orderDetail?.status == OrderStatus.completed
                           ? (isPharmacy ? deliveryTextBtn : 'ดูรูปภาพ')
                           : '',
-// ตรวจสอบว่าควรแสดงปุ่มที่สองหรือไม่ โดยจะแสดงปุ่มเมื่อหลักฐานการจัดส่งสินค้าพร้อมแล้วและคำสั่งซื้ออยู่ในสถานะ "รอจัดส่ง"
+                      // ตรวจสอบว่าควรแสดงปุ่มที่สองหรือไม่ โดยจะแสดงปุ่มเมื่อหลักฐานการจัดส่งสินค้าพร้อมแล้วและคำสั่งซื้ออยู่ในสถานะ "รอจัดส่ง"
                       hasSecondBtn: deliverySlip != null &&
                           _orderDetail?.status == OrderStatus.waitingDelivery &&
                           isPharmacy,
@@ -656,7 +664,7 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
                         await ref
                             .read(homeControllerProvider.notifier)
                             .onPostNotification(
-                              '$nameStore ทำการจัดส่งเรียบร้อย',
+                              'ร้าน $nameStore ทำการจัดส่งเรียบร้อย',
                               OrderStatus.delivering.name,
                               '$uid',
                             );
@@ -737,7 +745,7 @@ class _OrderDetailScreenState extends BaseConsumerState<OrderDetailScreen> {
                             });
                       },
                       number: '4',
-                      title: 'สินค้าส่งถึงแล้ว',
+                      title: 'การจัดส่งสำเร็จ',
                       btnTxt: 'ยืนยัน',
                       //ของฝั่งร้านขายยา
                       content: isPharmacy &&

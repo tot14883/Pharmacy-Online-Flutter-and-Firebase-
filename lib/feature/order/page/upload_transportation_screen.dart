@@ -38,7 +38,7 @@ class _UploadTransportationScreenState
     final uid = orderDetail?.uid;
     final pharmacyId = orderDetail?.pharmacyId;
     final cartId = orderDetail?.cartId;
-    final nameStore = orderDetail?.myCart?.nameStore;
+    // final nameStore = orderDetail?.myCart?.nameStore;
     final deliverySlip = orderDetail?.deliverySlip;
     return BaseScaffold(
       appBar: BaseAppBar(
@@ -116,7 +116,7 @@ class _UploadTransportationScreenState
 
                       // แสดง Toast แจ้งเตือนการอัปโหลดสำเร็จ
                       Fluttertoast.showToast(
-                        msg: "อัพโหลดรูปสำเร็จ",
+                        msg: "อัปโหลดรูปสำเร็จ",
                         toastLength: Toast.LENGTH_SHORT,
                         gravity: ToastGravity.BOTTOM,
                       );
@@ -126,7 +126,7 @@ class _UploadTransportationScreenState
                     } else {
                       // แสดง Toast แจ้งเตือนการอัปโหลดไม่สำเร็จ
                       Fluttertoast.showToast(
-                        msg: "ไม่สามารถอัพโหลดรูปได้",
+                        msg: "ไม่สามารถอัปโหลดรูปได้",
                         toastLength: Toast.LENGTH_SHORT,
                         gravity: ToastGravity.BOTTOM,
                       );

@@ -73,7 +73,7 @@ class _EditMedicineWarehouseScreenState
       appBar: BaseAppBar(
         elevation: 0,
         title: Text(
-          'แก้ไขยา',
+          'แก้ไขข้อมูลยา',
           style: AppStyle.txtHeader3,
         ),
         bgColor: AppColor.themeWhiteColor,
@@ -118,7 +118,7 @@ class _EditMedicineWarehouseScreenState
                     validator: Validators.combine(
                       [
                         Validators.withMessage(
-                          "Required",
+                          "กรุณากรอกชื่อยา",
                           Validators.isEmpty,
                         ),
                       ],
@@ -154,16 +154,16 @@ class _EditMedicineWarehouseScreenState
                       validator: Validators.combine(
                         [
                           Validators.withMessage(
-                            "Required",
+                            "กรุณากรอกราคา",
                             Validators.isEmpty,
                           ),
                         ],
                       ),
                     ),
+                    SizedBox(
+                      height: 16.h,
+                    ),
                   ],
-                  SizedBox(
-                    height: 16.h,
-                  ),
                   BaseTextField(
                     fieldKey: FieldMedicine.size,
                     initialValue:
@@ -173,7 +173,7 @@ class _EditMedicineWarehouseScreenState
                     validator: Validators.combine(
                       [
                         Validators.withMessage(
-                          "Required",
+                          "กรุณากรอกขนาดยา",
                           Validators.isEmpty,
                         ),
                       ],
@@ -192,7 +192,7 @@ class _EditMedicineWarehouseScreenState
                     validator: Validators.combine(
                       [
                         Validators.withMessage(
-                          "Required",
+                          "กรุณากรอกส่วนประกอบยา",
                           Validators.isEmpty,
                         ),
                       ],

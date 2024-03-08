@@ -56,7 +56,7 @@ class PharmacyItemWidget extends ConsumerWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Text(
-                        '${pharmacyItem.nameStore}',
+                        'ร้าน ${pharmacyItem.nameStore}',
                         style: AppStyle.txtBody2,
                       ),
                       SizedBox(
@@ -96,7 +96,7 @@ class PharmacyItemWidget extends ConsumerWidget {
                 await ref
                     .read(homeControllerProvider.notifier)
                     .onPostNotification(
-                      'แอดมินอนุมัติเรียบร้อย',
+                      'ร้านขายยาได้รับการอนุมัติแล้ว',
                       OrderStatus.completed.name,
                       '${pharmacyItem.uid}',
                     );
@@ -125,7 +125,7 @@ class PharmacyItemWidget extends ConsumerWidget {
                 await ref
                     .read(homeControllerProvider.notifier)
                     .onPostNotification(
-                      'ข้อมูลไม่ถูกต้อง กรุณาแก้ไขข้อมูล',
+                      'มีข้อมูลไม่ถูกต้อง กรุณาแก้ไขข้อมูลหรือติดต่อ admin@gmail.com',
                       'warningChat',
                       '${pharmacyItem.uid}',
                     );
