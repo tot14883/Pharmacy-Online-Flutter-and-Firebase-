@@ -108,9 +108,7 @@ dev_dependencies:
 
 
 
-flutter_icons:
-  android: true
-  image_path: "assets/imgs/img_icon_app.png"
+
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
@@ -126,6 +124,10 @@ flutter_icons:
   retrofit_generator: ^7.0.8
   # https://pub.dev/packages/json_serializable
   json_serializable: ^6.7.1
+
+flutter_icons:
+  android: true
+  image_path: "assets/imgs/img_icon_app.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
