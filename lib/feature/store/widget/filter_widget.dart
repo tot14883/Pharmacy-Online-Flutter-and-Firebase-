@@ -53,7 +53,10 @@ class _FilterWidgetState extends BaseConsumerState<FilterWidget> {
     final searchTimeOpen = ref
         .watch(storeControllerProvider.select((value) => value.searchTimeOpen));
 
-    return Container(
+    return /*Scaffold(
+      body: SingleChildScrollView(
+        child: Container(*/
+        Container(
       // ทำการ re-render หน้านี้ทุกครั้งเมื่อมีการเปลี่ยนแปลงค่า
       key: ValueKey((distance ??
               reviewScore ??
@@ -68,10 +71,25 @@ class _FilterWidgetState extends BaseConsumerState<FilterWidget> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
+          SizedBox(
+            height: 8.h,
+          ),
+          Text(
+            'ตัวกรองช่วยค้นหาร้านขายยา',
+            style: AppStyle.txtBody,
+          ),
+          SizedBox(
+            height: 8.h,
+          ),
           // input ค้นหาร้านยา
+          Text(
+            'ชื่อร้านขายยา',
+            style: AppStyle.txtBody2,
+          ),
           BaseTextField(
-            label: 'ค้นหาร้านยา',
-            isShowLabelField: true,
+            // label: 'ค้นหาร้านยา',
+            // isShowLabelField: true,
+            initialValue: nameController.text,
             onChange: (val) {
               nameController.text = val;
             },
@@ -100,7 +118,7 @@ class _FilterWidgetState extends BaseConsumerState<FilterWidget> {
           // BaseSwitchButton คล้ายหน้า sign up screen
           BaseSwitchButton(
             isSwitchButton: true,
-            label: "คะแนนรีวิว (ขึ้นไป)",
+            label: "คะแนนรีวิว",
             minWidth: 100.w,
             contentPadding: const EdgeInsets.symmetric(
               vertical: 8,
@@ -114,19 +132,9 @@ class _FilterWidgetState extends BaseConsumerState<FilterWidget> {
             ],
             listItem: const [
               SwitchButtonItem(
-                id: 1,
-                value: '1',
-                content: "1 ดาว",
-              ),
-              SwitchButtonItem(
-                id: 2,
-                value: '2',
-                content: "2 ดาว",
-              ),
-              SwitchButtonItem(
-                id: 3,
-                value: '3',
-                content: "3 ดาว",
+                id: 5,
+                value: '5',
+                content: "5 ดาว",
               ),
               SwitchButtonItem(
                 id: 4,
@@ -134,9 +142,24 @@ class _FilterWidgetState extends BaseConsumerState<FilterWidget> {
                 content: "4 ดาว",
               ),
               SwitchButtonItem(
-                id: 5,
-                value: '5',
-                content: "5 ดาว",
+                id: 3,
+                value: '3',
+                content: "3 ดาว",
+              ),
+              SwitchButtonItem(
+                id: 2,
+                value: '2',
+                content: "2 ดาว",
+              ),
+              SwitchButtonItem(
+                id: 1,
+                value: '1',
+                content: "1 ดาว",
+              ),
+              SwitchButtonItem(
+                id: 6,
+                value: '0',
+                content: "0 ดาว",
               ),
             ],
             onChange: (val) {
@@ -149,8 +172,12 @@ class _FilterWidgetState extends BaseConsumerState<FilterWidget> {
             height: 8.h,
           ),
           Text(
-            'จำนวนคนรีวิว (ขึ้นไป)',
+            'จำนวนคนรีวิว',
             style: AppStyle.txtBody2,
+          ),
+          Text(
+            '(ถ้าค้นหา 100 รีวิวขึ้นไปจะแสดงค่าที่ค้นหาและมากกว่าขึ้นไป)',
+            style: AppStyle.txtCaptionlight,
           ),
           SizedBox(
             height: 4.h,
@@ -193,7 +220,7 @@ class _FilterWidgetState extends BaseConsumerState<FilterWidget> {
             },
           ),
           SizedBox(
-            height: 8.h,
+            height: 10.h,
           ),
           // ปุุ่มค้นหา
           BaseButton(
@@ -206,7 +233,7 @@ class _FilterWidgetState extends BaseConsumerState<FilterWidget> {
                   closingTime == null &&
                   !searchTimeOpen) {
                 Fluttertoast.showToast(
-                  msg: "กรุณาเลือกตัวกรองเพื่อค้นหาร้านขายยาที่ท่านต้องการ",
+                  msg: "กรุณาเลือกตัวกรองเพื่อค้นหาร้านขายยา\nที่ท่านต้องการ",
                   toastLength: Toast.LENGTH_SHORT,
                   gravity: ToastGravity.BOTTOM,
                 );
@@ -248,7 +275,7 @@ class _FilterWidgetState extends BaseConsumerState<FilterWidget> {
                 );
 
                 Fluttertoast.showToast(
-                  msg: result ?? "ไม่พบเจอร้านเภสัช",
+                  msg: result ?? "ไม่พบร้านขายยา",
                   toastLength: Toast.LENGTH_SHORT,
                   gravity: ToastGravity.BOTTOM,
                 );
@@ -314,6 +341,8 @@ class _FilterWidgetState extends BaseConsumerState<FilterWidget> {
           ),
         ],
       ),
+      //   ),
+      // ),
     );
   }
 }

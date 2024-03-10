@@ -110,7 +110,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                       url: imgProfile != null ? null : profileImg,
                       file: imgProfile != null ? File(imgProfile!.path) : null,
                       width: 350.w,
-                      height: 350.h,
+                      //height: 350.h,
                       fit: BoxFit.cover,
                     ),
                     // Callback เมื่อมีการอัปโหลดรูป
@@ -296,7 +296,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                         height: 8.h,
                       ),
                       Text(
-                        'กรุณาเลือกภาพ',
+                        'กรุณาเลือกรูปภาพ',
                         style: AppStyle.txtError,
                       ),
                       SizedBox(

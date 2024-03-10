@@ -78,6 +78,14 @@ class AppStyle {
     height: 1.33.h,
   );
 
+  static TextStyle txtCaptionlight = TextStyle(
+    fontFamily: FontFamily.inter,
+    color: AppColor.themeTextColor,
+    fontSize: 12.sp,
+    fontWeight: FontWeight.w400,
+    height: 1.33.h,
+  );
+
   static TextStyle txtError = TextStyle(
     fontFamily: FontFamily.inter,
     color: AppColor.errorColor,

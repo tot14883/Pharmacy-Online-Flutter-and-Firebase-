@@ -33,7 +33,7 @@ class _FilterReviewerWidgetState extends State<FilterReviewerWidget> {
     if (initial != null) {
       _reviewer = initial;
       reviewerController.text =
-          _reviewer == null || _reviewer == 0 ? '-' : '$_reviewer';
+          _reviewer == null /*|| _reviewer == 0*/ ? '-' : '$_reviewer';
     }
   }
 
@@ -59,7 +59,7 @@ class _FilterReviewerWidgetState extends State<FilterReviewerWidget> {
             if ((_reviewer ?? 0) >= 1) {
               setState(() {
                 _reviewer = (_reviewer ?? 0) - 1;
-                if (_reviewer == null || _reviewer == 0) {
+                if (_reviewer == null /*|| _reviewer == 0*/) {
                   reviewerController.clear();
                 } else {
                   reviewerController.text = '$_reviewer';
@@ -78,10 +78,11 @@ class _FilterReviewerWidgetState extends State<FilterReviewerWidget> {
           width: 8.w,
         ),
         BaseTextField(
-          label: '',
+          label: '     -',
           counterText: "",
           maxLength: 6,
-          width: 100.w,
+          width: 70.w,
+          textAlign: TextAlign.center,
           textInputType: TextInputType.number,
           controller: reviewerController,
           onChange: (val) {

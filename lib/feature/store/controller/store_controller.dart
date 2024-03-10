@@ -1,3 +1,5 @@
+//import 'dart:ffi';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:map_location_picker/map_location_picker.dart';
@@ -828,7 +830,7 @@ class StoreController extends StateNotifier<StoreState> {
   }) async {
     state = state.copyWith(searchError: '', searchPharmacyInfoList: null);
 
-    // ทำการดึงข้อมูล pharmacy ทั้งหมดในระบบมาก่อย
+    // ทำการดึงข้อมูล pharmacy ทั้งหมดในระบบมาก่อน
     final pharmacyInfoList = state.pharmacyInfoList.value;
 
     // ถ้าเป็นการค้นหาทั้งหมด และทำไปเก็บใน searchPharmacyInforList และไปที่หน้า search result
@@ -839,7 +841,7 @@ class StoreController extends StateNotifier<StoreState> {
       return;
     }
 
-    // ดึงข้อมูลค้นหาของ field อื่นท่
+    // ดึงข้อมูลค้นหาของ field อื่น
     final distance = state.searchDistance;
     final reviewScore = state.searchReviewScore;
     final countReviewer = state.searchCountReviewer;
@@ -915,15 +917,42 @@ class StoreController extends StateNotifier<StoreState> {
         // ถ้าคะแนนรีวิวที่ต้องการค้นหาไม่เป็น null
         // เช็ดว่าคะแนนรีวิวที่ filter มีคะแนนรีวิวตามเงื่อนไข
         // ถ้ามีการให้ hasReviewScore เป็น true
+        // if (reviewScore != null) {
+        //   hasReviewScore = (e.ratingScore ?? 0) >= int.parse(reviewScore.value);
+        // }
         if (reviewScore != null) {
-          hasReviewScore = (e.ratingScore ?? 0) >= int.parse(reviewScore.value);
+          if ((int.parse(reviewScore.value)) == 1) {
+            hasReviewScore =
+                (e.ratingScore ?? 0) >= 1 && (e.ratingScore ?? 0) < 2;
+          } else if ((int.parse(reviewScore.value)) == 2) {
+            hasReviewScore =
+                (e.ratingScore ?? 0) >= 2 && (e.ratingScore ?? 0) < 3;
+          } else if ((int.parse(reviewScore.value)) == 3) {
+            hasReviewScore =
+                (e.ratingScore ?? 0) >= 3 && (e.ratingScore ?? 0) < 4;
+          } else if ((int.parse(reviewScore.value)) == 4) {
+            hasReviewScore =
+                (e.ratingScore ?? 0) >= 4 && (e.ratingScore ?? 0) < 5;
+          } else if ((int.parse(reviewScore.value)) == 5) {
+            hasReviewScore = (e.ratingScore ?? 0) == 5;
+          } else {
+            hasReviewScore =
+                (e.ratingScore ?? 0) == int.parse(reviewScore.value);
+          }
         }
 
         // ถ้าคนรีวิวที่ต้องการค้นหาไม่เป็น null
         // เช็ดว่าคนรีวิวที่ filter มีคนรีวิวตามเงื่อนไข
         // ถ้ามีการให้ hasReviewScore เป็น true
+        // if (countReviewer != null) {
+        //   hasCountReviewer = (e.countReviewer ?? 0) >= countReviewer;
+        // }
         if (countReviewer != null) {
-          hasCountReviewer = (e.countReviewer ?? 0) >= countReviewer;
+          if (countReviewer >= 0 && countReviewer < 100) {
+            hasCountReviewer = (e.countReviewer ?? 0) == countReviewer;
+          } else {
+            hasCountReviewer = (e.countReviewer ?? 0) >= countReviewer;
+          }
         }
 
         // ถ้าชื่อที่ต้องการค้นหาไม่เป็น null หรือว่าง และ hasName เป็น false ให้ error message เป็นตามนี้
@@ -933,12 +962,12 @@ class StoreController extends StateNotifier<StoreState> {
 
         // ถ้าคะแนนที่ต้องการค้นหาไม่เป็น null และ hasReviewScore เป็น false ให้ error message เป็นตามนี้
         if (reviewScore != null && !hasReviewScore) {
-          state = state.copyWith(searchError: 'ค้นหาด้วยดาวไม่เจอ');
+          state = state.copyWith(searchError: 'ค้นหาด้วยคะแนนรีวิวไม่เจอ');
         }
 
         // ถ้าคนรีวิวที่ต้องการค้นหาไม่เป็น null และ hasCountReviewer เป็น false ให้ error message เป็นตามนี้
         if (countReviewer != null && !hasCountReviewer) {
-          state = state.copyWith(searchError: 'ค้นหาจำนวนคนรีวิวไม่เจอ');
+          state = state.copyWith(searchError: 'ค้นหาด้วยจำนวนคนรีวิวไม่เจอ');
         }
 
         // ถ้าระยะทางที่ต้องการค้นหาไม่เป็น null และ hasDistance เป็น false ให้ error message เป็นตามนี้
@@ -947,60 +976,78 @@ class StoreController extends StateNotifier<StoreState> {
         }
 
         // เงื่อนกรณี filter พร้อมกันหลายแบบ
+        //ชื่ออย่างเดียว
         if (name != null &&
             name.isNotEmpty &&
             reviewScore == null &&
             countReviewer == null &&
             (distance == null || distance == 0)) {
           return hasName;
+          //ชื่อกับคะแนนรีวิว
         } else if (name != null &&
             name.isNotEmpty &&
             reviewScore != null &&
             countReviewer == null &&
             (distance == null || distance == 0)) {
           return hasName && hasReviewScore;
+          //ชื่อกับจำนวนคน
         } else if (name != null &&
             name.isNotEmpty &&
             reviewScore == null &&
             countReviewer != null &&
             (distance == null || distance == 0)) {
           return hasName && hasCountReviewer;
+          //ชื่อกับระยะทาง
         } else if (name != null &&
             name.isNotEmpty &&
             reviewScore == null &&
             countReviewer == null &&
             (distance != null && distance > 0)) {
           return hasName && hasDistance;
+          //ชื่อ ระยะทาง จำนวน คะแนน
+          // } else if (name != null &&
+          //     name.isNotEmpty &&
+          //     reviewScore != null &&
+          //     countReviewer != null &&
+          //     (distance != null && distance > 0)) {
+          //   return hasName && hasReviewScore && hasCountReviewer && hasDistance;
+          //คะแนนรีวิว
         } else if ((name == null || name.isEmpty) &&
             reviewScore != null &&
             countReviewer == null &&
             (distance == null || distance == 0)) {
           return hasReviewScore;
+          //คะแนน จำนวน ระยะทาง
         } else if ((name == null || name.isEmpty) &&
             reviewScore != null &&
             countReviewer != null &&
             (distance != null && distance > 0)) {
           return hasReviewScore && hasCountReviewer && hasDistance;
+          //คะแนน จำนวน
         } else if ((name == null || name.isEmpty) &&
             reviewScore != null &&
             countReviewer != null &&
             (distance == null || distance == 0)) {
           return hasReviewScore && hasCountReviewer;
+          //คะแนน ระยะทาง
         } else if ((name == null || name.isEmpty) &&
             reviewScore != null &&
             countReviewer == null &&
             (distance != null && distance > 0)) {
           return hasReviewScore && hasDistance;
+          //จำนวน
         } else if ((name == null || name.isEmpty) &&
             reviewScore == null &&
             countReviewer != null &&
             (distance == null || distance == 0)) {
           return hasCountReviewer;
+          //จำนวน ระยะทาง
         } else if ((name == null || name.isEmpty) &&
             reviewScore == null &&
             countReviewer != null &&
             (distance != null && distance > 0)) {
           return hasCountReviewer && hasDistance;
+          //ระยะทาง
         } else if ((name == null || name.isEmpty) &&
             reviewScore == null &&
             countReviewer == null &&

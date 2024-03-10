@@ -278,7 +278,7 @@ class _SignUpPharmacyStoreWidgetState
           BaseImageView(
             file: File(licenseStoreFile!.path),
             width: 250.w,
-            height: 250.h,
+            //height: 250.h,
             fit: BoxFit.cover,
           ),
         ],
@@ -287,7 +287,7 @@ class _SignUpPharmacyStoreWidgetState
             height: 8.h,
           ),
           Text(
-            'กรุณาเลือกภาพ',
+            'กรุณาเลือกรูปภาพ',
             style: AppStyle.txtError,
           ),
         ],
@@ -309,7 +309,7 @@ class _SignUpPharmacyStoreWidgetState
           BaseImageView(
             file: File(qrcodeFile!.path),
             width: 250.w,
-            height: 250.h,
+            //height: 250.h,
             fit: BoxFit.cover,
           ),
         ],
@@ -318,7 +318,7 @@ class _SignUpPharmacyStoreWidgetState
             height: 8.h,
           ),
           Text(
-            'กรุณาเลือกภาพ',
+            'กรุณาเลือกรูปภาพ',
             style: AppStyle.txtError,
           ),
         ],
