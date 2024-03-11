@@ -948,7 +948,7 @@ class StoreController extends StateNotifier<StoreState> {
         //   hasCountReviewer = (e.countReviewer ?? 0) >= countReviewer;
         // }
         if (countReviewer != null) {
-          if (countReviewer >= 0 && countReviewer < 100) {
+          if (countReviewer == 0) {
             hasCountReviewer = (e.countReviewer ?? 0) == countReviewer;
           } else {
             hasCountReviewer = (e.countReviewer ?? 0) >= countReviewer;

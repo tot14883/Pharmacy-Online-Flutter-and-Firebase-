@@ -286,7 +286,7 @@ class StoreDetailContent extends ConsumerWidget {
           BaseImageView(
             url: profileImg,
             width: 250.w,
-            height: 250.h,
+            //height: 250.h,
             fit: BoxFit.cover,
             alignment: Alignment.center,
           ),

@@ -156,11 +156,11 @@ class _FilterWidgetState extends BaseConsumerState<FilterWidget> {
                 value: '1',
                 content: "1 ดาว",
               ),
-              SwitchButtonItem(
-                id: 6,
-                value: '0',
-                content: "0 ดาว",
-              ),
+              // SwitchButtonItem(
+              //   id: 6,
+              //   value: '0',
+              //   content: "0 ดาว",
+              // ),
             ],
             onChange: (val) {
               ref
@@ -175,10 +175,10 @@ class _FilterWidgetState extends BaseConsumerState<FilterWidget> {
             'จำนวนคนรีวิว',
             style: AppStyle.txtBody2,
           ),
-          Text(
-            '(ถ้าค้นหา 100 รีวิวขึ้นไปจะแสดงค่าที่ค้นหาและมากกว่าขึ้นไป)',
-            style: AppStyle.txtCaptionlight,
-          ),
+          // Text(
+          //   '(ถ้าค้นหา 100 รีวิวขึ้นไปจะแสดงค่าที่ค้นหาและมากกว่าขึ้นไป)',
+          //   style: AppStyle.txtCaptionlight,
+          // ),
           SizedBox(
             height: 4.h,
           ),
