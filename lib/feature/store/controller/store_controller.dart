@@ -852,19 +852,26 @@ class StoreController extends StateNotifier<StoreState> {
 
     List<PharmacyInfoResponse> _pharmacyInfoList = [];
 
+    //ฟิลเตอร์เวลาเปิดทำการ
+
     if (openPharmacy) {
       _pharmacyInfoList = pharmacyInfoList.where((val) {
         final currentTime = DateTime.now();
-        final timeClosing = _ref
+        var timeClosing = _ref
             .read(baseDateFormatterProvider)
             .convertTimeStringToDateTime(
               val.timeClosing ?? '${currentTime.hour}:${currentTime.minute}',
             );
-        final timeOpening = _ref
+        var timeOpening = _ref
             .read(baseDateFormatterProvider)
             .convertTimeStringToDateTime(
               val.timeOpening ?? '${currentTime.hour}:${currentTime.minute}',
             );
+
+        // ปรับเวลาเปิดร้านให้ถูกต้องถ้า timeClosing มาก่อน timeOpening
+        if (timeClosing.isBefore(timeOpening)) {
+          timeOpening = timeOpening.subtract(Duration(days: 1));
+        }
         return currentTime.isAfter(timeOpening) &&
             currentTime.isBefore(timeClosing);
       }).toList();
