@@ -78,7 +78,7 @@ class _FilterReviewerWidgetState extends State<FilterReviewerWidget> {
           width: 8.w,
         ),
         BaseTextField(
-          label: '     -',
+          label: _reviewer == null ? '     -' : '',
           counterText: "",
           maxLength: 6,
           width: 70.w,
