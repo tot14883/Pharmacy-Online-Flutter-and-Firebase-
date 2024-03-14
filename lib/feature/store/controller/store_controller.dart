@@ -868,9 +868,24 @@ class StoreController extends StateNotifier<StoreState> {
               val.timeOpening ?? '${currentTime.hour}:${currentTime.minute}',
             );
 
-        // ปรับเวลาเปิดร้านให้ถูกต้องถ้า timeClosing มาก่อน timeOpening
+        //ถ้า timeClosing มาก่อน timeOpening ปรับ timeOpening ลบ 1 วัน แสดงวันเปิดวันปัจจุบัน user หลังเที่ยงคืนใช้ได้
+        // if (timeClosing.isBefore(timeOpening)) {
+        //   timeOpening = timeOpening.subtract(Duration(days: 1));
+        // }
+        // ถ้า timeClosing อยู่ก่อน timeOpening timeClosing จะถูกเพิ่ม 1 วัน timeClosing ใหม่ จะแสดงเวลาปิดของวันถัดไป
+        //  if (timeClosing.isBefore(timeOpening)) {
+        //   timeClosing = timeClosing.add(Duration(days: 1));
+        // }
+
+        // ปรับเวลาเปิดร้านให้ถูกต้องถ้า timeClosing อยู่ก่อน timeOpening
         if (timeClosing.isBefore(timeOpening)) {
-          timeOpening = timeOpening.subtract(Duration(days: 1));
+          // ปรับเวลาปิดร้านถ้า currentTime มากกว่า 12.00 น.
+          if (currentTime.hour >= 12) {
+            timeClosing = timeClosing.add(Duration(days: 1));
+          } else {
+            // ปรับเวลาเปิดร้านถ้า currentTime น้อยกว่า 12.00 น.
+            timeOpening = timeOpening.subtract(Duration(days: 1));
+          }
         }
         return currentTime.isAfter(timeOpening) &&
             currentTime.isBefore(timeClosing);
