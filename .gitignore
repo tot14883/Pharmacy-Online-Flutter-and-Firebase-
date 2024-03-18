@@ -44,7 +44,6 @@ app.*.map.json
 /android/app/release
 
 # ignore fvm flutter sdk
-.fvm/flutter_sdk
 
 *.zip
 *.tmp
@@ -58,3 +57,5 @@ pubspec.lock
 **.freezed.dart
 flutter-base-template-dev-service-account.json
 
+# FVM Version Cache
+.fvm/

@@ -85,7 +85,7 @@ class _FilterReviewerWidgetState extends State<FilterReviewerWidget> {
           textAlign: TextAlign.center,
           textInputType: TextInputType.number,
           controller: reviewerController,
-          onChange: (val) {
+          onFieldSubmitted: (val) {
             setState(() {
               _reviewer = int.parse(val);
             });
