@@ -80,13 +80,31 @@ class Validators {
     return null;
   }
 
-// isValidPhoneNumberMinLength(): ตรวจสอบว่าหมายเลขโทรศัพท์มีความยาวอย่างน้อย 10 หลักหรือไม่
-  static ValidateFailResult? isValidPhoneNumberMinLength(String? value) {
-    if (value!.length < 10) {
+// isValidPhoneNumberMinLength(): ตรวจสอบว่าหมายเลขโทรศัพท์มีความยาวอย่างน้อย 9 หลักหรือไม่
+  static ValidateFailResult? isValidPhoneNumberLength(String? value) {
+    if (value!.length < 9) {
       return ValidateFailResult.isNotEmpty;
     }
     return null;
   }
+
+// isValidPhoneNumberMinLength(): ตรวจสอบว่าหมายเลขโทรศัพท์มีความยาวอย่างน้อย 9หลักหรือไม่
+  // static ValidateFailResult? isValidPhoneNumber(String? value) {
+  //   // if (value == null || value.isEmpty) {
+  //   //   return ValidateFailResult.isNotEmpty;
+  //   // }
+
+  //   if (value!.length < 9) {
+  //     return ValidateFailResult.isNotEmpty;
+  //   }
+
+  //   RegExp re = RegExp(r'^[0-9]+$');
+  //   final bool isValid = re.hasMatch(value);
+  //   if (!isValid) {
+  //     return ValidateFailResult.isNotEmpty;
+  //   }
+  //   return null;
+  // }
 
 // isValidPhoneNumberStartsWith(): ตรวจสอบว่าหมายเลขโทรศัพท์ขึ้นต้นด้วย '0' หรือไม่
   static ValidateFailResult? isValidPhoneNumberStartsWith(String? value) {

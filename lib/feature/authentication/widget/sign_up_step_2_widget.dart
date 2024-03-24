@@ -44,6 +44,8 @@ class _SignUpStep2WidgetState extends ConsumerState<SignUpStep2Widget> {
   bool isRequiredLicensePharmacy = false;
   TextEditingController addressController = TextEditingController();
 
+  bool isValidated = false; //ตรวจสอบ
+
   @override
   void dispose() {
     super.dispose();
@@ -71,7 +73,12 @@ class _SignUpStep2WidgetState extends ConsumerState<SignUpStep2Widget> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             BaseUploadImageButton(
-              imgPreview: Assets.icons.icAddImg.svg(),
+              imgPreview: //Assets.icons.icProfile.svg(),
+                  SizedBox(
+                width: 120,
+                height: 120,
+                child: Assets.icons.icProfile.svg(),
+              ),
               onUpload: (val) {
                 setState(() {
                   imgProfile = val;
@@ -94,17 +101,31 @@ class _SignUpStep2WidgetState extends ConsumerState<SignUpStep2Widget> {
               height: 16.h,
             ),
             BaseTextField(
+              placeholder: "ชื่อ-นามสกุล",
               fieldKey: FieldSignUp.name,
               label: "ชื่อ-นามสกุล",
               isShowLabelField: true,
-              validator: Validators.combine(
-                [
-                  Validators.withMessage(
-                    "กรุณากรอกชื่อ-นามสกุล",
-                    Validators.isEmpty,
-                  ),
-                ],
-              ),
+              validator: (value) {
+                final validators = Validators.combine(
+                  [
+                    Validators.withMessage(
+                      "กรุณากรอกชื่อ-นามสกุล",
+                      Validators.isEmpty,
+                    ),
+                  ],
+                );
+                // ตรวจสอบ validator
+                //validators(value) จะคืนค่า null เมื่อผ่านเงื่อนไขของ validators ทั้งหมด
+                //และจะคืนค่าข้อความของ validator ที่ไม่ผ่านเมื่อเงื่อนไขใดเงื่อนไขหนึ่งไม่ถูกต้อง
+                if (validators(value) == null) {
+                  isValidated = true; //ตรวจสอบแล้วผ่านหมด
+                } else {
+                  isValidated = false;
+                }
+
+                // ส่งค่ากลับเป็นข้อความของ validator ที่ผ่านได้
+                return validators(value);
+              },
             ),
             SizedBox(
               height: 16.h,
@@ -114,14 +135,37 @@ class _SignUpStep2WidgetState extends ConsumerState<SignUpStep2Widget> {
               label: "เบอร์โทรศัพท์",
               isShowLabelField: true,
               textInputType: TextInputType.phone,
-              validator: Validators.combine(
-                [
+              maxLength: 10,
+              counterText: '',
+              placeholder: "0xxxxxxxxx",
+              validator: (value) {
+                final validators = Validators.combine([
                   Validators.withMessage(
                     "กรุณากรอกเบอร์โทรศัพท์",
                     Validators.isEmpty,
                   ),
-                ],
-              ),
+                  Validators.withMessage(
+                    "เบอร์โทรศัพท์ต้องขึ้นต้นด้วย 0",
+                    Validators.isValidPhoneNumberStartsWith,
+                  ),
+                  Validators.withMessage(
+                    "กรอกเบอร์โทรศัพท์ 9 หลักหรือ 10 หลัก",
+                    Validators.isValidPhoneNumberLength,
+                  ),
+                ]);
+
+                // ตรวจสอบ validator
+                //validators(value) จะคืนค่า null เมื่อผ่านเงื่อนไขของ validators ทั้งหมด
+                //และจะคืนค่าข้อความของ validator ที่ไม่ผ่านเมื่อเงื่อนไขใดเงื่อนไขหนึ่งไม่ถูกต้อง
+                if (validators(value) == null) {
+                  isValidated = true; //ตรวจสอบแล้วผ่านหมด
+                } else {
+                  isValidated = false;
+                }
+
+                // ส่งค่ากลับเป็นข้อความของ validator ที่ผ่านได้
+                return validators(value);
+              },
             ),
             SizedBox(
               height: 16.h,
@@ -132,6 +176,7 @@ class _SignUpStep2WidgetState extends ConsumerState<SignUpStep2Widget> {
                 controller: addressController,
                 label: "ที่อยู่",
                 isShowLabelField: true,
+                placeholder: "กดเพื่อเลือกตำแหน่งที่อยู่",
                 isReadOnly: true,
                 onTap: () async {
                   final result =
@@ -184,14 +229,27 @@ class _SignUpStep2WidgetState extends ConsumerState<SignUpStep2Widget> {
                     );
                   });
                 },
-                validator: Validators.combine(
-                  [
-                    Validators.withMessage(
-                      "กรุณาเลือกตำแหน่งที่อยู่",
-                      Validators.isEmpty,
-                    ),
-                  ],
-                ),
+                validator: (value) {
+                  final validators = Validators.combine(
+                    [
+                      Validators.withMessage(
+                        "กรุณาเลือกตำแหน่งที่อยู่",
+                        Validators.isEmpty,
+                      ),
+                    ],
+                  );
+                  // ตรวจสอบ validator
+                  //validators(value) จะคืนค่า null เมื่อผ่านเงื่อนไขของ validators ทั้งหมด
+                  //และจะคืนค่าข้อความของ validator ที่ไม่ผ่านเมื่อเงื่อนไขใดเงื่อนไขหนึ่งไม่ถูกต้อง
+                  if (validators(value) == null) {
+                    isValidated = true; //ตรวจสอบแล้วผ่านหมด
+                  } else {
+                    isValidated = false;
+                  }
+
+                  // ส่งค่ากลับเป็นข้อความของ validator ที่ผ่านได้
+                  return validators(value);
+                },
               ),
               SizedBox(
                 height: 16.h,
@@ -202,14 +260,27 @@ class _SignUpStep2WidgetState extends ConsumerState<SignUpStep2Widget> {
                 fieldKey: FieldSignUp.licensePharmacy,
                 label: "เลขที่ใบอนุญาตเภสัชกร",
                 isShowLabelField: true,
-                validator: Validators.combine(
-                  [
-                    Validators.withMessage(
-                      "กรุณากรอกเลขที่ใบอนุญาตเภสัชกร",
-                      Validators.isEmpty,
-                    ),
-                  ],
-                ),
+                validator: (value) {
+                  final validators = Validators.combine(
+                    [
+                      Validators.withMessage(
+                        "กรุณากรอกเลขที่ใบอนุญาตเภสัชกร",
+                        Validators.isEmpty,
+                      ),
+                    ],
+                  );
+                  // ตรวจสอบ validator
+                  //validators(value) จะคืนค่า null เมื่อผ่านเงื่อนไขของ validators ทั้งหมด
+                  //และจะคืนค่าข้อความของ validator ที่ไม่ผ่านเมื่อเงื่อนไขใดเงื่อนไขหนึ่งไม่ถูกต้อง
+                  if (validators(value) == null) {
+                    isValidated = true; //ตรวจสอบแล้วผ่านหมด
+                  } else {
+                    isValidated = false;
+                  }
+
+                  // ส่งค่ากลับเป็นข้อความของ validator ที่ผ่านได้
+                  return validators(value);
+                },
               ),
               SizedBox(
                 height: 16.h,
@@ -266,21 +337,34 @@ class _SignUpStep2WidgetState extends ConsumerState<SignUpStep2Widget> {
                 Expanded(
                   child: BaseButton(
                     onTap: () async {
-                      if (isPharmacy) {
-                        isRequiredLicensePharmacy =
-                            licenseFile != null ? false : true;
-                      }
-
-                      isRequiredProfile = imgProfile != null ? false : true;
-
-                      setState(() {});
-
-                      if (imgProfile != null) {
-                        if (isPharmacy && licenseFile == null) {
-                          return;
+                      if (isValidated) {
+                        if (isPharmacy) {
+                          isRequiredLicensePharmacy =
+                              licenseFile != null ? false : true;
                         }
 
-                        widget.onTap(imgProfile, licenseFile);
+                        isRequiredProfile = imgProfile != null ? false : true;
+
+                        setState(() {});
+
+                        if (imgProfile != null) {
+                          if (isPharmacy && licenseFile == null) {
+                            return;
+                          }
+
+                          widget.onTap(imgProfile, licenseFile);
+                        }
+                      } else {
+                        showDialog(
+                          context: context,
+                          builder: (_) {
+                            return BaseDialog(
+                              message: 'กรุณากรอกข้อมูลให้ถูกต้อง',
+                            );
+                          },
+                        );
+
+                        return;
                       }
                     },
                     text: 'ยืนยัน',
