@@ -21,6 +21,8 @@ import 'package:pharmacy_online/feature/profile/enum/field_user_info_enum.dart';
 import 'package:pharmacy_online/utils/util/base_utils.dart';
 import 'package:pharmacy_online/utils/util/vaildators.dart';
 
+//import 'package:fluttertoast/fluttertoast.dart';
+
 class EditProfileScreen extends ConsumerStatefulWidget {
   static const routeName = 'EditProfileScreen';
 
@@ -143,27 +145,14 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                     initialValue: fullname,
                     label: "ชื่อ-นามสกุล",
                     isShowLabelField: true,
-                    validator: (value) {
-                      final validators = Validators.combine(
-                        [
-                          Validators.withMessage(
-                            "กรุณากรอกชื่อ-นามสกุล",
-                            Validators.isEmpty,
-                          ),
-                        ],
-                      );
-                      // ตรวจสอบ validator
-                      //validators(value) จะคืนค่า null เมื่อผ่านเงื่อนไขของ validators ทั้งหมด
-                      //และจะคืนค่าข้อความของ validator ที่ไม่ผ่านเมื่อเงื่อนไขใดเงื่อนไขหนึ่งไม่ถูกต้อง
-                      if (validators(value) == null) {
-                        isValidated = true; //ตรวจสอบแล้วผ่านหมด
-                      } else {
-                        isValidated = false;
-                      }
-
-                      // ส่งค่ากลับเป็นข้อความของ validator ที่ผ่านได้
-                      return validators(value);
-                    },
+                    validator: Validators.combine(
+                      [
+                        Validators.withMessage(
+                          "กรุณากรอกชื่อ-นามสกุล",
+                          Validators.isEmpty,
+                        ),
+                      ],
+                    ),
                   ),
                   SizedBox(
                     height: 16.h,
@@ -174,37 +163,26 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                     initialValue: phone,
                     label: "เบอร์โทรศัพท์",
                     placeholder: "0xxxxxxxxx",
+                    counterText: '',
                     textInputType: TextInputType.phone,
+                    maxLength: 10,
                     isShowLabelField: true,
-                    validator: (value) {
-                      final validators = Validators.combine(
-                        [
-                          Validators.withMessage(
-                            "กรุณากรอกเบอร์โทรศัพท์",
-                            Validators.isEmpty,
-                          ),
-                          Validators.withMessage(
-                            "เบอร์โทรศัพท์ต้องขึ้นต้นด้วย 0",
-                            Validators.isValidPhoneNumberStartsWith,
-                          ),
-                          Validators.withMessage(
-                            "กรอกเบอร์โทรศัพท์ 9 หลักหรือ 10 หลัก",
-                            Validators.isValidPhoneNumberLength,
-                          ),
-                        ],
-                      );
-                      // ตรวจสอบ validator
-                      //validators(value) จะคืนค่า null เมื่อผ่านเงื่อนไขของ validators ทั้งหมด
-                      //และจะคืนค่าข้อความของ validator ที่ไม่ผ่านเมื่อเงื่อนไขใดเงื่อนไขหนึ่งไม่ถูกต้อง
-                      if (validators(value) == null) {
-                        isValidated = true; //ตรวจสอบแล้วผ่านหมด
-                      } else {
-                        isValidated = false;
-                      }
-
-                      // ส่งค่ากลับเป็นข้อความของ validator ที่ผ่านได้
-                      return validators(value);
-                    },
+                    validator: Validators.combine(
+                      [
+                        Validators.withMessage(
+                          "กรุณากรอกเบอร์โทรศัพท์",
+                          Validators.isEmpty,
+                        ),
+                        Validators.withMessage(
+                          "เบอร์โทรศัพท์ต้องขึ้นต้นด้วย 0",
+                          Validators.isValidPhoneNumberStartsWith,
+                        ),
+                        Validators.withMessage(
+                          "กรอกเบอร์โทรศัพท์ 9 หลักหรือ 10 หลัก",
+                          Validators.isValidPhoneNumberLength,
+                        ),
+                      ],
+                    ),
                   ),
                   SizedBox(
                     height: 16.h,
@@ -273,27 +251,14 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                           );
                         });
                       },
-                      validator: (value) {
-                        final validators = Validators.combine(
-                          [
-                            Validators.withMessage(
-                              "กรุณาเลือกตำแหน่งที่อยู่",
-                              Validators.isEmpty,
-                            ),
-                          ],
-                        );
-                        // ตรวจสอบ validator
-                        //validators(value) จะคืนค่า null เมื่อผ่านเงื่อนไขของ validators ทั้งหมด
-                        //และจะคืนค่าข้อความของ validator ที่ไม่ผ่านเมื่อเงื่อนไขใดเงื่อนไขหนึ่งไม่ถูกต้อง
-                        if (validators(value) == null) {
-                          isValidated = true; //ตรวจสอบแล้วผ่านหมด
-                        } else {
-                          isValidated = false;
-                        }
-
-                        // ส่งค่ากลับเป็นข้อความของ validator ที่ผ่านได้
-                        return validators(value);
-                      },
+                      validator: Validators.combine(
+                        [
+                          Validators.withMessage(
+                            "กรุณาเลือกตำแหน่งที่อยู่",
+                            Validators.isEmpty,
+                          ),
+                        ],
+                      ),
                     ),
                     SizedBox(
                       height: 16.h,
@@ -306,27 +271,14 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                       initialValue: licensePharmacy,
                       label: "เลขที่ใบอนุญาตเภสัชกร",
                       isShowLabelField: true,
-                      validator: (value) {
-                        final validators = Validators.combine(
-                          [
-                            Validators.withMessage(
-                              "กรุณากรอกเลขที่ใบอนุญาตเภสัชกร",
-                              Validators.isEmpty,
-                            ),
-                          ],
-                        );
-                        // ตรวจสอบ validator
-                        //validators(value) จะคืนค่า null เมื่อผ่านเงื่อนไขของ validators ทั้งหมด
-                        //และจะคืนค่าข้อความของ validator ที่ไม่ผ่านเมื่อเงื่อนไขใดเงื่อนไขหนึ่งไม่ถูกต้อง
-                        if (validators(value) == null) {
-                          isValidated = true; //ตรวจสอบแล้วผ่านหมด
-                        } else {
-                          isValidated = false;
-                        }
-
-                        // ส่งค่ากลับเป็นข้อความของ validator ที่ผ่านได้
-                        return validators(value);
-                      },
+                      validator: Validators.combine(
+                        [
+                          Validators.withMessage(
+                            "กรุณากรอกเลขที่ใบอนุญาตเภสัชกร",
+                            Validators.isEmpty,
+                          ),
+                        ],
+                      ),
                     ),
                     SizedBox(
                       height: 16.h,
@@ -373,35 +325,36 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                   BaseButton(
                     //ปุ่มที่กดเพื่ออัพเดทข้อมูลขึ้น Firebase
                     onTap: () async {
-                      final result = await ref
-                          .read(profileControllerProvider.notifier)
-                          .onUpdateUserInfo(imgProfile, licenseFile);
-
-                      if (result) {
-                        await ref
+                      if (formKey.currentState!.validate()) {
+                        final result = await ref
                             .read(profileControllerProvider.notifier)
-                            .onGetUserInfo();
-                        await ref
-                            .read(profileControllerProvider.notifier)
-                            .onGetPharmacyStore();
+                            .onUpdateUserInfo(imgProfile, licenseFile);
+                        if (result) {
+                          await ref
+                              .read(profileControllerProvider.notifier)
+                              .onGetUserInfo();
+                          await ref
+                              .read(profileControllerProvider.notifier)
+                              .onGetPharmacyStore();
 
-                        showDialog(
-                          context: context,
-                          builder: (_) {
-                            return BaseDialog(
-                              message: 'แก้ไขสำเร็จ',
-                            );
-                          },
-                        );
-                      } else {
-                        showDialog(
-                          context: context,
-                          builder: (_) {
-                            return BaseDialog(
-                              message: 'แก้ไขไม่สำเร็จ',
-                            );
-                          },
-                        );
+                          showDialog(
+                            context: context,
+                            builder: (_) {
+                              return BaseDialog(
+                                message: 'แก้ไขสำเร็จ',
+                              );
+                            },
+                          );
+                        } else {
+                          showDialog(
+                            context: context,
+                            builder: (_) {
+                              return BaseDialog(
+                                message: 'แก้ไขไม่สำเร็จ',
+                              );
+                            },
+                          );
+                        }
                       }
                     },
                     text: 'ยืนยันแก้ไข',

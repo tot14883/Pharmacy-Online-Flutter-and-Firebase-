@@ -166,7 +166,7 @@ class _EditPharmacyStoreScreenState
                     validator: Validators.combine(
                       [
                         Validators.withMessage(
-                          "กรุณากรอกข้อมูล",
+                          "กรุณากรอกชื่อร้าน",
                           Validators.isEmpty,
                         ),
                       ],
@@ -178,8 +178,9 @@ class _EditPharmacyStoreScreenState
                   // Textfield สำหรับที่อยู่ร้าน
                   BaseTextField(
                     fieldKey: FieldUserInfo.addressStore,
-                    label: "ที่อยู่",
+                    label: "ที่อยู่ร้าน",
                     controller: addressController,
+                    placeholder: "กดเพื่อเลือกตำแหน่งที่อยู่",
                     isReadOnly: true,
                     isShowLabelField: true,
                     // Callback เมื่อที่อยู่ถูกแตะ จะเปิดหน้าต่างเลือกที่อยู่
@@ -242,7 +243,7 @@ class _EditPharmacyStoreScreenState
                     validator: Validators.combine(
                       [
                         Validators.withMessage(
-                          "กรุณากรอกข้อมูล",
+                          "กรุณาระบุตำแหน่งที่อยู่ร้าน",
                           Validators.isEmpty,
                         ),
                       ],
@@ -256,13 +257,23 @@ class _EditPharmacyStoreScreenState
                     fieldKey: FieldUserInfo.phoneStore,
                     initialValue: phoneStore,
                     label: "เบอร์โทรศัพท์",
+                    maxLength: 10,
+                    counterText: '',
                     textInputType: TextInputType.phone,
                     isShowLabelField: true,
                     validator: Validators.combine(
                       [
                         Validators.withMessage(
-                          "กรุณากรอกข้อมูล",
+                          "กรุณากรอกเบอร์โทรศัพท์",
                           Validators.isEmpty,
+                        ),
+                        Validators.withMessage(
+                          "เบอร์โทรศัพท์ต้องขึ้นต้นด้วย 0",
+                          Validators.isValidPhoneNumberStartsWith,
+                        ),
+                        Validators.withMessage(
+                          "กรอกเบอร์โทรศัพท์ 9 หลักหรือ 10 หลัก",
+                          Validators.isValidPhoneNumberLength,
                         ),
                       ],
                     ),
@@ -274,6 +285,7 @@ class _EditPharmacyStoreScreenState
                   BaseTextField(
                     key: UniqueKey(),
                     label: "เวลาเปิด",
+                    placeholder: "กดเพื่อเลือกเวลาเปิดร้าน",
                     textInputType: TextInputType.datetime,
                     isReadOnly: true,
                     isShowLabelField: true,
@@ -302,6 +314,7 @@ class _EditPharmacyStoreScreenState
                   BaseTextField(
                     key: UniqueKey(),
                     label: "เวลาปิด",
+                    placeholder: "กดเพื่อเลือกเวลาปิดร้าน",
                     textInputType: TextInputType.datetime,
                     isShowLabelField: true,
                     isReadOnly: true,
@@ -329,13 +342,13 @@ class _EditPharmacyStoreScreenState
                   // Textfield สำหรับเลขที่ใบอนุญาตร้าน
                   BaseTextField(
                     fieldKey: FieldUserInfo.licensePharmacyStore,
-                    label: "เลขที่ใบอนุญาตร้าน",
+                    label: "เลขที่ใบอนุญาตร้านขายยา",
                     initialValue: licenseStore,
                     isShowLabelField: true,
                     validator: Validators.combine(
                       [
                         Validators.withMessage(
-                          "กรุณากรอกข้อมูล",
+                          "กรุณากรอกเลขที่ใบอนุญาตร้านขายยา",
                           Validators.isEmpty,
                         ),
                       ],
@@ -346,7 +359,7 @@ class _EditPharmacyStoreScreenState
                   ),
                   // Widget สำหรับอัปโหลดรูปใบอนุญาตร้าน
                   BaseUploadImage(
-                    label: 'รูปใบอนุญาตร้าน',
+                    label: 'รูปใบอนุญาตร้านขายยา',
                     onUpload: (val) {
                       setState(() {
                         licenseFile = val;
@@ -379,60 +392,62 @@ class _EditPharmacyStoreScreenState
                   // ปุ่มสำหรับยืนยันการแก้ไขข้อมูล
                   BaseButton(
                     onTap: () async {
-                      if (openingTime == null || closingTime == null) {
-                        Fluttertoast.showToast(
-                          msg: "กรุณาระบุเวลาเปิด-ปิด",
-                          toastLength: Toast.LENGTH_SHORT,
-                          gravity: ToastGravity.BOTTOM,
-                        );
-                        return;
-                      }
-                      // เรียกเมธอดใน ProfileController เพื่อทำการแก้ไขข้อมูล
-                      final result = await ref
-                          .read(profileControllerProvider.notifier)
-                          .onUpdatePharmacyStore(
-                            licenseFile,
-                            storeFile,
-                            openingTime!,
-                            closingTime!,
+                      if (formKey.currentState!.validate()) {
+                        if (openingTime == null || closingTime == null) {
+                          Fluttertoast.showToast(
+                            msg: "กรุณาระบุเวลาเปิด-ปิดร้าน",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.BOTTOM,
                           );
-
-                      if (result) {
-                        // ทำการโหลดข้อมูลผู้ใช้และข้อมูลร้านใหม่
-                        await ref
+                          return;
+                        }
+                        // เรียกเมธอดใน ProfileController เพื่อทำการแก้ไขข้อมูล
+                        final result = await ref
                             .read(profileControllerProvider.notifier)
-                            .onGetUserInfo();
-                        await ref
-                            .read(profileControllerProvider.notifier)
-                            .onGetPharmacyStore();
-
-                        // แจ้ง Notification ว่าต้องให้ Admin อนุมัติให้ใหม่ถ้าแก้ไขข้อมูล
-                        await ref
-                            .read(homeControllerProvider.notifier)
-                            .onPostNotification(
-                              'เนื่องจากคุณแก้ไขข้อมูลร้านขายยา\nต้องรอแอดมินอนุมัติใหม่อีกครั้ง',
-                              OrderStatus.waitingPayment.name,
-                              '$uid',
+                            .onUpdatePharmacyStore(
+                              licenseFile,
+                              storeFile,
+                              openingTime!,
+                              closingTime!,
                             );
 
-                        // แสดง Dialog แจ้งเตือนเมื่อแก้ไขสำเร็จ
-                        showDialog(
-                          context: context,
-                          builder: (_) {
-                            return BaseDialog(
-                              message: 'แก้ไขสำเร็จ',
-                            );
-                          },
-                        );
-                      } else {
-                        showDialog(
-                          context: context,
-                          builder: (_) {
-                            return BaseDialog(
-                              message: 'แก้ไขไม่สำเร็จ',
-                            );
-                          },
-                        );
+                        if (result) {
+                          // ทำการโหลดข้อมูลผู้ใช้และข้อมูลร้านใหม่
+                          await ref
+                              .read(profileControllerProvider.notifier)
+                              .onGetUserInfo();
+                          await ref
+                              .read(profileControllerProvider.notifier)
+                              .onGetPharmacyStore();
+
+                          // แจ้ง Notification ว่าต้องให้ Admin อนุมัติให้ใหม่ถ้าแก้ไขข้อมูล
+                          await ref
+                              .read(homeControllerProvider.notifier)
+                              .onPostNotification(
+                                'เนื่องจากคุณแก้ไขข้อมูลร้านขายยา\nต้องรอแอดมินอนุมัติใหม่อีกครั้ง',
+                                OrderStatus.waitingPayment.name,
+                                '$uid',
+                              );
+
+                          // แสดง Dialog แจ้งเตือนเมื่อแก้ไขสำเร็จ
+                          showDialog(
+                            context: context,
+                            builder: (_) {
+                              return BaseDialog(
+                                message: 'แก้ไขสำเร็จ',
+                              );
+                            },
+                          );
+                        } else {
+                          showDialog(
+                            context: context,
+                            builder: (_) {
+                              return BaseDialog(
+                                message: 'แก้ไขไม่สำเร็จ',
+                              );
+                            },
+                          );
+                        }
                       }
                     },
                     text: 'ยืนยันแก้ไข',

@@ -56,6 +56,8 @@ class _SignUpPharmacyStoreWidgetState
       isRequiredQrcode = false;
   TimeOfDay? openingTime, closingTime;
 
+  bool isValidated = false; //ตรวจสอบ
+
   @override
   void dispose() {
     super.dispose();
@@ -108,7 +110,8 @@ class _SignUpPharmacyStoreWidgetState
         BaseTextField(
           fieldKey: FieldSignUp.addressStore,
           controller: addressController,
-          label: "ที่อยู่",
+          placeholder: "กดเพื่อเลือกตำแหน่งที่อยู่",
+          label: "ที่อยู่ร้าน",
           isShowLabelField: true,
           isReadOnly: true,
           onTap: () async {
@@ -163,7 +166,7 @@ class _SignUpPharmacyStoreWidgetState
           validator: Validators.combine(
             [
               Validators.withMessage(
-                "กรุณาระบุที่อยู่",
+                "กรุณาระบุตำแหน่งที่อยู่ร้าน",
                 Validators.isEmpty,
               ),
             ],
@@ -175,6 +178,8 @@ class _SignUpPharmacyStoreWidgetState
         BaseTextField(
           fieldKey: FieldSignUp.phoneStore,
           label: "เบอร์โทรศัพท์",
+          maxLength: 10,
+          counterText: '',
           isShowLabelField: true,
           textInputType: TextInputType.phone,
           validator: Validators.combine(
@@ -182,6 +187,14 @@ class _SignUpPharmacyStoreWidgetState
               Validators.withMessage(
                 "กรุณากรอกเบอร์โทรศัพท์",
                 Validators.isEmpty,
+              ),
+              Validators.withMessage(
+                "เบอร์โทรศัพท์ต้องขึ้นต้นด้วย 0",
+                Validators.isValidPhoneNumberStartsWith,
+              ),
+              Validators.withMessage(
+                "กรอกเบอร์โทรศัพท์ 9 หลักหรือ 10 หลัก",
+                Validators.isValidPhoneNumberLength,
               ),
             ],
           ),
@@ -193,6 +206,7 @@ class _SignUpPharmacyStoreWidgetState
           label: "เวลาเปิด",
           isReadOnly: true,
           isShowLabelField: true,
+          placeholder: "กดเพื่อเลือกเวลาเปิดร้าน",
           textInputType: TextInputType.datetime,
           controller: openingController,
           onTap: () async {
@@ -222,6 +236,7 @@ class _SignUpPharmacyStoreWidgetState
           label: "เวลาปิด",
           isShowLabelField: true,
           isReadOnly: true,
+          placeholder: "กดเพื่อเลือกเวลาปิดร้าน",
           textInputType: TextInputType.datetime,
           controller: closingController,
           onTap: () async {
@@ -254,7 +269,7 @@ class _SignUpPharmacyStoreWidgetState
           validator: Validators.combine(
             [
               Validators.withMessage(
-                "กรุณากรอกเลขที่ใบอนุญาตร้าน",
+                "กรุณากรอกเลขที่ใบอนุญาตร้านขายยา",
                 Validators.isEmpty,
               ),
             ],
@@ -342,6 +357,7 @@ class _SignUpPharmacyStoreWidgetState
             Expanded(
               child: BaseButton(
                 onTap: () async {
+                  // if (validator == null) {
                   isRequiredStore = storeFile != null ? false : true;
                   isRequiredLicenseStore =
                       licenseStoreFile != null ? false : true;
@@ -371,6 +387,7 @@ class _SignUpPharmacyStoreWidgetState
                       closingTime!,
                     );
                   }
+                  // }
                 },
                 text: 'ยืนยัน',
               ),
