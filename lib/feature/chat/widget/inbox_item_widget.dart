@@ -119,12 +119,12 @@ class InboxItemWidget extends ConsumerWidget {
                       style: AppStyle.txtBody2
                           .copyWith(color: AppColor.themeGrayLight),
                     ),
-                  ],
-                  //แสดงชื่อไฟล์ภาพ (ถ้าไม่มีข้อความและมีไฟล์ภาพ)
-                  if (chatWithPharmacyItem.message == null &&
-                      chatWithPharmacyItem.message!.isEmpty &&
-                      chatWithPharmacyItem.chatImg != null &&
-                      chatWithPharmacyItem.chatImg!.isNotEmpty) ...[
+                  ] else ...[
+                    //ถ้าส่งรูปมาล่าสุดให้แสดงข้อความนี้
+                    // if (/*chatWithPharmacyItem.message == null &&
+                    //     chatWithPharmacyItem.message!.isEmpty &&*/
+                    //     chatWithPharmacyItem.chatImg != null &&
+                    //         chatWithPharmacyItem.chatImg!.isNotEmpty) ...[
                     Text(
                       '${chatWithPharmacyItem.chatImg}',
                       overflow: TextOverflow.ellipsis,
@@ -132,7 +132,8 @@ class InboxItemWidget extends ConsumerWidget {
                       style: AppStyle.txtBody2
                           .copyWith(color: AppColor.themeGrayLight),
                     ),
-                  ],
+                  ]
+                  // ],
                 ],
               ),
             ),

@@ -231,7 +231,7 @@ class _ChatScreenState extends BaseConsumerState<ChatScreen> {
                                     maxHeight: 1920,
                                     maxWidth: 2560,
                                     imageQuality: 30,
-                                    isMaximum2MB: true,
+                                    //isMaximum2MB: true,
                                   ),
                                 );
                             //ส่งรูปภาพในแชท
@@ -271,42 +271,44 @@ class _ChatScreenState extends BaseConsumerState<ChatScreen> {
                       Expanded(
                         child: BaseTextField(
                           controller: chatController,
-                          // label: 'Message',
-                          // isShowLabelField: true,
+                          //ช่องกรอกข้อความแชท
                         ),
                       ),
                       SizedBox(
                         width: 8.w,
                       ),
                       GestureDetector(
-                        onTap: () async {
-                          //ส่งข้อความ
-                          final id = widget.args.chatWithPharmacyItem.id;
-                          ref
-                              .read(chatControllerProvider.notifier)
-                              .onPushMessageChatUsecase(
-                                '$id',
-                                chatController.text,
-                                chatImgfile,
-                              );
-                          //การแจ้งเตือนส่งข้อความ
-                          if (isNotification) {
-                            await ref
-                                .read(homeControllerProvider.notifier)
-                                .onPostNotification(
-                                  '${userInfo?.fullName} ได้ส่งข้อความหาคุณ',
-                                  'approveChat',
-                                  '$pharmacyId',
-                                );
+                        // onTap: () async {
+                        onTap: chatController.text.isNotEmpty
+                            ? () async {
+                                //ส่งข้อความ
+                                final id = widget.args.chatWithPharmacyItem.id;
+                                ref
+                                    .read(chatControllerProvider.notifier)
+                                    .onPushMessageChatUsecase(
+                                      '$id',
+                                      chatController.text,
+                                      chatImgfile,
+                                    );
+                                //การแจ้งเตือนส่งข้อความ
+                                if (isNotification) {
+                                  await ref
+                                      .read(homeControllerProvider.notifier)
+                                      .onPostNotification(
+                                        '${userInfo?.fullName} ได้ส่งข้อความหาคุณ',
+                                        'approveChat',
+                                        '$pharmacyId',
+                                      );
 
-                            setState(() {
-                              isNotification = false;
-                            });
-                          }
-                          chatController.clear();
-                        },
+                                  setState(() {
+                                    isNotification = false;
+                                  });
+                                }
+                                chatController.clear();
+                              }
+                            : null, // ให้เป็น null เมื่อ BaseTextField ว่างเปล่า
                         child: Assets.icons.icSend.svg(),
-                      )
+                      ),
                     ],
                   ),
                 ),

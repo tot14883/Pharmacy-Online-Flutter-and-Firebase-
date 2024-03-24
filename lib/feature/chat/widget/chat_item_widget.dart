@@ -7,7 +7,7 @@ import 'package:pharmacy_online/core/app_style.dart';
 import 'package:pharmacy_online/core/local/base_shared_preference.dart';
 import 'package:pharmacy_online/feature/store/model/response/chat_with_pharmacy_response.dart';
 import 'package:pharmacy_online/utils/util/date_format.dart';
-import 'package:intl/intl.dart';
+//import 'package:intl/intl.dart';
 
 class ChatItemWidget extends ConsumerWidget {
   final ChatWithPharmacyResponse messageItem;
@@ -36,9 +36,9 @@ class ChatItemWidget extends ConsumerWidget {
     String? dateTime;
     String? dateDay; //เพิ่มมาเอง
 
-    DateTime? now;
-    now = DateTime.now();
-    String toDay = DateFormat('dd/MM/yyyy').format(now);
+    // DateTime? now;
+    // now = DateTime.now();
+    // String toDay = DateFormat('dd/MM/yyyy').format(now);
 
     //แปลงรูปแบบวันที่และเวลา
     if (createAt != null || updateAt != null) {
@@ -74,26 +74,7 @@ class ChatItemWidget extends ConsumerWidget {
               style: AppStyle.txtCaption,
             ),
           ],
-          //******************************************
-          //เพิ่มมาเอง จะลองทำกรุ๊ป
-          // if (messageItem.message != null &&
-          //     messageItem.message!.isNotEmpty) ...[
-          //   // ตรวจสอบว่าวันที่ของข้อความเปลี่ยนแปลงหรือไม่
-          //   // if (dateDay) ...[
-          //   Container(
-          //     padding: const EdgeInsets.all(16).r,
-          //     child: Text(
-          //       '$dateDay $toDay',
-          //       style: AppStyle.txtCaption,
-          //       textAlign: TextAlign.center,
-          //     ),
-          //   ),
-          //   // ],
-          // ],
-
-          // ส่วนของการแสดงข้อความ
-          //จบโค้ดเพิ่มมาเอง
-
+          //ส่วนของข้อความ
           if (messageItem.message != null &&
               messageItem.message!.isNotEmpty) ...[
             Container(
@@ -192,7 +173,7 @@ class ChatItemWidget extends ConsumerWidget {
                   ],
                   Container(
                     //กล่องสำหรับแสดงรูปภาพ
-                    padding: const EdgeInsets.all(16).r,
+                    padding: const EdgeInsets.all(8).r,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.only(
                         topLeft: const Radius.circular(12),
@@ -206,7 +187,7 @@ class ChatItemWidget extends ConsumerWidget {
                     ),
                     child: BaseImageView(
                       url: messageItem.chatImg,
-                      width: 140.w,
+                      width: 220.w,
                       //height: 150.h,
                       fit: BoxFit.cover,
                     ),
