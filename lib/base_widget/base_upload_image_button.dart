@@ -61,7 +61,7 @@ class _BaseUploadImageButtonState extends ConsumerState<BaseUploadImageButton> {
                   maxHeight: 1920,
                   maxWidth: 2560,
                   imageQuality: 30,
-                  isMaximum2MB: true,
+                  //isMaximum2MB: true,
                 ),
               );
 
@@ -93,13 +93,13 @@ class _BaseUploadImageButtonState extends ConsumerState<BaseUploadImageButton> {
           ? BaseImageView(
               file: File(image!.path),
               width: widget.width ?? 150.w,
-              height: widget.height ?? 150.h,
+              //height: widget.height ?? 150.h,
             )
           : widget.filePath != null
               ? BaseImageView(
                   url: widget.filePath,
                   width: 250.w,
-                  height: 250.h,
+                  //height: 250.h,
                 )
               : widget.imgPreview,
     );

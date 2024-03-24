@@ -5,7 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pharmacy_online/base_widget/base_button.dart';
 import 'package:pharmacy_online/base_widget/base_scaffold.dart';
 import 'package:pharmacy_online/core/app_style.dart';
-import 'package:pharmacy_online/feature/authentication/page/sign_in_screen.dart';
+//import 'package:pharmacy_online/feature/authentication/page/sign_in_screen.dart';
 import 'package:pharmacy_online/feature/main/page/main_screen.dart';
 import 'package:pharmacy_online/generated/assets.gen.dart';
 
@@ -39,10 +39,11 @@ class SignUpSuccessfulScreen extends ConsumerWidget {
               BaseButton(
                 minWidth: 100.w,
                 onTap: () {
-                  // นำทางผู้ใช้ไปยังหน้าจอ MainScreen และลบทุกทางที่ถูกเรียกใช้
                   Navigator.of(context).pushNamedAndRemoveUntil(
-                    SignInScreen.routeName,
-                    (route) => route.settings.name == MainScreen.routeName,
+                    MainScreen.routeName,
+                    (route) => false,
+                    //SignInScreen.routeName,
+                    //(route) => route.settings.name == MainScreen.routeName,
                   );
                 },
                 text: 'ยืนยัน',

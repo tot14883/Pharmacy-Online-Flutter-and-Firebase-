@@ -139,20 +139,22 @@ class _SignUpStep2WidgetState extends ConsumerState<SignUpStep2Widget> {
               counterText: '',
               placeholder: "0xxxxxxxxx",
               validator: (value) {
-                final validators = Validators.combine([
-                  Validators.withMessage(
-                    "กรุณากรอกเบอร์โทรศัพท์",
-                    Validators.isEmpty,
-                  ),
-                  Validators.withMessage(
-                    "เบอร์โทรศัพท์ต้องขึ้นต้นด้วย 0",
-                    Validators.isValidPhoneNumberStartsWith,
-                  ),
-                  Validators.withMessage(
-                    "กรอกเบอร์โทรศัพท์ 9 หลักหรือ 10 หลัก",
-                    Validators.isValidPhoneNumberLength,
-                  ),
-                ]);
+                final validators = Validators.combine(
+                  [
+                    Validators.withMessage(
+                      "กรุณากรอกเบอร์โทรศัพท์",
+                      Validators.isEmpty,
+                    ),
+                    Validators.withMessage(
+                      "เบอร์โทรศัพท์ต้องขึ้นต้นด้วย 0",
+                      Validators.isValidPhoneNumberStartsWith,
+                    ),
+                    Validators.withMessage(
+                      "กรอกเบอร์โทรศัพท์ 9 หลักหรือ 10 หลัก",
+                      Validators.isValidPhoneNumberLength,
+                    ),
+                  ],
+                );
 
                 // ตรวจสอบ validator
                 //validators(value) จะคืนค่า null เมื่อผ่านเงื่อนไขของ validators ทั้งหมด
@@ -259,6 +261,7 @@ class _SignUpStep2WidgetState extends ConsumerState<SignUpStep2Widget> {
               BaseTextField(
                 fieldKey: FieldSignUp.licensePharmacy,
                 label: "เลขที่ใบอนุญาตเภสัชกร",
+                placeholder: "เลขที่ใบอนุญาตเภสัชกร",
                 isShowLabelField: true,
                 validator: (value) {
                   final validators = Validators.combine(

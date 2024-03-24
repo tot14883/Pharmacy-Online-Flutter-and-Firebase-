@@ -4,7 +4,8 @@ import 'package:pharmacy_online/base_widget/base_bottom_navigation_widget.dart';
 import 'package:pharmacy_online/base_widget/base_dialog.dart';
 import 'package:pharmacy_online/base_widget/base_scaffold.dart';
 import 'package:pharmacy_online/core/widget/base_consumer_state.dart';
-import 'package:pharmacy_online/feature/authentication/page/sign_in_screen.dart';
+//import 'package:pharmacy_online/feature/authentication/page/sign_in_screen.dart';
+import 'package:pharmacy_online/feature/main/page/main_screen.dart';
 import 'package:pharmacy_online/feature/cart/controller/my_cart_controller.dart';
 import 'package:pharmacy_online/feature/chat/page/inbox_screen.dart';
 import 'package:pharmacy_online/feature/home/controller/home_controller.dart';
@@ -98,8 +99,10 @@ class _DashboardScreenState extends BaseConsumerState<DashboardScreen> {
                     hasCancel: true,
                     onClick: () {
                       Navigator.of(context).pushNamedAndRemoveUntil(
-                        SignInScreen.routeName,
+                        MainScreen.routeName,
                         (route) => false,
+                        // SignInScreen.routeName,
+                        // (route) => false,
                       );
                     },
                   );

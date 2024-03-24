@@ -38,6 +38,8 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   TextEditingController addressController = TextEditingController();
   final formKey = GlobalKey<BaseFormState>();
 
+  bool isValidated = false; //ตรวจสอบ
+
   @override
   void initState() {
     super.initState();
@@ -141,14 +143,27 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                     initialValue: fullname,
                     label: "ชื่อ-นามสกุล",
                     isShowLabelField: true,
-                    validator: Validators.combine(
-                      [
-                        Validators.withMessage(
-                          "กรุณากรอกชื่อ-นามสกุล",
-                          Validators.isEmpty,
-                        ),
-                      ],
-                    ),
+                    validator: (value) {
+                      final validators = Validators.combine(
+                        [
+                          Validators.withMessage(
+                            "กรุณากรอกชื่อ-นามสกุล",
+                            Validators.isEmpty,
+                          ),
+                        ],
+                      );
+                      // ตรวจสอบ validator
+                      //validators(value) จะคืนค่า null เมื่อผ่านเงื่อนไขของ validators ทั้งหมด
+                      //และจะคืนค่าข้อความของ validator ที่ไม่ผ่านเมื่อเงื่อนไขใดเงื่อนไขหนึ่งไม่ถูกต้อง
+                      if (validators(value) == null) {
+                        isValidated = true; //ตรวจสอบแล้วผ่านหมด
+                      } else {
+                        isValidated = false;
+                      }
+
+                      // ส่งค่ากลับเป็นข้อความของ validator ที่ผ่านได้
+                      return validators(value);
+                    },
                   ),
                   SizedBox(
                     height: 16.h,
@@ -158,16 +173,38 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                     fieldKey: FieldUserInfo.phone,
                     initialValue: phone,
                     label: "เบอร์โทรศัพท์",
+                    placeholder: "0xxxxxxxxx",
                     textInputType: TextInputType.phone,
                     isShowLabelField: true,
-                    validator: Validators.combine(
-                      [
-                        Validators.withMessage(
-                          "กรุณากรอกเบอร์โทรศัพท์",
-                          Validators.isEmpty,
-                        ),
-                      ],
-                    ),
+                    validator: (value) {
+                      final validators = Validators.combine(
+                        [
+                          Validators.withMessage(
+                            "กรุณากรอกเบอร์โทรศัพท์",
+                            Validators.isEmpty,
+                          ),
+                          Validators.withMessage(
+                            "เบอร์โทรศัพท์ต้องขึ้นต้นด้วย 0",
+                            Validators.isValidPhoneNumberStartsWith,
+                          ),
+                          Validators.withMessage(
+                            "กรอกเบอร์โทรศัพท์ 9 หลักหรือ 10 หลัก",
+                            Validators.isValidPhoneNumberLength,
+                          ),
+                        ],
+                      );
+                      // ตรวจสอบ validator
+                      //validators(value) จะคืนค่า null เมื่อผ่านเงื่อนไขของ validators ทั้งหมด
+                      //และจะคืนค่าข้อความของ validator ที่ไม่ผ่านเมื่อเงื่อนไขใดเงื่อนไขหนึ่งไม่ถูกต้อง
+                      if (validators(value) == null) {
+                        isValidated = true; //ตรวจสอบแล้วผ่านหมด
+                      } else {
+                        isValidated = false;
+                      }
+
+                      // ส่งค่ากลับเป็นข้อความของ validator ที่ผ่านได้
+                      return validators(value);
+                    },
                   ),
                   SizedBox(
                     height: 16.h,
@@ -236,14 +273,27 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                           );
                         });
                       },
-                      validator: Validators.combine(
-                        [
-                          Validators.withMessage(
-                            "กรุณาเลือกตำแหน่งที่อยู่",
-                            Validators.isEmpty,
-                          ),
-                        ],
-                      ),
+                      validator: (value) {
+                        final validators = Validators.combine(
+                          [
+                            Validators.withMessage(
+                              "กรุณาเลือกตำแหน่งที่อยู่",
+                              Validators.isEmpty,
+                            ),
+                          ],
+                        );
+                        // ตรวจสอบ validator
+                        //validators(value) จะคืนค่า null เมื่อผ่านเงื่อนไขของ validators ทั้งหมด
+                        //และจะคืนค่าข้อความของ validator ที่ไม่ผ่านเมื่อเงื่อนไขใดเงื่อนไขหนึ่งไม่ถูกต้อง
+                        if (validators(value) == null) {
+                          isValidated = true; //ตรวจสอบแล้วผ่านหมด
+                        } else {
+                          isValidated = false;
+                        }
+
+                        // ส่งค่ากลับเป็นข้อความของ validator ที่ผ่านได้
+                        return validators(value);
+                      },
                     ),
                     SizedBox(
                       height: 16.h,
@@ -256,14 +306,27 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                       initialValue: licensePharmacy,
                       label: "เลขที่ใบอนุญาตเภสัชกร",
                       isShowLabelField: true,
-                      validator: Validators.combine(
-                        [
-                          Validators.withMessage(
-                            "กรุณากรอกเลขที่ใบอนุญาตเภสัชกร",
-                            Validators.isEmpty,
-                          ),
-                        ],
-                      ),
+                      validator: (value) {
+                        final validators = Validators.combine(
+                          [
+                            Validators.withMessage(
+                              "กรุณากรอกเลขที่ใบอนุญาตเภสัชกร",
+                              Validators.isEmpty,
+                            ),
+                          ],
+                        );
+                        // ตรวจสอบ validator
+                        //validators(value) จะคืนค่า null เมื่อผ่านเงื่อนไขของ validators ทั้งหมด
+                        //และจะคืนค่าข้อความของ validator ที่ไม่ผ่านเมื่อเงื่อนไขใดเงื่อนไขหนึ่งไม่ถูกต้อง
+                        if (validators(value) == null) {
+                          isValidated = true; //ตรวจสอบแล้วผ่านหมด
+                        } else {
+                          isValidated = false;
+                        }
+
+                        // ส่งค่ากลับเป็นข้อความของ validator ที่ผ่านได้
+                        return validators(value);
+                      },
                     ),
                     SizedBox(
                       height: 16.h,

@@ -131,7 +131,7 @@ class ChooseFileWidget extends ConsumerWidget {
                   maxHeight: 1920,
                   maxWidth: 2560,
                   imageQuality: 30,
-                  isMaximum2MB: true,
+                  //isMaximum2MB: true,
                 ),
               );
 
