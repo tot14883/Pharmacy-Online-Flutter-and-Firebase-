@@ -25,6 +25,7 @@ import 'package:pharmacy_online/feature/profile/controller/profile_controller.da
 import 'package:pharmacy_online/feature/profile/enum/field_user_info_enum.dart';
 import 'package:pharmacy_online/utils/util/base_utils.dart';
 import 'package:pharmacy_online/utils/util/vaildators.dart';
+import 'package:pharmacy_online/generated/assets.gen.dart';
 
 class EditPharmacyStoreScreen extends ConsumerStatefulWidget {
   static const routeName = 'EditPharmacyStoreScreen';
@@ -48,6 +49,8 @@ class _EditPharmacyStoreScreenState
 
   bool isRequiredStore = false, isRequiredLicenseStore = false;
   TimeOfDay? openingTime, closingTime;
+
+  bool isTextFieldReadOnly = true; // ตรวจสอบตำแหน่งที่อยู่
 
   @override
   void initState() {
@@ -181,64 +184,75 @@ class _EditPharmacyStoreScreenState
                     label: "ที่อยู่ร้าน",
                     controller: addressController,
                     placeholder: "กดเพื่อเลือกตำแหน่งที่อยู่",
-                    isReadOnly: true,
+                    isReadOnly: isTextFieldReadOnly,
+                    suffixIcon: IconButton(
+                      icon: Assets.icons.icEdit.svg(),
+                      onPressed: () {
+                        setState(() {
+                          isTextFieldReadOnly =
+                              !isTextFieldReadOnly; // เปลี่ยนสถานะ isReadOnly โดยสลับค่า
+                        });
+                      },
+                    ),
                     isShowLabelField: true,
                     // Callback เมื่อที่อยู่ถูกแตะ จะเปิดหน้าต่างเลือกที่อยู่
                     onTap: () async {
-                      final result =
-                          await ref.read(baseUtilsProvider).getLocation();
-                      result.when((success) {
-                        // เมื่อได้ข้อมูลที่อยู่ จะนำไปแสดงใน Textfield
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return MapLocationPicker(
-                                apiKey:
-                                    "AIzaSyAqyETt9iu7l5QioWz5iwEbzrallQrpzLs",
-                                popOnNextButtonTaped: true,
-                                currentLatLng:
-                                    LatLng(success.latitude, success.longitude),
-                                // Callback เมื่อเลือกที่อยู่แล้ว
-                                onNext: (GeocodingResult? result) {
-                                  if (result != null) {
-                                    Location location =
-                                        result.geometry.location;
-                                    addressController.text =
-                                        result.formattedAddress.toString();
-                                    ref
-                                        .read(
-                                          profileControllerProvider.notifier,
-                                        )
-                                        .setLatAndLongPharmacyStore(
-                                          location.lat,
-                                          location.lng,
-                                        );
-                                  }
-                                },
-                                // Callback เมื่อเลือกที่อยู่จาก suggestion
-                                onSuggestionSelected:
-                                    (PlacesDetailsResponse? result) {
-                                  if (result != null) {
-                                    setState(() {
-                                      result.result.formattedAddress ?? "";
-                                    });
-                                  }
-                                },
+                      if (isTextFieldReadOnly) {
+                        final result =
+                            await ref.read(baseUtilsProvider).getLocation();
+                        result.when((success) {
+                          // เมื่อได้ข้อมูลที่อยู่ จะนำไปแสดงใน Textfield
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return MapLocationPicker(
+                                  apiKey:
+                                      "AIzaSyAqyETt9iu7l5QioWz5iwEbzrallQrpzLs",
+                                  popOnNextButtonTaped: true,
+                                  currentLatLng: LatLng(
+                                      success.latitude, success.longitude),
+                                  // Callback เมื่อเลือกที่อยู่แล้ว
+                                  onNext: (GeocodingResult? result) {
+                                    if (result != null) {
+                                      Location location =
+                                          result.geometry.location;
+                                      addressController.text =
+                                          result.formattedAddress.toString();
+                                      ref
+                                          .read(
+                                            profileControllerProvider.notifier,
+                                          )
+                                          .setLatAndLongPharmacyStore(
+                                            location.lat,
+                                            location.lng,
+                                          );
+                                    }
+                                  },
+                                  // Callback เมื่อเลือกที่อยู่จาก suggestion
+                                  onSuggestionSelected:
+                                      (PlacesDetailsResponse? result) {
+                                    if (result != null) {
+                                      setState(() {
+                                        result.result.formattedAddress ?? "";
+                                      });
+                                    }
+                                  },
+                                );
+                              },
+                            ),
+                          );
+                        }, (error) {
+                          showDialog(
+                            context: context,
+                            builder: (_) {
+                              return BaseDialog(
+                                message: error.message,
                               );
                             },
-                          ),
-                        );
-                      }, (error) {
-                        showDialog(
-                          context: context,
-                          builder: (_) {
-                            return BaseDialog(
-                              message: error.message,
-                            );
-                          },
-                        );
-                      });
+                          );
+                        });
+                      }
                     },
                     validator: Validators.combine(
                       [

@@ -57,6 +57,7 @@ class _SignUpPharmacyStoreWidgetState
   TimeOfDay? openingTime, closingTime;
 
   bool isValidated = false; //ตรวจสอบ
+  bool isTextFieldReadOnly = true; // ตรวจสอบตำแหน่งที่อยู่
 
   @override
   void dispose() {
@@ -113,55 +114,66 @@ class _SignUpPharmacyStoreWidgetState
           placeholder: "กดเพื่อเลือกตำแหน่งที่อยู่",
           label: "ที่อยู่ร้าน",
           isShowLabelField: true,
-          isReadOnly: true,
+          isReadOnly: isTextFieldReadOnly,
+          suffixIcon: IconButton(
+            icon: Assets.icons.icEdit.svg(),
+            onPressed: () {
+              setState(() {
+                isTextFieldReadOnly =
+                    !isTextFieldReadOnly; // เปลี่ยนสถานะ isReadOnly โดยสลับค่า
+              });
+            },
+          ),
           onTap: () async {
-            final result = await ref.read(baseUtilsProvider).getLocation();
-            result.when((success) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) {
-                    return MapLocationPicker(
-                      apiKey: "AIzaSyAqyETt9iu7l5QioWz5iwEbzrallQrpzLs",
-                      popOnNextButtonTaped: true,
-                      currentLatLng:
-                          LatLng(success.latitude, success.longitude),
-                      onNext: (GeocodingResult? result) {
-                        if (result != null) {
-                          Location location = result.geometry.location;
-                          addressController.text =
-                              result.formattedAddress.toString();
-                          ref
-                              .read(
-                                authenticationControllerProvider.notifier,
-                              )
-                              .setLatAndLongPharmacyStore(
-                                location.lat,
-                                location.lng,
-                              );
-                        }
-                      },
-                      onSuggestionSelected: (PlacesDetailsResponse? result) {
-                        if (result != null) {
-                          setState(() {
-                            result.result.formattedAddress ?? "";
-                          });
-                        }
-                      },
+            if (isTextFieldReadOnly) {
+              final result = await ref.read(baseUtilsProvider).getLocation();
+              result.when((success) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return MapLocationPicker(
+                        apiKey: "AIzaSyAqyETt9iu7l5QioWz5iwEbzrallQrpzLs",
+                        popOnNextButtonTaped: true,
+                        currentLatLng:
+                            LatLng(success.latitude, success.longitude),
+                        onNext: (GeocodingResult? result) {
+                          if (result != null) {
+                            Location location = result.geometry.location;
+                            addressController.text =
+                                result.formattedAddress.toString();
+                            ref
+                                .read(
+                                  authenticationControllerProvider.notifier,
+                                )
+                                .setLatAndLongPharmacyStore(
+                                  location.lat,
+                                  location.lng,
+                                );
+                          }
+                        },
+                        onSuggestionSelected: (PlacesDetailsResponse? result) {
+                          if (result != null) {
+                            setState(() {
+                              result.result.formattedAddress ?? "";
+                            });
+                          }
+                        },
+                      );
+                    },
+                  ),
+                );
+              }, (error) {
+                showDialog(
+                  context: context,
+                  builder: (_) {
+                    return BaseDialog(
+                      message: error.message,
                     );
                   },
-                ),
-              );
-            }, (error) {
-              showDialog(
-                context: context,
-                builder: (_) {
-                  return BaseDialog(
-                    message: error.message,
-                  );
-                },
-              );
-            });
+                );
+              });
+            }
           },
           validator: Validators.combine(
             [

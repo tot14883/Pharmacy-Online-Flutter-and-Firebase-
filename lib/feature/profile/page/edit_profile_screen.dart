@@ -20,6 +20,7 @@ import 'package:pharmacy_online/feature/profile/controller/profile_controller.da
 import 'package:pharmacy_online/feature/profile/enum/field_user_info_enum.dart';
 import 'package:pharmacy_online/utils/util/base_utils.dart';
 import 'package:pharmacy_online/utils/util/vaildators.dart';
+import 'package:pharmacy_online/generated/assets.gen.dart';
 
 //import 'package:fluttertoast/fluttertoast.dart';
 
@@ -41,6 +42,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   final formKey = GlobalKey<BaseFormState>();
 
   bool isValidated = false; //ตรวจสอบ
+  bool isTextFieldReadOnly = true; // ตรวจสอบตำแหน่งที่อยู่
 
   @override
   void initState() {
@@ -194,62 +196,75 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                       controller: addressController,
                       label: "ที่อยู่",
                       isShowLabelField: true,
-                      isReadOnly: true,
+                      placeholder: "กดเพื่อเลือกตำแหน่งที่อยู่",
+                      isReadOnly: isTextFieldReadOnly,
+                      suffixIcon: IconButton(
+                        icon: Assets.icons.icEdit.svg(),
+                        onPressed: () {
+                          setState(() {
+                            isTextFieldReadOnly =
+                                !isTextFieldReadOnly; // เปลี่ยนสถานะ isReadOnly โดยสลับค่า
+                          });
+                        },
+                      ),
                       // Callback เมื่อที่อยู่ถูกแตะ จะเปิดหน้าต่างเลือกที่อยู่
                       onTap: () async {
-                        final result =
-                            await ref.read(baseUtilsProvider).getLocation();
-                        result.when((success) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) {
-                                return MapLocationPicker(
-                                  apiKey:
-                                      "AIzaSyAqyETt9iu7l5QioWz5iwEbzrallQrpzLs",
-                                  popOnNextButtonTaped: true,
-                                  currentLatLng: LatLng(
-                                      success.latitude, success.longitude),
-                                  // Callback เมื่อเลือกที่อยู่
-                                  onNext: (GeocodingResult? result) {
-                                    if (result != null) {
-                                      Location location =
-                                          result.geometry.location;
-                                      addressController.text =
-                                          result.formattedAddress.toString();
-                                      ref
-                                          .read(
-                                            profileControllerProvider.notifier,
-                                          )
-                                          .setLatAndLongUser(
-                                            location.lat,
-                                            location.lng,
-                                          );
-                                    }
-                                  },
-                                  // Callback เมื่อเลือกที่อยู่จาก suggestion
-                                  onSuggestionSelected:
-                                      (PlacesDetailsResponse? result) {
-                                    if (result != null) {
-                                      setState(() {
-                                        result.result.formattedAddress ?? "";
-                                      });
-                                    }
-                                  },
+                        if (isTextFieldReadOnly) {
+                          final result =
+                              await ref.read(baseUtilsProvider).getLocation();
+                          result.when((success) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) {
+                                  return MapLocationPicker(
+                                    apiKey:
+                                        "AIzaSyAqyETt9iu7l5QioWz5iwEbzrallQrpzLs",
+                                    popOnNextButtonTaped: true,
+                                    currentLatLng: LatLng(
+                                        success.latitude, success.longitude),
+                                    // Callback เมื่อเลือกที่อยู่
+                                    onNext: (GeocodingResult? result) {
+                                      if (result != null) {
+                                        Location location =
+                                            result.geometry.location;
+                                        addressController.text =
+                                            result.formattedAddress.toString();
+                                        ref
+                                            .read(
+                                              profileControllerProvider
+                                                  .notifier,
+                                            )
+                                            .setLatAndLongUser(
+                                              location.lat,
+                                              location.lng,
+                                            );
+                                      }
+                                    },
+                                    // Callback เมื่อเลือกที่อยู่จาก suggestion
+                                    onSuggestionSelected:
+                                        (PlacesDetailsResponse? result) {
+                                      if (result != null) {
+                                        setState(() {
+                                          result.result.formattedAddress ?? "";
+                                        });
+                                      }
+                                    },
+                                  );
+                                },
+                              ),
+                            );
+                          }, (error) {
+                            showDialog(
+                              context: context,
+                              builder: (_) {
+                                return BaseDialog(
+                                  message: error.message,
                                 );
                               },
-                            ),
-                          );
-                        }, (error) {
-                          showDialog(
-                            context: context,
-                            builder: (_) {
-                              return BaseDialog(
-                                message: error.message,
-                              );
-                            },
-                          );
-                        });
+                            );
+                          });
+                        }
                       },
                       validator: Validators.combine(
                         [
