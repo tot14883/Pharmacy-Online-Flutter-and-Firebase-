@@ -72,13 +72,31 @@ class _AddMedicineWarehouseScreenState
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  BaseUploadImageButton(
-                    imgPreview: Assets.icons.icAddImg.svg(),
-                    onUpload: (val) {
-                      setState(() {
-                        medicineFIle = val;
-                      });
-                    },
+                  Container(
+                    padding: const EdgeInsets.all(8).r,
+                    decoration: BoxDecoration(
+                      border: medicineFIle == null
+                          ? Border.all(
+                              color: Colors
+                                  .transparent) // ไม่แสดงเส้นขอบถ้า imgPreview เป็น SvgPicture
+                          : Border.all(
+                              color: AppColor.themePrimaryColor,
+                              width: 1,
+                            ),
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(
+                          16,
+                        ),
+                      ),
+                    ),
+                    child: BaseUploadImageButton(
+                      imgPreview: Assets.icons.icAddImg.svg(),
+                      onUpload: (val) {
+                        setState(() {
+                          medicineFIle = val;
+                        });
+                      },
+                    ),
                   ),
                   SizedBox(
                     height: 16.h,
@@ -87,6 +105,9 @@ class _AddMedicineWarehouseScreenState
                     fieldKey: FieldMedicine.name,
                     label: "ชื่อยา",
                     isShowLabelField: true,
+                    maxLines: 1,
+                    maxLength: 30,
+                    counterText: '',
                     validator: Validators.combine(
                       [
                         Validators.withMessage(
@@ -99,21 +120,6 @@ class _AddMedicineWarehouseScreenState
                   SizedBox(
                     height: 16.h,
                   ),
-                  // BaseTextField(
-                  //   label: "จำนวน",
-                  //   textInputType: TextInputType.number,
-                  //   validator: Validators.combine(
-                  //     [
-                  //       Validators.withMessage(
-                  //         "Required",
-                  //         Validators.isEmpty,
-                  //       ),
-                  //     ],
-                  //   ),
-                  // ),
-                  // SizedBox(
-                  //   height: 16.h,
-                  // ),
 
                   // ช่องกรอกราคา
                   if (!isAdmin) ...[
@@ -121,6 +127,8 @@ class _AddMedicineWarehouseScreenState
                       fieldKey: FieldMedicine.price,
                       label: "ราคา",
                       isShowLabelField: true,
+                      maxLength: 10,
+                      counterText: '',
                       textInputType: TextInputType.number,
                       validator: Validators.combine(
                         [
@@ -136,6 +144,9 @@ class _AddMedicineWarehouseScreenState
                     fieldKey: FieldMedicine.size,
                     label: "ขนาด",
                     isShowLabelField: true,
+                    maxLines: 1,
+                    maxLength: 30,
+                    counterText: '',
                     validator: Validators.combine(
                       [
                         Validators.withMessage(

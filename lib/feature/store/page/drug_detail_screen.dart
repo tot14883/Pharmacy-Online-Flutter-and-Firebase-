@@ -102,9 +102,12 @@ class _DrugDetailScreenState extends BaseConsumerState<DrugDetailScreen> {
                 BaseImageView(
                   alignment: Alignment.center,
                   url: image,
-                  fit: BoxFit.cover,
-                  width: 250.w,
-                  //height: 250.h,
+                  fit: BoxFit.contain,
+                  width: 300.w,
+                  height: 300.h,
+                  border:
+                      Border.all(color: AppColor.themePrimaryColor, width: 1.2),
+                  radius: BorderRadius.circular(15.0),
                 ),
                 SizedBox(
                   height: 16.h,

@@ -165,6 +165,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                     initialValue: fullname,
                     label: "ชื่อ-นามสกุล",
                     isShowLabelField: true,
+                    maxLines: 1,
+                    maxLength: 30,
+                    counterText: '',
                     validator: Validators.combine(
                       [
                         Validators.withMessage(
@@ -322,6 +325,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                       fieldKey: FieldUserInfo.licensePharmacy,
                       initialValue: licensePharmacy,
                       label: "เลขที่ใบอนุญาตเภสัชกร",
+                      maxLines: 1,
+                      maxLength: 30,
+                      counterText: '',
                       isShowLabelField: true,
                       validator: Validators.combine(
                         [

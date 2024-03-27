@@ -106,8 +106,11 @@ class _StoreDetailScreenState extends BaseConsumerState<StoreDetailScreen> {
               BaseImageView(
                 url: pharmacyStoreImg,
                 width: MediaQuery.of(context).size.width,
-                //height: 333.h,
-                fit: BoxFit.cover,
+                height: 250.h,
+                fit: BoxFit.contain,
+                border: Border.all(
+                    color: const Color.fromARGB(0, 19, 202, 135), width: 1.2),
+                radius: BorderRadius.circular(30),
               ),
               StoreDetailContent(
                 pharmacyInfoResponse: pharmacyInfoResponse,
@@ -269,42 +272,56 @@ class StoreDetailContent extends ConsumerWidget {
               ),
             ],
           ),
-          SizedBox(
-            height: 16.h,
-          ),
-          Text(
-            'เภสัชกรประจำร้าน',
-            style: AppStyle.txtBody2bold,
-          ),
-          Text(
-            '$fullname เลขที่ใบอนุญาต $licensePharmacy',
-            style: AppStyle.txtBody2,
-          ),
+
           SizedBox(
             height: 16.h,
           ),
           BaseImageView(
             url: profileImg,
             width: 250.w,
-            //height: 250.h,
+            height: 250.h,
             fit: BoxFit.cover,
             alignment: Alignment.center,
+            border: Border.all(
+                color: const Color.fromARGB(0, 19, 202, 135), width: 1.2),
+            radius: BorderRadius.circular(30),
           ),
           SizedBox(
             height: 8.h,
           ),
-          BaseImageView(
-            url: licensePharmacyImg,
-            width: 300.w,
-            //height: 250.h,
-            fit: BoxFit.cover,
-            alignment: Alignment.center,
+          Center(
+            child: Column(
+              children: [
+                Text(
+                  'เภสัชกรประจำร้าน',
+                  style: AppStyle.txtBody2bold,
+                ),
+                Text(
+                  '$fullname เลขที่ใบอนุญาต $licensePharmacy',
+                  style: AppStyle.txtBody2,
+                ),
+              ],
+            ),
+          ),
+
+          SizedBox(
+            height: 16.h,
+          ),
+          InteractiveViewer(
+            child: BaseImageView(
+              url: licensePharmacyImg,
+              width: 300.w,
+              //height: 250.h,
+              fit: BoxFit.contain,
+              alignment: Alignment.center,
+            ),
           ),
           //ร้าน
           SizedBox(
             height: 16.h,
           ),
           Row(
+            //mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
                 'เลขที่ใบอนุญาตร้าน',
@@ -319,15 +336,17 @@ class StoreDetailContent extends ConsumerWidget {
           SizedBox(
             height: 16.h,
           ),
-          BaseImageView(
-            url: licenseStoreImg,
-            width: 300.w,
-            //height: 250.h,
-            fit: BoxFit.cover,
-            alignment: Alignment.center,
+          InteractiveViewer(
+            child: BaseImageView(
+              url: licenseStoreImg,
+              width: 300.w,
+              //height: 250.h,
+              fit: BoxFit.contain,
+              alignment: Alignment.center,
+            ),
           ),
           SizedBox(
-            height: 48.h,
+            height: 30.h,
           ),
           if (pharmacyInfoResponse != null) ...[
             BaseButton(

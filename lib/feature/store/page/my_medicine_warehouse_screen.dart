@@ -150,7 +150,7 @@ class _MyMedicineWarehouseScreenState
                   return Container(
                     padding: EdgeInsets.fromLTRB(
                       16,
-                      50,
+                      70,
                       16,
                       MediaQuery.of(context).padding.bottom + 72,
                     ).r,

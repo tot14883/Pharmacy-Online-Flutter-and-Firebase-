@@ -89,23 +89,37 @@ class _EditMedicineWarehouseScreenState
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  BaseUploadImageButton(
-                    imgPreview: BaseImageView(
-                      url: medicineFIle != null
-                          ? null
-                          : medicineItem.medicineImg,
-                      file: medicineFIle != null
-                          ? File(medicineFIle!.path)
-                          : null,
-                      width: 250.w,
-                      //height: 250.h,
-                      fit: BoxFit.cover,
+                  Container(
+                    padding: const EdgeInsets.all(8).r,
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: AppColor.themePrimaryColor,
+                        width: 1,
+                      ),
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(
+                          16,
+                        ),
+                      ),
                     ),
-                    onUpload: (val) {
-                      setState(() {
-                        medicineFIle = val;
-                      });
-                    },
+                    child: BaseUploadImageButton(
+                      imgPreview: BaseImageView(
+                        url: medicineFIle != null
+                            ? null
+                            : medicineItem.medicineImg,
+                        file: medicineFIle != null
+                            ? File(medicineFIle!.path)
+                            : null,
+                        width: 250.w,
+                        height: 250.h,
+                        fit: BoxFit.contain,
+                      ),
+                      onUpload: (val) {
+                        setState(() {
+                          medicineFIle = val;
+                        });
+                      },
+                    ),
                   ),
                   SizedBox(
                     height: 16.h,
@@ -114,6 +128,9 @@ class _EditMedicineWarehouseScreenState
                     fieldKey: FieldMedicine.name,
                     label: "ชื่อยา",
                     isShowLabelField: true,
+                    maxLines: 1,
+                    maxLength: 30,
+                    counterText: '',
                     initialValue: medicineItem.name,
                     validator: Validators.combine(
                       [
@@ -127,21 +144,6 @@ class _EditMedicineWarehouseScreenState
                   SizedBox(
                     height: 16.h,
                   ),
-                  // BaseTextField(
-                  //   placeholder: "จำนวน",
-                  //   textInputType: TextInputType.number,
-                  //   validator: Validators.combine(
-                  //     [
-                  //       Validators.withMessage(
-                  //         "Required",
-                  //         Validators.isEmpty,
-                  //       ),
-                  //     ],
-                  //   ),
-                  // ),
-                  // SizedBox(
-                  //   height: 16.h,
-                  // ),
 
                   // แสดงช่องกรอกราคา ถ้าไม่ใช่ Admin
                   if (!isAdmin) ...[
@@ -150,6 +152,8 @@ class _EditMedicineWarehouseScreenState
                       initialValue: '${medicineItem.price}',
                       label: "ราคา",
                       isShowLabelField: true,
+                      maxLength: 10,
+                      counterText: '',
                       textInputType: TextInputType.number,
                       validator: Validators.combine(
                         [
@@ -170,6 +174,9 @@ class _EditMedicineWarehouseScreenState
                         medicineItem.size == null ? '' : '${medicineItem.size}',
                     label: "ขนาด",
                     isShowLabelField: true,
+                    maxLines: 1,
+                    maxLength: 30,
+                    counterText: '',
                     validator: Validators.combine(
                       [
                         Validators.withMessage(

@@ -166,6 +166,9 @@ class _EditQRCodeScreenState extends BaseConsumerState<EditQRCodeScreen> {
                           );
                         },
                       );
+                      setState(() {
+                        visible = false; //ซ่อนปุ่มยืนยัน
+                      });
                     } else {
                       // แสดง Dialog เมื่อการแก้ไขไม่สำเร็จ
                       await showBaseDialog(

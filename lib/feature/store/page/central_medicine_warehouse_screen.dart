@@ -107,7 +107,7 @@ class _CentralMedicineWarehouseScreenState
                   SingleChildScrollView(
                     child: Container(
                       padding: EdgeInsets.only(
-                        top: 50,
+                        top: 70,
                         bottom: !isAdmin
                             ? 72
                             : MediaQuery.of(context).padding.bottom + 150,
