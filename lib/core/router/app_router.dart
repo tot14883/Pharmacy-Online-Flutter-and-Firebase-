@@ -31,6 +31,7 @@ import 'package:pharmacy_online/feature/order/page/upload_transportation_screen.
 import 'package:pharmacy_online/feature/profile/page/change_password_screen.dart';
 import 'package:pharmacy_online/feature/profile/page/edit_pharmacy_store_screen.dart';
 import 'package:pharmacy_online/feature/profile/page/edit_profile_screen.dart';
+import 'package:pharmacy_online/feature/profile/page/profile_screen.dart';
 import 'package:pharmacy_online/feature/profile/page/edit_qr_code_screen.dart';
 import 'package:pharmacy_online/feature/store/page/add_medicine_warehouse_screen.dart';
 import 'package:pharmacy_online/feature/store/page/central_medicine_warehouse_screen.dart';
@@ -234,6 +235,14 @@ class AppRouter {
         return CustomPageRouteBuilder.route(
           name: EditProfileScreen.routeName,
           builder: (ctx) => const EditProfileScreen(),
+          transitionType: RouteTransition.fade,
+        );
+
+      // นำทางไปยังหน้า ProfileScreen
+      case ProfileScreen.routeName:
+        return CustomPageRouteBuilder.route(
+          name: ProfileScreen.routeName,
+          builder: (ctx) => const ProfileScreen(),
           transitionType: RouteTransition.fade,
         );
 

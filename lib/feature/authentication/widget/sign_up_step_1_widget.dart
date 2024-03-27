@@ -199,19 +199,6 @@ class _SignUpStep1WidgetState extends ConsumerState<SignUpStep1Widget> {
                   isEmailAlready = result;
                 });
 
-                // if (passwordController.text.length < 6) {
-                //   showDialog(
-                //     context: context,
-                //     builder: (_) {
-                //       return BaseDialog(
-                //         message: 'รหัสผ่านต้องมากกว่าหรือเท่ากับ 6 ตัวอักษร',
-                //       );
-                //     },
-                //   );
-
-                //   return;
-                // }
-
                 if (confirmPasswordController.text != passwordController.text) {
                   setState(() {
                     isPasswordMatch = false;

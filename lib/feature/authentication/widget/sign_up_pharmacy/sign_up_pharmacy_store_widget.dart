@@ -14,6 +14,7 @@ import 'package:pharmacy_online/base_widget/base_text_field.dart';
 import 'package:pharmacy_online/base_widget/base_upload_image.dart';
 import 'package:pharmacy_online/base_widget/base_upload_image_button.dart';
 import 'package:pharmacy_online/core/app_style.dart';
+import 'package:pharmacy_online/core/app_color.dart';
 import 'package:pharmacy_online/feature/authentication/controller/authentication_controller.dart';
 import 'package:pharmacy_online/feature/authentication/enum/field_sign_up_enum.dart';
 import 'package:pharmacy_online/generated/assets.gen.dart';
@@ -51,13 +52,14 @@ class _SignUpPharmacyStoreWidgetState
   TextEditingController closingController = TextEditingController();
 
   XFile? licenseStoreFile, qrcodeFile, storeFile;
-  bool isRequiredStore = false,
-      isRequiredLicenseStore = false,
-      isRequiredQrcode = false;
+  bool isRequiredStore = true,
+      isRequiredLicenseStore = true,
+      isRequiredQrcode = true;
   TimeOfDay? openingTime, closingTime;
 
   bool isValidated = false; //ตรวจสอบ
   bool isTextFieldReadOnly = true; // ตรวจสอบตำแหน่งที่อยู่
+  bool showSuffixIcon = false; //โชว์ไอค่อนแก้ที่อยู่
 
   @override
   void dispose() {
@@ -72,13 +74,36 @@ class _SignUpPharmacyStoreWidgetState
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        BaseUploadImageButton(
-          imgPreview: Assets.icons.icAddImg.svg(),
-          onUpload: (val) {
-            setState(() {
-              storeFile = val;
-            });
-          },
+        Container(
+          padding: const EdgeInsets.all(8).r,
+          decoration: BoxDecoration(
+            // border: Border.all(
+            //   color: AppColor.themePrimaryColor,
+            //   width: 1, // red as border color
+            // ),
+            border: storeFile == null
+                ? Border.all(
+                    color: Colors
+                        .transparent) // ไม่แสดงเส้นขอบถ้า imgPreview เป็น SvgPicture
+                : Border.all(
+                    color: AppColor.themePrimaryColor,
+                    width: 1,
+                  ),
+            borderRadius: const BorderRadius.all(
+              Radius.circular(
+                16,
+              ),
+            ),
+          ),
+          child: BaseUploadImageButton(
+            imgPreview: Assets.icons.icAddImg.svg(),
+            onUpload: (val) {
+              setState(() {
+                storeFile = val;
+                isRequiredStore = false;
+              });
+            },
+          ),
         ),
         if (isRequiredStore) ...[
           SizedBox(
@@ -96,14 +121,30 @@ class _SignUpPharmacyStoreWidgetState
           fieldKey: FieldSignUp.nameStore,
           label: "ชื่อร้าน",
           isShowLabelField: true,
-          validator: Validators.combine(
-            [
-              Validators.withMessage(
-                "กรุณากรอกชื่อร้าน",
-                Validators.isEmpty,
-              ),
-            ],
-          ),
+          maxLines: 1,
+          maxLength: 30,
+          counterText: '',
+          validator: (value) {
+            final validators = Validators.combine(
+              [
+                Validators.withMessage(
+                  "กรุณากรอกชื่อร้าน",
+                  Validators.isEmpty,
+                ),
+              ],
+            );
+            // ตรวจสอบ validator
+            //validators(value) จะคืนค่า null เมื่อผ่านเงื่อนไขของ validators ทั้งหมด
+            //และจะคืนค่าข้อความของ validator ที่ไม่ผ่านเมื่อเงื่อนไขใดเงื่อนไขหนึ่งไม่ถูกต้อง
+            if (validators(value) == null) {
+              isValidated = true; //ตรวจสอบแล้วผ่านหมด
+            } else {
+              isValidated = false;
+            }
+
+            // ส่งค่ากลับเป็นข้อความของ validator ที่ผ่านได้
+            return validators(value);
+          },
         ),
         SizedBox(
           height: 16.h,
@@ -115,17 +156,26 @@ class _SignUpPharmacyStoreWidgetState
           label: "ที่อยู่ร้าน",
           isShowLabelField: true,
           isReadOnly: isTextFieldReadOnly,
-          suffixIcon: IconButton(
-            icon: Assets.icons.icEdit.svg(),
-            onPressed: () {
-              setState(() {
-                isTextFieldReadOnly =
-                    !isTextFieldReadOnly; // เปลี่ยนสถานะ isReadOnly โดยสลับค่า
-              });
-            },
-          ),
+          suffixIcon: showSuffixIcon
+              ? IconButton(
+                  icon: Assets.icons.icEdit.svg(),
+                  onPressed: () {
+                    setState(() {
+                      isTextFieldReadOnly =
+                          !isTextFieldReadOnly; // เปลี่ยนสถานะ isReadOnly โดยสลับค่า
+                    });
+                  },
+                )
+              : IconButton(
+                  icon: Assets.icons.icEdit.svg(),
+                  onPressed: () {
+                    setState(() {});
+                  },
+                ),
           onTap: () async {
+            showSuffixIcon = true;
             if (isTextFieldReadOnly) {
+              // ตรวจสอบว่าสามารถแก้ไขได้หรือไม่
               final result = await ref.read(baseUtilsProvider).getLocation();
               result.when((success) {
                 Navigator.push(
@@ -175,47 +225,73 @@ class _SignUpPharmacyStoreWidgetState
               });
             }
           },
-          validator: Validators.combine(
-            [
-              Validators.withMessage(
-                "กรุณาระบุตำแหน่งที่อยู่ร้าน",
-                Validators.isEmpty,
-              ),
-            ],
-          ),
+          validator: (value) {
+            final validators = Validators.combine(
+              [
+                Validators.withMessage(
+                  "กรุณาระบุตำแหน่งที่อยู่ร้าน",
+                  Validators.isEmpty,
+                ),
+              ],
+            );
+            // ตรวจสอบ validator
+            //validators(value) จะคืนค่า null เมื่อผ่านเงื่อนไขของ validators ทั้งหมด
+            //และจะคืนค่าข้อความของ validator ที่ไม่ผ่านเมื่อเงื่อนไขใดเงื่อนไขหนึ่งไม่ถูกต้อง
+            if (validators(value) == null) {
+              isValidated = true; //ตรวจสอบแล้วผ่านหมด
+            } else {
+              isValidated = false;
+            }
+
+            // ส่งค่ากลับเป็นข้อความของ validator ที่ผ่านได้
+            return validators(value);
+          },
         ),
         SizedBox(
           height: 16.h,
         ),
         BaseTextField(
           fieldKey: FieldSignUp.phoneStore,
-          label: "เบอร์โทรศัพท์",
+          label: "เบอร์โทรศัพท์ร้าน",
           maxLength: 10,
           counterText: '',
           isShowLabelField: true,
           textInputType: TextInputType.phone,
-          validator: Validators.combine(
-            [
-              Validators.withMessage(
-                "กรุณากรอกเบอร์โทรศัพท์",
-                Validators.isEmpty,
-              ),
-              Validators.withMessage(
-                "เบอร์โทรศัพท์ต้องขึ้นต้นด้วย 0",
-                Validators.isValidPhoneNumberStartsWith,
-              ),
-              Validators.withMessage(
-                "กรอกเบอร์โทรศัพท์ 9 หลักหรือ 10 หลัก",
-                Validators.isValidPhoneNumberLength,
-              ),
-            ],
-          ),
+          validator: (value) {
+            final validators = Validators.combine(
+              [
+                Validators.withMessage(
+                  "กรุณากรอกเบอร์โทรศัพท์",
+                  Validators.isEmpty,
+                ),
+                Validators.withMessage(
+                  "เบอร์โทรศัพท์ต้องขึ้นต้นด้วย 0",
+                  Validators.isValidPhoneNumberStartsWith,
+                ),
+                Validators.withMessage(
+                  "กรอกเบอร์โทรศัพท์ 9 หลักหรือ 10 หลัก",
+                  Validators.isValidPhoneNumberLength,
+                ),
+              ],
+            );
+            // ตรวจสอบ validator
+            //validators(value) จะคืนค่า null เมื่อผ่านเงื่อนไขของ validators ทั้งหมด
+            //และจะคืนค่าข้อความของ validator ที่ไม่ผ่านเมื่อเงื่อนไขใดเงื่อนไขหนึ่งไม่ถูกต้อง
+            if (validators(value) == null) {
+              isValidated = true; //ตรวจสอบแล้วผ่านหมด
+            } else {
+              isValidated = false;
+            }
+
+            // ส่งค่ากลับเป็นข้อความของ validator ที่ผ่านได้
+            return validators(value);
+          },
         ),
         SizedBox(
           height: 16.h,
         ),
         BaseTextField(
-          label: "เวลาเปิด",
+          label: "เวลาเปิดทำการ",
           isReadOnly: true,
           isShowLabelField: true,
           placeholder: "กดเพื่อเลือกเวลาเปิดร้าน",
@@ -245,7 +321,7 @@ class _SignUpPharmacyStoreWidgetState
           height: 16.h,
         ),
         BaseTextField(
-          label: "เวลาปิด",
+          label: "เวลาปิดทำการ",
           isShowLabelField: true,
           isReadOnly: true,
           placeholder: "กดเพื่อเลือกเวลาปิดร้าน",
@@ -278,14 +354,30 @@ class _SignUpPharmacyStoreWidgetState
           fieldKey: FieldSignUp.licensePharmacyStore,
           label: "เลขที่ใบอนุญาตร้านขายยา",
           isShowLabelField: true,
-          validator: Validators.combine(
-            [
-              Validators.withMessage(
-                "กรุณากรอกเลขที่ใบอนุญาตร้านขายยา",
-                Validators.isEmpty,
-              ),
-            ],
-          ),
+          maxLines: 1,
+          maxLength: 30,
+          counterText: '',
+          validator: (value) {
+            final validators = Validators.combine(
+              [
+                Validators.withMessage(
+                  "กรุณากรอกเลขที่ใบอนุญาตร้านขายยา",
+                  Validators.isEmpty,
+                ),
+              ],
+            );
+            // ตรวจสอบ validator
+            //validators(value) จะคืนค่า null เมื่อผ่านเงื่อนไขของ validators ทั้งหมด
+            //และจะคืนค่าข้อความของ validator ที่ไม่ผ่านเมื่อเงื่อนไขใดเงื่อนไขหนึ่งไม่ถูกต้อง
+            if (validators(value) == null) {
+              isValidated = true; //ตรวจสอบแล้วผ่านหมด
+            } else {
+              isValidated = false;
+            }
+
+            // ส่งค่ากลับเป็นข้อความของ validator ที่ผ่านได้
+            return validators(value);
+          },
         ),
         SizedBox(
           height: 16.h,
@@ -295,27 +387,28 @@ class _SignUpPharmacyStoreWidgetState
           onUpload: (val) {
             setState(() {
               licenseStoreFile = val;
+              isRequiredLicenseStore = false;
             });
           },
         ),
+        SizedBox(
+          height: 8.h,
+        ),
         if (licenseStoreFile != null) ...[
-          SizedBox(
-            height: 8.h,
-          ),
           BaseImageView(
             file: File(licenseStoreFile!.path),
             width: 250.w,
             //height: 250.h,
-            fit: BoxFit.cover,
+            fit: BoxFit.contain,
           ),
         ],
-        if (isRequiredStore) ...[
-          SizedBox(
-            height: 8.h,
-          ),
+        if (isRequiredLicenseStore) ...[
           Text(
             'กรุณาเลือกรูปภาพ',
             style: AppStyle.txtError,
+          ),
+          SizedBox(
+            height: 16.h,
           ),
         ],
         SizedBox(
@@ -326,6 +419,7 @@ class _SignUpPharmacyStoreWidgetState
           onUpload: (val) {
             setState(() {
               qrcodeFile = val;
+              isRequiredQrcode = false;
             });
           },
         ),
@@ -337,7 +431,7 @@ class _SignUpPharmacyStoreWidgetState
             file: File(qrcodeFile!.path),
             width: 250.w,
             //height: 250.h,
-            fit: BoxFit.cover,
+            fit: BoxFit.contain,
           ),
         ],
         if (isRequiredQrcode) ...[
@@ -369,37 +463,56 @@ class _SignUpPharmacyStoreWidgetState
             Expanded(
               child: BaseButton(
                 onTap: () async {
-                  // if (validator == null) {
-                  isRequiredStore = storeFile != null ? false : true;
-                  isRequiredLicenseStore =
-                      licenseStoreFile != null ? false : true;
-                  isRequiredQrcode = qrcodeFile != null ? false : true;
+                  if (isValidated) {
+                    isRequiredStore = storeFile != null ? false : true;
+                    isRequiredLicenseStore =
+                        licenseStoreFile != null ? false : true;
+                    isRequiredQrcode = qrcodeFile != null ? false : true;
 
-                  if (openingTime == null || closingTime == null) {
-                    Fluttertoast.showToast(
-                      msg: "กรุณาระบุเวลาเปิดและปิดร้าน",
-                      toastLength: Toast.LENGTH_SHORT,
-                      gravity: ToastGravity.BOTTOM,
+                    if (openingTime == null) {
+                      Fluttertoast.showToast(
+                        msg: "กรุณาระบุเวลาร้านเปิดทำการ",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.BOTTOM,
+                      );
+                      return;
+                    }
+                    if (closingTime == null) {
+                      Fluttertoast.showToast(
+                        msg: "กรุณาระบุเวลาร้านปิดทำการ",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.BOTTOM,
+                      );
+                      return;
+                    }
+
+                    setState(() {});
+
+                    if (storeFile != null &&
+                        licenseStoreFile != null &&
+                        qrcodeFile != null &&
+                        openingTime != null &&
+                        closingTime != null) {
+                      widget.onTap(
+                        storeFile,
+                        licenseStoreFile,
+                        qrcodeFile,
+                        openingTime!,
+                        closingTime!,
+                      );
+                    }
+                  } else {
+                    showDialog(
+                      context: context,
+                      builder: (_) {
+                        return BaseDialog(
+                          message: 'กรุณากรอกข้อมูลให้ถูกต้อง',
+                        );
+                      },
                     );
+
                     return;
                   }
-
-                  setState(() {});
-
-                  if (storeFile != null &&
-                      licenseStoreFile != null &&
-                      qrcodeFile != null &&
-                      openingTime != null &&
-                      closingTime != null) {
-                    licenseStoreFile = widget.onTap(
-                      storeFile,
-                      licenseStoreFile,
-                      qrcodeFile,
-                      openingTime!,
-                      closingTime!,
-                    );
-                  }
-                  // }
                 },
                 text: 'ยืนยัน',
               ),

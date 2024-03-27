@@ -18,6 +18,7 @@ import 'package:pharmacy_online/core/app_color.dart';
 import 'package:pharmacy_online/core/app_style.dart';
 import 'package:pharmacy_online/feature/profile/controller/profile_controller.dart';
 import 'package:pharmacy_online/feature/profile/enum/field_user_info_enum.dart';
+import 'package:pharmacy_online/feature/profile/page/profile_screen.dart';
 import 'package:pharmacy_online/utils/util/base_utils.dart';
 import 'package:pharmacy_online/utils/util/vaildators.dart';
 import 'package:pharmacy_online/generated/assets.gen.dart';
@@ -43,6 +44,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
   bool isValidated = false; //ตรวจสอบ
   bool isTextFieldReadOnly = true; // ตรวจสอบตำแหน่งที่อยู่
+  bool isEdited = false; //ตรวจสอบการแก้ไข
 
   @override
   void initState() {
@@ -83,11 +85,11 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       profileControllerProvider.select((value) => value.pharmacyStore),
     );
 
-    final profileImg = userInfo?.profileImg;
-    final fullname = userInfo?.fullName;
-    final phone = userInfo?.phone;
-    final licensePharmacy = pharmacyStoreInfo?.licensePharmacy;
-    final licensePharmacyImg = pharmacyStoreInfo?.licensePharmacyImg;
+    var profileImg = userInfo?.profileImg;
+    var fullname = userInfo?.fullName;
+    var phone = userInfo?.phone;
+    var licensePharmacy = pharmacyStoreInfo?.licensePharmacy;
+    var licensePharmacyImg = pharmacyStoreInfo?.licensePharmacyImg;
 
     // สร้างหน้าจอด้วย BaseScaffold
     return BaseScaffold(
@@ -111,20 +113,36 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   // Widget สำหรับอัปโหลดรูปโปรไฟล์
-                  BaseUploadImageButton(
-                    imgPreview: BaseImageView(
-                      url: imgProfile != null ? null : profileImg,
-                      file: imgProfile != null ? File(imgProfile!.path) : null,
-                      width: 350.w,
-                      //height: 350.h,
-                      fit: BoxFit.cover,
+                  Container(
+                    padding: const EdgeInsets.all(8).r,
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: AppColor.themePrimaryColor,
+                        width: 1, // red as border color
+                      ),
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(
+                          16,
+                        ),
+                      ),
                     ),
-                    // Callback เมื่อมีการอัปโหลดรูป
-                    onUpload: (val) {
-                      setState(() {
-                        imgProfile = val;
-                      });
-                    },
+                    child: BaseUploadImageButton(
+                      imgPreview: BaseImageView(
+                        url: imgProfile != null ? null : profileImg,
+                        file:
+                            imgProfile != null ? File(imgProfile!.path) : null,
+                        width: 250.w,
+                        height: 250.h,
+                        fit: BoxFit.contain, //ปรับรูปให้เท่าขนาดข้างบน
+                      ),
+                      // Callback เมื่อมีการอัปโหลดรูป
+                      onUpload: (val) {
+                        setState(() {
+                          imgProfile = val;
+                          isEdited = true; //ตรวจการอัปรูป
+                        });
+                      },
+                    ),
                   ),
                   if (isRequiredProfile) ...[
                     SizedBox(
@@ -155,6 +173,13 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                         ),
                       ],
                     ),
+                    onChanged: (val) {
+                      setState(() {
+                        fullname = val;
+                        isEdited =
+                            true; // ตั้งค่า isEdited เป็น true เมื่อมีการแก้ไขชื่อนามสกุล
+                      });
+                    },
                   ),
                   SizedBox(
                     height: 16.h,
@@ -185,6 +210,13 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                         ),
                       ],
                     ),
+                    onChanged: (val) {
+                      setState(() {
+                        phone = val;
+                        isEdited =
+                            true; // ตั้งค่า isEdited เป็น true เมื่อมีการแก้ไขเบอร์
+                      });
+                    },
                   ),
                   SizedBox(
                     height: 16.h,
@@ -266,6 +298,11 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                           });
                         }
                       },
+                      onChanged: (val) {
+                        setState(() {
+                          isEdited = true; // ตั้งค่า isEdited เป็น true
+                        });
+                      },
                       validator: Validators.combine(
                         [
                           Validators.withMessage(
@@ -294,6 +331,12 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                           ),
                         ],
                       ),
+                      onChanged: (val) {
+                        setState(() {
+                          licensePharmacy = val;
+                          isEdited = true; // ตั้งค่า isEdited เป็น true
+                        });
+                      },
                     ),
                     SizedBox(
                       height: 16.h,
@@ -305,6 +348,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                       onUpload: (val) {
                         setState(() {
                           licenseFile = val;
+                          isEdited = true; // ตั้งค่า isEdited เป็น true
                         });
                       },
                     ),
@@ -312,15 +356,19 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                       height: 16.h,
                     ),
                     // แสดงรูปใบอนุญาต
-                    BaseImageView(
-                      url: licenseFile != null ? null : licensePharmacyImg,
-                      file:
-                          licenseFile != null ? File(licenseFile!.path) : null,
-                      width: 300.w,
-                      //height: 250.h,
-                      fit: BoxFit.cover,
-                      alignment: Alignment.center,
+                    InteractiveViewer(
+                      child: BaseImageView(
+                        url: licenseFile != null ? null : licensePharmacyImg,
+                        file: licenseFile != null
+                            ? File(licenseFile!.path)
+                            : null,
+                        width: 350.w,
+                        //height: 350.h,
+                        fit: BoxFit.contain,
+                        alignment: Alignment.center,
+                      ),
                     ),
+
                     if (isRequiredLicensePharmacy) ...[
                       SizedBox(
                         height: 8.h,
@@ -340,10 +388,11 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                   BaseButton(
                     //ปุ่มที่กดเพื่ออัพเดทข้อมูลขึ้น Firebase
                     onTap: () async {
-                      if (formKey.currentState!.validate()) {
+                      if (formKey.currentState!.validate() && isEdited) {
                         final result = await ref
                             .read(profileControllerProvider.notifier)
                             .onUpdateUserInfo(imgProfile, licenseFile);
+
                         if (result) {
                           await ref
                               .read(profileControllerProvider.notifier)
@@ -357,6 +406,11 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                             builder: (_) {
                               return BaseDialog(
                                 message: 'แก้ไขสำเร็จ',
+                                onClick: () {
+                                  Navigator.of(context).pushNamed(
+                                    ProfileScreen.routeName,
+                                  );
+                                },
                               );
                             },
                           );
@@ -370,6 +424,16 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                             },
                           );
                         }
+                      } else {
+                        // แสดงข้อความแจ้งเตือนว่าไม่มีการแก้ไข
+                        showDialog(
+                          context: context,
+                          builder: (_) {
+                            return BaseDialog(
+                              message: 'ไม่มีการแก้ไขข้อมูล',
+                            );
+                          },
+                        );
                       }
                     },
                     text: 'ยืนยันแก้ไข',

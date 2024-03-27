@@ -29,6 +29,7 @@ class EditQRCodeScreen extends ConsumerStatefulWidget {
 
 class _EditQRCodeScreenState extends BaseConsumerState<EditQRCodeScreen> {
   XFile? qrCodeFile; //ตัวแปรสำหรับเก็บไฟล์ QR Code
+  bool visible = true; //ซ่อนปุ่ม
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +77,7 @@ class _EditQRCodeScreenState extends BaseConsumerState<EditQRCodeScreen> {
                   file: qrCodeFile != null ? File(qrCodeFile!.path) : null,
                   width: 350.w,
                   height: 350.h,
-                  //fit: BoxFit.cover,
+                  fit: BoxFit.contain,
                 ),
               ),
               SizedBox(
@@ -133,44 +134,52 @@ class _EditQRCodeScreenState extends BaseConsumerState<EditQRCodeScreen> {
                 height: 16.h,
               ),
               // ปุ่มสำหรับยืนยันการแก้ไขข้อมูล
-              BaseButton(
-                onTap: () async {
-                  // เรียกใช้เมธอดใน ProfileController เพื่อทำการเปลี่ยนแปลงรูป QR Code
-                  final result = await ref
-                      .read(profileControllerProvider.notifier)
-                      .onChangeQRCode(qrCodeFile);
+              Visibility(
+                visible: qrCodeFile != null && visible,
+                child: BaseButton(
+                  onTap: () async {
+                    // เรียกใช้เมธอดใน ProfileController เพื่อทำการเปลี่ยนแปลงรูป QR Code
+                    final result = await ref
+                        .read(profileControllerProvider.notifier)
+                        .onChangeQRCode(qrCodeFile);
 
-                  // ตรวจสอบผลลัพธ์การแก้ไข
-                  if (result) {
-                    // โหลดข้อมูลร้านเภสัชกรใหม่
-                    await ref
-                        .read(
-                          profileControllerProvider.notifier,
-                        )
-                        .onGetPharmacyStore();
+                    // แสดงปุ่มยืนยัน
+                    setState(() {
+                      visible = true;
+                    });
 
-                    // แสดง Dialog เมื่อการแก้ไขสำเร็จ
-                    await showBaseDialog(
-                      context: context,
-                      builder: (ctx) {
-                        return BaseDialog(
-                          message: 'อัพเดทเรียบร้อย',
-                        );
-                      },
-                    );
-                  } else {
-                    // แสดง Dialog เมื่อการแก้ไขไม่สำเร็จ
-                    await showBaseDialog(
-                      context: context,
-                      builder: (ctx) {
-                        return BaseDialog(
-                          message: 'อัพเดทไม่สำเร็จ',
-                        );
-                      },
-                    );
-                  }
-                },
-                text: 'ยืนยัน',
+                    // ตรวจสอบผลลัพธ์การแก้ไข
+                    if (result) {
+                      // โหลดข้อมูลร้านเภสัชกรใหม่
+                      await ref
+                          .read(
+                            profileControllerProvider.notifier,
+                          )
+                          .onGetPharmacyStore();
+
+                      // แสดง Dialog เมื่อการแก้ไขสำเร็จ
+                      await showBaseDialog(
+                        context: context,
+                        builder: (ctx) {
+                          return BaseDialog(
+                            message: 'แก้ไขสำเร็จ',
+                          );
+                        },
+                      );
+                    } else {
+                      // แสดง Dialog เมื่อการแก้ไขไม่สำเร็จ
+                      await showBaseDialog(
+                        context: context,
+                        builder: (ctx) {
+                          return BaseDialog(
+                            message: 'แก้ไขไม่สำเร็จ',
+                          );
+                        },
+                      );
+                    }
+                  },
+                  text: 'ยืนยัน',
+                ),
               ),
             ],
           ),

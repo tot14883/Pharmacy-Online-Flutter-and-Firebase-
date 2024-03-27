@@ -93,13 +93,14 @@ class _BaseUploadImageButtonState extends ConsumerState<BaseUploadImageButton> {
           ? BaseImageView(
               file: File(image!.path),
               width: widget.width ?? 250.w,
-              //height: widget.height ?? 150.h,
+              height: widget.height ?? 250.h,
+              fit: BoxFit.contain,
             )
           : widget.filePath != null
               ? BaseImageView(
                   url: widget.filePath,
                   width: 250.w,
-                  //height: 250.h,
+                  height: 250.h,
                 )
               : widget.imgPreview,
     );

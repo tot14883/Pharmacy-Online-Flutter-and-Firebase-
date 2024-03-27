@@ -133,20 +133,34 @@ class _EditPharmacyStoreScreenState
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   // Widget สำหรับอัปโหลดรูปร้าน
-                  BaseUploadImageButton(
-                    imgPreview: BaseImageView(
-                      url: storeFile != null ? null : pharmacyStoreImg,
-                      file: storeFile != null ? File(storeFile!.path) : null,
-                      width: 350.w,
-                      //height: 350.h,
-                      fit: BoxFit.cover,
+                  Container(
+                    padding: const EdgeInsets.all(8).r,
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: AppColor.themePrimaryColor,
+                        width: 1, // red as border color
+                      ),
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(
+                          16,
+                        ),
+                      ),
                     ),
-                    // Callback เมื่อมีการอัปโหลดรูป
-                    onUpload: (val) {
-                      setState(() {
-                        storeFile = val;
-                      });
-                    },
+                    child: BaseUploadImageButton(
+                      imgPreview: BaseImageView(
+                        url: storeFile != null ? null : pharmacyStoreImg,
+                        file: storeFile != null ? File(storeFile!.path) : null,
+                        width: 350.w,
+                        height: 250.h,
+                        fit: BoxFit.contain,
+                      ),
+                      // Callback เมื่อมีการอัปโหลดรูป
+                      onUpload: (val) {
+                        setState(() {
+                          storeFile = val;
+                        });
+                      },
+                    ),
                   ),
                   if (isRequiredStore) ...[
                     SizedBox(
@@ -371,7 +385,6 @@ class _EditPharmacyStoreScreenState
                   SizedBox(
                     height: 16.h,
                   ),
-                  // Widget สำหรับอัปโหลดรูปใบอนุญาตร้าน
                   BaseUploadImage(
                     label: 'รูปใบอนุญาตร้านขายยา',
                     onUpload: (val) {
@@ -380,16 +393,21 @@ class _EditPharmacyStoreScreenState
                       });
                     },
                   ),
+
                   SizedBox(
                     height: 16.h,
                   ),
                   // แสดงรูปใบอนุญาตร้าน
-                  BaseImageView(
-                    url: licenseFile != null ? null : licensePharmacyStore,
-                    file: licenseFile != null ? File(licenseFile!.path) : null,
-                    width: 300.w,
-                    //height: 250.h,
-                    fit: BoxFit.cover,
+                  InteractiveViewer(
+                    // Widget สำหรับอัปโหลดรูปใบอนุญาตร้าน
+                    child: BaseImageView(
+                      url: licenseFile != null ? null : licensePharmacyStore,
+                      file:
+                          licenseFile != null ? File(licenseFile!.path) : null,
+                      width: 350.w,
+                      //height: 250.h,
+                      fit: BoxFit.contain,
+                    ),
                   ),
                   if (isRequiredStore) ...[
                     SizedBox(

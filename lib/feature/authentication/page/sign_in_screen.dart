@@ -33,6 +33,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
   final formKey = GlobalKey<BaseFormState>();
   bool isHidePassword = false;
   TextEditingController passwordController = TextEditingController();
+  bool isValidated = false; //ตรวจสอบ
 
   @override
   void dispose() {
@@ -68,18 +69,16 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                     fieldKey: FieldSignIn.email,
                     label: 'อีเมล',
                     isShowLabelField: true,
-                    validator: Validators.combine(
-                      [
-                        Validators.withMessage(
-                          "กรุณากรอกอีเมล",
-                          Validators.isEmpty,
-                        ),
-                        Validators.withMessage(
-                          "กรุณากรอกอีเมลให้ถูกต้อง",
-                          Validators.isValidEmail,
-                        ),
-                      ],
-                    ),
+                    validator: Validators.combine([
+                      Validators.withMessage(
+                        "กรุณากรอกอีเมล",
+                        Validators.isEmpty,
+                      ),
+                      Validators.withMessage(
+                        "กรุณากรอกอีเมลให้ถูกต้อง",
+                        Validators.isValidEmail,
+                      ),
+                    ]),
                   ),
                   SizedBox(
                     height: 16.h,
@@ -134,44 +133,33 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                   BaseButton(
                     //ปุ่ม login
                     onTap: () async {
-                      // if (passwordController.text.length < 6) {
-                      //   showDialog(
-                      //     context: context,
-                      //     builder: (_) {
-                      //       return BaseDialog(
-                      //         message:
-                      //             'รหัสผ่านต้องมากกว่าหรือเท่ากับ 6 ตัวอักษร',
-                      //       );
-                      //     },
-                      //   );
-                      //   return;
-                      // }
+                      if (formKey.currentState!.validate()) {
+                        final result = await ref
+                            .read(authenticationControllerProvider.notifier)
+                            .onSignIn();
+                        //ตรวจสอบ
+                        if (result) {
+                          //เรียกฟังชั่นตรวจสอบการ Login
+                          await ref
+                              .read(profileControllerProvider.notifier)
+                              .onGetUserInfo();
 
-                      final result = await ref
-                          .read(authenticationControllerProvider.notifier)
-                          .onSignIn();
-                      //ตรวจสอบ
-                      if (result) {
-                        //เรียกฟังชั่นตรวจสอบการ Login
-                        await ref
-                            .read(profileControllerProvider.notifier)
-                            .onGetUserInfo();
-
-                        Navigator.pushNamedAndRemoveUntil(
-                          context,
-                          SignInSuccessfulScreen.routeName,
-                          (route) =>
-                              route.settings.name == MainScreen.routeName,
-                        );
-                      } else {
-                        showDialog(
-                          context: context,
-                          builder: (_) {
-                            return BaseDialog(
-                              message: 'อีเมลหรือรหัสผ่านไม่ถูกต้อง',
-                            );
-                          },
-                        );
+                          Navigator.pushNamedAndRemoveUntil(
+                            context,
+                            SignInSuccessfulScreen.routeName,
+                            (route) =>
+                                route.settings.name == MainScreen.routeName,
+                          );
+                        } else {
+                          showDialog(
+                            context: context,
+                            builder: (_) {
+                              return BaseDialog(
+                                message: 'อีเมลหรือรหัสผ่านไม่ถูกต้อง',
+                              );
+                            },
+                          );
+                        }
                       }
                     },
                     text: 'เข้าสู่ระบบ',

@@ -162,9 +162,12 @@ class ProfileController extends StateNotifier<ProfileState> {
         baseFormData?.getValue<String>(FieldUserInfo.phone) ?? userInfo?.phone;
     final address = baseFormData?.getValue<String>(FieldUserInfo.address) ??
         userInfo?.address;
+    // final licensePharmacy =
+    //     baseFormData?.getValue<String>(FieldUserInfo.licensePharmacy) ??
+    //         userInfo?.licensePharmacy;
     final licensePharmacy =
         baseFormData?.getValue<String>(FieldUserInfo.licensePharmacy) ??
-            userInfo?.licensePharmacy;
+            state.pharmacyStore?.licensePharmacy;
 
     final result = await _updateUserInfoUsecase.execute(
       UserInfoRequest(

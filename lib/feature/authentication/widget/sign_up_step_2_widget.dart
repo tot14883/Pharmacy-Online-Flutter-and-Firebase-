@@ -14,6 +14,7 @@ import 'package:pharmacy_online/base_widget/base_text_field.dart';
 import 'package:pharmacy_online/base_widget/base_upload_image.dart';
 import 'package:pharmacy_online/base_widget/base_upload_image_button.dart';
 import 'package:pharmacy_online/core/app_style.dart';
+import 'package:pharmacy_online/core/app_color.dart';
 import 'package:pharmacy_online/feature/authentication/controller/authentication_controller.dart';
 import 'package:pharmacy_online/feature/authentication/enum/authentication_type_enum.dart';
 import 'package:pharmacy_online/feature/authentication/enum/field_sign_up_enum.dart';
@@ -40,12 +41,13 @@ class SignUpStep2Widget extends ConsumerStatefulWidget {
 class _SignUpStep2WidgetState extends ConsumerState<SignUpStep2Widget> {
   XFile? licenseFile;
   XFile? imgProfile;
-  bool isRequiredProfile = false;
-  bool isRequiredLicensePharmacy = false;
+  bool isRequiredProfile = true;
+  bool isRequiredLicensePharmacy = true;
   TextEditingController addressController = TextEditingController();
 
   bool isValidated = false; //ตรวจสอบ
-  bool isTextFieldReadOnly = true; // ตรวจสอบตำแหน่งที่อยู่
+  bool isTextFieldReadOnly = true; // เปิด-ปิด readonly ที่อยู๋
+  bool showSuffixIcon = false; //โชว์ไอค่อนแก้ที่อยู่
 
   @override
   void dispose() {
@@ -73,23 +75,47 @@ class _SignUpStep2WidgetState extends ConsumerState<SignUpStep2Widget> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            BaseUploadImageButton(
-              imgPreview: //Assets.icons.icProfile.svg(),
-                  SizedBox(
-                width: 120,
-                height: 120,
-                child: Assets.icons.icProfile.svg(),
+            // Widget สำหรับอัปโหลดรูปโปรไฟล์
+            Container(
+              padding: const EdgeInsets.all(8).r,
+              decoration: BoxDecoration(
+                // border: Border.all(
+                //   color: AppColor.themePrimaryColor,
+                //   width: 1, // red as border color
+                // ),
+                border: imgProfile == null
+                    ? Border.all(
+                        color: Colors
+                            .transparent) // ไม่แสดงเส้นขอบถ้า imgPreview เป็น SvgPicture
+                    : Border.all(
+                        color: AppColor.themePrimaryColor,
+                        width: 1,
+                      ),
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(
+                    16,
+                  ),
+                ),
               ),
-              onUpload: (val) {
-                setState(() {
-                  imgProfile = val;
-                });
-              },
+              child: BaseUploadImageButton(
+                imgPreview: //Assets.icons.icProfile.svg(),
+                    SizedBox(
+                  width: 120,
+                  height: 120,
+                  child: Assets.icons.icProfile.svg(),
+                ),
+                onUpload: (val) {
+                  setState(() {
+                    imgProfile = val;
+                    isRequiredProfile = false;
+                  });
+                },
+              ),
             ),
             if (isRequiredProfile) ...[
-              SizedBox(
-                height: 8.h,
-              ),
+              // SizedBox(
+              //   height: 8.h,
+              // ),
               Text(
                 'กรุณาเลือกภาพ',
                 style: AppStyle.txtError,
@@ -106,6 +132,9 @@ class _SignUpStep2WidgetState extends ConsumerState<SignUpStep2Widget> {
               fieldKey: FieldSignUp.name,
               label: "ชื่อ-นามสกุล",
               isShowLabelField: true,
+              maxLines: 1,
+              maxLength: 30,
+              counterText: '',
               validator: (value) {
                 final validators = Validators.combine(
                   [
@@ -181,16 +210,19 @@ class _SignUpStep2WidgetState extends ConsumerState<SignUpStep2Widget> {
                 isShowLabelField: true,
                 placeholder: "กดเพื่อเลือกตำแหน่งที่อยู่",
                 isReadOnly: isTextFieldReadOnly,
-                suffixIcon: IconButton(
-                  icon: Assets.icons.icEdit.svg(),
-                  onPressed: () {
-                    setState(() {
-                      isTextFieldReadOnly =
-                          !isTextFieldReadOnly; // เปลี่ยนสถานะ isReadOnly โดยสลับค่า
-                    });
-                  },
-                ),
+                suffixIcon: showSuffixIcon
+                    ? IconButton(
+                        icon: Assets.icons.icEdit.svg(),
+                        onPressed: () {
+                          setState(() {
+                            isTextFieldReadOnly =
+                                !isTextFieldReadOnly; // เปลี่ยนสถานะ isReadOnly โดยสลับค่า
+                          });
+                        },
+                      )
+                    : null,
                 onTap: () async {
+                  showSuffixIcon = true;
                   if (isTextFieldReadOnly) {
                     // ตรวจสอบว่าสามารถแก้ไขได้หรือไม่
                     final result =
@@ -277,6 +309,9 @@ class _SignUpStep2WidgetState extends ConsumerState<SignUpStep2Widget> {
                 label: "เลขที่ใบอนุญาตเภสัชกร",
                 placeholder: "เลขที่ใบอนุญาตเภสัชกร",
                 isShowLabelField: true,
+                maxLines: 1,
+                maxLength: 30,
+                counterText: '',
                 validator: (value) {
                   final validators = Validators.combine(
                     [
@@ -307,6 +342,7 @@ class _SignUpStep2WidgetState extends ConsumerState<SignUpStep2Widget> {
                 onUpload: (val) {
                   setState(() {
                     licenseFile = val;
+                    isRequiredLicensePharmacy = false;
                   });
                 },
               ),
@@ -316,9 +352,9 @@ class _SignUpStep2WidgetState extends ConsumerState<SignUpStep2Widget> {
               if (licenseFile != null) ...[
                 BaseImageView(
                   file: File(licenseFile!.path),
-                  width: 300.w,
+                  width: 250.w,
                   //height: 250.h,
-                  fit: BoxFit.cover,
+                  fit: BoxFit.contain,
                 ),
               ],
               if (isRequiredLicensePharmacy) ...[
